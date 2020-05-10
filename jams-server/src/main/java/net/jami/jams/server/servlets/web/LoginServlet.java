@@ -18,4 +18,10 @@ public class LoginServlet extends HttpServlet {
         if(Server.isInstalled.get()) req.getRequestDispatcher("/login.jsp").forward(req,resp);
         else req.getRequestDispatcher("/register.jsp").forward(req,resp);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //Similar technique as the one for API calls, simply handle this here because this is a different logic.
+        super.doPost(req, resp);
+    }
 }
