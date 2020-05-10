@@ -1,0 +1,9 @@
+{
+  "useStartTLS": true,
+  "realm": "savoirfairelinux",
+  "baseDN": "ou=users,dc=savoirfairelinux,dc=net",
+  "host": "ldap://annuaire.savoirfairelinux.com",
+  "username": "cn=sipallow,ou=dsa,dc=savoirfairelinux,dc=net",
+  "password": "Dewaaghei3Yo",
+  "usernameField": "uid=%s"
+}

@@ -1,0 +1,10 @@
+{
+ "ssl": false,
+ "port" : 389,
+ "realm": "SAVOIRFAIRELINU",
+ "host": "192.168.49.151",
+ "username": "cn=Administrator,cn=Users,dc=savoirfairelinux,dc=net",
+ "password": "abc123!"
+}
+
+
