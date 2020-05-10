@@ -5,6 +5,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.user.User;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.servlets.filters.WebAppFilter;
 
@@ -22,6 +25,19 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Similar technique as the one for API calls, simply handle this here because this is a different logic.
-        super.doPost(req, resp);
+        if(Server.userAuthenticationModule.authenticateUser
+                (req.getParameter("username"),req.getParameter("password"))
+        ){
+            StatementList statementList = new StatementList();
+            statementList.addStatement(new StatementElement("username","=",req.getParameter("username"),""));
+            User user = Server.dataStore.getUserDao().getObjects(statementList).get(0);
+            WebAppFilter.authenticatedUsers.put(req.getSession(),user);
+            req.setAttribute("accessLevel",user.getAccessLevel());
+            if(user.getNeedsPasswordReset()) resp.sendRedirect("/web/changePassword");
+            else resp.sendRedirect("/web/index");
+        }
+        else{
+            resp.sendRedirect("/web/login");
+        }
     }
 }
