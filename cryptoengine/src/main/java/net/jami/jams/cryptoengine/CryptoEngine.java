@@ -13,7 +13,9 @@ import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Hex;
 
+import java.security.MessageDigest;
 import java.security.Security;
 import java.util.concurrent.atomic.AtomicReference;
 

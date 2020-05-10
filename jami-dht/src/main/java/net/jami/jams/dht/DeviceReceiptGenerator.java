@@ -20,6 +20,7 @@ package net.jami.jams.dht;
  */
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.objects.user.User;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.MessageDigestAlgorithms;
@@ -120,6 +121,16 @@ public class DeviceReceiptGenerator {
             return null;
         }
 
+    }
+
+    public static String generateJamiId(User user){
+        try {
+            return Hex.encodeHexString(MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1).digest(user.getCertificate().getPublicKey().getEncoded()));
+        }
+        catch (Exception e){
+            log.error("Could not generate JamiId with error " + e.toString());
+            return null;
+        }
     }
 
 }
