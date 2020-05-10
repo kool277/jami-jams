@@ -44,6 +44,8 @@ public class TomcatLauncher {
 
         }
         context.setResources(resources);
+        //We always go to login by default.
+        context.addWelcomeFile("web/login");
         try {
             tomcat.start();
             tomcat.getServer().await();
