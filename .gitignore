@@ -88,6 +88,5 @@ fabric.properties
 # Maven
 log/
 target/
-jams/
 testdb/
 tomcat*/
