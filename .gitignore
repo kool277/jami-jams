@@ -90,3 +90,4 @@ log/
 target/
 testdb/
 tomcat*/
+/jams

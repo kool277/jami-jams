@@ -10,6 +10,7 @@ import net.jami.jams.server.core.usermanagement.UserAuthenticationModule;
 import net.jami.jams.server.startup.CryptoEngineLoader;
 import net.jami.jams.server.startup.LibraryLoader;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,16 +44,16 @@ public class Server {
         //nasty injection to test this flow.
 
 
-        //Okay this is me cheating again heavily, just for testing purposes.
-        //try {
-        //    InputStream path;
-        //    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        //    path = classLoader.getResourceAsStream("ldapconfig.json");
-        //    userAuthenticationModule.attachLDAPAuthSource(new String(path.readAllBytes()));
-        //}
-        //catch (Exception e){
-        //    log.error("Could not load and inject active directory connector with error: " + e.toString());
-        //}
+      //Okay this is me cheating again heavily, just for testing purposes.
+      try {
+          InputStream path;
+          ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+          path = classLoader.getResourceAsStream("ldapconfig.json");
+          userAuthenticationModule.attachLDAPAuthSource(new String(path.readAllBytes()));
+      }
+      catch (Exception e){
+          log.error("Could not load and inject active directory connector with error: " + e.toString());
+      }
 
         //Start tomcat.
         TomcatLauncher tomcatLauncher = new TomcatLauncher();
