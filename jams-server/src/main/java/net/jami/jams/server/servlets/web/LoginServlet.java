@@ -5,8 +5,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.servlets.filters.WebAppFilter;
@@ -25,6 +27,17 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Similar technique as the one for API calls, simply handle this here because this is a different logic.
+        if(!Server.isInstalled.get()){
+            //Basically create the admin user here.
+            User user = new User();
+            user.setUserType(AuthenticationSourceType.LOCAL);
+            user.setAccessLevel(AccessLevel.ADMIN);
+            user.setPassword(req.getParameter("password"));
+            user.setUsername(req.getParameter("username"));
+            Server.dataStore.createUser(user);
+            resp.sendRedirect("/web/install/auth");
+            return;
+        }
         if(Server.userAuthenticationModule.authenticateUser
                 (req.getParameter("username"),req.getParameter("password"))
         ){
