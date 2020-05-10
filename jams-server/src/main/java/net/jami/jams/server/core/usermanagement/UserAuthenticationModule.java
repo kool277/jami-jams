@@ -6,6 +6,7 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.server.core.workflows.RegisterUserFlow;
 import net.jami.jams.server.startup.LibraryLoader;
 
 import java.util.HashMap;
@@ -71,9 +72,7 @@ public class UserAuthenticationModule {
                 user.setRealm(key.getRealm());
                 user.setUserType(key.getType());
                 if(key.getType().equals(AuthenticationSourceType.LOCAL)) user.setPassword(password);
-                //TODO: We need a function here which generates the user (obvious workflow).
-                //The user never existed, obviously.
-                dataStore.getUserDao().storeObject(user);
+                dataStore.getUserDao().storeObject(RegisterUserFlow.createUser(user));
                 return true;
             }
         }
