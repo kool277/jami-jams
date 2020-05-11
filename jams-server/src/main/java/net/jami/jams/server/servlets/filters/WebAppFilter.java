@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.server.Server;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +24,13 @@ public class WebAppFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         boolean authsuccess = authenticatedUsers.containsKey(request.getSession());
+
+        //Block the possibility of getting back into the installation once it has been
+        //completed.
+        if(Server.isInstalled.get() && request.getServletPath().contains("install")){
+            response.setStatus(404);
+            return;
+        }
 
         if(authsuccess){
             filterChain.doFilter(request,response);

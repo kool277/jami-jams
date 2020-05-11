@@ -21,8 +21,8 @@ public class CryptoEngineLoader {
             statementList.addStatement(new StatementElement("entity","=","CA",""));
             List<SystemAccount> accounts = dataStore.getSystemDao().getObjects(statementList);
             if(accounts.size() == 0){
-                log.info("This is an fresh install, and it has no CA or any system accounts!");
-                Server.isInstalled.set(false);
+                log.info("This is an fresh install, and it has no CA or any system accounts - if there is a config.json" +
+                        "file in your directory, this means the install is broken and you should delete and restart!");
             }
             else{
                 statementList = new StatementList();

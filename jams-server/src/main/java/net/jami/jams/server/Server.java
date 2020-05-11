@@ -10,6 +10,7 @@ import net.jami.jams.server.core.usermanagement.UserAuthenticationModule;
 import net.jami.jams.server.startup.CryptoEngineLoader;
 import net.jami.jams.server.startup.LibraryLoader;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +46,9 @@ public class Server {
         //Test block
         //Step 2: if the server is initialized,
         certificateAuthority = CryptoEngineLoader.loadCryptoEngine(dataStore);
+        isInstalled.set(new File(System.getProperty("user.dir") + File.separator + "config.json").exists());
+        log.info("Server is already installed: " + isInstalled.get());
+
         //nasty injection to test this flow.
         //Okay this is me cheating again heavily, just for testing purposes.
         try {

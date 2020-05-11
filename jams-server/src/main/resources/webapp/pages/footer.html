@@ -1,0 +1,292 @@
+<!-- /*
+ *     JAMS - Jami Account Management Server
+ *     Copyright (C) 2019 Savoir-faire Linux Inc.
+ *
+ *     Author: Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */ -->
+
+<div class="footer_wrapper">
+  <div class="copyright">
+    <ul>
+      <li>
+        <a href="https://savoirfairelinux.com/en" class="copyright_link" target="_blank">
+          <img class="site-footer_logo_img" src="../images/logo/logo-sfl.svg" alt="Savoir Faire Linux">
+        </a>
+      </li>
+      <li>&copy; 2020</li>
+    </ul>
+  </div>
+</div>
+
+<div class="confirmModal modal fade" id="confirmModalCenter" tabindex="-1" role="dialog" aria-labelledby="confirmModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLongTitle">Alert</h5>
+      </div>
+      <div class="modal-body">Are you really sure?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-link goSignup" id="confirm-submit">Continue</button>
+        <button type="button" class="btn btn-outline-primary btn-link" id="cancel-submit" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="logoutModal modal fade" id="logoutModalCenter" tabindex="-1" role="dialog" aria-labelledby="logoutModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLongTitle">Logout</h5>
+      </div>
+      <div class="modal-body">Are you sure you want to logout ?</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-link goSignup">Logout</button>
+        <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="invalidModal modal fade" id="invalidModalCenter" tabindex="-1" role="dialog" aria-labelledby="invalidModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="invalidModalLongTitle">Alert <i class="fa fa-exclamation"></i></h5>
+      </div>
+      <div class="modal-body">Invalid username and password</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal">Try again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="badUrlModal modal fade" id="badUrlModalCenter" tabindex="-1" role="dialog" aria-labelledby="badUrlModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="badUrlModalLongTitle">Alert <i class="fa fa-exclamation"></i></h5>
+            </div>
+            <div class="modal-body">Please enter a valid CORS domain URL.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal">Try again</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="installCompleteModal modal fade" id="installCompleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="installCompleteModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="installCompleteModalLongTitle">Installation completed</h5>
+      </div>
+      <div class="modal-body">The Installation has been successfully completed. Click 'Complete' to exit the installation.</div>
+      <div class="modal-footer">
+        <a href="search.html" class="btn btn-outline-primary btn-link">Complete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="installErrorModal modal fade" id="installErrorModalCenter" tabindex="-1" role="dialog" aria-labelledby="installErrorModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="installErrorModalLongTitle">Server Error</h5>
+      </div>
+      <div class="modal-body">Invalid data.</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal">Try again</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="formComplete modal fade" id="formCompleteModalCenter" tabindex="-1" role="dialog" aria-labelledby="formCompleteModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="formCompleteModalLongTitle">Notification</h5>
+      </div>
+      <div class="modal-body">Success!</div>
+      <div class="modal-footer">
+        <a href="login.jsp" class="btn btn-outline-primary btn-link" id="formCompleteButton">Continue</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="noSubscriptionModal modal fade" id="noSubscriptionModalCenter" tabindex="-1" role="dialog" aria-labelledby="noSubscriptionModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="noSubscriptionModalLongTitle">Attention<i class="fa fa-exclamation"></i></h5>
+            </div>
+            <div class="modal-body">You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal" onclick="location.href='https://jami.net/store'" target="_blank">Yes, go to Jami store</button>
+                <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal">No thanks</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="downloadUpdateModal modal fade" id="downloadUpdateModalCenter" tabindex="-1" role="dialog" aria-labelledby="downloadUpdateModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="downloadUpdateModalLongTitle">There is a new version of JAMS available for update<i class="fa fa-exclamation"></i></h5>
+            </div>
+            <div class="modal-body">You can update to the latest version automatically or download the package and install it manually:</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary btn-link auto-update" data-dismiss="modal">Update automatically</button>
+                <button type="button" class="btn btn-outline-primary btn-link manual-update" data-dismiss="modal">Update manually</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="restartModal modal fade" id="restartModalCenter" tabindex="-1" role="dialog" aria-labelledby="restartModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">The update is being downloaded. Your JAMS server will restart automatically in a few seconds.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="createUserModal modal fade" id="createUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="createUserModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">Create new user</div>
+            <form id="form-user-create" class="user-data-create" autocomplete='off'>
+                <text>Username*</text>
+                <input id="input-cn"></input>
+                <text id="valid-cn"></text>
+                <text>First name</text>
+                <input id="input-givenName"></input>
+                <text>Last name</text>
+                <input id="input-sn"></input>
+                <text>Email</text>
+                <input id="input-mail"></input>
+                <form name="photo-form">
+                    Profile Picture
+                    <input id="picture-filename" id="files" type="file" name="files[]" size="35">
+                    <output id="list"></output>
+                </form>
+                <text>Organisation</text>
+                <input id="input-o"></input>
+                <text>Phone Number</text>
+                <input id="input-telephoneNumber"></input>
+                <text>Extension</text>
+                <input id="input-extension"></input>
+                <text>FAX Number</text>
+                <input id="input-facsimileTelephoneNumber"></input>
+                <text>Mobile phone number</text>
+                <input id="input-mobile"></input>
+                <div class="modal-footer">
+                    <button id="createUserButton" type="submit" class="btn btn-lg btn-primary btn-block btn-submit"
+                             data-dismiss="modal">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="updateUserModal modal fade" id="updateUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="updateUserModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">Update new user</div>
+            <form id="form-user-update" class="user-data-create" autocomplete='off'>
+                <text id="valid-cn"></text>
+                <text>First name</text>
+                <input id="input-givenName-update"></input>
+                <text>Last name</text>
+                <input id="input-sn-update"></input>
+                <text>Email</text>
+                <input id="input-mail-update"></input>
+                <form name="photo-form">
+                    Profile Picture
+                    <input id="picture-filename-update" id="files-update" type="file" name="files[]" size="35">
+                    <output id="list-update"></output>
+                </form>
+                <text>Organisation</text>
+                <input id="input-o-update"></input>
+                <text>Phone Number</text>
+                <input id="input-telephoneNumber-update"></input>
+                <text>Extension</text>
+                <input id="input-extension-update"></input>
+                <text>FAX Number</text>
+                <input id="input-facsimileTelephoneNumber-update"></input>
+                <text>Mobile phone number</text>
+                <input id="input-mobile-update"></input>
+                <div class="modal-footer">
+                    <button id="updateUserButton" type="submit" class="btn btn-lg btn-primary btn-block btn-submit"
+                            data-dismiss="modal">Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="userPasswordModal modal fade" id="userPasswordModalCenter" tabindex="-1" role="dialog" aria-labelledby="userPasswordModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div id="user-pw-modal-body" class="modal-body">New user successfully created. Here is the one time password: </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary btn-link" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deAuthorizeModalCenter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deAuthorizeModalLongTitle">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deAuthorizeModalLongTitle">Revoke User</h5>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to revoke User <span id='username-modal'></span> ?
+            </div>
+            <div class="modal-footer">
+                <button id="de-authorize-user-button" class="btn btn-primary btn-link" type="button">Revoke</button>
+                <button data-dismiss="modal" class="btn btn-outline-primary btn-link" type="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="caInstallErrorModalCenter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="caInstallErrorModalLongTitle">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="caInstallErrorModalLongTitle">CA Error</h5>
+            </div>
+            <div class="ca-modal-body">
+                An unknown error occurred while installing the CA. Please try again.
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-outline-primary btn-link" type="button">OK</button>
+            </div>
+        </div>
+    </div>
+</div>

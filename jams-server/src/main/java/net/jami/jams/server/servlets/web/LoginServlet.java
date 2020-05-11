@@ -24,8 +24,8 @@ public class LoginServlet extends HttpServlet {
             resp.sendRedirect("/index");
             return;
         }
-        if(Server.isInstalled.get()) req.getRequestDispatcher("/login.jsp").forward(req,resp);
-        else req.getRequestDispatcher("/register.jsp").forward(req,resp);
+        req.setAttribute("installed",Server.isInstalled.get());
+        req.getRequestDispatcher("/pages/login.jsp").forward(req,resp);
     }
 
     @Override

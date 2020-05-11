@@ -8,6 +8,8 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.apache.tomcat.JarScanFilter;
+import org.apache.tomcat.JarScanType;
 
 import java.io.File;
 import java.net.URLDecoder;
@@ -26,6 +28,8 @@ public class TomcatLauncher {
         String jarName = URLDecoder.decode(new File(Server.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getAbsolutePath(), StandardCharsets.UTF_8);
         log.info("JAR Resource File = " + jarName);
         context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
+        //Hack to prevent useless verbose messages.
+        context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         WebResourceRoot resources = new StandardRoot(context);
         if (jarName.contains(".jar")) {
             resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes", jarName, "/net/jami/jams/server/servlets"));
@@ -48,7 +52,6 @@ public class TomcatLauncher {
         context.addWelcomeFile("web/login");
         try {
             tomcat.start();
-            tomcat.getServer().await();
         } catch
         (Exception e) {
             log.error("Web-server has failed to start - this is critical!");
