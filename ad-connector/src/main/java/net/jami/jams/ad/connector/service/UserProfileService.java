@@ -80,7 +80,9 @@ public class UserProfileService {
         try {
             UserProfile userProfile = new UserProfile();
             for (Field field : fields) {
-                UserProfile.exposedMethods.get("set" + fieldMap.get(field.getName())).invoke(userProfile, field.getValue());
+                if(fieldMap.containsKey(field.getName())) {
+                    UserProfile.exposedMethods.get("set" + fieldMap.get(field.getName())).invoke(userProfile, field.getValue());
+                }
             }
             return userProfile;
         }

@@ -10,6 +10,7 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.ldap.connector.service.AuthenticationService;
+import net.jami.jams.ldap.connector.service.UserProfileService;
 import org.ldaptive.BindConnectionInitializer;
 import org.ldaptive.ConnectionConfig;
 import org.ldaptive.Credential;
@@ -18,7 +19,8 @@ import org.ldaptive.DefaultConnectionFactory;
 @Slf4j
 public class LDAPConnector implements AuthenticationSource {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
+    private final UserProfileService userProfileService;
     public static LDAPSettings settings;
 
     public LDAPConnector(String strSettings) {
@@ -33,6 +35,7 @@ public class LDAPConnector implements AuthenticationSource {
                 .connectionInitializers(bindConnectionInitializer)
                 .build();
         authenticationService = new AuthenticationService(new DefaultConnectionFactory(connConfig));
+        userProfileService = new UserProfileService(new DefaultConnectionFactory(connConfig));
         log.info("Started LDAP Connector!");
     }
 
@@ -43,7 +46,7 @@ public class LDAPConnector implements AuthenticationSource {
 
     @Override
     public UserProfile getUserProfile(String queryString, String field) {
-        return null;
+        return userProfileService.getUserProfile(queryString,field);
     }
 
     @Override
