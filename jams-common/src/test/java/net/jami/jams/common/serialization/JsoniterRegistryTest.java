@@ -2,7 +2,7 @@ package net.jami.jams.common.serialization;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
-import net.jami.jams.common.objects.requests.EnrollementRequest;
+import net.jami.jams.common.objects.requests.DeviceServletRequest;
 import net.jami.jams.common.objects.roots.X509Entity;
 import net.jami.jams.common.utils.X509Utils;
 import org.junit.jupiter.api.Assertions;
@@ -53,7 +53,7 @@ class JsoniterRegistryTest {
     @Test
     void CSRDeserializeTest(){
         String input = "{\"csr\":\"" + strPkcs10Request + "\"}";
-        EnrollementRequest request = JsonIterator.deserialize(input,EnrollementRequest.class);
+        DeviceServletRequest request = JsonIterator.deserialize(input, DeviceServletRequest.class);
         Assertions.assertNotNull(request.getCsr(),"CSR Should not have been null!");
     }
 
