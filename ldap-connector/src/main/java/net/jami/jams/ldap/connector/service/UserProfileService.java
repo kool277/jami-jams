@@ -5,6 +5,9 @@ import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.ldap.connector.LDAPConnector;
 import org.ldaptive.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.HashMap;
 
 @Slf4j
@@ -33,6 +36,7 @@ public class UserProfileService {
         UserProfile[] profiles = null;
         Connection connection = null;
         try {
+            queryString = URLEncoder.encode(queryString,StandardCharsets.UTF_8).replace("%","\\");
             connection = connectionFactory.getConnection();
             try {
                 connection.open();
