@@ -32,7 +32,11 @@ public class Server {
     public static CertificateAuthority certificateAuthority;
     public static UserAuthenticationModule userAuthenticationModule;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        //Start tomcat.
+        TomcatLauncher tomcatLauncher = new TomcatLauncher();
+        tomcatLauncher.startServer();
+
         //Pre-load the libraries we should pre-load.
         LibraryLoader.loadlibs("libs");
         //Step 1: Create the data store.
@@ -42,23 +46,14 @@ public class Server {
         //Step 2: if the server is initialized,
         certificateAuthority = CryptoEngineLoader.loadCryptoEngine(dataStore);
         //nasty injection to test this flow.
-
-
-      //Okay this is me cheating again heavily, just for testing purposes.
-      try {
-          InputStream path;
-          ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-          path = classLoader.getResourceAsStream("ldapconfig.json");
-          userAuthenticationModule.attachLDAPAuthSource(new String(path.readAllBytes()));
-      }
-      catch (Exception e){
-          log.error("Could not load and inject active directory connector with error: " + e.toString());
-      }
-
-        //Start tomcat.
-        TomcatLauncher tomcatLauncher = new TomcatLauncher();
-        tomcatLauncher.startServer();
+        //Okay this is me cheating again heavily, just for testing purposes.
+        try {
+            InputStream path;
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            path = classLoader.getResourceAsStream("ldapconfig.json");
+            userAuthenticationModule.attachLDAPAuthSource(new String(path.readAllBytes()));
+        } catch (Exception e) {
+            log.error("Could not load and inject active directory connector with error: " + e.toString());
+        }
     }
-
-
 }
