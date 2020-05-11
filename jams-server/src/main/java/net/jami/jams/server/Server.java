@@ -3,9 +3,12 @@ package net.jami.jams.server;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSource;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
+import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.server.core.TomcatLauncher;
+import net.jami.jams.server.core.usermanagement.AuthModuleKey;
 import net.jami.jams.server.core.usermanagement.UserAuthenticationModule;
 import net.jami.jams.server.startup.CryptoEngineLoader;
 import net.jami.jams.server.startup.LibraryLoader;
@@ -54,8 +57,12 @@ public class Server {
         try {
             InputStream path;
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            path = classLoader.getResourceAsStream("ldapconfig.json");
-            userAuthenticationModule.attachLDAPAuthSource(new String(path.readAllBytes()));
+            path = classLoader.getResourceAsStream("adsampleconfig.json");
+            userAuthenticationModule.attachADAuthSource(new String(path.readAllBytes()));
+            UserProfile userProfile = userAuthenticationModule.getAuthenticationSources()
+                    .get(new AuthModuleKey("SAVOIRFAIRELINU", AuthenticationSourceType.AD))
+                    .getUserProfile("fsidokhine","LOGON_NAME");
+            System.out.println(userProfile);
         } catch (Exception e) {
             log.error("Could not load and inject active directory connector with error: " + e.toString());
         }

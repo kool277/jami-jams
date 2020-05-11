@@ -4,6 +4,7 @@ import com.imperva.ddc.core.query.Endpoint;
 import com.jsoniter.JsonIterator;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ad.connector.service.AuthenticationService;
+import net.jami.jams.ad.connector.service.UserProfileService;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -19,7 +20,8 @@ public class ADConnector implements AuthenticationSource {
 
     private static final ConcurrentLinkedQueue<Endpoint> endpoints = new ConcurrentLinkedQueue<>();
     private static ActiveDirectorySettings settings;
-    private AuthenticationService authenticationService = new AuthenticationService();
+    private final AuthenticationService authenticationService = new AuthenticationService();
+    private final UserProfileService userProfileService = new UserProfileService();
 
     public ADConnector(String settings) {
         JsoniterRegistry.initCodecs();
@@ -65,10 +67,9 @@ public class ADConnector implements AuthenticationSource {
     }
 
     @Override
-    public UserProfile getUserProfile(String username) {
-        return null;
+    public UserProfile getUserProfile(String queryString, String field) {
+        return userProfileService.getUserProfile(queryString,field);
     }
-
 
     @Override
     public boolean authenticate(String username, String password) {

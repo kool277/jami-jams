@@ -42,7 +42,7 @@ public class LDAPConnector implements AuthenticationSource {
     }
 
     @Override
-    public UserProfile getUserProfile(String username) {
+    public UserProfile getUserProfile(String queryString, String field) {
         return null;
     }
 

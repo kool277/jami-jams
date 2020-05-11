@@ -1,5 +1,6 @@
 package net.jami.jams.server.core.usermanagement;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import static net.jami.jams.server.Server.dataStore;
 
 @Slf4j
+@Getter
 public class UserAuthenticationModule {
     //This contains the DOMAIN-SOURCE.
     //In general there is at most 2 here.
