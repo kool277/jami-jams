@@ -45,6 +45,7 @@ module jams.common {
     exports net.jami.jams.common.authentication.activedirectory;
     opens net.jami.jams.common.authentication.activedirectory to ad.connector ;
     exports net.jami.jams.common.authentication.ldap;
+    exports net.jami.jams.common.jami;
     requires jdk.crypto.cryptoki;
     requires java.base;
     requires java.sql;
