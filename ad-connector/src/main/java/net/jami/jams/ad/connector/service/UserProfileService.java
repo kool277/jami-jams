@@ -18,19 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserProfileService {
 
-    private static final HashMap<String,String> fieldMap = new HashMap<>();
-
-    static{
-        fieldMap.put("givenname","FirstName");
-        fieldMap.put("sn","LastName");
-        fieldMap.put("thumbnailPhoto","ProfilePicture");
-        fieldMap.put("mail","Email");
-        fieldMap.put("telephoneNumber","PhoneNumber");
-        fieldMap.put("mobile","MobileNumber");
-        fieldMap.put("facsimileTelephoneNumber","FaxNumber");
-        fieldMap.put("extensionName","PhoneNumberExtension");
-        fieldMap.put("o","Organization");
-    }
+    private static final HashMap<String,String> fieldMap = ADConnector.settings.getFieldMappings();
 
     public UserProfile[] getUserProfile(String queryString, String field){
         Endpoint endpoint = ADConnector.getConnection();

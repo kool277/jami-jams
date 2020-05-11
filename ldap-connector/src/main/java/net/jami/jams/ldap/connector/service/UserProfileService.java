@@ -14,20 +14,8 @@ import java.util.Iterator;
 @Slf4j
 public class UserProfileService {
 
-    private static final HashMap<String,String> fieldMap = new HashMap<>();
+    private static final HashMap<String,String> fieldMap = LDAPConnector.settings.getFieldMappings();
     private final ConnectionFactory connectionFactory;
-
-    static{
-        fieldMap.put("givenName","FirstName");
-        fieldMap.put("sn","LastName");
-        fieldMap.put("jpegPhoto","ProfilePicture");
-        fieldMap.put("mail","Email");
-        fieldMap.put("telephoneNumber","PhoneNumber");
-        fieldMap.put("mobile","MobileNumber");
-        fieldMap.put("facsimileTelephoneNumber","FaxNumber");
-        fieldMap.put("extensionName","PhoneNumberExtension");
-        fieldMap.put("o","Organization");
-    }
 
     public UserProfileService(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;

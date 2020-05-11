@@ -3,6 +3,8 @@ package net.jami.jams.common.authentication.ldap;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+
 @Getter
 @Setter
 public class LDAPSettings {
@@ -14,5 +16,6 @@ public class LDAPSettings {
     private String  username;
     private String  password;
     private String  usernameField;
+    private HashMap<String,String> fieldMappings;
 
 }

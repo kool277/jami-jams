@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ADConnector implements AuthenticationSource {
 
     private static final ConcurrentLinkedQueue<Endpoint> endpoints = new ConcurrentLinkedQueue<>();
-    private static ActiveDirectorySettings settings;
+    public static ActiveDirectorySettings settings;
     private final AuthenticationService authenticationService = new AuthenticationService();
     private final UserProfileService userProfileService = new UserProfileService();
 

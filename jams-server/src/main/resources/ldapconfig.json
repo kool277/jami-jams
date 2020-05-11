@@ -5,5 +5,16 @@
   "host": "ldap://annuaire.savoirfairelinux.com",
   "username": "cn=sipallow,ou=dsa,dc=savoirfairelinux,dc=net",
   "password": "Dewaaghei3Yo",
-  "usernameField": "uid"
+  "usernameField": "uid",
+  "fieldMappings": {
+    "givenName":"FirstName",
+    "sn":"LastName",
+    "jpegPhoto":"ProfilePicture",
+    "mail":"Email",
+    "telephoneNumber":"PhoneNumber",
+    "mobile":"MobileNumber",
+    "facsimileTelephoneNumber":"FaxNumber",
+    "extensionName":"PhoneNumberExtension",
+    "o":"Organization"
+  }
 }
