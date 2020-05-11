@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.HashMap;
+import java.util.Iterator;
 
 @Slf4j
 public class UserProfileService {
@@ -43,8 +44,9 @@ public class UserProfileService {
                 SearchOperation search = new SearchOperation(connectionFactory);
                 SearchResponse res = search.execute(buildRequest(queryString,field));
                 if (res.getEntries().size() > 0) profiles = new UserProfile[res.getEntries().size()];
+                Iterator<LdapEntry> iterator = res.getEntries().iterator();
                 for(int i=0; i< profiles.length; i++){
-                    profiles[i] = profileFromResponse(res.getEntries().iterator().next());
+                    profiles[i] = profileFromResponse(iterator.next());
                 }
                 return profiles;
             } catch (Exception e) {
