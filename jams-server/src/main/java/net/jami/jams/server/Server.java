@@ -61,7 +61,7 @@ public class Server {
             userAuthenticationModule.attachLDAPAuthSource(new String(path.readAllBytes()));
             UserProfile[] userProfile = userAuthenticationModule.getAuthenticationSources()
                     .get(new AuthModuleKey("savoirfairelinux", AuthenticationSourceType.LDAP))
-                    .getUserProfile("Béraud","FULL_TEXT_NAME");
+                    .getUserProfile("Félix","FULL_TEXT_NAME");
             System.out.println(userProfile[0]);
         } catch (Exception e) {
             log.error("Could not load and inject active directory connector with error: " + e.toString());
