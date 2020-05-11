@@ -57,12 +57,12 @@ public class Server {
         try {
             InputStream path;
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            path = classLoader.getResourceAsStream("ldapconfig.json");
-            userAuthenticationModule.attachLDAPAuthSource(new String(path.readAllBytes()));
-            UserProfile userProfile = userAuthenticationModule.getAuthenticationSources()
-                    .get(new AuthModuleKey("savoirfairelinux", AuthenticationSourceType.LDAP))
+            path = classLoader.getResourceAsStream("adsampleconfig.json");
+            userAuthenticationModule.attachADAuthSource(new String(path.readAllBytes()));
+            UserProfile[] userProfile = userAuthenticationModule.getAuthenticationSources()
+                    .get(new AuthModuleKey("SAVOIRFAIRELINU", AuthenticationSourceType.AD))
                     .getUserProfile("Sidokhine","FULL_TEXT_NAME");
-            System.out.println(userProfile);
+            System.out.println(userProfile[0]);
         } catch (Exception e) {
             log.error("Could not load and inject active directory connector with error: " + e.toString());
         }

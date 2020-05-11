@@ -32,8 +32,9 @@ public class UserProfileService {
         fieldMap.put("o","Organization");
     }
 
-    public UserProfile getUserProfile(String queryString, String field){
+    public UserProfile[] getUserProfile(String queryString, String field){
         Endpoint endpoint = ADConnector.getConnection();
+        UserProfile[] profiles = null;
         try{
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;
@@ -51,8 +52,12 @@ public class UserProfileService {
             try(Connector connector = new Connector(queryRequest)) {
                 queryResponse = connector.execute();
             }
-            List<Field> fields = queryResponse.getAll().stream().map(EntityResponse::getValue).collect(Collectors.toList()).get(0);
-            return profileFromResponse(fields);
+            List<List<Field>> results = queryResponse.getAll().stream().map(EntityResponse::getValue).collect(Collectors.toList());
+            if(results.size() > 0) profiles = new UserProfile[results.size()];
+            for(int i=0;i< profiles.length; i++){
+                profiles[i] = profileFromResponse(results.get(i));
+            }
+            return profiles;
         }
         catch (Exception e){
             log.error("Could not find entity with specified parameters.");

@@ -45,7 +45,7 @@ public class LDAPConnector implements AuthenticationSource {
     }
 
     @Override
-    public UserProfile getUserProfile(String queryString, String field) {
+    public UserProfile[] getUserProfile(String queryString, String field) {
         return userProfileService.getUserProfile(queryString,field);
     }
 

@@ -6,7 +6,7 @@ import net.jami.jams.common.objects.user.UserProfile;
 public interface AuthenticationSource {
 
     boolean createUser(User user);
-    UserProfile getUserProfile(String queryString, String field);
+    UserProfile[] getUserProfile(String queryString, String field);
     boolean authenticate(String username, String password);
     AuthenticationSourceInfo getInfo();
     boolean testConfiguration(String configuration);

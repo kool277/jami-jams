@@ -29,7 +29,8 @@ public class UserProfileService {
         this.connectionFactory = connectionFactory;
     }
 
-    public UserProfile getUserProfile(String queryString, String field){
+    public UserProfile[] getUserProfile(String queryString, String field){
+        UserProfile[] profiles = null;
         Connection connection = null;
         try {
             connection = connectionFactory.getConnection();
@@ -37,8 +38,11 @@ public class UserProfileService {
                 connection.open();
                 SearchOperation search = new SearchOperation(connectionFactory);
                 SearchResponse res = search.execute(buildRequest(queryString,field));
-                if (res.getEntries().size() > 0) return profileFromResponse(res.getEntry());
-                return null;
+                if (res.getEntries().size() > 0) profiles = new UserProfile[res.getEntries().size()];
+                for(int i=0; i< profiles.length; i++){
+                    profiles[i] = profileFromResponse(res.getEntry());
+                }
+                return profiles;
             } catch (Exception e) {
                 log.error("Could not search LDAP directory with error " + e.toString());
                 return null;

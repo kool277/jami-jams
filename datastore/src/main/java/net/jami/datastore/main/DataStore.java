@@ -47,7 +47,7 @@ public class DataStore implements AuthenticationSource {
     }
 
     @Override
-    public UserProfile getUserProfile(String queryString, String field) {
+    public UserProfile[] getUserProfile(String queryString, String field) {
         return null;
     }
 
