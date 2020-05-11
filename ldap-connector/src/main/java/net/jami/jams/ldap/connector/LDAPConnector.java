@@ -56,7 +56,7 @@ public class LDAPConnector implements AuthenticationSource {
 
     @Override
     public AuthenticationSourceInfo getInfo() {
-        return new AuthenticationSourceInfo("savoirfairelinux", AuthenticationSourceType.LDAP);
+        return new AuthenticationSourceInfo(settings.getRealm(), AuthenticationSourceType.LDAP);
     }
 
     @Override
