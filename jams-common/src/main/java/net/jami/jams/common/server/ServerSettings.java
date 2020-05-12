@@ -10,5 +10,6 @@ public class ServerSettings {
     private String ldapConfiguration;
     private String caConfiguration;
     private String activeDirectoryConfiguration;
+    private String localDirectoryConfiguration;
 
 }

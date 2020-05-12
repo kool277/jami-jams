@@ -29,7 +29,7 @@ public class SystemAccountBuilder {
                     new X500Name(systemAccount.getX509Fields().getDN()),
                     new BigInteger(256, new SecureRandom()),
                     new Date(System.currentTimeMillis()),
-                    new Date(System.currentTimeMillis() + systemAccount.getLifetime()),
+                    new Date(System.currentTimeMillis() + systemAccount.getX509Fields().getLifetime()),
                     new X500Name(systemAccount.getX509Fields().getDN()),
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())
             );
@@ -54,7 +54,7 @@ public class SystemAccountBuilder {
                     new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),
                     new BigInteger(256, new SecureRandom()),
                     new Date(System.currentTimeMillis()),
-                    new Date(System.currentTimeMillis() + systemAccount.getLifetime()),
+                    new Date(System.currentTimeMillis() + systemAccount.getX509Fields().getLifetime()),
                     new X500Name("CN=" + systemAccount.getX509Fields().getDN()),
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())
             );

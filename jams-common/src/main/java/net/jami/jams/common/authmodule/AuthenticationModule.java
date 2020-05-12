@@ -13,4 +13,5 @@ public interface AuthenticationModule {
     AuthenticationResult authenticateUser(X509Certificate[] certificates);
     String validateAndGetUsername(String token);
     HashMap<AuthModuleKey, AuthenticationSource> getAuthSources();
+    boolean testModuleConfiguration(AuthenticationSourceType type, String configuration);
 }

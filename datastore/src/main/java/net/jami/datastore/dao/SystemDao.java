@@ -17,7 +17,7 @@ public class SystemDao extends AbstractDao<SystemAccount> {
         try {
             this.setTableName("system");
             this.setTClass(SystemAccount.class);
-            String createTable = "CREATE TABLE system (" +
+            String createTable = "CREATE TABLE "+ this.getTableName() + " (" +
                     "entity varchar(255), " +
                     "certificate varchar(5000), "+
                     "privatekey varchar(5000)," +
@@ -35,7 +35,22 @@ public class SystemDao extends AbstractDao<SystemAccount> {
 
     @Override
     public boolean storeObject(SystemAccount object) {
-        return false;
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try{
+            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO system " +
+                    "(entity,certificate,privatekey)" +
+                    "VALUES " +
+                    "(?, ?, ?)");
+            ps = object.getInsert(ps);
+            return ps.execute();
+        }
+        catch (Exception e){
+            log.error("An error has occurred while trying to store a system entity: " + e.toString());
+            return false;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
     }
 
     @Override

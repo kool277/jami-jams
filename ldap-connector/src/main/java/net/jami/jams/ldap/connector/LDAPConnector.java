@@ -60,9 +60,10 @@ public class LDAPConnector implements AuthenticationSource {
     }
 
     @Override
-    public boolean testConfiguration(String configuration) {
-        return false;
+    public boolean test() {
+        return (getUserProfile("*","LOGON_NAME").length != 0);
     }
+
 
     @Override
     public boolean updatePassword(User user, String password) {

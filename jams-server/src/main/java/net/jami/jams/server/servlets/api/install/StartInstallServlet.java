@@ -1,5 +1,6 @@
 package net.jami.jams.server.servlets.api.install;
 
+import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthenticationResult;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.requests.CredentialsRequest;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 
@@ -31,10 +33,12 @@ public class StartInstallServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        CredentialsRequest credentialsRequest = JsonIterator.deserialize(req.getInputStream().readAllBytes(),CredentialsRequest.class);
         AuthenticationResult res = null;
-        if(req.getParameter("username") != null && req.getParameter("password") != null){
-            res = processUsernamePasswordAuth(req.getParameter("username"),req.getParameter("password"));
+        if(credentialsRequest.getUsername() != null && credentialsRequest.getPassword() != null){
+            res = processUsernamePasswordAuth(credentialsRequest.getUsername(),credentialsRequest.getPassword());
         }
+        resp.setHeader("endpoint",CachedObjects.endpoint);
         resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
 
@@ -47,15 +51,17 @@ public class StartInstallServlet extends HttpServlet {
             resp.sendError(500,"We have tried to create an administrative account where one already exists!");
             return;
         }
+        CredentialsRequest credentialsRequest = JsonIterator.deserialize(req.getInputStream().readAllBytes(),CredentialsRequest.class);
         //The admin user has no X509 properties.
         User user = new User();
-        user.setUsername(req.getParameter("username"));
-        user.setPassword(req.getParameter("password"));
+        user.setUsername(credentialsRequest.getUsername());
+        user.setPassword(credentialsRequest.getPassword());
         user.setUserType(AuthenticationSourceType.LOCAL);
         user.setRealm("LOCAL");
         user.setAccessLevel(AccessLevel.ADMIN);
         dataStore.getUserDao().storeObject(user);
         AuthenticationResult res = processUsernamePasswordAuth(user.getUsername(),user.getPassword());
         resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
+        CachedObjects.endpoint = "/api/install/ca";
     }
 }

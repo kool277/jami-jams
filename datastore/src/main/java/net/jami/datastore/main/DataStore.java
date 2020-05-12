@@ -67,7 +67,7 @@ public class DataStore implements AuthenticationSource {
     }
 
     @Override
-    public boolean testConfiguration(String configuration) {
+    public boolean test() {
         return true;
     }
 

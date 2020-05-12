@@ -38,7 +38,7 @@ class SystemAccountBuilderTest {
         caAccount.setX509Fields(new X509Fields());
         caAccount.getX509Fields().setCommonName("Test CA");
         caAccount.getX509Fields().setCountry("FR");
-        caAccount.setLifetime(10000000L);
+        caAccount.getX509Fields().setLifetime(10000000L);
         caAccount = SystemAccountBuilder.generateCA(caAccount);
         Assertions.assertNotNull(caAccount.getCertificate(),"CA Certificate was not generated!");
 
@@ -49,7 +49,7 @@ class SystemAccountBuilderTest {
         ocspAccount.setSystemAccountType(SystemAccountType.OCSP);
         ocspAccount.setX509Fields(new X509Fields());
         ocspAccount.getX509Fields().setCommonName("OCSP Server");
-        ocspAccount.setLifetime(10000000L);
+        ocspAccount.getX509Fields().setLifetime(10000000L);
         ocspAccount = SystemAccountBuilder.generateOCSP(ocspAccount);
         Assertions.assertNotNull(ocspAccount.getCertificate(),"OCSP Certificate was not generated!");
 
@@ -76,7 +76,7 @@ class SystemAccountBuilderTest {
         caAccount.setX509Fields(new X509Fields());
         caAccount.getX509Fields().setCommonName("Test CA");
         caAccount.getX509Fields().setCountry("FR");
-        caAccount.setLifetime(10000000L);
+        caAccount.getX509Fields().setLifetime(10000000L);
         caAccount = SystemAccountBuilder.generateCA(caAccount);
         Assertions.assertNotNull(caAccount.getCertificate(),"CA Certificate was not generated!");
         CertificateAuthorityConfig config = new CertificateAuthorityConfig();

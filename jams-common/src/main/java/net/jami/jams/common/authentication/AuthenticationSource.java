@@ -9,7 +9,7 @@ public interface AuthenticationSource {
     UserProfile[] getUserProfile(String queryString, String field);
     boolean authenticate(String username, String password);
     AuthenticationSourceInfo getInfo();
-    boolean testConfiguration(String configuration);
+    boolean test();
     boolean updatePassword(User user, String password);
 
 }

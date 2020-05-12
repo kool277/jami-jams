@@ -3,7 +3,7 @@ package net.jami.jams.server;
 import com.jsoniter.JsonIterator;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.authentication.AuthenticationSource;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.serialization.JsoniterRegistry;
@@ -16,16 +16,11 @@ import net.jami.jams.server.startup.CryptoEngineLoader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 public class Server {
 
-    public static List<String> authModuleClasses = new ArrayList<>();
-    public static HashMap<String, AuthenticationSource> authenticationSources = new HashMap<>();
     public static AtomicBoolean isInstalled = new AtomicBoolean(false);
 
     static {
@@ -49,8 +44,6 @@ public class Server {
         //Step 1: Create the data store.
         dataStore = new DataStore("jdbc:derby:jams;create=true");
 
-
-
         isInstalled.set(new File(System.getProperty("user.dir") + File.separator + "config.json").exists());
         log.info("Server is already installed: " + isInstalled.get());
         ServerSettings serverSettings = null;
@@ -60,6 +53,14 @@ public class Server {
                 serverSettings = JsonIterator.deserialize(path.readAllBytes(),ServerSettings.class);
                 certificateAuthority = CryptoEngineLoader.loadCertificateAuthority(serverSettings.getCaConfiguration(),dataStore);
                 userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore,certificateAuthority);
+                if(serverSettings.getLdapConfiguration() != null)
+                    userAuthenticationModule.attachAuthSource(AuthenticationSourceType.LDAP,
+                            serverSettings.getLdapConfiguration()
+                    );
+                if(serverSettings.getActiveDirectoryConfiguration() != null){
+                    userAuthenticationModule.attachAuthSource(AuthenticationSourceType.AD,
+                            serverSettings.getActiveDirectoryConfiguration());
+                }
             }
             catch (Exception e){
                 log.error("Could not load configuration file or initialize some components - this is critical");

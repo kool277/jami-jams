@@ -87,8 +87,8 @@ public class ADConnector implements AuthenticationSource {
     }
 
     @Override
-    public boolean testConfiguration(String configuration) {
-        return false;
+    public boolean test() {
+        return authenticate(settings.getUsername(), settings.getPassword());
     }
 
     @Override

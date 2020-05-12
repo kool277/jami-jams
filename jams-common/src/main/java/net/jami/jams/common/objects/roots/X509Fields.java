@@ -12,6 +12,7 @@ public class X509Fields {
     private String state;
     private String organization;
     private String organizationUnit;
+    private Long   lifetime;
 
     public String getDN(){
         StringBuilder stringBuilder = new StringBuilder();

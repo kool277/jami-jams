@@ -33,6 +33,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
     public UserAuthenticationModule(DataStore dataStore, CertificateAuthority certificateAuthority) {
         UserAuthenticationModule.datastore = dataStore;
         UserAuthenticationModule.certificateAuthority = certificateAuthority;
+        authenticationSources.put(new AuthModuleKey("LOCAL",AuthenticationSourceType.LOCAL),datastore);
+        log.info("Started authentication module - default local source is already enabled!");
     }
 
     @Override
@@ -102,5 +104,21 @@ public class UserAuthenticationModule implements AuthenticationModule {
     @Override
     public HashMap<AuthModuleKey, AuthenticationSource> getAuthSources(){
         return authenticationSources;
+    }
+
+    @Override
+    public boolean testModuleConfiguration(AuthenticationSourceType type, String settings) {
+        try {
+            String className = "";
+            if (type.equals(AuthenticationSourceType.AD)) className = AD_CONNECTOR_CLASS;
+            if (type.equals(AuthenticationSourceType.LDAP)) className = LDAP_CONNECTOR_CLASS;
+            Class<?> cls = LibraryLoader.classLoader.loadClass(className);
+            AuthenticationSource source = (AuthenticationSource) cls.getConstructor(String.class).newInstance(settings);
+            return source.test();
+        }
+        catch (Exception e){
+            log.error("The testing of the source was unsuccessful!");
+            return false;
+        }
     }
 }
