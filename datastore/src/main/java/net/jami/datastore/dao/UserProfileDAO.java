@@ -16,7 +16,7 @@ public class UserProfileDAO extends AbstractDao<UserProfile> {
     public UserProfileDAO() {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            this.setTableName("system");
+            this.setTableName("local_directory");
             this.setTClass(UserProfile.class);
             String createTable = "CREATE TABLE directory (" +
                     "username varchar(255), " +
