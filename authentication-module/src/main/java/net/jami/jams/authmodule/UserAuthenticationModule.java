@@ -10,6 +10,7 @@ import net.jami.jams.common.authmodule.AuthenticationResult;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.LibraryLoader;
@@ -35,6 +36,11 @@ public class UserAuthenticationModule implements AuthenticationModule {
         UserAuthenticationModule.certificateAuthority = certificateAuthority;
         authenticationSources.put(new AuthModuleKey("LOCAL",AuthenticationSourceType.LOCAL),datastore);
         log.info("Started authentication module - default local source is already enabled!");
+    }
+
+    public UserAuthenticationModule(DataStore dataStore, CertificateAuthority certificateAuthority, NameServer nameServer){
+        this(dataStore,certificateAuthority);
+        log.info("Attached NameServer to Process...");
     }
 
     @Override
@@ -82,7 +88,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
                 user.setAccessLevel(AccessLevel.USER);
                 user.setRealm(key.getRealm());
                 user.setUserType(key.getType());
-                RegisterUserFlow.createUser(user);
+                RegisterUserFlow.createUser(user,null);
                 res.setToken(tokenController.generateToken(user.getUsername(),res.getExpires()));
                 res.setAuthenticated(true);
                 return res;
