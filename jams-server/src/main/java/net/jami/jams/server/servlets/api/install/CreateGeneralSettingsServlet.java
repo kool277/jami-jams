@@ -1,4 +1,4 @@
-package net.jami.jams.server.servlets.web;
+package net.jami.jams.server.servlets.api.install;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/web/changePassword")
-public class ChangePasswordServlet extends HttpServlet {
+@WebServlet("/api/install/settings")
+public class CreateGeneralSettingsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

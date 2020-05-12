@@ -1,4 +1,4 @@
-package net.jami.jams.server.servlets.web.install;
+package net.jami.jams.server.servlets.api.install;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,8 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/web/install/auth")
-public class CreateAuthSourceServlet extends HttpServlet {
+@WebServlet("/api/install/ca")
+public class CreateCAServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

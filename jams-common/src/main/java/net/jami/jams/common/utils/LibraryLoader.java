@@ -1,7 +1,6 @@
-package net.jami.jams.server.startup;
+package net.jami.jams.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.server.Server;
 import org.apache.xbean.classloader.JarFileClassLoader;
 
 import java.io.File;
@@ -13,7 +12,7 @@ public class LibraryLoader {
 
     public static JarFileClassLoader classLoader;
 
-    public static void loadlibs(String libDir){
+    public static void loadlibs(String libDir, Class parentClass){
         try {
             File dependencyDirectory = new File(libDir);
             File[] files = dependencyDirectory.listFiles();
@@ -25,13 +24,10 @@ public class LibraryLoader {
                     log.info("Successfully loaded the library " + files[i]);
                 }
             }
-            classLoader = new JarFileClassLoader("Scheduler CL" + System.currentTimeMillis(), urls.toArray(new URL[urls.size()]), Server.class.getClassLoader());
+            classLoader = new JarFileClassLoader("Scheduler CL" + System.currentTimeMillis(), urls.toArray(new URL[urls.size()]), parentClass.getClassLoader());
         }
         catch (Exception e){
             log.error("Errors occured while trying to load libraries...");
         }
     }
-
-
-
 }

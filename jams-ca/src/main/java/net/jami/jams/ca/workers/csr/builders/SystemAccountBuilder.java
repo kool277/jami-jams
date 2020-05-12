@@ -26,11 +26,11 @@ public class SystemAccountBuilder {
             keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
-                    new X500Name("CN=" + systemAccount.getX509Fields().getDN()),
+                    new X500Name(systemAccount.getX509Fields().getDN()),
                     new BigInteger(256, new SecureRandom()),
                     new Date(System.currentTimeMillis()),
                     new Date(System.currentTimeMillis() + JamsCA.caLifetime),
-                    new X500Name("CN="+ systemAccount.getX509Fields().getDN()),
+                    new X500Name(systemAccount.getX509Fields().getDN()),
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())
             );
             systemAccount.setPrivateKey(keyPair.getPrivate());

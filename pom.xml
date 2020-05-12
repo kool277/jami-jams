@@ -16,6 +16,7 @@
         <module>ldap-connector</module>
         <module>datastore</module>
         <module>jami-dht</module>
+        <module>authentication-module</module>
     </modules>
 
     <properties>

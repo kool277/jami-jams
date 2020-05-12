@@ -1,4 +1,4 @@
-package net.jami.jams.server.core.usermanagement;
+package net.jami.jams.common.authmodule;
 
 import lombok.*;
 import net.jami.jams.common.authentication.AuthenticationSourceType;

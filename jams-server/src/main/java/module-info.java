@@ -10,9 +10,8 @@ module jams.server {
     requires javassist;
     requires datastore;
     requires org.apache.xbean.classloader;
-    requires jami.dht;
     exports net.jami.jams.server.servlets.general to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.filters to org.apache.tomcat.embed.core;
-    exports net.jami.jams.server.servlets.api.auth to org.apache.tomcat.embed.core;
-    exports net.jami.jams.server.servlets.web to org.apache.tomcat.embed.core;
+    exports net.jami.jams.server.servlets.api.auth.login to org.apache.tomcat.embed.core;
+    exports net.jami.jams.server.servlets.api.auth.device to org.apache.tomcat.embed.core;
 }

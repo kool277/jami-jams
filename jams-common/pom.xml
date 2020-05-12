@@ -22,6 +22,11 @@
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>${bouncy.castle.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.xbean</groupId>
+            <artifactId>xbean-classloader</artifactId>
+            <version>${xbean.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
