@@ -3,7 +3,6 @@ package net.jami.jams.server.core.jaminamserver;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.jami.NameServer;
 
-import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
