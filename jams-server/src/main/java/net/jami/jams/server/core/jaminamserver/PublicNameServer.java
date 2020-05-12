@@ -21,8 +21,10 @@ public class PublicNameServer implements NameServer {
         try {
             URL url = new URL(nameserverURI+"/");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
+            con.setRequestMethod("POST");
             con.connect();
+            //Send the name registration request.
+            con.getOutputStream().write("".getBytes());
             return con.getResponseCode();
         }
         catch (Exception e) {
