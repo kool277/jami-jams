@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public interface CertificateAuthority {
     //Return a signed X509 certificate based on various constraints.
-    void init(String domain, String signingAlgorithm, SystemAccount ca, SystemAccount ocsp);
+    void init(String settings, SystemAccount ca, SystemAccount ocsp);
     User getSignedCertificate(User user);
     Device getSignedCertificate(User user, Device device);
     SystemAccount getSignedCertificate(SystemAccount systemAccount);

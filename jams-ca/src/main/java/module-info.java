@@ -6,4 +6,5 @@ module jams.ca {
     requires lombok;
     requires org.slf4j;
     requires org.bouncycastle.provider;
+    requires jsoniter;
 }

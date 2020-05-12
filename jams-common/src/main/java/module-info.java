@@ -47,6 +47,7 @@ module jams.common {
     exports net.jami.jams.common.authentication.ldap;
     exports net.jami.jams.common.jami;
     exports net.jami.jams.common.authmodule;
+    exports net.jami.jams.common.server;
     requires jdk.crypto.cryptoki;
     requires java.base;
     requires java.sql;

@@ -1,10 +1,10 @@
 package net.jami.jams.ca.workers.csr.builders;
 
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.csr.utils.CertificateSigner;
 import net.jami.jams.ca.workers.csr.utils.ExtensionLibrary;
+import net.jami.jams.common.objects.system.SystemAccount;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -29,7 +29,7 @@ public class SystemAccountBuilder {
                     new X500Name(systemAccount.getX509Fields().getDN()),
                     new BigInteger(256, new SecureRandom()),
                     new Date(System.currentTimeMillis()),
-                    new Date(System.currentTimeMillis() + JamsCA.caLifetime),
+                    new Date(System.currentTimeMillis() + systemAccount.getLifetime()),
                     new X500Name(systemAccount.getX509Fields().getDN()),
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())
             );
@@ -54,7 +54,7 @@ public class SystemAccountBuilder {
                     new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),
                     new BigInteger(256, new SecureRandom()),
                     new Date(System.currentTimeMillis()),
-                    new Date(System.currentTimeMillis() + JamsCA.caLifetime),
+                    new Date(System.currentTimeMillis() + systemAccount.getLifetime()),
                     new X500Name("CN=" + systemAccount.getX509Fields().getDN()),
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())
             );

@@ -2,9 +2,9 @@ package net.jami.jams.ca.workers.crl;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.objects.requests.RevocationRequest;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.X509Worker;
+import net.jami.jams.common.objects.requests.RevocationRequest;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.cert.X509CRLHolder;

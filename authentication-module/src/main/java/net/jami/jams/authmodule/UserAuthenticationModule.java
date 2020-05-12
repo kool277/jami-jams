@@ -1,17 +1,15 @@
 package net.jami.jams.authmodule;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.authmodule.AuthenticationResult;
+import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.authmodule.AuthenticationModule;
+import net.jami.jams.common.authmodule.AuthenticationResult;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.LibraryLoader;
@@ -21,7 +19,6 @@ import java.util.HashMap;
 
 
 @Slf4j
-@Getter
 public class UserAuthenticationModule implements AuthenticationModule {
     //This contains the DOMAIN-SOURCE.
     //In general there is at most 2 here.
@@ -83,9 +80,6 @@ public class UserAuthenticationModule implements AuthenticationModule {
                 user.setAccessLevel(AccessLevel.USER);
                 user.setRealm(key.getRealm());
                 user.setUserType(key.getType());
-                X509Fields x509Fields = new X509Fields();
-                x509Fields.setCommonName(username);
-                user.setX509Fields(x509Fields);
                 RegisterUserFlow.createUser(user);
                 res.setToken(tokenController.generateToken(user.getUsername(),res.getExpires()));
                 res.setAuthenticated(true);

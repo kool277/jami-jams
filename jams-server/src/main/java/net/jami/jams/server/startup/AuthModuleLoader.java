@@ -6,8 +6,6 @@ import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.utils.LibraryLoader;
 
-import java.util.List;
-
 @Slf4j
 public class AuthModuleLoader {
 

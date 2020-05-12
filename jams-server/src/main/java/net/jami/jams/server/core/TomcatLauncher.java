@@ -8,8 +8,6 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
-import org.apache.tomcat.JarScanFilter;
-import org.apache.tomcat.JarScanType;
 
 import java.io.File;
 import java.net.URLDecoder;

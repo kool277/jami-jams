@@ -1,6 +1,9 @@
 package net.jami.jams.ca.workers.csr.builders;
 
+import com.jsoniter.output.JsonStream;
+import net.jami.jams.ca.JamsCA;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
+import net.jami.jams.common.cryptoengineapi.CertificateAuthorityConfig;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.RevocationRequest;
 import net.jami.jams.common.objects.requests.RevocationType;
@@ -9,7 +12,6 @@ import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.system.SystemAccountType;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
-import net.jami.jams.ca.JamsCA;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,6 @@ class SystemAccountBuilderTest {
 
     @BeforeAll
     static void setUp() throws Exception{
-        JamsCA.serverDomain = "https://localhost";
-        JamsCA.signingAlgorithm = "SHA512WITHRSA";
         InputStream path;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         path = classLoader.getResourceAsStream("pkcs10request.txt");
@@ -38,6 +38,7 @@ class SystemAccountBuilderTest {
         caAccount.setX509Fields(new X509Fields());
         caAccount.getX509Fields().setCommonName("Test CA");
         caAccount.getX509Fields().setCountry("FR");
+        caAccount.setLifetime(10000000L);
         caAccount = SystemAccountBuilder.generateCA(caAccount);
         Assertions.assertNotNull(caAccount.getCertificate(),"CA Certificate was not generated!");
 
@@ -48,6 +49,7 @@ class SystemAccountBuilderTest {
         ocspAccount.setSystemAccountType(SystemAccountType.OCSP);
         ocspAccount.setX509Fields(new X509Fields());
         ocspAccount.getX509Fields().setCommonName("OCSP Server");
+        ocspAccount.setLifetime(10000000L);
         ocspAccount = SystemAccountBuilder.generateOCSP(ocspAccount);
         Assertions.assertNotNull(ocspAccount.getCertificate(),"OCSP Certificate was not generated!");
 
@@ -74,11 +76,19 @@ class SystemAccountBuilderTest {
         caAccount.setX509Fields(new X509Fields());
         caAccount.getX509Fields().setCommonName("Test CA");
         caAccount.getX509Fields().setCountry("FR");
+        caAccount.setLifetime(10000000L);
         caAccount = SystemAccountBuilder.generateCA(caAccount);
         Assertions.assertNotNull(caAccount.getCertificate(),"CA Certificate was not generated!");
+        CertificateAuthorityConfig config = new CertificateAuthorityConfig();
+        config.setUserLifetime(1000L);
+        config.setSigningAlgorithm("SHA512WITHRSA");
+        config.setServerDomain("http://localhost");
+        config.setCrlLifetime(1000000L);
+        config.setDeviceLifetime(1000L);
+
 
         JamsCA jamsCA = new JamsCA();
-        jamsCA.init("http://localhost","SHA512WITHRSA",caAccount,null);
+        jamsCA.init(JsonStream.serialize(config),caAccount,null);
         RevocationRequest revocationRequest = new RevocationRequest();
         revocationRequest.setIdentifier(new BigInteger("91828882"));
         revocationRequest.setRevocationType(RevocationType.USER);

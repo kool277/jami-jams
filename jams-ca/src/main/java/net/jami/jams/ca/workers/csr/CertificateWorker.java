@@ -1,12 +1,12 @@
 package net.jami.jams.ca.workers.csr;
 
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.objects.devices.Device;
-import net.jami.jams.common.objects.system.SystemAccount;
-import net.jami.jams.common.objects.user.User;
 import net.jami.jams.ca.workers.csr.builders.DeviceBuilder;
 import net.jami.jams.ca.workers.csr.builders.SystemAccountBuilder;
 import net.jami.jams.ca.workers.csr.builders.UserBuilder;
+import net.jami.jams.common.objects.devices.Device;
+import net.jami.jams.common.objects.system.SystemAccount;
+import net.jami.jams.common.objects.user.User;
 
 @Slf4j
 public class CertificateWorker {

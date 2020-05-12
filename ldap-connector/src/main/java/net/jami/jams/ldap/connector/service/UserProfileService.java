@@ -7,7 +7,6 @@ import org.ldaptive.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Iterator;
 

@@ -1,10 +1,10 @@
 package net.jami.jams.ca.workers.csr.builders;
 
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.objects.user.User;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.csr.utils.CertificateSigner;
 import net.jami.jams.ca.workers.csr.utils.ExtensionLibrary;
+import net.jami.jams.common.objects.user.User;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509v3CertificateBuilder;

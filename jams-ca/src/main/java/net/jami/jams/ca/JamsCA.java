@@ -1,14 +1,17 @@
 package net.jami.jams.ca;
 
+import com.jsoniter.JsonIterator;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.ca.workers.crl.CRLWorker;
+import net.jami.jams.ca.workers.csr.CertificateWorker;
+import net.jami.jams.ca.workers.ocsp.OCSPWorker;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
+import net.jami.jams.common.cryptoengineapi.CertificateAuthorityConfig;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.RevocationRequest;
 import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.ca.workers.crl.CRLWorker;
-import net.jami.jams.ca.workers.csr.CertificateWorker;
-import net.jami.jams.ca.workers.ocsp.OCSPWorker;
+import net.jami.jams.common.serialization.JsoniterRegistry;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPResp;
@@ -25,10 +28,10 @@ public class JamsCA implements CertificateAuthority {
     private static CRLWorker crlWorker;
     private static OCSPWorker ocspWorker;
     public static volatile String serverDomain;
-    public static volatile String signingAlgorithm;
+    //The default value is SHA512WITHRSA, this can be changed in the config file.
+    public static volatile String signingAlgorithm = "SHA512WITHRSA";
 
     //Various times
-    public static long caLifetime = 360_000_000;
     public static long crlLifetime = 360_000_000;
     public static long userLifetime = 360_000_000;
     public static long deviceLifetime = 360_000_000;
@@ -38,15 +41,20 @@ public class JamsCA implements CertificateAuthority {
     public static SystemAccount OCSP;
 
     static {
+        JsoniterRegistry.initCodecs();
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Override
-    public void init(String domain, String signingAlgorithm, SystemAccount ca, SystemAccount ocsp) {
-        serverDomain = domain;
+    public void init(String settings, SystemAccount ca, SystemAccount ocsp) {
+        CertificateAuthorityConfig config = JsonIterator.deserialize(settings, CertificateAuthorityConfig.class);
         CA = ca;
         OCSP = ocsp;
-        JamsCA.signingAlgorithm = signingAlgorithm;
+        serverDomain = config.getServerDomain();
+        signingAlgorithm = config.getSigningAlgorithm();
+        crlLifetime = config.getCrlLifetime();
+        userLifetime = config.getUserLifetime();
+        deviceLifetime = config.getDeviceLifetime();
         crlWorker = new CRLWorker(CA.getPrivateKey(), CA.getCertificate());
     }
 

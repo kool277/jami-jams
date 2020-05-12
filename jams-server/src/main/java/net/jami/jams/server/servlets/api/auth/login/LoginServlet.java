@@ -11,7 +11,8 @@ import net.jami.jams.common.authmodule.AuthenticationResult;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
 
-import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.*;
+import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
+import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processX509Auth;
 
 @WebServlet("/api/auth/login")
 //This method returns the token which is used for all the next calls to the API.

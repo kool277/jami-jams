@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 public class CryptoEngineLoader {
 
-    public static CertificateAuthority loadCertificateAuthority(DataStore dataStore){
+    public static CertificateAuthority loadCertificateAuthority(String config, DataStore dataStore){
         try {
             Class<?> cls = LibraryLoader.classLoader.loadClass("net.jami.jams.ca.JamsCA");
             CertificateAuthority certificateAuthority = (CertificateAuthority) cls.getConstructor().newInstance();
@@ -32,7 +32,7 @@ public class CryptoEngineLoader {
                 statementList.addStatement(new StatementElement("entity","=","OCSP",""));
                 SystemAccount ocspAccount = dataStore.getSystemDao().getObjects(statementList).get(0);
                 log.info("Injecting OCSP and CA acocunts...");
-                certificateAuthority.init("domain.com","SHA512WITHRSA",caAccount,ocspAccount);
+                certificateAuthority.init(config,caAccount,ocspAccount);
             }
             log.info("Loaded X509 Engine - please make sure it is initialized before using it to sign requests!");
             return certificateAuthority;
