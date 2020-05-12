@@ -42,6 +42,7 @@ public class UserProfileService {
             }
             List<List<Field>> results = queryResponse.getAll().stream().map(EntityResponse::getValue).collect(Collectors.toList());
             if(results.size() > 0) profiles = new UserProfile[results.size()];
+            else return null;
             for(int i=0;i< profiles.length; i++){
                 profiles[i] = profileFromResponse(results.get(i));
             }

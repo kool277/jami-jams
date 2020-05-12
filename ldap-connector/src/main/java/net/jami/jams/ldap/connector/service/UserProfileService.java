@@ -31,6 +31,7 @@ public class UserProfileService {
                 SearchOperation search = new SearchOperation(connectionFactory);
                 SearchResponse res = search.execute(buildRequest(queryString,field));
                 if (res.getEntries().size() > 0) profiles = new UserProfile[res.getEntries().size()];
+                else return null;
                 Iterator<LdapEntry> iterator = res.getEntries().iterator();
                 int i = 0;
                 while(iterator.hasNext()){
