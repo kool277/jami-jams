@@ -11,7 +11,7 @@
     <modules>
         <module>jams-server</module>
         <module>jams-common</module>
-        <module>cryptoengine</module>
+        <module>jams-ca</module>
         <module>ad-connector</module>
         <module>ldap-connector</module>
         <module>datastore</module>

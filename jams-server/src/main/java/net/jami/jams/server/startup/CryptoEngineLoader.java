@@ -6,16 +6,15 @@ import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.system.SystemAccount;
-import net.jami.jams.server.Server;
 
 import java.util.List;
 
 @Slf4j
 public class CryptoEngineLoader {
 
-    public static CertificateAuthority loadCryptoEngine(DataStore dataStore){
+    public static CertificateAuthority loadCertificateAuthority(DataStore dataStore){
         try {
-            Class<?> cls = LibraryLoader.classLoader.loadClass("net.jami.jams.cryptoengine.CryptoEngine");
+            Class<?> cls = LibraryLoader.classLoader.loadClass("net.jami.jams.ca.JamsCA");
             CertificateAuthority certificateAuthority = (CertificateAuthority) cls.getConstructor().newInstance();
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("entity","=","CA",""));

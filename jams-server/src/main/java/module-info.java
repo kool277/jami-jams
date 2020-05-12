@@ -1,5 +1,5 @@
 module jams.server {
-    requires cryptoengine;
+    requires jams.ca;
     requires jams.common;
     requires java.management;
     requires lombok;

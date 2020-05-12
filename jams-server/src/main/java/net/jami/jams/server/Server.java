@@ -48,7 +48,7 @@ public class Server {
         userAuthenticationModule = new UserAuthenticationModule();
         //Test block
         //Step 2: if the server is initialized,
-        certificateAuthority = CryptoEngineLoader.loadCryptoEngine(dataStore);
+        certificateAuthority = CryptoEngineLoader.loadCertificateAuthority(dataStore);
         isInstalled.set(new File(System.getProperty("user.dir") + File.separator + "config.json").exists());
         log.info("Server is already installed: " + isInstalled.get());
 
