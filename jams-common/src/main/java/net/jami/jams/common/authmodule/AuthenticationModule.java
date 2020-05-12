@@ -2,6 +2,8 @@ package net.jami.jams.common.authmodule;
 
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
+import net.jami.jams.common.jami.NameServer;
+import net.jami.jams.common.objects.user.User;
 
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -14,4 +16,5 @@ public interface AuthenticationModule {
     String validateAndGetUsername(String token);
     HashMap<AuthModuleKey, AuthenticationSource> getAuthSources();
     boolean testModuleConfiguration(AuthenticationSourceType type, String configuration);
+    boolean createUser(AuthenticationSourceType type, String realm, NameServer nameServer, User user);
 }

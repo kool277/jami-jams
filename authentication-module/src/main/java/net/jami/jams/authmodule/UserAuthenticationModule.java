@@ -121,4 +121,13 @@ public class UserAuthenticationModule implements AuthenticationModule {
             return false;
         }
     }
+
+    @Override
+    public boolean createUser(AuthenticationSourceType type, String realm, NameServer nameServer, User user) {
+        //This concept doesn't exist for LDAP or AD or any other hosted directory, in this case we simply run
+        //very theoretically, we should allow LDAP to publish to the public registry, but this is a lot
+        //more complex.
+        return RegisterUserFlow.createUser(user,nameServer);
+    }
+
 }
