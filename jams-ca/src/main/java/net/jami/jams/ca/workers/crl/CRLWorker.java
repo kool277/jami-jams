@@ -41,7 +41,7 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
             }
             else existingCRL = new AtomicReference<>();
             existingCRL.set(crlBuilder.build(new JcaContentSignerBuilder("SHA512WITHRSA").setProvider("BC").build(getSigningKey())));
-            log.info("Successfully processed request for ID " + revocationRequest.getIdentifier());
+            log.info("Successfully ran revocation routine");
         }
         catch (Exception e){
             log.error("Failed to sign a CRL with error " + e.toString());
