@@ -38,11 +38,6 @@ public class UserAuthenticationModule implements AuthenticationModule {
         log.info("Started authentication module - default local source is already enabled!");
     }
 
-    public UserAuthenticationModule(DataStore dataStore, CertificateAuthority certificateAuthority, NameServer nameServer){
-        this(dataStore,certificateAuthority);
-        log.info("Attached NameServer to Process...");
-    }
-
     @Override
     public void attachAuthSource(AuthenticationSourceType type, String settings) {
         switch (type){
@@ -51,7 +46,6 @@ public class UserAuthenticationModule implements AuthenticationModule {
             default: break;
         }
     }
-
 
     private void loadAuthConnector(String className, String settings){
         try {
