@@ -1,7 +1,5 @@
 package net.jami.jams.common.utils;
 
-import net.jami.jams.common.authentication.AuthenticationSource;
-import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.requests.CreateCARequest;
 
 import java.math.BigInteger;

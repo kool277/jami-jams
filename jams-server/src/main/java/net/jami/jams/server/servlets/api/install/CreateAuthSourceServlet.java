@@ -9,8 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
-import net.jami.jams.common.objects.requests.CreateCARequest;
-import net.jami.jams.common.utils.Validator;
 
 import java.io.IOException;
 
