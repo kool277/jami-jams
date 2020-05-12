@@ -1,19 +1,27 @@
 package net.jami.jams.common.objects.system;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.jami.jams.common.objects.roots.X509Entity;
 import net.jami.jams.common.serialization.database.DatabaseObject;
 import net.jami.jams.common.utils.X509Utils;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class SystemAccount extends X509Entity implements DatabaseObject {
 
     private SystemAccountType systemAccountType;
 
+    public SystemAccount(ResultSet rs) throws Exception {
+        this.systemAccountType = SystemAccountType.valueOf(rs.getString("entity"));
+        this.setCertificate(X509Utils.getCertificateFromPEMString(rs.getString("certificate")));
+        this.setPrivateKey(X509Utils.getKeyFromPEMString(rs.getString("privatekey")));
+    }
 
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
