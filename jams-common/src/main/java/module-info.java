@@ -22,6 +22,7 @@ module jams.common {
     opens net.jami.jams.common.cryptoengineapi;
     opens net.jami.jams.common.utils;
     opens net.jami.jams.common.serialization;
+    opens net.jami.jams.common.jami;
     requires lombok;
     requires org.slf4j;
     requires org.bouncycastle.pkix;

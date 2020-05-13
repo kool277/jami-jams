@@ -6,6 +6,7 @@ import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
+import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.common.server.ServerSettings;
 import net.jami.jams.common.utils.LibraryLoader;
@@ -31,6 +32,7 @@ public class Server {
     //This one gets loaded via JAR, to make it more flexible.
     public static CertificateAuthority certificateAuthority;
     public static AuthenticationModule userAuthenticationModule;
+    public static NameServer nameServer;
 
     public static void main(String[] args) {
         //Start tomcat.
@@ -61,6 +63,7 @@ public class Server {
                     userAuthenticationModule.attachAuthSource(AuthenticationSourceType.AD,
                             serverSettings.getActiveDirectoryConfiguration());
                 }
+                //init the nameserver here.
             }
             catch (Exception e){
                 log.error("Could not load configuration file or initialize some components - this is critical");

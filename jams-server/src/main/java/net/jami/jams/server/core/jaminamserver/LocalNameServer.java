@@ -3,6 +3,8 @@ package net.jami.jams.server.core.jaminamserver;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.jami.NameLookupResponse;
+import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.user.User;
 
@@ -14,19 +16,24 @@ import static net.jami.jams.server.Server.dataStore;
 public class LocalNameServer implements NameServer {
 
     //This always returns 200, for obvious reasons.
+
+
     @Override
-    public Integer registerName(String username) {
+    public Integer registerName(String username, NameRegistrationRequest nameRegistrationRequest) {
         return 200;
     }
 
     @Override
-    public String getAddressFromName(String username) {
+    public NameLookupResponse getAddressFromName(String username) {
         StatementList statementList = new StatementList();
         StatementElement statementElement = new StatementElement("username","=",username,"");
         statementList.addStatement(statementElement);
         List<User> results = dataStore.getUserDao().getObjects(statementList);
         if(results.size() == 0) return null;
-        return results.get(0).getAddress();
+        NameLookupResponse nameLookupResponse = new NameLookupResponse();
+        nameLookupResponse.setName(results.get(0).getUsername());
+        nameLookupResponse.setAddr(results.get(0).getJamiId());
+        return nameLookupResponse;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.jami.jams.authmodule;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.user.User;
@@ -29,7 +30,10 @@ public class RegisterUserFlow {
         //Didn't exactly plan on this happening here, but this is the only place we actually need it.
         //Given an interface of NameServer, we need to enroll the user or decline the enrollement before
         //storing him
-        if(nameServer != null && nameServer.registerName(user.getUsername() ) != 200){
+        NameRegistrationRequest nameRegistrationRequest = new NameRegistrationRequest();
+        nameRegistrationRequest.setOwner(ethKeyPair[0]);
+        nameRegistrationRequest.setAddr(user.getJamiId());
+        if(nameServer != null && nameServer.registerName(user.getUsername(), nameRegistrationRequest ) != 200){
            return false;
         }
         datastore.getUserDao().storeObject(user);
