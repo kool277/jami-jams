@@ -16,4 +16,5 @@ module jams.server {
     exports net.jami.jams.server.servlets.api.auth.login to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.auth.device to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.install to org.apache.tomcat.embed.core;
+    exports net.jami.jams.server.servlets.api.jaminameserver to org.apache.tomcat.embed.core;
 }

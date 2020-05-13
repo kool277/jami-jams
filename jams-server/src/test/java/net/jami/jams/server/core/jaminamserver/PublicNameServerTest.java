@@ -3,6 +3,7 @@ package net.jami.jams.server.core.jaminamserver;
 import net.jami.jams.common.jami.NameLookupResponse;
 import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
+import net.jami.jams.nameserver.PublicNameServer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

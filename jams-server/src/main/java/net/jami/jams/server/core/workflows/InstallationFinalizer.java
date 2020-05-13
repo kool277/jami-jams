@@ -7,6 +7,8 @@ import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.system.SystemAccountType;
 import net.jami.jams.common.server.ServerSettings;
+import net.jami.jams.nameserver.LocalNameServer;
+import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.servlets.api.install.CachedObjects;
 import net.jami.jams.server.startup.AuthModuleLoader;
@@ -26,13 +28,25 @@ public class InstallationFinalizer {
             log.info("Building configuration from submitted variables...");
             ServerSettings serverSettings = new ServerSettings();
             serverSettings.setCaConfiguration(JsonStream.serialize(CachedObjects.certificateAuthorityConfig));
-            if (CachedObjects.activeDirectorySettings != null)
+            if (CachedObjects.activeDirectorySettings != null) {
                 serverSettings.setActiveDirectoryConfiguration(JsonStream.serialize(CachedObjects.activeDirectorySettings));
-            if (CachedObjects.ldapSettings != null)
+                nameServer = new LocalNameServer(dataStore);
+                log.info("Server configured to use Active Directory as the authentication backend!");
+            }
+            if (CachedObjects.ldapSettings != null) {
                 serverSettings.setLdapConfiguration(JsonStream.serialize(CachedObjects.ldapSettings));
-            if (CachedObjects.localAuthSettings != null)
+                nameServer = new LocalNameServer(dataStore);
+                log.info("Server configured to use LDAP as the authentication backend!");
+            }
+            if (CachedObjects.localAuthSettings != null) {
                 serverSettings.setLocalDirectoryConfiguration(JsonStream.serialize(CachedObjects.localAuthSettings));
-
+                if(CachedObjects.localAuthSettings.getPublicNames()){
+                    nameServer = new PublicNameServer(CachedObjects.localAuthSettings.getPublicNameServer());
+                    log.warn("Server configured to use {} as the nameserver for Jami clients !",CachedObjects.localAuthSettings.getPublicNameServer());
+                }
+                else nameServer = new LocalNameServer(dataStore);
+                log.info("Server is configured to use local authentication engine");
+            }
             //Now flush the server settings.
             OutputStream os = new FileOutputStream(new File("config.json"));
             os.write(JsonStream.serialize(serverSettings).getBytes());
@@ -66,7 +80,7 @@ public class InstallationFinalizer {
             if(serverSettings.getLdapConfiguration() != null)
                 userAuthenticationModule.attachAuthSource(AuthenticationSourceType.LDAP,serverSettings.getLdapConfiguration());
             Server.isInstalled.set(true);
-            log.info("The installation has completed succesfully, you can now use JAMS!");
+            log.info("The installation has completed successfully, you can now use JAMS!");
         } catch (Exception e) {
             log.error("Could not save settings to disk with error: " + e.toString());
             return false;

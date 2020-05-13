@@ -17,8 +17,7 @@ public class NameServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String[] path = req.getServletPath().split("/");
-        NameLookupResponse nameLookupResponse = nameServer.getAddressFromName(path[path.length - 1]);
+        NameLookupResponse nameLookupResponse = nameServer.getAddressFromName(req.getPathInfo().replace("/",""));
         if(nameLookupResponse == null) resp.sendError(404);
         else resp.getOutputStream().write(JsonStream.serialize(nameLookupResponse).getBytes());
     }
