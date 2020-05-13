@@ -57,6 +57,8 @@ public class ADConnector implements AuthenticationSource {
     }
 
     public static void returnConnection(Endpoint connection){
+        connection.setUserAccountName(settings.getUsername());
+        connection.setPassword(settings.getPassword());
         endpoints.add(connection);
     }
 
