@@ -2,6 +2,7 @@ package net.jami.jams.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -11,6 +12,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -23,6 +25,8 @@ public class X509Utils {
     private static final String PVK_TAIL = "\n-----END PRIVATE KEY-----";
     private static final String CERT_HEADER = "-----BEGIN CERTIFICATE-----\n";
     private static final String CERT_TAIL = "\n-----END CERTIFICATE-----";
+    private static final String PPK_HEADER = "-----BEGIN PUBLIC KEY-----\n";
+    private static final String PPK_TAIL = "\n-----END PUBLIC KEY-----";
 
     public static PrivateKey getKeyFromPEMString(String keyString) {
         try {
@@ -41,6 +45,26 @@ public class X509Utils {
             return null;
         }
     }
+
+    public static PublicKey getPubKeyFromPEMString(String keyString){
+        try {
+            PEMParser parser = new PEMParser(new StringReader(keyString));
+            Object parsedObject = parser.readObject();
+            if (parsedObject instanceof PEMKeyPair) {
+                PEMKeyPair pk = (PEMKeyPair) parsedObject;
+                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pk.getPublicKeyInfo().getEncoded());
+                return KeyFactory.getInstance("RSA").generatePublic(keySpec);
+            } else {
+                JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+                return converter.getPublicKey((SubjectPublicKeyInfo) parsedObject);
+            }
+        }
+        catch (Exception e){
+            log.error("And error has occurred reading the public key from string!");
+            return null;
+        }
+    }
+
 
     public static X509Certificate getCertificateFromPEMString(String certificateString) {
         try {
@@ -74,7 +98,20 @@ public class X509Utils {
             stringBuilder.append(CERT_TAIL);
             return stringBuilder.toString();
         } catch (Exception e) {
-            log.error("An error has occured trying to convert the Private Key to PEM, stack trace: " + e.toString());
+            log.error("An error has occured trying to convert the Certificate Key to PEM, stack trace: " + e.toString());
+            return null;
+        }
+    }
+
+    public static String getPEMStringFromPubKey(PublicKey publicKey){
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            stringBuilder.append(PPK_HEADER);
+            stringBuilder.append(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+            stringBuilder.append(PPK_TAIL);
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            log.error("An error has occured trying to convert the Public Key to PEM, stack trace: " + e.toString());
             return null;
         }
     }

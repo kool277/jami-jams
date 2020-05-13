@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.jami.jams.common.authmodule.AuthenticationResult;
+import net.jami.jams.common.authmodule.AuthTokenResponse;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
@@ -22,7 +22,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //There are 3 possible cases here.
         //Case 1: form submitted username/password
-        AuthenticationResult res = null;
+        AuthTokenResponse res = null;
         if(req.getParameter("username") != null && req.getParameter("password") != null){
             res = processUsernamePasswordAuth(req.getParameter("username"),req.getParameter("password"));
         }
@@ -35,6 +35,7 @@ public class LoginServlet extends HttpServlet {
             res = processX509Auth((X509Certificate[])req.getAttribute("jakarta.servlet.request.X509Certificate"));
         }
         //Here we catch the need to create a user (this is only possible in 1 & 2).
-        resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
+        if(res == null) resp.sendError(403,"Invalid credentials!");
+        else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
 }

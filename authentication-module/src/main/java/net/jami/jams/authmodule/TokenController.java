@@ -1,41 +1,55 @@
 package net.jami.jams.authmodule;
 
-import net.jami.jams.common.authmodule.TokenHolder;
+import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import net.jami.jams.common.authmodule.AuthTokenResponse;
+import net.jami.jams.common.objects.user.User;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.security.PrivateKey;
+import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class TokenController extends Timer {
+public class TokenController{
 
-    private ConcurrentHashMap<String, TokenHolder> tokenMap = new ConcurrentHashMap<>();
+    private static PrivateKey signingKey;
 
-    public TokenController() {
-        this.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                tokenMap.forEach( (k,v) -> {
-                    if(v.getExpires() < System.currentTimeMillis()) tokenMap.remove(k);
-                });
-            }
-        },0,1000);
+    public TokenController(PrivateKey signingKey) {
+        TokenController.signingKey = signingKey;
     }
 
-    public String generateToken(String username, Long expiry){
-        String token = UUID.randomUUID().toString();
-        tokenMap.put(username,new TokenHolder(token,expiry));
-        return token;
+    public AuthTokenResponse getToken(User user) {
+        AuthTokenResponse authTokenResponse = new AuthTokenResponse();
+        JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType.JWT).build();
+        JWTClaimsSet jwtClaims = new JWTClaimsSet.Builder()
+                .issuer("JAMS")
+                .subject(user.getUsername())
+                .audience("JAMS")
+                .claim("scope",user.getAccessLevel())
+                .expirationTime(new Date(System.currentTimeMillis() + 30*60*1000))
+                .notBeforeTime(new Date(System.currentTimeMillis()))
+                .issueTime(new Date(System.currentTimeMillis()))
+                .jwtID(UUID.randomUUID().toString())
+                .build();
+        SignedJWT signedJWT = new SignedJWT(jwsHeader, jwtClaims);
+        try {
+            signedJWT.sign(new RSASSASigner(signingKey));
+            authTokenResponse.setAccess_token(signedJWT.serialize());
+            authTokenResponse.setExpires_in(30*60*1000L);
+            authTokenResponse.setScope(user.getAccessLevel());
+            authTokenResponse.setToken_type("Bearer");
+            return authTokenResponse;
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 
-    public String getUsernameFromToken(String token){
-        StringBuilder username = new StringBuilder();
-        tokenMap.forEach( (k,v) -> {
-            if(v.getToken().equals(token)){
-                username.append(k);
-            }
-        });
-        if(username.length() != 0) return username.toString();
-        return null;
-    }
+
+
+
+
 }

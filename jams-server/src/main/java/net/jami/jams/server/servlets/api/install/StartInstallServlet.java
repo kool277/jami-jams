@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.authmodule.AuthenticationResult;
+import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.requests.CredentialsRequest;
 import net.jami.jams.common.objects.user.AccessLevel;
@@ -34,12 +34,13 @@ public class StartInstallServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CredentialsRequest credentialsRequest = JsonIterator.deserialize(req.getInputStream().readAllBytes(),CredentialsRequest.class);
-        AuthenticationResult res = null;
+        AuthTokenResponse res = null;
         if(credentialsRequest.getUsername() != null && credentialsRequest.getPassword() != null){
             res = processUsernamePasswordAuth(credentialsRequest.getUsername(),credentialsRequest.getPassword());
         }
         resp.setHeader("endpoint",CachedObjects.endpoint);
-        resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
+        if(res == null) resp.sendError(403,"Could not authenticate!");
+        else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
 
     //This is the ONLY case where we write directy to the DB
@@ -60,7 +61,7 @@ public class StartInstallServlet extends HttpServlet {
         user.setRealm("LOCAL");
         user.setAccessLevel(AccessLevel.ADMIN);
         dataStore.getUserDao().storeObject(user);
-        AuthenticationResult res = processUsernamePasswordAuth(user.getUsername(),user.getPassword());
+        AuthTokenResponse res = processUsernamePasswordAuth(user.getUsername(),user.getPassword());
         resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
         CachedObjects.endpoint = "/api/install/ca";
     }

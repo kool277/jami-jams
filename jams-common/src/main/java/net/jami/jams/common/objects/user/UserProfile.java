@@ -10,15 +10,13 @@ import java.util.HashMap;
 @Setter
 public class UserProfile {
 
-
     public static HashMap<String, Method> exposedMethods = new HashMap<>();
 
-    static{
-        for(Method method: UserProfile.class.getMethods()){
-            exposedMethods.put(method.getName(),method);
+    static {
+        for (Method method : UserProfile.class.getMethods()) {
+            exposedMethods.put(method.getName(), method);
         }
     }
-
 
     private String firstName;
     private String lastName;
@@ -29,7 +27,6 @@ public class UserProfile {
     private String profilePicture;
     private String email;
     private String organization;
-
 
 
 }
