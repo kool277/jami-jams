@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.jami.AddrLookupResponse;
-import net.jami.jams.common.jami.NameLookupResponse;
 
 import java.io.IOException;
 

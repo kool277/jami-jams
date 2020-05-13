@@ -10,6 +10,7 @@ import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.dht.DeviceReceiptGenerator;
+
 import java.security.cert.X509Certificate;
 
 import static net.jami.jams.server.Server.*;

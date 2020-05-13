@@ -21,7 +21,6 @@ public class UserBuilder {
 
     public static User generateUser(User user) {
         try {
-
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
