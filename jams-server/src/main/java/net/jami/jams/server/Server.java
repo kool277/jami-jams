@@ -4,12 +4,15 @@ import com.jsoniter.JsonIterator;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
+import net.jami.jams.common.authentication.local.LocalAuthSettings;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.common.server.ServerSettings;
 import net.jami.jams.common.utils.LibraryLoader;
+import net.jami.jams.nameserver.LocalNameServer;
+import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.core.TomcatLauncher;
 import net.jami.jams.server.startup.AuthModuleLoader;
 import net.jami.jams.server.startup.CryptoEngineLoader;
@@ -63,7 +66,12 @@ public class Server {
                     userAuthenticationModule.attachAuthSource(AuthenticationSourceType.AD,
                             serverSettings.getActiveDirectoryConfiguration());
                 }
-                //init the nameserver here.
+                if(serverSettings.getLocalDirectoryConfiguration() != null){
+                    LocalAuthSettings settings = JsonIterator.deserialize(serverSettings.getActiveDirectoryConfiguration(), LocalAuthSettings.class);
+                    if(settings.getPublicNames()) nameServer = new PublicNameServer(settings.getPublicNameServer());
+                    else nameServer = new LocalNameServer(dataStore);
+                }
+                else nameServer = new LocalNameServer(dataStore);
             }
             catch (Exception e){
                 log.error("Could not load configuration file or initialize some components - this is critical");

@@ -1,4 +1,4 @@
-package net.jami.jams.server.core.jaminamserver;
+package net.jami.jams.nameserver;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;

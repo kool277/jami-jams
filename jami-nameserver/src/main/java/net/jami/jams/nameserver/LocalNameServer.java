@@ -1,6 +1,7 @@
-package net.jami.jams.server.core.jaminamserver;
+package net.jami.jams.nameserver;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.jami.NameLookupResponse;
@@ -10,14 +11,16 @@ import net.jami.jams.common.objects.user.User;
 
 import java.util.List;
 
-import static net.jami.jams.server.Server.dataStore;
-
 @Slf4j
 public class LocalNameServer implements NameServer {
 
+    private final DataStore dataStore;
+
+    public LocalNameServer(DataStore dataStore) {
+        this.dataStore = dataStore;
+    }
+
     //This always returns 200, for obvious reasons.
-
-
     @Override
     public Integer registerName(String username, NameRegistrationRequest nameRegistrationRequest) {
         return 200;
