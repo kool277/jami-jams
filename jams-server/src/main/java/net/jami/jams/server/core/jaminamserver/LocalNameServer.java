@@ -25,22 +25,17 @@ public class LocalNameServer implements NameServer {
         StatementElement statementElement = new StatementElement("username","=",username,"");
         statementList.addStatement(statementElement);
         List<User> results = dataStore.getUserDao().getObjects(statementList);
-        if(results.size() == 0){
-            return null;
-        }
+        if(results.size() == 0) return null;
         return results.get(0).getAddress();
     }
 
     @Override
     public String getNameFromAddress(String address) {
         StatementList statementList = new StatementList();
-        //TODO: Check this.
-        StatementElement statementElement = new StatementElement("address","=",address,"");
+        StatementElement statementElement = new StatementElement("ethAddress","=",address,"");
         statementList.addStatement(statementElement);
         List<User> results = dataStore.getUserDao().getObjects(statementList);
-        if(results.size() == 0){
-            return null;
-        }
+        if(results.size() == 0) return null;
         return results.get(0).getUsername();
     }
 }
