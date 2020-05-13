@@ -40,6 +40,7 @@ public class RegisterDeviceFlow {
                     device.getCertificate().getPublicKey(), user.getEthAddress());
             response.setDeviceReceipt(devReceipt[0]);
             response.setReceiptSignature(devReceipt[1]);
+            response.setDisplayName(device.getDisplayName());
             //We need to set
             response.setNameServer(nameServer.getURI());
             UserProfile userProfile = userAuthenticationModule.getAuthSources()

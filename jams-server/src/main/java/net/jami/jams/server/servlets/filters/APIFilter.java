@@ -28,7 +28,7 @@ public class APIFilter implements Filter {
             if (request.getHeader("x-token") != null)
                 authsuccess = userAuthenticationModule.validateAndGetUsername(request.getHeader("x-token")) != null;
             if (authsuccess || isLogin){
-                servletRequest.setAttribute("username",authsuccess);
+                servletRequest.setAttribute("username",userAuthenticationModule.validateAndGetUsername(request.getHeader("x-token")));
                 filterChain.doFilter(servletRequest, servletResponse);
             }
             else response.sendError(403,"This endpoint requires setup to be complete!");

@@ -32,7 +32,7 @@ public class TokenController extends Timer {
         StringBuilder username = new StringBuilder();
         tokenMap.forEach( (k,v) -> {
             if(v.getToken().equals(token)){
-                username.append(v.getToken());
+                username.append(k);
             }
         });
         if(username.length() != 0) return username.toString();
