@@ -37,7 +37,8 @@ public class Device extends X509Entity implements DatabaseObject {
         ps.setString(2, owner);
         ps.setString(3,displayName);
         ps.setString(4, X509Utils.getPEMStringFromCertificate(this.getCertificate()));
-        ps.setString(5, X509Utils.getPEMStringFromPrivateKey(this.getPrivateKey()));
+        //Devices do not have private keys exposed.
+        ps.setString(5, "");
         return ps;
     }
 

@@ -22,6 +22,8 @@ public class DeviceRegistrationResponse {
         for(int i=0;i<certificateChain.length;i++){
             stringBuilder.append(X509Utils.getPEMStringFromCertificate(certificateChain[i])).append("\n");
         }
+        //remove the last \n because it's useless.
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
         this.certificateChain = stringBuilder.toString();
     }
 

@@ -19,8 +19,9 @@ import java.util.Date;
 @Slf4j
 public class UserBuilder {
 
-    public static User generateUser(User user){
+    public static User generateUser(User user) {
         try {
+
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -33,10 +34,10 @@ public class UserBuilder {
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())
             );
             user.setPrivateKey(keyPair.getPrivate());
-            user.setCertificate(CertificateSigner.signCertificate(JamsCA.CA.getPrivateKey(),builder, ExtensionLibrary.userExtensions));
+            user.setCertificate(CertificateSigner.signCertificate(JamsCA.CA.getPrivateKey(), builder, ExtensionLibrary.userExtensions));
+
             return user;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Could not generate a user certificate: " + e.toString());
             return null;
         }
