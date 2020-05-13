@@ -31,16 +31,18 @@ public class InstallFilter implements Filter {
             boolean isLogin = false;
             if(request.getServletPath().contains("start")) isLogin = true;
             SignedJWT signedJWT = null;
-            try {
-                JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
-                signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
-                if(signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0){
-                    authsuccess = true;
-                    request.setAttribute("username",signedJWT.getJWTClaimsSet().getSubject());
-                    request.setAttribute("accessLevel",signedJWT.getJWTClaimsSet().getClaim("scope"));
+            if(request.getHeader("Bearer") != null) {
+                try {
+                    JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
+                    signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
+                    if (signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0) {
+                        authsuccess = true;
+                        request.setAttribute("username", signedJWT.getJWTClaimsSet().getSubject());
+                        request.setAttribute("accessLevel", signedJWT.getJWTClaimsSet().getClaim("scope"));
+                    }
+                } catch (Exception e) {
+                    log.info("Received an invalid token, declining access...");
                 }
-            } catch (Exception e) {
-                log.info("Received an invalid token, declining access...");
             }
             if(authsuccess || isLogin) filterChain.doFilter(servletRequest,servletResponse);
             else response.sendError(403,"You are not authorized to access this page!");
