@@ -31,11 +31,14 @@ public class DeviceBuilder {
                     device.getCertificationRequest().getSubjectPublicKeyInfo()
             );
             device.setCertificate(CertificateSigner.signCertificate(user.getPrivateKey(),builder, ExtensionLibrary.deviceExtensions));
+            boolean deviceIdDetected = false;
             for(int i=0; i < device.getCertificationRequest().getSubject().getRDNs().length;i++) {
                 if(device.getCertificationRequest().getSubject().getRDNs()[i].getFirst().getType().equals(DEVICE_ID_FIELD)){
                     device.setDeviceId(device.getCertificationRequest().getSubject().getRDNs()[i].getFirst().getValue().toString());
+                    deviceIdDetected = true;
                 }
             }
+            if(!deviceIdDetected) return null;
             //kill off the certification request it's useless.
             device.setCertificationRequest(null);
             return device;

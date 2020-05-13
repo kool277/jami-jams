@@ -30,6 +30,10 @@ public class RegisterDeviceFlow {
             device.setOwner(username);
             device.setDisplayName(registrationRequest.getDeviceName());
             device = certificateAuthority.getSignedCertificate(user, device);
+            if(device == null){
+                log.error("Could not succesfully create a device certificate!");
+                return null;
+            }
             dataStore.getDeviceDao().storeObject(device);
             //Now we build this response out.
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
