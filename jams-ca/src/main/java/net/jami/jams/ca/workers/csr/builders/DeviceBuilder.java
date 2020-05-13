@@ -27,6 +27,8 @@ public class DeviceBuilder {
                     device.getCertificationRequest().getSubjectPublicKeyInfo()
             );
             device.setCertificate(CertificateSigner.signCertificate(user.getPrivateKey(),builder, ExtensionLibrary.deviceExtensions));
+            //kill off the certification request it's useless.
+            device.setCertificationRequest(null);
             return device;
         }
         catch (Exception e){

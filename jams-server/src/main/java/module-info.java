@@ -11,6 +11,7 @@ module jams.server {
     requires datastore;
     requires org.apache.xbean.classloader;
     requires jami.nameserver;
+    requires jami.dht;
     exports net.jami.jams.server.servlets.general to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.filters to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.auth.login to org.apache.tomcat.embed.core;

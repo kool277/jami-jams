@@ -69,9 +69,9 @@ public class Server {
                 if(serverSettings.getLocalDirectoryConfiguration() != null){
                     LocalAuthSettings settings = JsonIterator.deserialize(serverSettings.getActiveDirectoryConfiguration(), LocalAuthSettings.class);
                     if(settings.getPublicNames()) nameServer = new PublicNameServer(settings.getPublicNameServer());
-                    else nameServer = new LocalNameServer(dataStore);
+                    else nameServer = new LocalNameServer(dataStore,serverSettings.getServerPublicURI());
                 }
-                else nameServer = new LocalNameServer(dataStore);
+                else nameServer = new LocalNameServer(dataStore,serverSettings.getServerPublicURI());
             }
             catch (Exception e){
                 log.error("Could not load configuration file or initialize some components - this is critical");

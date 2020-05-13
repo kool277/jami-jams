@@ -15,9 +15,11 @@ import java.util.List;
 public class LocalNameServer implements NameServer {
 
     private final DataStore dataStore;
+    private final String nameserverURI;
 
-    public LocalNameServer(DataStore dataStore) {
+    public LocalNameServer(DataStore dataStore, String nameserverURI) {
         this.dataStore = dataStore;
+        this.nameserverURI = nameserverURI;
     }
 
     //This always returns 200, for obvious reasons.
@@ -47,5 +49,10 @@ public class LocalNameServer implements NameServer {
         List<User> results = dataStore.getUserDao().getObjects(statementList);
         if(results.size() == 0) return null;
         return results.get(0).getUsername();
+    }
+
+    @Override
+    public String getURI() {
+        return this.nameserverURI;
     }
 }

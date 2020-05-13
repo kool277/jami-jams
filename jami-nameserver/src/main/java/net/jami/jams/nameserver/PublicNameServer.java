@@ -83,4 +83,9 @@ public class PublicNameServer implements NameServer {
             return null;
         }
     }
+
+    @Override
+    public String getURI() {
+        return this.nameserverURI;
+    }
 }

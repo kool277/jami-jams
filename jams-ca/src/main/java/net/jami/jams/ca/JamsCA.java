@@ -18,6 +18,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.Security;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -101,5 +102,10 @@ public class JamsCA implements CertificateAuthority {
     @Override
     public OCSPResp getOCSPResponse(OCSPReq ocspRequest) {
         return null;
+    }
+
+    @Override
+    public X509Certificate getCA() {
+        return CA.getCertificate();
     }
 }

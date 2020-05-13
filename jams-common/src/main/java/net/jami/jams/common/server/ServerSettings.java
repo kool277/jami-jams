@@ -11,5 +11,6 @@ public class ServerSettings {
     private String caConfiguration;
     private String activeDirectoryConfiguration;
     private String localDirectoryConfiguration;
+    private String serverPublicURI;
 
 }

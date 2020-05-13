@@ -1,5 +1,6 @@
 package net.jami.jams.common.objects.devices;
 
+import com.jsoniter.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import java.sql.ResultSet;
 public class Device extends X509Entity implements DatabaseObject {
 
     private String deviceId;
+    @JsonIgnore
     private String owner;
     private String displayName;
 

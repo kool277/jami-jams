@@ -6,7 +6,7 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
 @Getter
 @Setter
-public class DeviceServletRequest {
+public class DeviceRegistrationRequest {
 
     private PKCS10CertificationRequest csr;
     private String deviceName;

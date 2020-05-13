@@ -50,6 +50,7 @@ module jams.common {
     exports net.jami.jams.common.authmodule;
     exports net.jami.jams.common.server;
     exports net.jami.jams.common.authentication.local;
+    exports net.jami.jams.common.objects.responses;
     requires jdk.crypto.cryptoki;
     requires java.base;
     requires java.sql;

@@ -8,6 +8,7 @@ import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 
+import java.security.cert.X509Certificate;
 import java.util.concurrent.atomic.AtomicReference;
 
 public interface CertificateAuthority {
@@ -20,5 +21,6 @@ public interface CertificateAuthority {
     AtomicReference<X509CRLHolder> getLatestCRL();
     String getLatestCRLPEMEncoded();
     OCSPResp getOCSPResponse(OCSPReq ocspRequest);
+    X509Certificate getCA();
 
 }
