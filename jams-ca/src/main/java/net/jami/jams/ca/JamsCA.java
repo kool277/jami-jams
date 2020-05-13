@@ -18,6 +18,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.Security;
+import java.util.Base64;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
@@ -84,6 +85,17 @@ public class JamsCA implements CertificateAuthority {
     @Override
     public AtomicReference<X509CRLHolder> getLatestCRL() {
         return crlWorker.getExistingCRL();
+    }
+
+    @Override
+    public String getLatestCRLPEMEncoded() {
+        try {
+            return Base64.getEncoder().encodeToString(getLatestCRL().get().getEncoded());
+        }
+        catch (Exception e){
+            log.error("Could not return a valid CRL!");
+            return null;
+        }
     }
 
     @Override

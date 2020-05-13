@@ -22,7 +22,7 @@ public class CRLServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(CRL_HEAD);
-        stringBuilder.append(Base64.getEncoder().encodeToString(certificateAuthority.getLatestCRL().get().getEncoded()));
+        stringBuilder.append(certificateAuthority.getLatestCRLPEMEncoded());
         stringBuilder.append(CRL_TAIL);
         resp.getOutputStream().write(stringBuilder.toString().getBytes());
     }

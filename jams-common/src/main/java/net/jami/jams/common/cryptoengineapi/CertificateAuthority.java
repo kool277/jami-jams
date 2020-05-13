@@ -18,5 +18,7 @@ public interface CertificateAuthority {
     SystemAccount getSignedCertificate(SystemAccount systemAccount);
     void revokeCertificate(RevocationRequest revocationRequest);
     AtomicReference<X509CRLHolder> getLatestCRL();
+    String getLatestCRLPEMEncoded();
     OCSPResp getOCSPResponse(OCSPReq ocspRequest);
+
 }
