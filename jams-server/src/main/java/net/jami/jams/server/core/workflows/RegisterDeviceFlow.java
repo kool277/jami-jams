@@ -18,8 +18,6 @@ import static net.jami.jams.server.Server.*;
 public class RegisterDeviceFlow {
 
     public static DeviceRegistrationResponse registerDevice(String username, DeviceRegistrationRequest registrationRequest){
-       //User always exists now because we auto-create on log-in
-        //and search.
         try {
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
