@@ -11,12 +11,12 @@ header['Content-type'] = "application/json"
 response = requests.put('http://localhost:8080/api/install/start',data=json.dumps(data),headers=header)
 if response.status_code == 200:
     print("Succesfully created the administrative user!")
-    token = json.loads(response.text)['token']
+    token = json.loads(response.text)['access_token']
 else:
     print("Could not create admin user, the test has failed!")
 
 
-header['x-token'] = token
+header['Bearer'] = token
 
 data = {}
 data['fields'] = {}
@@ -72,10 +72,10 @@ response = requests.post('http://localhost:8080/api/install/settings',data=json.
 data = {}
 response = requests.post('http://localhost:8080/api/auth/login',data={"username":"fsidokhine","password":"mes87hesm97daa"})
 if response.status_code == 200:
-    token = json.loads(response.text)['token']
+    token = json.loads(response.text)['access_token']
 
 header = {}
-header['x-token'] = token
+header['Bearer'] = token
 
 
 #Now we try this...
