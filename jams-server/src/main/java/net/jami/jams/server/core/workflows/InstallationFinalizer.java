@@ -16,6 +16,7 @@ import net.jami.jams.server.startup.AuthModuleLoader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.security.KeyStore;
 
 import static net.jami.jams.server.Server.*;
 
@@ -82,6 +83,15 @@ public class InstallationFinalizer {
             if(serverSettings.getLdapConfiguration() != null)
                 userAuthenticationModule.attachAuthSource(AuthenticationSourceType.LDAP,serverSettings.getLdapConfiguration());
             if(useLocalNS) nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
+            log.info("Building keystore for client auth for tomcat...");
+            KeyStore ks = KeyStore.getInstance("JKS");
+            char[] password = "changeit".toCharArray();
+            ks.load(null, password);
+            ks.setCertificateEntry("jams-ca",certificateAuthority.getCA());
+            FileOutputStream fos = new FileOutputStream( "keystore.jks");
+            ks.store(fos, password);
+            fos.close();
+            log.info("Successfully built keystore for for tomcat!");
             Server.isInstalled.set(true);
             log.info("The installation has completed successfully, you can now use JAMS!");
         } catch (Exception e) {
