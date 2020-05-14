@@ -24,6 +24,7 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Slf4j
@@ -39,7 +40,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
     private PublicKey publicKey = null;
 
 
-    private final HashMap<AuthModuleKey, AuthenticationSource> authenticationSources = new HashMap<>();
+    private final ConcurrentHashMap<AuthModuleKey, AuthenticationSource> authenticationSources = new ConcurrentHashMap<>();
 
     public UserAuthenticationModule(DataStore dataStore, CertificateAuthority certificateAuthority) throws Exception{
         UserAuthenticationModule.datastore = dataStore;
@@ -138,7 +139,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public HashMap<AuthModuleKey, AuthenticationSource> getAuthSources(){
+    public ConcurrentHashMap<AuthModuleKey, AuthenticationSource> getAuthSources(){
         return authenticationSources;
     }
 

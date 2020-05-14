@@ -8,13 +8,14 @@ import net.jami.jams.common.objects.user.User;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface AuthenticationModule {
 
     void attachAuthSource(AuthenticationSourceType type, String settings);
     AuthTokenResponse authenticateUser(String username, String password);
     AuthTokenResponse authenticateUser(X509Certificate[] certificates);
-    HashMap<AuthModuleKey, AuthenticationSource> getAuthSources();
+    ConcurrentHashMap<AuthModuleKey, AuthenticationSource> getAuthSources();
     boolean testModuleConfiguration(AuthenticationSourceType type, String configuration);
     boolean createUser(AuthenticationSourceType type, String realm, NameServer nameServer, User user);
     RSAPublicKey getAuthModulePubKey();

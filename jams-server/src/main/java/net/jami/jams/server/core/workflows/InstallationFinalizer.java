@@ -22,6 +22,8 @@ import static net.jami.jams.server.Server.*;
 @Slf4j
 public class InstallationFinalizer {
 
+    private boolean useLocalNS = true;
+
     public boolean finalizeInstallation() {
         //Basically here we build the config and flush it.
         try {
@@ -32,21 +34,19 @@ public class InstallationFinalizer {
             serverSettings.setServerPublicURI(CachedObjects.certificateAuthorityConfig.getServerDomain());
             if (CachedObjects.activeDirectorySettings != null) {
                 serverSettings.setActiveDirectoryConfiguration(JsonStream.serialize(CachedObjects.activeDirectorySettings));
-                nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 log.info("Server configured to use Active Directory as the authentication backend!");
             }
             if (CachedObjects.ldapSettings != null) {
                 serverSettings.setLdapConfiguration(JsonStream.serialize(CachedObjects.ldapSettings));
-                nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 log.info("Server configured to use LDAP as the authentication backend!");
             }
             if (CachedObjects.localAuthSettings != null) {
                 serverSettings.setLocalDirectoryConfiguration(JsonStream.serialize(CachedObjects.localAuthSettings));
                 if(CachedObjects.localAuthSettings.getPublicNames()){
+                    useLocalNS = false;
                     nameServer = new PublicNameServer(CachedObjects.localAuthSettings.getPublicNameServer());
                     log.warn("Server configured to use {} as the nameserver for Jami clients !",CachedObjects.localAuthSettings.getPublicNameServer());
                 }
-                else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 log.info("Server is configured to use local authentication engine");
             }
             //Now flush the server settings.
@@ -81,6 +81,7 @@ public class InstallationFinalizer {
                 userAuthenticationModule.attachAuthSource(AuthenticationSourceType.AD,serverSettings.getActiveDirectoryConfiguration());
             if(serverSettings.getLdapConfiguration() != null)
                 userAuthenticationModule.attachAuthSource(AuthenticationSourceType.LDAP,serverSettings.getLdapConfiguration());
+            if(useLocalNS) nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
             Server.isInstalled.set(true);
             log.info("The installation has completed successfully, you can now use JAMS!");
         } catch (Exception e) {

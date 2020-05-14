@@ -2,6 +2,7 @@ package net.jami.jams.nameserver;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
@@ -43,15 +44,17 @@ public class LocalNameServer implements NameServer {
         if(results.size() == 0){
             //Reattempt resolution via directory lookups.
             final User user = new User();
-            authenticationModule.getAuthSources().forEach( (k,v) ->{
-                UserProfile[] profiles = v.getUserProfile(username,"LOGON_NAME");
+            for(AuthModuleKey key : authenticationModule.getAuthSources().keySet()){
+                UserProfile[] profiles = authenticationModule.getAuthSources().get(key).getUserProfile(username,"LOGON_NAME");
                 if(profiles != null && profiles.length == 1){
-                    user.setRealm(k.getRealm());
-                    user.setUserType(k.getType());
+                    user.setUsername(username);
+                    user.setRealm(key.getRealm());
+                    user.setUserType(key.getType());
                     user.setAccessLevel(AccessLevel.USER);
                     authenticationModule.createUser(user.getUserType(),user.getRealm(),this,user);
+                    break;
                 }
-            });
+            }
             if(user.getUsername() == null) return null;
             //resolve again in the database to be sure.
             results = dataStore.getUserDao().getObjects(statementList);
