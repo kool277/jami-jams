@@ -45,7 +45,7 @@ public class OCSPWorker extends X509Worker<String> {
         this.crlWorker = crlWorker;
         DigestCalculatorProvider digestCalculatorProvider = new JcaDigestCalculatorProviderBuilder().setProvider("BC").build();
         // only SHA-1 is supported for responder IDs.
-        this.responderID = new RespID(SubjectPublicKeyInfo.getInstance(CA.getCertificate()), digestCalculatorProvider.get(new DefaultDigestAlgorithmIdentifierFinder().find("SHA-1")));
+        this.responderID = new RespID(SubjectPublicKeyInfo.getInstance(CA.getCertificate().getPublicKey().getEncoded()), digestCalculatorProvider.get(new DefaultDigestAlgorithmIdentifierFinder().find("SHA-1")));
         this.contentSigner = new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build(OCSP.getPrivateKey());
         log.info("Instantiated OCSP Worker...");
     }
