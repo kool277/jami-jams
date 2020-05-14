@@ -26,6 +26,7 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
         super(privateKey, certificate);
         this.setDaemon(true);
         this.start();
+        //TODO: The CRL needs to be loaded from memory
         log.info("Instantiated & started a CRL Worker...");
     }
 

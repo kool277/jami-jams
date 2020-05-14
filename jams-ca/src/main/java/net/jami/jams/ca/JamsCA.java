@@ -58,6 +58,12 @@ public class JamsCA implements CertificateAuthority {
         userLifetime = config.getUserLifetime();
         deviceLifetime = config.getDeviceLifetime();
         crlWorker = new CRLWorker(CA.getPrivateKey(), CA.getCertificate());
+        try {
+            ocspWorker = new OCSPWorker(OCSP.getPrivateKey(), OCSP.getCertificate(), crlWorker);
+        }
+        catch (Exception e){
+            log.error("Could not start OCSP request processor with error {}",e.getMessage());
+        }
     }
 
     @Override
@@ -101,7 +107,7 @@ public class JamsCA implements CertificateAuthority {
 
     @Override
     public OCSPResp getOCSPResponse(OCSPReq ocspRequest) {
-        return null;
+        return ocspWorker.getOCSPResponse(ocspRequest);
     }
 
     @Override
