@@ -18,6 +18,8 @@ public class UserProfile {
         }
     }
 
+    //We sort of need the username here, because it's our only way of creating users which never existed.
+    private String username;
     private String firstName;
     private String lastName;
     private String phoneNumber;
