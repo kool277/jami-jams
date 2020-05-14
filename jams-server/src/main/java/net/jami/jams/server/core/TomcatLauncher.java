@@ -9,6 +9,7 @@ import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 
+import java.awt.*;
 import java.io.File;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -63,6 +64,11 @@ public class TomcatLauncher {
         context.addWelcomeFile("web/login");
         try {
             tomcat.start();
+            //Try to pop-up Web-UI
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI("https://localhost:8080"));
+            }
+            else log.info("There is no graphical interface on this system - please connect remotely!");
         } catch
         (Exception e) {
             log.error("Web-server has failed to start - this is critical!");

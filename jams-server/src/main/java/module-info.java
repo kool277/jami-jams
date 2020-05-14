@@ -13,6 +13,7 @@ module jams.server {
     requires jami.nameserver;
     requires jami.dht;
     requires nimbus.jose.jwt;
+    requires java.desktop;
     exports net.jami.jams.server.servlets.general to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.filters to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.auth.login to org.apache.tomcat.embed.core;

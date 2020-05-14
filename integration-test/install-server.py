@@ -116,6 +116,6 @@ print(response.text)
 
 print(token)
 
-response = requests.get("http://localhost:8080/api/nameservice/name/aberaud",headers=header)
+response = requests.get("http://localhost:8080/api/nameserver/name/aberaud",headers=header)
 print(response.status_code)
 print(response.text)
