@@ -113,3 +113,8 @@ sxMmX+s/PapsdSyUJ2g3hAf6Iv5m0pcUeQ==
 response = requests.post('http://localhost:8080/api/auth/device',headers=header,data=json.dumps(data))
 print(response.status_code)
 print(response.text)
+
+
+response = requests.get("http://localhost:8080/api/nameservice/name/aberaud",headers=header)
+print(response.status_code)
+print(response.text)
