@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import static net.jami.jams.server.Server.nameServer;
 
-@WebServlet("/api/nameservice/addr/*")
+@WebServlet("/api/namserver/addr/*")
 public class AddressServlet extends HttpServlet {
 
     @Override

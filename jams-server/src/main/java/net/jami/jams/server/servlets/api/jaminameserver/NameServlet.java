@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static net.jami.jams.server.Server.nameServer;
 
-@WebServlet("/api/nameservice/name/*")
+@WebServlet("/api/namserver/name/*")
 public class NameServlet extends HttpServlet {
 
     @Override
