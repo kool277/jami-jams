@@ -35,6 +35,7 @@ public class LocalNameServer implements NameServer {
 
     @Override
     public NameLookupResponse getAddressFromName(String username) {
+        NameLookupResponse nameLookupResponse = null;
         StatementList statementList = new StatementList();
         StatementElement statementElement = new StatementElement("username","=",username,"");
         statementList.addStatement(statementElement);
@@ -52,8 +53,11 @@ public class LocalNameServer implements NameServer {
                 }
             });
             if(user.getUsername() == null) return null;
+            //resolve again in the database to be sure.
+            results = dataStore.getUserDao().getObjects(statementList);
+            if(results.size() == 0) return null;
         }
-        NameLookupResponse nameLookupResponse = new NameLookupResponse();
+        nameLookupResponse = new NameLookupResponse();
         nameLookupResponse.setName(results.get(0).getUsername());
         nameLookupResponse.setAddr(results.get(0).getJamiId());
         return nameLookupResponse;
