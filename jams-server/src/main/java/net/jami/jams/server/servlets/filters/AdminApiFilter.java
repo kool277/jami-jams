@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
@@ -15,9 +16,9 @@ import java.util.Date;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-@WebFilter(urlPatterns = {"/api/auth/*"})
+@WebFilter(urlPatterns = {"/api/admin/*"})
 @Slf4j
-public class APIFilter implements Filter {
+public class AdminApiFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -34,10 +35,10 @@ public class APIFilter implements Filter {
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
                     signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
-                    if(signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0){
+                    if(signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0
+                    && AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()).equals(AccessLevel.ADMIN)){
                         authsuccess = true;
                         request.setAttribute("username",signedJWT.getJWTClaimsSet().getSubject());
-                        request.setAttribute("accessLevel",signedJWT.getJWTClaimsSet().getClaim("scope"));
                     }
                 } catch (Exception e) {
                     log.info("Received an invalid token, declining access...");
@@ -49,4 +50,5 @@ public class APIFilter implements Filter {
             else response.sendError(403,"This endpoint requires setup to be complete!");
         }
     }
+
 }

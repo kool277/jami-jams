@@ -10,8 +10,11 @@ import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+
+import static net.jami.jams.server.core.TomcatConnectorFactory.getSSLConnectorWithTrustStore;
 
 //This class boots the tomcat server which provides the subsystem
 //for the API calls.
@@ -19,13 +22,24 @@ import java.nio.charset.StandardCharsets;
 public class TomcatLauncher {
 
     private static final Tomcat tomcat = new Tomcat();
-    private static StandardContext context;
+
+    public TomcatLauncher(int port) {
+        tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
+        this.startServer();
+    }
+
+    public TomcatLauncher(int port, String certificateFile, String keyFile) {
+        //If running in SSL mode, we need a trusts store in order to let clients authenticate.
+        //In this case this is a bit of a dirty hack...
+        log.error("This functionality is not yet implemented!");
+    }
+
+
 
     public void startServer() {
-        tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(8080));
         String jarName = URLDecoder.decode(new File(Server.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getAbsolutePath(), StandardCharsets.UTF_8);
         log.info("JAR Resource File = " + jarName);
-        context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
+        StandardContext context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
         //Hack to prevent useless verbose messages.
         context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         WebResourceRoot resources = new StandardRoot(context);
@@ -43,7 +57,6 @@ public class TomcatLauncher {
             basePath.append("/jams-server");
             resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", basePath.toString() + "/target/classes/net/jami/jams/server/servlets", "/"));
             resources.addPreResources(new DirResourceSet(resources, "/", basePath.toString() + "/target/classes", "/webapp"));
-
         }
         context.setResources(resources);
         //We always go to login by default.

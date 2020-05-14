@@ -31,16 +31,21 @@ public class Server {
         JsoniterRegistry.initCodecs();
     }
 
-    public static DataStore dataStore;
+    public  static DataStore dataStore;
     //This one gets loaded via JAR, to make it more flexible.
-    public static CertificateAuthority certificateAuthority;
-    public static AuthenticationModule userAuthenticationModule;
-    public static NameServer nameServer;
+    public  static CertificateAuthority certificateAuthority;
+    public  static AuthenticationModule userAuthenticationModule;
+    public  static NameServer nameServer;
+    private static TomcatLauncher tomcatLauncher = null;
 
     public static void main(String[] args) {
         //Start tomcat.
-        TomcatLauncher tomcatLauncher = new TomcatLauncher();
-        tomcatLauncher.startServer();
+        switch (args.length){
+            case 0: tomcatLauncher = new TomcatLauncher(8080); break;
+            case 1: tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0])); break;
+            case 3: tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]),args[1],args[2]);
+            default: log.error("Incorrect number of start arguments provided!"); System.exit(-1); break;
+        }
 
         //Look for the config.json file locally.
 
