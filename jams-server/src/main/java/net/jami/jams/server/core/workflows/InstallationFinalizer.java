@@ -32,12 +32,12 @@ public class InstallationFinalizer {
             serverSettings.setServerPublicURI(CachedObjects.certificateAuthorityConfig.getServerDomain());
             if (CachedObjects.activeDirectorySettings != null) {
                 serverSettings.setActiveDirectoryConfiguration(JsonStream.serialize(CachedObjects.activeDirectorySettings));
-                nameServer = new LocalNameServer(dataStore,serverSettings.getServerPublicURI());
+                nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 log.info("Server configured to use Active Directory as the authentication backend!");
             }
             if (CachedObjects.ldapSettings != null) {
                 serverSettings.setLdapConfiguration(JsonStream.serialize(CachedObjects.ldapSettings));
-                nameServer = new LocalNameServer(dataStore,serverSettings.getServerPublicURI());
+                nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 log.info("Server configured to use LDAP as the authentication backend!");
             }
             if (CachedObjects.localAuthSettings != null) {
@@ -46,7 +46,7 @@ public class InstallationFinalizer {
                     nameServer = new PublicNameServer(CachedObjects.localAuthSettings.getPublicNameServer());
                     log.warn("Server configured to use {} as the nameserver for Jami clients !",CachedObjects.localAuthSettings.getPublicNameServer());
                 }
-                else nameServer = new LocalNameServer(dataStore,serverSettings.getServerPublicURI());
+                else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 log.info("Server is configured to use local authentication engine");
             }
             //Now flush the server settings.
