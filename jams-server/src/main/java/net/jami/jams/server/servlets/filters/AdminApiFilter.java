@@ -15,10 +15,14 @@ import java.io.IOException;
 import java.util.Date;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
+import static net.jami.jams.server.servlets.filters.JWTValidator.verifyLevel;
+import static net.jami.jams.server.servlets.filters.JWTValidator.verifyValidity;
 
 @WebFilter(urlPatterns = {"/api/admin/*"})
 @Slf4j
 public class AdminApiFilter implements Filter {
+
+    private static final AccessLevel TARGET_LEVEL = AccessLevel.ADMIN;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -35,8 +39,7 @@ public class AdminApiFilter implements Filter {
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
                     signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
-                    if(signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0
-                    && AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()).equals(AccessLevel.ADMIN)){
+                    if(signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT) && verifyLevel(signedJWT,TARGET_LEVEL)){
                         authsuccess = true;
                         request.setAttribute("username",signedJWT.getJWTClaimsSet().getSubject());
                     }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
+import static net.jami.jams.server.servlets.filters.JWTValidator.verifyValidity;
 
 @WebFilter(urlPatterns = {"/api/auth/*"})
 @Slf4j
@@ -34,7 +35,7 @@ public class ApiFilter implements Filter {
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
                     signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
-                    if(signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0){
+                    if(signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT)){
                         authsuccess = true;
                         request.setAttribute("username",signedJWT.getJWTClaimsSet().getSubject());
                     }
