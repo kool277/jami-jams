@@ -10,10 +10,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
+import net.jami.jams.common.objects.requests.RevocationRequest;
+import net.jami.jams.common.objects.requests.RevocationType;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
+import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
+import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import static net.jami.jams.server.Server.dataStore;
 
@@ -48,5 +53,11 @@ public class DeviceServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doDelete(req, resp);
+        RevocationRequest request = new RevocationRequest();
+        request.setIdentifier(new BigInteger(req.getAttribute("deviceId").toString()));
+        request.setRevocationType(RevocationType.DEVICE);
+        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(), request);
+        if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        else resp.sendError(500,"An exception has occurred while trying to revoke a device!");
     }
 }

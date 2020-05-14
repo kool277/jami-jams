@@ -10,6 +10,8 @@ module jams.server {
     requires javassist;
     requires datastore;
     requires org.apache.xbean.classloader;
+    requires org.bouncycastle.pkix;
+    requires org.bouncycastle.provider;
     requires jami.nameserver;
     requires jami.dht;
     requires nimbus.jose.jwt;
