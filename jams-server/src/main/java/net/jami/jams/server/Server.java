@@ -77,6 +77,7 @@ public class Server {
                     else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 }
                 else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
+                log.info("All services are UP and ready for use...");
             }
             catch (Exception e){
                 log.error("Could not load configuration file or initialize some components - this is critical");
