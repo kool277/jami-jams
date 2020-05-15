@@ -50,6 +50,11 @@ public class LDAPConnector implements AuthenticationSource {
     }
 
     @Override
+    public void setUserProfile(UserProfile userProfile) {
+        //does nothing since we cannot edit LDAP profiles.
+    }
+
+    @Override
     public boolean authenticate(String username, String password) {
         return authenticationService.authenticateUser(username,password);
     }

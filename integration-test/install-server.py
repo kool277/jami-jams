@@ -119,3 +119,8 @@ print(token)
 response = requests.get("http://localhost:8080/api/nameserver/name/aberaud",headers=header)
 print(response.status_code)
 print(response.text)
+
+
+response = requests.get("http://localhost:8080//api/auth/directories",headers=header)
+print(response.status_code)
+print(response.text)
