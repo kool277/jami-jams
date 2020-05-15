@@ -5,6 +5,7 @@ import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.RevocationRequest;
+import net.jami.jams.common.objects.requests.RevocationType;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.User;
 
@@ -14,7 +15,7 @@ import static net.jami.jams.server.Server.dataStore;
 @Slf4j
 public class RevokeUserFlow {
 
-    public static DeviceRevocationResponse revokeUser(String username, RevocationRequest request){
+    public static DeviceRevocationResponse revokeUser(String username){
         DeviceRevocationResponse response = new DeviceRevocationResponse();
         try {
             StatementList statementList = new StatementList();
@@ -25,6 +26,8 @@ public class RevokeUserFlow {
                 log.error("Could not find user!");
                 return null;
             }
+            RevocationRequest request = new RevocationRequest();
+            request.setRevocationType(RevocationType.USER);
             request.setIdentifier(user.getCertificate().getSerialNumber());
             certificateAuthority.revokeCertificate(request);
             long statTime = System.currentTimeMillis();

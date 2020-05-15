@@ -39,9 +39,7 @@ public class UserServlet extends HttpServlet {
     //Revoke a user.
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RevocationRequest request = new RevocationRequest();
-        request.setRevocationType(RevocationType.USER);
-        DeviceRevocationResponse devResponse = RevokeUserFlow.revokeUser(req.getParameter("username").toString(), request);
+        DeviceRevocationResponse devResponse = RevokeUserFlow.revokeUser(req.getParameter("username"));
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         else resp.sendError(500,"An exception has occurred while trying to revoke a device!");
     }

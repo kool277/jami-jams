@@ -53,10 +53,7 @@ public class DeviceServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doDelete(req, resp);
-        RevocationRequest request = new RevocationRequest();
-        request.setIdentifier(new BigInteger(req.getAttribute("deviceId").toString()));
-        request.setRevocationType(RevocationType.DEVICE);
-        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(), request);
+        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),req.getParameter("deviceId"));
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         else resp.sendError(500,"An exception has occurred while trying to revoke a device!");
     }

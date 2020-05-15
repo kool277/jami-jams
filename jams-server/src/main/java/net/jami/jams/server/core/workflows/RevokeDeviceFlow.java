@@ -17,12 +17,12 @@ import static net.jami.jams.server.Server.certificateAuthority;
 @Slf4j
 public class RevokeDeviceFlow {
 
-    public static DeviceRevocationResponse revokeDevice(String username, RevocationRequest request){
+    public static DeviceRevocationResponse revokeDevice(String username, String deviceId){
         DeviceRevocationResponse response = new DeviceRevocationResponse();
         try {
             StatementList statementList = new StatementList();
             StatementElement st1 = new StatementElement("owner","=",username,"AND");
-            StatementElement st2 = new StatementElement("deviceId","=",request.getIdentifier().toString(),"");
+            StatementElement st2 = new StatementElement("deviceId","=",deviceId,"");
             statementList.addStatement(st1);
             statementList.addStatement(st2);
             Device device = dataStore.getDeviceDao().getObjects(statementList).get(0);
@@ -30,6 +30,8 @@ public class RevokeDeviceFlow {
                 log.error("Could not find device!");
                 return null;
             }
+            RevocationRequest request = new RevocationRequest();
+            request.setRevocationType(RevocationType.DEVICE);
             request.setIdentifier(device.getCertificate().getSerialNumber());
             certificateAuthority.revokeCertificate(request);
             long statTime = System.currentTimeMillis();
