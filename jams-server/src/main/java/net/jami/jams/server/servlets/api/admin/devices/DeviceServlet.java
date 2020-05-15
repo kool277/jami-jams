@@ -36,10 +36,17 @@ public class DeviceServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String deviceId = req.getParameter("deviceId");
-        StatementList statementList = new StatementList();
-        StatementElement st0 = new StatementElement()
+        String deviceName = req.getParameter("deviceName");
+        StatementList update = new StatementList();
+        StatementElement st0 = new StatementElement("deviceName","=",deviceName,"");
+        update.addStatement(st0);
+        StatementList constraint = new StatementList();
         StatementElement st1 = new StatementElement("owner","=",username,"AND");
         StatementElement st2 = new StatementElement("deviceId","=",deviceId,"");
+        update.addStatement(st1);
+        update.addStatement(st2);
+        if(dataStore.getDeviceDao().updateObject(update,constraint)) resp.setStatus(200);
+        else resp.sendError(500,"could not update the device's information!");
     }
 
     //Revoke/delete a device.
