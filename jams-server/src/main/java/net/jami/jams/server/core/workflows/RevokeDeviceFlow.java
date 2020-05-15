@@ -36,7 +36,7 @@ public class RevokeDeviceFlow {
                     .getRevokedCertificate(device.getCertificate().getSerialNumber()) == null){
                 log.warn("Certificate has not yet appeared in CRL!");
                 if(System.currentTimeMillis() - statTime > 1000){
-                    log.error("The certificate has not appered within 1 second, we are considering the operation has failed");
+                    log.error("The certificate has not appeared within 1 second, we are considering the operation has failed");
                     response.setSuccess(false);
                     return response;
                 }
