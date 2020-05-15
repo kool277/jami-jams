@@ -15,8 +15,6 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import static net.jami.jams.server.core.TomcatConnectorFactory.getSSLConnectorWithTrustStore;
-
 //This class boots the tomcat server which provides the subsystem
 //for the API calls.
 @Slf4j

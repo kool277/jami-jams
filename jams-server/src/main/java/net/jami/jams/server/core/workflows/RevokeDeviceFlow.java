@@ -4,15 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
-import net.jami.jams.common.objects.requests.DeviceRevocationRequest;
 import net.jami.jams.common.objects.requests.RevocationRequest;
 import net.jami.jams.common.objects.requests.RevocationType;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 
-import java.math.BigInteger;
-
-import static net.jami.jams.server.Server.*;
 import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.Server.dataStore;
 
 @Slf4j
 public class RevokeDeviceFlow {

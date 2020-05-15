@@ -3,8 +3,6 @@ package net.jami.jams.ca.workers;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.cert.ocsp.OCSPReq;
-import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;

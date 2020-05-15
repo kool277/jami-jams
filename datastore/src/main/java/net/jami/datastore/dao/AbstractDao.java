@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.SelectStatementBuilder;
-import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.UpdateStatementBuilder;
 import net.jami.jams.common.dao.connectivity.SQLConnection;

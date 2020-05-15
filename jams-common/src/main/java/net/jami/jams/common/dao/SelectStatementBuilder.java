@@ -3,7 +3,6 @@ package net.jami.jams.common.dao;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 
 import java.sql.PreparedStatement;
-import java.util.List;
 
 public class SelectStatementBuilder {
 

@@ -1,6 +1,5 @@
 package net.jami.jams.server.servlets.api.admin.users;
 
-import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,15 +9,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.requests.RevocationRequest;
-import net.jami.jams.common.objects.requests.RevocationType;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import java.io.IOException;
-import java.math.BigInteger;
 
 import static net.jami.jams.server.Server.*;
 
