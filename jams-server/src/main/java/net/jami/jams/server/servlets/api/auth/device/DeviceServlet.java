@@ -45,7 +45,7 @@ public class DeviceServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
-        String deviceId = req.getParameter("deviceId");
+        String deviceId = req.getPathInfo().replace("/","");
         String deviceName = req.getParameter("deviceName");
         StatementList update = new StatementList();
         StatementElement st0 = new StatementElement("deviceName","=",deviceName,"");
@@ -61,8 +61,8 @@ public class DeviceServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
-        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),req.getParameter("deviceId"));
+        String deviceId = req.getPathInfo().replace("/","");
+        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         else resp.sendError(500,"An exception has occurred while trying to revoke a device!");
     }

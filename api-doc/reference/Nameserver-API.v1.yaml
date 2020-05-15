@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  title: Nameserver API
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  '/api/nameserver/addr/{addr}':
+    parameters:
+      - schema:
+          type: string
+        name: addr
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-nameserver-addr-addr
+  '/api/nameserver/name/{name}':
+    parameters:
+      - schema:
+          type: string
+        name: name
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-nameserver-name-name
+components:
+  schemas: {}

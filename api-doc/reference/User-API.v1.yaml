@@ -1,0 +1,62 @@
+openapi: 3.0.0
+info:
+  title: User API
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/auth/contacts:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-contacts
+  '/api/auth/device/{deviceId}':
+    parameters:
+      - schema:
+          type: string
+        name: deviceId
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-device-deviceId
+  /api/auth/devices:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-devices
+  /api/auth/directories:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-directories
+  /api/auth/directory/entry:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-directory-entry
+  /api/auth/directory/search:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-directory-search
+  /api/auth/user:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-user
+components:
+  schemas: {}
+  securitySchemes:
+    API Key - 1:
+      name: API Key
+      type: apiKey
+      in: query

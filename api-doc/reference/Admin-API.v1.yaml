@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: Admin API
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/admin/device:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-admin-device
+    put:
+      summary: ''
+      operationId: put-api-admin-device
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: ''
+      operationId: delete-api-admin-device
+      responses:
+        '200':
+          description: OK
+  /api/admin/devices:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-admin-devices
+  /api/admin/directory/entry:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-admin-directory-entry
+    put:
+      summary: ''
+      operationId: put-api-admin-directory-entry
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: ''
+      operationId: post-api-admin-directory-entry
+      responses:
+        '200':
+          description: OK
+  /api/admin/user:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-admin-user
+    post:
+      summary: ''
+      operationId: post-api-admin-user
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: ''
+      operationId: delete-api-admin-user
+      responses:
+        '200':
+          description: OK
+    put:
+      summary: ''
+      operationId: put-api-admin-user
+      responses:
+        '200':
+          description: OK
+  /api/admin/users:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-admin-users
+components:
+  schemas: {}
