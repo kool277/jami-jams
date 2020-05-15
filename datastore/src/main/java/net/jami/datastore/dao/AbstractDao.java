@@ -5,7 +5,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.SelectStatementBuilder;
+import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.dao.UpdateStatementBuilder;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 
 import java.sql.PreparedStatement;
@@ -22,11 +24,14 @@ public abstract class AbstractDao<T> {
     @Getter @Setter
     private Class<T> tClass;
 
+    public abstract boolean storeObject(T object);
+    public abstract boolean deleteObject(LinkedHashMap<String,String> constraints);
+
     public List<T> getObjects(StatementList constraints){
         List<T> result = new ArrayList<>();
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try{
-            PreparedStatement ps = SelectStatementBuilder.buildStatement(tableName,constraints.getStatements(),connection);
+            PreparedStatement ps = SelectStatementBuilder.buildStatement(tableName,constraints,connection);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
@@ -42,7 +47,18 @@ public abstract class AbstractDao<T> {
         }
     }
 
-
-    public abstract boolean storeObject(T object);
-    public abstract boolean deleteObject(LinkedHashMap<String,String> constraints);
+    public boolean updateObject(StatementList update, StatementList constraints){
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try{
+            PreparedStatement ps = UpdateStatementBuilder.buildStatement(tableName,update,constraints,connection);
+            return ps.execute();
+        }
+        catch (Exception e){
+            log.error("An error has occurred while trying to fetch a device: " + e.toString());
+            return false;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
+    }
 }

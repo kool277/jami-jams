@@ -34,7 +34,12 @@ public class DeviceServlet extends HttpServlet {
     //Update device data.
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        String username = req.getParameter("username");
+        String deviceId = req.getParameter("deviceId");
+        StatementList statementList = new StatementList();
+        StatementElement st0 = new StatementElement()
+        StatementElement st1 = new StatementElement("owner","=",username,"AND");
+        StatementElement st2 = new StatementElement("deviceId","=",deviceId,"");
     }
 
     //Revoke/delete a device.

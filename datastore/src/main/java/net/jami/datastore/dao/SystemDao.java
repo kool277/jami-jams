@@ -2,6 +2,7 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.system.SystemAccount;
 
@@ -55,6 +56,11 @@ public class SystemDao extends AbstractDao<SystemAccount> {
 
     @Override
     public boolean deleteObject(LinkedHashMap<String, String> constraints) {
+        return false;
+    }
+
+    @Override
+    public boolean updateObject(StatementList update, StatementList constraints) {
         return false;
     }
 }
