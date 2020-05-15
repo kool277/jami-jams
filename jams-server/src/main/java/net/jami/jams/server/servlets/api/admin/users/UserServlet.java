@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.requests.RevocationRequest;
@@ -19,7 +20,7 @@ import net.jami.jams.server.core.workflows.RevokeUserFlow;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.*;
 
 @WebServlet("/api/admin/user")
 public class UserServlet extends HttpServlet {
@@ -36,13 +37,37 @@ public class UserServlet extends HttpServlet {
     //Create an internal user - this is always technically available, because internal users have the right to exist.
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        User user = new User();
+        user.setUsername(req.getParameter("username"));
+        user.setPassword("TEMP-PASSWORD");
+        user.setRealm("LOCAL");
+        user.setUserType(AuthenticationSourceType.LOCAL);
+        if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)){
+            resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+            return;
+        }
+        resp.sendError(500,"Could not create a user successfully!");
     }
 
     //Update user data.
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        String username = req.getParameter("username");
+        //Check if he is AD/LDAP - then return a 403, because we can't set such password.
+        StatementList select = new StatementList();
+        StatementElement st = new StatementElement("username","=",username,"");
+        if(dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL){
+            resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
+            return;
+        }
+        StatementList update = new StatementList();
+        StatementElement st0 = new StatementElement("password","=",req.getParameter("password"),"");
+        update.addStatement(st0);
+        StatementList constraint = new StatementList();
+        StatementElement st1 = new StatementElement("username","=",username,"");
+        update.addStatement(st1);
+        if(dataStore.getUserDao().updateObject(update,constraint)) resp.setStatus(200);
+        else resp.sendError(500,"could not update the users's data field!");
     }
 
     //Revoke a user.

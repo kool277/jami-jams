@@ -27,9 +27,11 @@ public class DirectoryEntryServlet extends HttpServlet {
             UserProfile userProfile = JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
             userAuthenticationModule.getAuthSources().get(new AuthModuleKey(realm, AuthenticationSourceType.LOCAL))
                     .setUserProfile(userProfile);
+            resp.setStatus(200);
         }
         catch (Exception e){
-            log.error("Could not store a user profile!");
+            log.error("Could not store a user profile with error {}",e.getMessage());
+            resp.sendError(500,e.getMessage());
         }
 
     }
