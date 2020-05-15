@@ -30,6 +30,7 @@ public class RevokeDeviceFlow {
                 log.error("Could not find device!");
                 return null;
             }
+            request.setIdentifier(device.getCertificate().getSerialNumber());
             certificateAuthority.revokeCertificate(request);
             long statTime = System.currentTimeMillis();
             while(certificateAuthority.getLatestCRL().get()
