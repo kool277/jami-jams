@@ -22,11 +22,13 @@ module jams.server {
     exports net.jami.jams.server.servlets.api.auth.login to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.auth.device to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.auth.directory to org.apache.tomcat.embed.core;
+    exports net.jami.jams.server.servlets.api.auth.user to org.apache.tomcat.embed.core;
 
     exports net.jami.jams.server.servlets.api.install to org.apache.tomcat.embed.core;
 
     exports net.jami.jams.server.servlets.general to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.jaminameserver to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.x509 to org.apache.tomcat.embed.core;
+
 
 }

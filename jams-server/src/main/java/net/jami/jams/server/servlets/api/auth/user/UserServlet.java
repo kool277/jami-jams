@@ -1,5 +1,6 @@
 package net.jami.jams.server.servlets.api.auth.user;
 
+import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,7 +20,11 @@ public class UserServlet extends HttpServlet {
     //User can "read" his own profile.
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        String username = req.getAttribute("username").toString();
+        StatementList select = new StatementList();
+        StatementElement st = new StatementElement("username","=",username,"");
+        select.addStatement(st);
+        resp.getOutputStream().write(JsonStream.serialize(dataStore.getUserDao().getObjects(select).get(0)).getBytes());
     }
 
     //The user can update 3 fields: password,privatekey,publickey
@@ -27,7 +32,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
-        //Check if he is AD/LDAP - then return a 403, because we can't set such password.
+        //Check if he is AD/LDAP - then return a 401, because we can't set such password.
         StatementList select = new StatementList();
         StatementElement st = new StatementElement("username","=",username,"");
         if(dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL){
