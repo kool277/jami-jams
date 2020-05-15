@@ -20,7 +20,6 @@ public class RevokeDeviceFlow {
     public static DeviceRevocationResponse revokeDevice(String username, RevocationRequest request){
         DeviceRevocationResponse response = new DeviceRevocationResponse();
         try {
-
             StatementList statementList = new StatementList();
             StatementElement st1 = new StatementElement("owner","=",username,"AND");
             StatementElement st2 = new StatementElement("deviceId","=",request.getIdentifier().toString(),"");
@@ -31,13 +30,19 @@ public class RevokeDeviceFlow {
                 log.error("Could not find device!");
                 return null;
             }
-
             certificateAuthority.revokeCertificate(request);
-            if (certificateAuthority.getLatestCRL().get().getRevokedCertificates().toArray().length != 0) {
-                response.setSuccess(true);
+            long statTime = System.currentTimeMillis();
+            while(certificateAuthority.getLatestCRL().get()
+                    .getRevokedCertificate(device.getCertificate().getSerialNumber()) == null){
+                log.warn("Certificate has not yet appeared in CRL!");
+                if(System.currentTimeMillis() - statTime > 1000){
+                    log.error("The certificate has not appered within 1 second, we are considering the operation has failed");
+                    response.setSuccess(false);
+                    return response;
+                }
             }
-
             //Finally we return the successful response
+            response.setSuccess(true);
             return response;
         }
         catch (Exception e){
