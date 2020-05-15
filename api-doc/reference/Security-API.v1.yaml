@@ -7,7 +7,7 @@ servers:
 paths:
   /api/auth/login:
     post:
-      summary: ''
+      summary: Login and Receive Auth Token
       operationId: post-api-auth-login
       responses:
         '200':

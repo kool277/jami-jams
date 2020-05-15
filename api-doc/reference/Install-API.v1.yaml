@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   title: Install API
   version: '1.0'
+  description: This API is used by the Web-UI installer in order to get JAMS up and running.
 servers:
   - url: 'http://localhost:3000'
 paths:
