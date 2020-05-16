@@ -7,28 +7,32 @@ servers:
   - url: 'http://localhost:3000'
 paths:
   /api/install/auth:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
-      operationId: get-api-install-auth
+    post:
+      summary: ''
+      operationId: post-api-install-auth
+      responses:
+        '200':
+          description: OK
   /api/install/ca:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
-      operationId: get-api-install-ca
+    post:
+      summary: ''
+      operationId: post-api-install-ca
+      responses:
+        '200':
+          description: OK
   /api/install/settings:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
-      operationId: get-api-install-settings
+    post:
+      summary: ''
+      operationId: post-api-install-settings
+      responses:
+        '200':
+          description: OK
   /api/install/start:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
-      operationId: get-api-install-start
+    post:
+      summary: ''
+      operationId: post-api-install-start
+      responses:
+        '200':
+          description: OK
 components:
   schemas: {}

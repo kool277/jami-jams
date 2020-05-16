@@ -23,6 +23,18 @@ paths:
       tags: []
       responses: {}
       operationId: get-api-auth-device-deviceId
+    put:
+      summary: ''
+      operationId: put-api-auth-device-deviceId
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: ''
+      operationId: post-api-auth-device-deviceId
+      responses:
+        '200':
+          description: OK
   /api/auth/devices:
     get:
       summary: Your GET endpoint

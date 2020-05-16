@@ -8,6 +8,7 @@
     <artifactId>jams3-parent</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
+    <name>Jami Account Management Server</name>
     <modules>
         <module>jams-server</module>
         <module>jams-common</module>
