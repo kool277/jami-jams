@@ -28,7 +28,9 @@ paths:
     get:
       summary: Name lookup
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
       operationId: get-api-nameserver-name-name
 components:
   schemas: {}

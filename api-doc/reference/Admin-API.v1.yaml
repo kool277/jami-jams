@@ -8,10 +8,28 @@ servers:
 paths:
   /api/admin/device:
     get:
-      summary: Your GET endpoint
+      summary: User device
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
       operationId: get-api-admin-device
+      requestBody:
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+        - schema:
+            type: string
+          in: query
+          name: deviceId
+      description: Returns the device information.
     put:
       summary: ''
       operationId: put-api-admin-device
@@ -24,18 +42,48 @@ paths:
       responses:
         '200':
           description: OK
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+        - schema:
+            type: string
+          in: query
+          name: deviceId
+      description: Revokes a device.
   /api/admin/devices:
     get:
-      summary: Your GET endpoint
+      summary: User devices
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
       operationId: get-api-admin-devices
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
   /api/admin/directory/entry:
     get:
       summary: Your GET endpoint
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
       operationId: get-api-admin-directory-entry
+      description: ''
     put:
       summary: ''
       operationId: put-api-admin-directory-entry
@@ -79,4 +127,40 @@ paths:
       responses: {}
       operationId: get-api-admin-users
 components:
-  schemas: {}
+  schemas:
+    Device:
+      title: Device
+      type: object
+      properties:
+        deviceId:
+          type: string
+        displayName:
+          type: string
+        certificate:
+          type: string
+      description: "The user's Jami device."
+    UserProfile:
+      title: UserProfile
+      type: object
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        phoneNumberExtension:
+          type: string
+        mobileNumber:
+          type: string
+        faxNumber:
+          type: string
+        profilePicture:
+          type: string
+        email:
+          type: string
+        organization:
+          type: string
+      description: "The user's extended information which is not critical to Jami operations, usually provided by LDAP, Active Directory or other backend."

@@ -7,7 +7,7 @@ servers:
 paths:
   /api/auth/contacts:
     get:
-      summary: Your GET endpoint
+      summary: Contacts endpoint
       tags: []
       responses: {}
       operationId: get-api-auth-contacts
@@ -19,9 +19,15 @@ paths:
         in: path
         required: true
     get:
-      summary: Your GET endpoint
+      summary: Device operations
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './Admin-API.v1.yaml#/components/schemas/Device'
       operationId: get-api-auth-device-deviceId
     put:
       summary: ''
@@ -35,33 +41,66 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                allOf: []
   /api/auth/devices:
     get:
-      summary: Your GET endpoint
+      summary: Get the list of devices
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './Admin-API.v1.yaml#/components/schemas/Device'
       operationId: get-api-auth-devices
   /api/auth/directories:
     get:
-      summary: Your GET endpoint
+      summary: Get the directories connect to JAMS
       tags: []
       responses: {}
       operationId: get-api-auth-directories
   /api/auth/directory/entry:
     get:
-      summary: Your GET endpoint
+      summary: Get the profile of a user
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
       operationId: get-api-auth-directory-entry
   /api/auth/directory/search:
     get:
-      summary: Your GET endpoint
+      summary: Search the directory
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
+        '':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
       operationId: get-api-auth-directory-search
   /api/auth/user:
     get:
-      summary: Your GET endpoint
+      summary: User endpoint
       tags: []
       responses: {}
       operationId: get-api-auth-user

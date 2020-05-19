@@ -48,7 +48,7 @@ public class PublicNameServer implements NameServer {
                     responseData.append((char) con.getInputStream().read());
                     currentSize++;
                 }
-                log.info("Reponse received from public nameserver {} ", responseData.toString());
+                log.info("Response received from public nameserver {} ", responseData.toString());
                 return JsonIterator.deserialize(responseData.toString(),NameLookupResponse.class);
             }
             return null;
