@@ -2,19 +2,28 @@ package net.jami.jams.server.update;
 
 import lombok.extern.slf4j.Slf4j;
 
-import javax.net.ssl.*;
-import java.io.FileOutputStream;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import java.net.URL;
 import java.security.KeyStore;
 
 import static net.jami.jams.server.update.UpdateDaemon.UPDATE_SERVER_URI;
+import static net.jami.jams.server.update.UpdateDaemon.updateFiles;
 
 @Slf4j
 public class UpdateDownloader {
 
     private SSLSocketFactory sslSocketFactory;
 
-    public void downloadUpdate(){
+    //returns the activation status of the server.
+    public boolean getActivationStatus(){
+        return loadLicense();
+    }
+
+
+    public void doUpdate(){
         try {
             if (!loadLicense()) {
                 log.warn("This server does not have a valid license, no files will be download and no update" +
@@ -34,7 +43,8 @@ public class UpdateDownloader {
                         responseData.append((char) con.getInputStream().read());
                         currentSize++;
                     }
-                    log.info("Succesfully downloaded file...");
+                    updateFiles.remove(file);
+                    log.info("Successfully downloaded file...");
                 } else {
                     log.info("An error has occurred while trying to download a file: {} ", con.getResponseCode());
                 }

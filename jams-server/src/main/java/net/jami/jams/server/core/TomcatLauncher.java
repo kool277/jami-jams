@@ -9,7 +9,6 @@ import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 
-
 import java.awt.*;
 import java.io.File;
 import java.net.URI;

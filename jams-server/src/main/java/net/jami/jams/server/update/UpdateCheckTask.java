@@ -32,7 +32,7 @@ public class UpdateCheckTask extends TimerTask {
                     responseData.append((char) con.getInputStream().read());
                     currentSize++;
                 }
-                log.info("Response received from update server {} ", responseData.toString());
+                log.info("Response received from update server {} ",con.getResponseCode());
                 //TODO: Populate the files which "need" to be downloaded.
             } else {
                 log.info("An error has occurred while checking for an update: {} ", con.getResponseCode());
