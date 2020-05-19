@@ -19,6 +19,7 @@
         <module>jami-dht</module>
         <module>authentication-module</module>
         <module>jami-nameserver</module>
+        <module>updater</module>
     </modules>
 
     <properties>

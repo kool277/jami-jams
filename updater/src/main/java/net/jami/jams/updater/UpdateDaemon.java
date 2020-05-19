@@ -1,4 +1,4 @@
-package net.jami.jams.server.update;
+package net.jami.jams.updater;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +11,7 @@ import java.util.Timer;
 @Setter
 public class UpdateDaemon extends Timer {
 
+    //TODO: This should come from the resources file.
     public  static final String UPDATE_SERVER_URI = "https://jami.net";
     public static final List<String> updateFiles = new ArrayList<>();
 

@@ -1,16 +1,14 @@
-package net.jami.jams.server.update;
+package net.jami.jams.updater;
 
 import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import java.net.URL;
-import java.security.KeyStore;
 
-import static net.jami.jams.server.update.UpdateDaemon.UPDATE_SERVER_URI;
-import static net.jami.jams.server.update.UpdateDaemon.updateFiles;
+import static net.jami.jams.updater.UpdateDaemon.UPDATE_SERVER_URI;
+import static net.jami.jams.updater.UpdateDaemon.updateFiles;
 
 @Slf4j
 public class UpdateDownloader {
@@ -23,12 +21,12 @@ public class UpdateDownloader {
     }
 
 
-    public void doUpdate(){
+    public boolean doUpdate(){
         try {
             if (!loadLicense()) {
                 log.warn("This server does not have a valid license, no files will be download and no update" +
                         " will take place...");
-                return;
+                return false;
             }
             for(String file : UpdateDaemon.updateFiles) {
                 URL url = new URL(UPDATE_SERVER_URI);
@@ -47,29 +45,25 @@ public class UpdateDownloader {
                     log.info("Successfully downloaded file...");
                 } else {
                     log.info("An error has occurred while trying to download a file: {} ", con.getResponseCode());
+                    return false;
                 }
             }
+            return true;
         }
         catch (Exception e){
             log.error("Could not check for updates with error: {}",e.getMessage());
+            return false;
         }
     }
 
     private boolean loadLicense(){
         try {
-            KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            ks.load(null, null);
-            char[] password = "changeit".toCharArray();
-            ks.load(null, password);
-
-            //Set the license.
-            ks.setKeyEntry("license",null,null);
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            kmf.init(ks,"".toCharArray());
-
+            //We assume the keystore already exists, because it gets created upon upload.
+            //Basically just load the JKS keystore here.
+            //TODO: Load keystore from file.
             //Initialize the SSL context & load the SFL trust store.
             SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(kmf.getKeyManagers(), new SFLTrustStore[]{new SFLTrustStore()},null);
+            //sslContext.init(kmf.getKeyManagers(), new SFLTrustStore[]{new SFLTrustStore()},null);
             log.info("License loaded successfully!");
             sslSocketFactory = sslContext.getSocketFactory();
             return true;

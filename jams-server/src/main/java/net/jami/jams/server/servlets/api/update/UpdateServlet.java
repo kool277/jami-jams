@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/api/update/status")
+@WebServlet("/api/update")
 public class UpdateServlet extends HttpServlet {
 
     //Return the current version number and the available version number.

@@ -1,4 +1,4 @@
-package net.jami.jams.server.update;
+package net.jami.jams.updater;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.TimerTask;
 
-import static net.jami.jams.server.update.UpdateDaemon.UPDATE_SERVER_URI;
+import static net.jami.jams.updater.UpdateDaemon.UPDATE_SERVER_URI;
 
 @Slf4j
 public class UpdateCheckTask extends TimerTask {
