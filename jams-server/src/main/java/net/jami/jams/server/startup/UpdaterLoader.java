@@ -9,9 +9,9 @@ public class UpdaterLoader {
 
     public static AppUpdater loadUpdater() {
         try {
-            Class<?> cls = LibraryLoader.classLoader.loadClass("net.jami.jams.common.updater.AppUpdater");
+            Class<?> cls = LibraryLoader.classLoader.loadClass("net.jami.jams.updater.JAMSUpdater");
             log.info("Updater service started...");
-            return  (AppUpdater) cls.getConstructor().newInstance();
+            return (AppUpdater) cls.getConstructor().newInstance();
         }
         catch (Exception e){
             log.error("Could not load update module...");

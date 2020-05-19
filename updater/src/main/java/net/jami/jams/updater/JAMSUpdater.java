@@ -6,6 +6,9 @@ public class JAMSUpdater implements AppUpdater {
 
     UpdateDownloader updateDownloader = new UpdateDownloader();
 
+    public JAMSUpdater() {
+    }
+
     @Override
     public String getCurrentVersion() {
         return null;
