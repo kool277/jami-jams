@@ -37,7 +37,7 @@ public class RegisterUserFlow {
            return false;
         }
         datastore.getUserDao().storeObject(user);
-        log.info("Create the user " + user.getUsername() + " because he did not exist before!");
+        log.info("Created the user " + user.getUsername() + " because he did not exist before!");
         return true;
     }
 }
