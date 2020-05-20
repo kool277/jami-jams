@@ -1,0 +1,5 @@
+{
+  "CORE_PACKAGE_MAIN_CLASS_NAME": "net.jami.jams.server.Server",
+  "UPDATE_URL": "https://updates.jami.net",
+  "UPDATE_INTERVAL": 20000
+}

@@ -18,6 +18,7 @@
         <module>jami-dht</module>
         <module>authentication-module</module>
         <module>jami-nameserver</module>
+        <module>jams-launcher</module>
     </modules>
 
     <properties>
