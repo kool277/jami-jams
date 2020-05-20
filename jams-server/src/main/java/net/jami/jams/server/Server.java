@@ -11,6 +11,7 @@ import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.common.server.ServerSettings;
 import net.jami.jams.common.utils.LibraryLoader;
+import net.jami.jams.common.utils.UpdateInterface;
 import net.jami.jams.nameserver.LocalNameServer;
 import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.core.TomcatLauncher;
@@ -26,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Server {
 
     public static AtomicBoolean isInstalled = new AtomicBoolean(false);
+    private static volatile boolean activated = false;
 
     static {
         JsoniterRegistry.initCodecs();
@@ -37,6 +39,7 @@ public class Server {
     public  static AuthenticationModule userAuthenticationModule;
     public  static NameServer nameServer;
     private static TomcatLauncher tomcatLauncher = null;
+    public static final UpdateInterface updateInterface = new UpdateInterface();
 
     public static void main(String[] args) {
         //Start tomcat.
@@ -88,5 +91,13 @@ public class Server {
             userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore,certificateAuthority);
             log.info("Started server with empty modules waiting for setup...");
         }
+    }
+
+    public static boolean isActivated() {
+        return activated;
+    }
+
+    public static void setActivated(boolean isActivated) {
+        Server.activated = isActivated;
     }
 }
