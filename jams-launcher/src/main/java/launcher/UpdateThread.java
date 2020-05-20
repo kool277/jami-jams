@@ -145,7 +145,7 @@ public class UpdateThread extends Thread {
     public void detectCurrentVersions(String folder) {
         try {
             File folderExec = new File(folder.replace("/jams-launcher", ""));
-            File folderLibs = new File(folder.replace("/jams-launcher", "") + "/lib");
+            File folderLibs = new File(folder.replace("/jams-launcher", "") + "/libs");
             discoverVersions(folderExec);
             discoverVersions(folderLibs);
         } catch (Exception e) {
@@ -345,10 +345,10 @@ public class UpdateThread extends Thread {
                     else
                         f.delete();
                 } else {
-                    File f = new File(System.getProperty("user.dir") + "/lib/" + remoteExecs.get(k));
+                    File f = new File(System.getProperty("user.dir") + "/libs/" + remoteExecs.get(k));
                     f.delete();
                     f = new File(System.getProperty("user.dir") + "/tmp/" + remoteExecs.get(k));
-                    if (!f.renameTo(new File(System.getProperty("user.dir") + "/lib/" + remoteExecs.get(k))))
+                    if (!f.renameTo(new File(System.getProperty("user.dir") + "/libs/" + remoteExecs.get(k))))
                         logger.warning("An error occurred while attempting to move the file!");
                     else
                         f.delete();
