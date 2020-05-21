@@ -60,16 +60,18 @@ public class LocalUserNeedsResetServlet extends HttpServlet {
                         statementList.addStatement(statementElement);
                         User user = Server.dataStore.getUserDao().getObjects(statementList).get(0);
 
-                        if (Server.userAuthenticationModule.userNeedsReset(user)) {
+                        if (user.getNeedsPasswordReset()) {
                             // show the OTP modal
                             char[] otp = Server.userAuthenticationModule.getOTP(req.getParameter("username"));
                             statusInfo.put("needsReset", "true");
                             statusInfo.put("otp", new String(otp));
                         } else {
                             // change status for user, generate new password and update info
-                            Server.userAuthenticationModule.updateReset(user, 1);
+                            // Server.userAuthenticationModule.updateReset(user, 1);
+                            user.setNeedsPasswordReset(false);
                             String newPW = generateRandomPassword();
-                            Server.userAuthenticationModule.setNewOneTimePassword(req.getParameter("username"), newPW);
+                            user.setPassword(newPW);
+                            Server.dataStore.getUserDao().storeObject(user);
                             statusInfo.put("needsReset", "false");
                             statusInfo.put("newPW", newPW);
                         }
