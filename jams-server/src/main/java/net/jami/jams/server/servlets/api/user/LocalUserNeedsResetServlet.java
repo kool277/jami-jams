@@ -11,7 +11,7 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.servlets.api.install.CachedObjects;
-import org.apache.catalina.webresources.CachedResource;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -51,7 +51,6 @@ public class LocalUserNeedsResetServlet extends HttpServlet {
                 if (CachedObjects.localAuthSettings != null && req.getParameterMap().containsKey("username")) {
 
                     HashMap<String,String> statusInfo = new HashMap<>();
-                    LocalAuthSettings settings = CachedObjects.localAuthSettings;
                     String username = req.getParameter("username");
 
                     if(Server.dataStore.userExists(username)){
@@ -60,7 +59,7 @@ public class LocalUserNeedsResetServlet extends HttpServlet {
                         statementList.addStatement(statementElement);
                         User user = Server.dataStore.getUserDao().getObjects(statementList).get(0);
 
-                        if (user.getNeedsPasswordReset()) {
+                        if (user != null && user.getNeedsPasswordReset() && user.getUserType() ==  AuthenticationSourceType.LOCAL) {
                             // show the OTP modal
                             char[] otp = Server.userAuthenticationModule.getOTP(req.getParameter("username"));
                             statusInfo.put("needsReset", "true");
