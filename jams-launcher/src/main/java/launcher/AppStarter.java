@@ -34,7 +34,6 @@ public class AppStarter extends Thread {
             logger.info("md5 for all packages: ");
             logger.info("Core: " + checksum(System.getProperty("user.dir") + "/" + "jams-server.jar"));
             logger.info("AD Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "ad-connector.jar"));
-            logger.info("HSQL Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "hsqlconnector.jar"));
             logger.info("LDAP Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "ldap-connector.jar"));
         } catch (IOException e) {
             e.printStackTrace();
