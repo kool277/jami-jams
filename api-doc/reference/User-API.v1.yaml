@@ -1,0 +1,113 @@
+openapi: 3.0.0
+info:
+  title: User API
+  version: '1.0'
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/auth/contacts:
+    get:
+      summary: Contacts endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-contacts
+  '/api/auth/device/{deviceId}':
+    parameters:
+      - schema:
+          type: string
+        name: deviceId
+        in: path
+        required: true
+    get:
+      summary: Device operations
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './Admin-API.v1.yaml#/components/schemas/Device'
+      operationId: get-api-auth-device-deviceId
+    put:
+      summary: ''
+      operationId: put-api-auth-device-deviceId
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: ''
+      operationId: post-api-auth-device-deviceId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf: []
+  /api/auth/devices:
+    get:
+      summary: Get the list of devices
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './Admin-API.v1.yaml#/components/schemas/Device'
+      operationId: get-api-auth-devices
+  /api/auth/directories:
+    get:
+      summary: Get the directories connect to JAMS
+      tags: []
+      responses: {}
+      operationId: get-api-auth-directories
+  /api/auth/directory/entry:
+    get:
+      summary: Get the profile of a user
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
+      operationId: get-api-auth-directory-entry
+  /api/auth/directory/search:
+    get:
+      summary: Search the directory
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
+        '':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
+      operationId: get-api-auth-directory-search
+  /api/auth/user:
+    get:
+      summary: User endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-auth-user
+components:
+  schemas: {}
+  securitySchemes:
+    API Key - 1:
+      name: API Key
+      type: apiKey
+      in: query

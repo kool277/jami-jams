@@ -37,7 +37,6 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import static net.jami.jams.server.core.TomcatConnectorFactory.getSSLConnectorWithTrustStore;
 
 //This class boots the tomcat server which provides the subsystem
 //for the API calls.
@@ -64,6 +63,7 @@ public class TomcatLauncher {
         log.info("JAR Resource File = " + jarName);
         StandardContext context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
         //Hack to prevent useless verbose messages.
+
         context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         WebResourceRoot resources = new StandardRoot(context);
         if (jarName.contains(".jar")) {
@@ -96,6 +96,4 @@ public class TomcatLauncher {
             log.error("Web-server has failed to start - this is critical!");
         }
     }
-
-
 }

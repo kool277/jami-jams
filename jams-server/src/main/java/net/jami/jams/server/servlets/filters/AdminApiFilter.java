@@ -34,7 +34,6 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
-import java.util.Date;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 import static net.jami.jams.server.servlets.filters.JWTValidator.verifyLevel;

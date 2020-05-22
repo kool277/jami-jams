@@ -8,6 +8,7 @@
     <artifactId>jams3-parent</artifactId>
     <packaging>pom</packaging>
     <version>${revision}</version>
+    <name>Jami Account Management Server</name>
     <modules>
         <module>jams-server</module>
         <module>jams-common</module>
@@ -18,7 +19,7 @@
         <module>jami-dht</module>
         <module>authentication-module</module>
         <module>jami-nameserver</module>
-        <module>jams-launcher</module>
+        <module>updater</module>
     </modules>
 
     <properties>
@@ -47,6 +48,11 @@
         <maven.clean.version>3.1.0</maven.clean.version>
         <nimbus.jwt.version>8.17</nimbus.jwt.version>
         <asm.version>8.0</asm.version>
+        <jeromq.version>0.5.2</jeromq.version>
+        <maven.model.version>3.2.5</maven.model.version>
+        <apache.httpcore.version>4.4.12</apache.httpcore.version>
+        <apache.httpclient.version>4.5.10</apache.httpclient.version>
+        <google.guava.version>20.0</google.guava.version>
     </properties>
 
     <dependencies>

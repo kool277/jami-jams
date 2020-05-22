@@ -68,9 +68,7 @@ public class StartInstallServlet extends HttpServlet {
     //This is the ONLY case where we write directy to the DB
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        StatementList statementList = new StatementList();
-        statementList.setStatements(null);
-        if(dataStore.getUserDao().getObjects(statementList).size() != 0){
+        if(dataStore.getUserDao().getObjects(null).size() != 0){
             resp.sendError(500,"We have tried to create an administrative account where one already exists!");
             return;
         }

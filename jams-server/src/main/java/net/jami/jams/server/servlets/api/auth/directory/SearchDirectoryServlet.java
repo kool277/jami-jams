@@ -29,7 +29,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.objects.user.UserProfile;
-import net.jami.jams.server.Server;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -74,9 +74,11 @@ module jams.common {
     exports net.jami.jams.common.authentication.local;
     exports net.jami.jams.common.objects.responses;
     exports net.jami.jams.common.cryptoengineapi.ocsp;
+    exports net.jami.jams.common.updater;
     requires jdk.crypto.cryptoki;
     requires java.base;
     requires java.sql;
     requires org.apache.xbean.classloader;
+    requires jeromq;
 }
 

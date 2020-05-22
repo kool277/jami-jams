@@ -22,10 +22,12 @@
 */
 package launcher;
 
+import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Slf4j
 public class MessageReceiver extends Thread {
 
     private ZMQ.Socket socket;
@@ -44,7 +46,7 @@ public class MessageReceiver extends Thread {
                 if(message.equals("DO-UPDATE")) atomicBoolean.set(true);
             }
             catch (Exception e){
-                System.out.println("Some exception occurred!");
+                log.error("Some exception occurred on the message receiving thread, details {}!",e.getMessage());
             }
         }
     }

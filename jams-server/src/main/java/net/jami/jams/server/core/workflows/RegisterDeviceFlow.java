@@ -82,7 +82,4 @@ public class RegisterDeviceFlow {
             return null;
         }
     }
-
-
-
 }

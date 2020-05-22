@@ -45,7 +45,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -148,6 +147,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
                 user.setAccessLevel(AccessLevel.USER);
                 user.setRealm(key.getRealm());
                 user.setUserType(key.getType());
+                //This is legal with a null ONLY because in this case there is no relation with a external server.
                 RegisterUserFlow.createUser(user,null);
                 return tokenController.getToken(user);
             }
@@ -192,6 +192,20 @@ public class UserAuthenticationModule implements AuthenticationModule {
     @Override
     public RSAPublicKey getAuthModulePubKey() {
         return (RSAPublicKey) publicKey;
+    }
+
+    @Override
+    public char[] getOTP(String username) {
+
+        if(datastore.userExists(username)){
+            StatementList statementList = new StatementList();
+            StatementElement statementElement = new StatementElement("username","=",username,"");
+            statementList.addStatement(statementElement);
+            User user = datastore.getUserDao().getObjects(statementList).get(0);
+            return (user.getPassword()).toCharArray();
+        }
+
+        return new char[0];
     }
 
 }

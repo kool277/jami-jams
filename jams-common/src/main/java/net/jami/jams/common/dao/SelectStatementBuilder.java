@@ -25,11 +25,10 @@ package net.jami.jams.common.dao;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 
 import java.sql.PreparedStatement;
-import java.util.List;
 
 public class SelectStatementBuilder {
 
-    public static PreparedStatement buildStatement(String table, List<StatementElement> statementElements,
+    public static PreparedStatement buildStatement(String table, StatementList statementElements,
                                         SQLConnection connection) throws Exception
     {
         PreparedStatement ps = null;
@@ -37,7 +36,7 @@ public class SelectStatementBuilder {
         stringBuilder.append("SELECT * FROM ").append(table);
         if(statementElements != null) {
             stringBuilder.append(" WHERE ");
-            for (StatementElement statementElement : statementElements) {
+            for (StatementElement statementElement : statementElements.getStatements()) {
                 stringBuilder
                         .append(statementElement.getColumn())
                         .append(" ")
@@ -49,7 +48,7 @@ public class SelectStatementBuilder {
             }
             ps = connection.getConnection().prepareStatement(stringBuilder.toString());
             int i = 1;
-            for (StatementElement statementElement : statementElements) {
+            for (StatementElement statementElement : statementElements.getStatements()) {
                 ps.setString(i, statementElement.getValue());
                 i++;
             }

@@ -96,6 +96,11 @@ public class ADConnector implements AuthenticationSource {
     }
 
     @Override
+    public void setUserProfile(UserProfile userProfile) {
+        //does nothing as we cannot edit user profiles.
+    }
+
+    @Override
     public boolean authenticate(String username, String password) {
         try {
             return authenticationService.authenticateUser(username, password);

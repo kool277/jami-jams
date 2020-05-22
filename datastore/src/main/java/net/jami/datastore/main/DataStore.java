@@ -74,6 +74,11 @@ public class DataStore implements AuthenticationSource {
     }
 
     @Override
+    public void setUserProfile(UserProfile userProfile) {
+        //TODO: Implement this.
+    }
+
+    @Override
     public boolean authenticate(String username, String password) {
         StatementList statementList = new StatementList();
         StatementElement statementElement = new StatementElement("username","=",username,"");
