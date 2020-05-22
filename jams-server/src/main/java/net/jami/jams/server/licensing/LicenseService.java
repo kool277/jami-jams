@@ -64,14 +64,14 @@ public class LicenseService {
             try{
                 ((X509Certificate) c).checkValidity();
                 c.verify(ca.getPublicKey());
-                Server.setActivated(true);
+                Server.activated.set(true);
                 if (array != null) {
                     JSONObject jsonObject = new JSONObject(new String(array));
                     licenseType = (String) jsonObject.get("type");
                 }
             }
             catch (Exception e){
-                Server.setActivated(false);
+                Server.activated.set(false);
                 licenseType = "COMMUNITY";
                 log.warn("Your license is no longer valid or has been tampered with - " + e.toString());
             }

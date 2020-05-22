@@ -2,6 +2,7 @@ package launcher;
 
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import lombok.extern.slf4j.Slf4j;
 import org.zeromq.ZMQ;
 
 import java.io.BufferedReader;
@@ -10,14 +11,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Logger;
+import java.util.logging.log;
 
+@Slf4j
 public class AppStarter extends Thread {
 
     private static Process applicationProcess;
     private static long jamsPID;
     private static Timer timer;
-    private final static Logger logger = Logger.getLogger(AppStarter.class.getName());
     public static ZMQ.Context context = ZMQ.context(1);
 
 
@@ -31,11 +32,10 @@ public class AppStarter extends Thread {
 
 
         try {
-            logger.info("md5 for all packages: ");
-            logger.info("Core: " + checksum(System.getProperty("user.dir") + "/" + "jams-server.jar"));
-            logger.info("AD Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "ad-connector.jar"));
-            logger.info("HSQL Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "hsqlconnector.jar"));
-            logger.info("LDAP Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "ldap-connector.jar"));
+            log.info("md5 for all packages: ");
+            log.info("Core: " + checksum(System.getProperty("user.dir") + "/" + "jams-server.jar"));
+            log.info("AD Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "ad-connector.jar"));
+            log.info("LDAP Connector: " + checksum(System.getProperty("user.dir") + "/libs/" + "ldap-connector.jar"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,13 +58,13 @@ public class AppStarter extends Thread {
                 if (!isStillAlive(Long.toString(jamsPID))) {
 
                     try {
-                        logger.info("Process with pid: " + jamsPID + " found dead. Resurrecting...");
+                        log.info("Process with pid: " + jamsPID + " found dead. Resurrecting...");
                         ProcessBuilder pb = startAccountManagementServer(parentArgs);
 
                         if (pb != null) {
                             pb.inheritIO();
                             pb.directory(new File(System.getProperty("user.dir")));
-                            logger.fine("Directory: " + pb.directory().getAbsolutePath());
+                            log.fine("Directory: " + pb.directory().getAbsolutePath());
                             applicationProcess = pb.start();
                         }
 
@@ -72,9 +72,9 @@ public class AppStarter extends Thread {
                         if (applicationProcess.isAlive())
                             jamsPID = applicationProcess.pid();
 
-                        logger.info("New PID: " + jamsPID);
+                        log.info("New PID: " + jamsPID);
                     } catch (IOException e) {
-                        logger.severe("Exception thrown when attempting to startup jams process again!");
+                        log.severe("Exception thrown when attempting to startup jams process again!");
                     }
                 }
 
@@ -91,13 +91,13 @@ public class AppStarter extends Thread {
         String OS = System.getProperty("os.name").toLowerCase();
         String command;
         if (OS.indexOf("win") >= 0) {
-            logger.info("Check if pid " + pidStr + " is alive...");
+            log.info("Check if pid " + pidStr + " is alive...");
             command = "cmd /c tasklist /FI \"PID eq " + pidStr + "\"";
         } else if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.contains("mac")) {
-            logger.info("Check if pid " + pidStr + " is alive...");
+            log.info("Check if pid " + pidStr + " is alive...");
             command = "ps -p " + pidStr;
         } else {
-            logger.warning("Unsupported OS, failing gracefully... ");
+            log.warning("Unsupported OS, failing gracefully... ");
             return false;
         }
         return isProcessIdRunning(pidStr, command); // call generic implementation
@@ -119,7 +119,7 @@ public class AppStarter extends Thread {
 
             return false;
         } catch (Exception ex) {
-            logger.severe("Got exception using system command!");
+            log.severe("Got exception using system command!");
             return false;
         }
     }
@@ -131,7 +131,7 @@ public class AppStarter extends Thread {
             if (pb != null) {
                 pb.inheritIO();
                 pb.directory(new File(System.getProperty("user.dir")));
-                logger.info("Directory: " + pb.directory().getAbsolutePath());
+                log.info("Directory: " + pb.directory().getAbsolutePath());
                 applicationProcess = pb.start();
             }
 
@@ -141,7 +141,7 @@ public class AppStarter extends Thread {
 
         }
         catch (NullPointerException | IOException e) {
-            logger.severe("An exception occurred! " + e.toString());
+            log.severe("An exception occurred! " + e.toString());
         }
         UpdateThread updateThread = new UpdateThread(applicationProcess, parentArgs);
         updateThread.start();

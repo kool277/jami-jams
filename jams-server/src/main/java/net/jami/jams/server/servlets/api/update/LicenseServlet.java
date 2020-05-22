@@ -26,7 +26,7 @@ public class LicenseServlet extends HttpServlet {
         try {
             resp.setStatus(200);
             HashMap<String,Object> payload = new HashMap<>();
-            payload.put("isActive", Server.isActivated());
+            payload.put("isActive", Server.activated.get());
             payload.put("licenseType", new LicenseService().getLicenseType());
             payload.put("currentVersion", LicenseUtils.checkVersion(System.getProperty("user.dir") + "/tmpjar/", System.getProperty("user.dir") + "/jams-server.jar"));
             resp.getOutputStream().write(JsonStream.serialize(payload).getBytes());

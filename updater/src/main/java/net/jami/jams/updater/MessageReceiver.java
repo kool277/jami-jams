@@ -1,4 +1,4 @@
-package launcher;
+package net.jami.jams.updater;
 
 import org.zeromq.ZMQ;
 

@@ -57,5 +57,6 @@ module jams.common {
     requires java.sql;
     requires org.apache.xbean.classloader;
     requires jeromq;
+    requires java.naming;
 }
 

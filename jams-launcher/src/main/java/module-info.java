@@ -14,5 +14,6 @@ module jams.launcher {
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpclient;
     requires plexus.utils;
+    requires updater;
 }
 

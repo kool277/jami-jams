@@ -15,6 +15,7 @@ import net.jami.jams.common.utils.UpdateInterface;
 import net.jami.jams.nameserver.LocalNameServer;
 import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.core.TomcatLauncher;
+import net.jami.jams.server.licensing.LicenseService;
 import net.jami.jams.server.startup.AuthModuleLoader;
 import net.jami.jams.server.startup.CryptoEngineLoader;
 
@@ -80,6 +81,9 @@ public class Server {
                     else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 }
                 else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
+
+                new LicenseService().loadLicense();
+                appUpdater = UpdaterLoader.loadUpdater();
                 log.info("All services are UP and ready for use...");
             }
             catch (Exception e){
