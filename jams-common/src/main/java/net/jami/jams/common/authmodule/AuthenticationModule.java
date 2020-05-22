@@ -20,9 +20,5 @@ public interface AuthenticationModule {
     boolean testModuleConfiguration(AuthenticationSourceType type, String configuration);
     boolean createUser(AuthenticationSourceType type, String realm, NameServer nameServer, User user);
     RSAPublicKey getAuthModulePubKey();
-    boolean updateReset(User user, int needsReset);
-    boolean userExists(User user);
-    boolean userNeedsReset(User user);
-    boolean setNewOneTimePassword(String username, String otp);
     char[] getOTP(String username);
 }

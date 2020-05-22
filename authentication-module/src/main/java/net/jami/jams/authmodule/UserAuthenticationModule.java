@@ -172,4 +172,18 @@ public class UserAuthenticationModule implements AuthenticationModule {
         return (RSAPublicKey) publicKey;
     }
 
+    @Override
+    public char[] getOTP(String username) {
+
+        if(datastore.userExists(username)){
+            StatementList statementList = new StatementList();
+            StatementElement statementElement = new StatementElement("username","=",username,"");
+            statementList.addStatement(statementElement);
+            User user = datastore.getUserDao().getObjects(statementList).get(0);
+            return (user.getPassword()).toCharArray();
+        }
+
+        return new char[0];
+    }
+
 }
