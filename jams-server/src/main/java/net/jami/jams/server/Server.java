@@ -10,6 +10,7 @@ import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.common.server.ServerSettings;
+import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.common.utils.UpdateInterface;
 import net.jami.jams.nameserver.LocalNameServer;
@@ -17,6 +18,7 @@ import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.core.TomcatLauncher;
 import net.jami.jams.server.startup.AuthModuleLoader;
 import net.jami.jams.server.startup.CryptoEngineLoader;
+import net.jami.jams.server.startup.UpdaterLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,6 +39,7 @@ public class Server {
     //This one gets loaded via JAR, to make it more flexible.
     public  static CertificateAuthority certificateAuthority;
     public  static AuthenticationModule userAuthenticationModule;
+    public  static AppUpdater appUpdater;
     public  static NameServer nameServer;
     private static TomcatLauncher tomcatLauncher = null;
     public static final UpdateInterface updateInterface = new UpdateInterface();
@@ -80,6 +83,7 @@ public class Server {
                     else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 }
                 else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
+                appUpdater = UpdaterLoader.loadUpdater();
                 log.info("All services are UP and ready for use...");
             }
             catch (Exception e){

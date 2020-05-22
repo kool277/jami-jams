@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: Install API
+  version: '1.0'
+  description: This API is used by the Web-UI installer in order to get JAMS up and running.
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /api/install/auth:
+    post:
+      summary: ''
+      operationId: post-api-install-auth
+      responses:
+        '200':
+          description: OK
+  /api/install/ca:
+    post:
+      summary: ''
+      operationId: post-api-install-ca
+      responses:
+        '200':
+          description: OK
+  /api/install/settings:
+    post:
+      summary: ''
+      operationId: post-api-install-settings
+      responses:
+        '200':
+          description: OK
+  /api/install/start:
+    post:
+      summary: ''
+      operationId: post-api-install-start
+      responses:
+        '200':
+          description: OK
+components:
+  schemas: {}

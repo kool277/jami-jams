@@ -10,6 +10,8 @@ module jams.server {
     requires javassist;
     requires datastore;
     requires org.apache.xbean.classloader;
+    requires org.bouncycastle.pkix;
+    requires org.bouncycastle.provider;
     requires jami.nameserver;
     requires jami.dht;
     requires nimbus.jose.jwt;
@@ -18,10 +20,19 @@ module jams.server {
     requires java.logging;
     requires javax.servlet.api;
     exports net.jami.jams.server.servlets.general to org.apache.tomcat.embed.core;
+
     exports net.jami.jams.server.servlets.filters to org.apache.tomcat.embed.core;
+
     exports net.jami.jams.server.servlets.api.auth.login to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.auth.device to org.apache.tomcat.embed.core;
+    exports net.jami.jams.server.servlets.api.auth.directory to org.apache.tomcat.embed.core;
+    exports net.jami.jams.server.servlets.api.auth.user to org.apache.tomcat.embed.core;
+
     exports net.jami.jams.server.servlets.api.install to org.apache.tomcat.embed.core;
+
+    exports net.jami.jams.server.servlets.general to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.api.jaminameserver to org.apache.tomcat.embed.core;
     exports net.jami.jams.server.servlets.x509 to org.apache.tomcat.embed.core;
+
+
 }

@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: Administration API
+  version: '1.0'
+  description: "This API is used to provide admin functions which are broader than the user's API and allow modifying users which are not oneself."
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /api/admin/device:
+    get:
+      summary: User device
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+      operationId: get-api-admin-device
+      requestBody:
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+        - schema:
+            type: string
+          in: query
+          name: deviceId
+      description: Returns the device information.
+    put:
+      summary: ''
+      operationId: put-api-admin-device
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: ''
+      operationId: delete-api-admin-device
+      responses:
+        '200':
+          description: OK
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+        - schema:
+            type: string
+          in: query
+          name: deviceId
+      description: Revokes a device.
+  /api/admin/devices:
+    get:
+      summary: User devices
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+      operationId: get-api-admin-devices
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+  /api/admin/directory/entry:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+      operationId: get-api-admin-directory-entry
+      description: ''
+    put:
+      summary: ''
+      operationId: put-api-admin-directory-entry
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: ''
+      operationId: post-api-admin-directory-entry
+      responses:
+        '200':
+          description: OK
+  /api/admin/user:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-admin-user
+    post:
+      summary: ''
+      operationId: post-api-admin-user
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: ''
+      operationId: delete-api-admin-user
+      responses:
+        '200':
+          description: OK
+    put:
+      summary: ''
+      operationId: put-api-admin-user
+      responses:
+        '200':
+          description: OK
+  /api/admin/users:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-api-admin-users
+components:
+  schemas:
+    Device:
+      title: Device
+      type: object
+      properties:
+        deviceId:
+          type: string
+        displayName:
+          type: string
+        certificate:
+          type: string
+      description: "The user's Jami device."
+    UserProfile:
+      title: UserProfile
+      type: object
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        phoneNumberExtension:
+          type: string
+        mobileNumber:
+          type: string
+        faxNumber:
+          type: string
+        profilePicture:
+          type: string
+        email:
+          type: string
+        organization:
+          type: string
+      description: "The user's extended information which is not critical to Jami operations, usually provided by LDAP, Active Directory or other backend."

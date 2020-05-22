@@ -11,7 +11,9 @@ import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
+import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
+import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
 import java.io.IOException;
 
@@ -42,11 +44,26 @@ public class DeviceServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        String username = req.getAttribute("username").toString();
+        String deviceId = req.getPathInfo().replace("/","");
+        String deviceName = req.getParameter("deviceName");
+        StatementList update = new StatementList();
+        StatementElement st0 = new StatementElement("deviceName","=",deviceName,"");
+        update.addStatement(st0);
+        StatementList constraint = new StatementList();
+        StatementElement st1 = new StatementElement("owner","=",username,"AND");
+        StatementElement st2 = new StatementElement("deviceId","=",deviceId,"");
+        update.addStatement(st1);
+        update.addStatement(st2);
+        if(dataStore.getDeviceDao().updateObject(update,constraint)) resp.setStatus(200);
+        else resp.sendError(500,"could not update the device's information!");
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        String deviceId = req.getPathInfo().replace("/","");
+        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
+        if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        else resp.sendError(500,"An exception has occurred while trying to revoke a device!");
     }
 }
