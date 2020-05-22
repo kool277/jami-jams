@@ -77,7 +77,7 @@ public class LicenseService {
             }
         }
         catch (Exception e){
-            Server.setActivated(false);
+            Server.activated.set(false);
             licenseType = "COMMUNITY";
             //logger.warning("An exception occurred while checking your license: " + e.toString());
         }

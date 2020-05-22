@@ -14,7 +14,6 @@ module jams.server {
     requires jami.dht;
     requires nimbus.jose.jwt;
     requires java.desktop;
-    requires org.json;
     requires java.naming;
     requires java.logging;
     requires javax.servlet.api;

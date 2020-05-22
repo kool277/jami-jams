@@ -26,8 +26,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class Server {
 
-    public static AtomicBoolean isInstalled = new AtomicBoolean(false);
-    private static volatile boolean activated = false;
+    public  final static AtomicBoolean isInstalled = new AtomicBoolean(false);
+    public  final static AtomicBoolean activated = new AtomicBoolean(false);
 
     static {
         JsoniterRegistry.initCodecs();
@@ -91,13 +91,5 @@ public class Server {
             userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore,certificateAuthority);
             log.info("Started server with empty modules waiting for setup...");
         }
-    }
-
-    public static boolean isActivated() {
-        return activated;
-    }
-
-    public static void setActivated(boolean isActivated) {
-        Server.activated = isActivated;
     }
 }

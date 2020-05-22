@@ -6,6 +6,7 @@ import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -37,6 +38,7 @@ import java.util.logging.Logger;
 
 @Getter
 @Setter
+@Slf4j
 public class UpdateThread extends Thread {
 
     private HashMap<String, String> localVersions = new HashMap<>();
@@ -46,7 +48,6 @@ public class UpdateThread extends Thread {
     private HashMap<String, String> remoteChecksums = new HashMap<>();
 
     private String[] parentArgs;
-    private final static Logger logger = Logger.getLogger(UpdateThread.class.getName());
     private static volatile String CORE_PACKAGE_MAIN_CLASS_NAME;
     private static volatile String UPDATE_SERVER_URL;
     private static volatile Long UPDATE_INTERVAL;
@@ -71,7 +72,7 @@ public class UpdateThread extends Thread {
             messageReceiver = new MessageReceiver(receiver,doUpdate);
             messageReceiver.start();
         } catch (Exception e) {
-            logger.warning("Could not create and bind publisher and/or receiver! Please contact software developer");
+            log.warn("Could not create and bind publisher and/or receiver! Please contact software developer");
             System.exit(-1);
         }
 
@@ -83,7 +84,7 @@ public class UpdateThread extends Thread {
             UPDATE_INTERVAL = any.get("UPDATE_INTERVAL").toLong();
 
         } catch (IOException e) {
-            logger.warning("Missing OEM configuration! Please contact software developer");
+            log.warn("Missing OEM configuration! Please contact software developer");
             System.exit(-1);
         }
 
@@ -149,7 +150,7 @@ public class UpdateThread extends Thread {
             discoverVersions(folderExec);
             discoverVersions(folderLibs);
         } catch (Exception e) {
-            logger.warning(e.toString());
+            log.warn(e.toString());
         }
     }
 
@@ -178,7 +179,7 @@ public class UpdateThread extends Thread {
                 remoteChecksums.put(k, v.get("md5").toString());
             });
         } catch (Exception e) {
-            logger.warning("Could not establish connection to JAMS Update Center with error: " + e.toString());
+            log.warn("Could not establish connection to JAMS Update Center with error: " + e.toString());
         }
     }
 
@@ -236,13 +237,13 @@ public class UpdateThread extends Thread {
                 ((X509Certificate) c).checkValidity();
                 c.verify(ca.getPublicKey());
             } catch (Exception e) {
-                logger.warning("Your license is no longer valid or has been tampered with - " + e.toString());
+                log.warn("Your license is no longer valid or has been tampered with - " + e.toString());
                 return false;
             }
             sslContext = SSLContexts.custom().loadKeyMaterial(ks, "".toCharArray()).loadTrustMaterial(trustStore, null)
                     .build();
         } catch (Exception e) {
-            logger.warning("Could not read license file with error " + e.toString());
+            log.warn("Could not read license file with error " + e.toString());
             return false;
         }
         return true;
@@ -261,14 +262,14 @@ public class UpdateThread extends Thread {
                 HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
                 HttpResponse httpResponse = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/updates/" + v));
                 if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                    logger.info(tmpFolder.getPath() + "/" + files.get(k));
+                    log.info(tmpFolder.getPath() + "/" + files.get(k));
                     FileOutputStream fos = new FileOutputStream(tmpFolder.getPath() + "/" + files.get(k));
                     if (k.equals(CORE_PACKAGE_MAIN_CLASS_NAME)) {
                         httpResponse.getEntity().writeTo(fos);
                         fos.close();
 
                         if (checksum(tmpFolder.getPath() + "/" + files.get(k)).equals(remoteChecksums.get(k))) {
-                            logger.info("Successfully downloaded the core package!");
+                            log.info("Successfully downloaded the core package!");
                             remoteChecksums.remove(CORE_PACKAGE_MAIN_CLASS_NAME);
                         }
 
@@ -277,16 +278,16 @@ public class UpdateThread extends Thread {
                         fos.close();
 
                         if (checksum(tmpFolder.getPath() + "/" + files.get(k)).equals(remoteChecksums.get(k))) {
-                            logger.info("Successfully downloaded a library package!");
+                            log.info("Successfully downloaded a library package!");
                             remoteChecksums.remove(remoteChecksums.get(k));
                         }
                     }
 
                 } else {
-                    logger.warning("The server declared an update but does not have the required files?!");
+                    log.warn("The server declared an update but does not have the required files?!");
                 }
             } catch (Exception e1) {
-                logger.warning("Could not download an update with error " + e1.toString());
+                log.warn("Could not download an update with error " + e1.toString());
             }
         });
     }
@@ -334,14 +335,14 @@ public class UpdateThread extends Thread {
             System.out.println("Murdered process with pid: " + AppStarter.getJamsPID());
             // delete old files
             remoteExecs.forEach((k, v) -> {
-                logger.info(remoteExecs.get(k));
+                log.info(remoteExecs.get(k));
 
                 if (k.equals(CORE_PACKAGE_MAIN_CLASS_NAME)) {
                     File f = new File(System.getProperty("user.dir") + "/" + remoteExecs.get(k));
                     f.delete();
                     f = new File(System.getProperty("user.dir") + "/tmp/" + remoteExecs.get(k));
                     if (!f.renameTo(new File(System.getProperty("user.dir") + "/" + remoteExecs.get(k))))
-                        logger.warning("An error occurred while attempting to move the file!");
+                        log.warn("An error occurred while attempting to move the file!");
                     else
                         f.delete();
                 } else {
@@ -349,7 +350,7 @@ public class UpdateThread extends Thread {
                     f.delete();
                     f = new File(System.getProperty("user.dir") + "/tmp/" + remoteExecs.get(k));
                     if (!f.renameTo(new File(System.getProperty("user.dir") + "/libs/" + remoteExecs.get(k))))
-                        logger.warning("An error occurred while attempting to move the file!");
+                        log.warn("An error occurred while attempting to move the file!");
                     else
                         f.delete();
                 }
@@ -375,7 +376,7 @@ public class UpdateThread extends Thread {
         try {
             FileUtils.deleteDirectory(System.getProperty("user.dir") + "/tmp/");
         } catch (IOException e) {
-            logger.warning("An error occurred while attempting to delete /tmp/ folder!");
+            log.warn("An error occurred while attempting to delete /tmp/ folder!");
         }
     }
 
@@ -384,7 +385,7 @@ public class UpdateThread extends Thread {
         HashCode hash = com.google.common.io.Files
                 .hash(new File(filepath), Hashing.md5());
 
-        logger.info("Calculated md5: " + hash.toString());
+        log.warn("Calculated md5: " + hash.toString());
         return hash.toString();
     }
 
@@ -410,7 +411,7 @@ public class UpdateThread extends Thread {
             };
             timer.scheduleAtFixedRate(pollTask, 15000, UPDATE_INTERVAL);
         } catch (Exception e) {
-            logger.warning("error! " + e.toString());
+            log.warn("error! " + e.toString());
         }
     }
 }
