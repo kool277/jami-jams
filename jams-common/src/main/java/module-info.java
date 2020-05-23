@@ -75,10 +75,12 @@ module jams.common {
     exports net.jami.jams.common.objects.responses;
     exports net.jami.jams.common.cryptoengineapi.ocsp;
     exports net.jami.jams.common.updater;
+    exports net.jami.jams.common.updater.subscription;
     requires jdk.crypto.cryptoki;
     requires java.base;
     requires java.sql;
     requires org.apache.xbean.classloader;
     requires jeromq;
+    requires java.naming;
 }
 

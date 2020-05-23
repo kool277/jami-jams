@@ -38,6 +38,7 @@ import net.jami.jams.common.utils.UpdateInterface;
 import net.jami.jams.nameserver.LocalNameServer;
 import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.core.TomcatLauncher;
+import net.jami.jams.server.licensing.LicenseService;
 import net.jami.jams.server.startup.AuthModuleLoader;
 import net.jami.jams.server.startup.CryptoEngineLoader;
 import net.jami.jams.server.startup.UpdaterLoader;
@@ -65,6 +66,7 @@ public class Server {
     public  static NameServer nameServer;
     private static TomcatLauncher tomcatLauncher = null;
     public static final UpdateInterface updateInterface = new UpdateInterface();
+    public static final LicenseService licenseService = null;
 
     public static void main(String[] args) {
         //Start tomcat.
@@ -106,6 +108,7 @@ public class Server {
                 }
                 else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 appUpdater = UpdaterLoader.loadUpdater();
+                licenseService.loadLicense();
                 log.info("All services are UP and ready for use...");
             }
             catch (Exception e){

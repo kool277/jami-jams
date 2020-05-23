@@ -27,11 +27,9 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.user.User;
 
-import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public interface AuthenticationModule {
 

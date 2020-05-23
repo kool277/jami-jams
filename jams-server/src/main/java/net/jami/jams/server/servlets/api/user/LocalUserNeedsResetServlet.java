@@ -4,14 +4,12 @@ package net.jami.jams.server.servlets.api.user;
 import com.jsoniter.output.JsonStream;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ca.JamsCA;
-import net.jami.jams.common.authentication.local.LocalAuthSettings;
-import net.jami.jams.common.authmodule.AuthModuleKey;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.servlets.api.install.CachedObjects;
-import net.jami.jams.common.authentication.AuthenticationSourceType;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @WebServlet("/api/user/needsreset")

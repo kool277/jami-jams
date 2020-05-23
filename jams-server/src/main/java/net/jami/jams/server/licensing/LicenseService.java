@@ -3,88 +3,62 @@ package net.jami.jams.server.licensing;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.updater.subscription.LicenseInformation;
+import net.jami.jams.common.utils.X509Utils;
 import net.jami.jams.server.Server;
-import org.json.JSONObject;
 
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
+import java.security.PrivateKey;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
-import java.util.Base64;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Vector;
 
 @Getter
 @Setter
 @Slf4j
 public class LicenseService {
 
-    private AtomicBoolean activationStatus = new AtomicBoolean(false);
-    private String licenseType = "COMMUNITY";
+    private X509Certificate certificate;
+    private PrivateKey privateKey;
+    private X509Certificate caCertificate;
+    private LicenseInformation licenseInformation = new LicenseInformation();
 
     //Load the license.
     public void loadLicense() {
         try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            //Assuming the file exists, we just read the file.
-            String b64License = new String(Files.readAllBytes(Path.of(System.getProperty("user.dir") + File.separator + "license.dat")));
-            //Since this is base64, we need to decode it.
-            String strLicense = new String(Base64.getDecoder().decode(b64License));
-            //Now we need to split it. This is actually easy.
-            int cutPoint = strLicense.indexOf("-----BEGIN PRIVATE KEY-----");
-            String publicKey = strLicense.substring(0,cutPoint);
-
-            InputStream inputStream = new ByteArrayInputStream(publicKey.getBytes(StandardCharsets.UTF_8));
-            Certificate c = cf.generateCertificate(inputStream);
-            String dn = ((X509Certificate)c).getSubjectDN().toString();
-            LdapName ln = new LdapName(dn);
-            byte[] array = null;
-            for(Rdn rdn : ln.getRdns()) {
-                try {
-                    array = Base64.getDecoder().decode(((String)rdn.getValue()).getBytes());
-                } catch (IllegalArgumentException e) {
-
-                }
+            Vector<Object> v = X509Utils.loadLicenseFromDatFile(
+                    new String(Files.readAllBytes(Path.of(System.getProperty("user.dir") + File.separator + "license.dat")))
+            );
+            certificate = (X509Certificate) v.get(0);
+            privateKey = (PrivateKey) v.get(1);
+            caCertificate = X509Utils.getCertificateFromPEMString(
+                    new String(LicenseService.class.getClassLoader().getResourceAsStream("oem/ca.crt").readAllBytes())
+            );
+            //Check the license for validity.
+            try {
+                certificate.checkValidity();
             }
-
-            //This is kept inside the resources/oem folder, this is a lot less violent than what we had before.
-            //TODO: You should re-use the same technique to validate whatever they stick in the textbox.
-            InputStream input = LicenseService.class.getClassLoader().getResourceAsStream("oem/ca.crt");
-            if (input == null) {
-                System.out.println("No CA Found... this is critical!");
-                System.exit(-1);
+            catch (CertificateExpiredException | CertificateNotYetValidException c2){
+                log.error("Your license is not yet valid or has expired!");
+                Server.activated.set(false);
             }
-            Certificate ca = cf.generateCertificate(input);
-            try{
-                ((X509Certificate) c).checkValidity();
-                c.verify(ca.getPublicKey());
-                Server.setActivated(true);
-                if (array != null) {
-                    JSONObject jsonObject = new JSONObject(new String(array));
-                    licenseType = (String) jsonObject.get("type");
-                }
+            try {
+                certificate.verify(caCertificate.getPublicKey());
             }
-            catch (Exception e){
-                Server.setActivated(false);
-                licenseType = "COMMUNITY";
-                log.warn("Your license is no longer valid or has been tampered with - " + e.toString());
+            catch (Exception e) {
+                log.error("The license file you have provided could not be verified!");
+                Server.activated.set(false);
             }
+            //If all these checks have passed then:
+            Server.activated.set(true);
+            licenseInformation = X509Utils.extractSubscriptionTypeFromCertificate(certificate);
         }
         catch (Exception e){
+            log.error("A generic occurred while trying to load your license or your license could not be found");
             Server.activated.set(false);
-            licenseType = "COMMUNITY";
-            //logger.warning("An exception occurred while checking your license: " + e.toString());
         }
-    }
-
-    public String getLicenseType() {
-        loadLicense();
-        return licenseType;
     }
 }

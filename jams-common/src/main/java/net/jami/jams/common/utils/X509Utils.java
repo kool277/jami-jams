@@ -1,28 +1,30 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.common.utils;
 
+import com.jsoniter.JsonIterator;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.updater.subscription.LicenseInformation;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -30,6 +32,8 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -39,6 +43,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
+import java.util.Vector;
 
 @Slf4j
 public class X509Utils {
@@ -68,7 +73,7 @@ public class X509Utils {
         }
     }
 
-    public static PublicKey getPubKeyFromPEMString(String keyString){
+    public static PublicKey getPubKeyFromPEMString(String keyString) {
         try {
             PEMParser parser = new PEMParser(new StringReader(keyString));
             Object parsedObject = parser.readObject();
@@ -80,8 +85,7 @@ public class X509Utils {
                 JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
                 return converter.getPublicKey((SubjectPublicKeyInfo) parsedObject);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("And error has occurred reading the public key from string!");
             return null;
         }
@@ -125,7 +129,7 @@ public class X509Utils {
         }
     }
 
-    public static String getPEMStringFromPubKey(PublicKey publicKey){
+    public static String getPEMStringFromPubKey(PublicKey publicKey) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             stringBuilder.append(PPK_HEADER);
@@ -148,6 +152,35 @@ public class X509Utils {
             return null;
         } catch (Exception e) {
             log.error("An error has occured trying to convert a string to a PKCS10 Certification Request, stack trace: " + e.toString());
+            return null;
+        }
+    }
+
+
+    public static Vector<Object> loadLicenseFromDatFile(String fileContents) {
+        Vector<Object> res = new Vector<>();
+        String keypair = new String(Base64.getDecoder().decode(fileContents));
+        int cutPoint = keypair.indexOf("-----BEGIN PRIVATE KEY-----");
+        String strCertificate = keypair.substring(0, cutPoint);
+        String strPrivateKey = keypair.substring(cutPoint);
+        res.add(getCertificateFromPEMString(strCertificate));
+        res.add(getKeyFromPEMString(strPrivateKey));
+        return res;
+    }
+
+    public static LicenseInformation extractSubscriptionTypeFromCertificate(X509Certificate certificate) {
+        try {
+            LdapName ln = new LdapName(certificate.getSubjectDN().toString());
+            for (Rdn rdn : ln.getRdns()) {
+                try {
+                    return JsonIterator.deserialize(Base64.getDecoder().decode(((String) rdn.getValue()).getBytes()),
+                            LicenseInformation.class);
+                } catch (IllegalArgumentException e) {
+                    //Do nothing here, because this is not critical and thit wi
+                }
+            }
+            return null;
+        } catch (Exception e) {
             return null;
         }
     }
