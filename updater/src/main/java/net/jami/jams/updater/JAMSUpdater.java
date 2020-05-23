@@ -27,13 +27,14 @@ public class JAMSUpdater extends Thread implements AppUpdater {
         this.start();
     }
 
+
     @Override
-    public String getCurrentVersion() {
+    public String getLocalVersions() {
         return null;
     }
 
     @Override
-    public String getLatestVersion() {
+    public String getRemoteVersions() {
         return null;
     }
 

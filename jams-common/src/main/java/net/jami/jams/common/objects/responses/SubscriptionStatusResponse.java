@@ -2,6 +2,7 @@ package net.jami.jams.common.objects.responses;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.updater.subscription.LicenseInformation;
 
 import java.util.HashMap;
@@ -14,6 +15,6 @@ public class SubscriptionStatusResponse {
 
     private LicenseInformation licenseInformation;
     private Boolean activated;
-    private HashMap<String,String> versions = checkVersion();
+    private HashMap<String, FileDescription> versions = checkVersion();
 
 }

@@ -2,8 +2,8 @@ package net.jami.jams.common.updater;
 
 public interface AppUpdater {
 
-    String getCurrentVersion();
-    String getLatestVersion();
+    String getLocalVersions();
+    String getRemoteVersions();
     boolean downloadUpdates();
 
 }

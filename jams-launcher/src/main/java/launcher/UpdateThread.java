@@ -46,6 +46,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyFactory;
 import java.security.KeyStore;
+import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -62,6 +63,10 @@ import java.util.jar.Manifest;
 @Slf4j
 public class UpdateThread extends Thread {
 
+    private static final String IFACE_TCP_RECEIVER = "tcp://localhost:4573";
+    private static final String IFACE_TCP_PUBLISHER = "tcp://localhost:4572";
+    private static final String SUBSCRIBER_TOPIC = "UPDATE";
+
     private HashMap<String, String> localVersions = new HashMap<>();
     private HashMap<String, String> localExecs = new HashMap<>();
     private HashMap<String, String> remoteVersions = new HashMap<>();
@@ -74,115 +79,29 @@ public class UpdateThread extends Thread {
     private static volatile Long UPDATE_INTERVAL;
     private SSLContext sslContext = null;
     private Process applicationProcess;
-    private ZMQ.Socket publisher;
-    private ZMQ.Socket receiver;
+    private ZMQ.Socket publisher =  AppStarter.context.socket(SocketType.PUB);
+    private ZMQ.Socket receiver = AppStarter.context.socket(SocketType.REP);
     private AtomicBoolean doUpdate = new AtomicBoolean(false);
     private MessageReceiver messageReceiver;
+
+
 
     public UpdateThread() {
     }
 
     public UpdateThread(Process applicationProcess, String[] parentArgs) {
         try {
-            //Use this to notify
-            publisher = AppStarter.context.socket(SocketType.PUB);
-            publisher.bind("tcp://*:4572");
-            //Use this to updater.
-            receiver = AppStarter.context.socket(SocketType.REP);
-            receiver.bind("tcp://*:4573");
+            publisher.bind(IFACE_TCP_PUBLISHER);
+            receiver.bind(IFACE_TCP_RECEIVER);
             messageReceiver = new MessageReceiver(receiver,doUpdate);
             messageReceiver.start();
         } catch (Exception e) {
             log.warn("Could not create and bind publisher and/or receiver! Please contact software developer");
             System.exit(-1);
         }
-
-        try {
-            InputStream input = AppStarter.class.getClassLoader().getResourceAsStream("oem/config.json");
-            Any any = JsonIterator.deserialize(input.readAllBytes());
-            CORE_PACKAGE_MAIN_CLASS_NAME = any.get("CORE_PACKAGE_MAIN_CLASS_NAME").toString();
-            UPDATE_SERVER_URL = any.get("UPDATE_URL").toString();
-            UPDATE_INTERVAL = any.get("UPDATE_INTERVAL").toLong();
-
-        } catch (IOException e) {
-            log.warn("Missing OEM configuration! Please contact software developer");
-            System.exit(-1);
-        }
-
-        System.out.println("Update thread created...");
+        log.info("Update thread created...");
         this.parentArgs = parentArgs;
         this.applicationProcess = applicationProcess;
-    }
-
-    //It is a VERY bad idea to use version numbers inside file names as this will break at some point and cause MAJOR
-    //user problems, we can therefore by-pass this by doing the following.
-
-    public static String[] unzipJar(String destinationDir, String jarPath) throws IOException {
-        String[] resp = new String[2];
-        File file = new File(jarPath);
-        JarFile jar = new JarFile(file);
-
-        // fist get all directories,
-        // then make those directory on the destination Path
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); ) {
-            JarEntry entry = (JarEntry) enums.nextElement();
-
-            String fileName = destinationDir + File.separator + entry.getName();
-            File f = new File(fileName);
-
-            if (fileName.endsWith("/")) {
-                f.mkdirs();
-            }
-        }
-
-        //now create all files
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); ) {
-            JarEntry entry = (JarEntry) enums.nextElement();
-            if (entry.toString().contains("META-INF/MANIFEST.MF")) {
-                String fileName = destinationDir + File.separator + entry.getName();
-                File f = new File(fileName);
-
-                if (!fileName.endsWith("/")) {
-                    InputStream is = jar.getInputStream(entry);
-                    FileOutputStream fos = new FileOutputStream(f);
-
-                    // write contents of 'is' to 'fos'
-                    while (is.available() > 0) {
-                        fos.write(is.read());
-                    }
-
-                    fos.close();
-                    is.close();
-                }
-            }
-        }
-
-        String manifestPath = destinationDir + "/META-INF/MANIFEST.MF";
-        Manifest manifest = new Manifest(new URL("file:///" + manifestPath).openStream());
-        resp[0] = manifest.getMainAttributes().getValue("Implementation-Version");
-        resp[1] = manifest.getMainAttributes().getValue("Main-Class");
-        return resp;
-    }
-
-    public void detectCurrentVersions(String folder) {
-        try {
-            File folderExec = new File(folder.replace("/jams-launcher", ""));
-            File folderLibs = new File(folder.replace("/jams-launcher", "") + "/libs");
-            discoverVersions(folderExec);
-            discoverVersions(folderLibs);
-        } catch (Exception e) {
-            log.warn(e.toString());
-        }
-    }
-
-    private void discoverVersions(File folderLibs) throws IOException {
-        for (File f : Objects.requireNonNull(folderLibs.listFiles())) {
-            if (f.isFile() && f.getName().contains(".jar") && !f.getName().contains("jams-launcher")) {
-                String[] resp = unzipJar(System.getProperty("user.dir") + "/tmpjar/" + f.getName(), f.getAbsolutePath());
-                localVersions.put(resp[1], resp[0]);
-                localExecs.put(resp[1], f.getName());
-            }
-        }
     }
 
     // This reads a file on the server which contains some basic info
@@ -401,21 +320,12 @@ public class UpdateThread extends Thread {
         }
     }
 
-    private static String checksum(String filepath) throws IOException {
-
-        HashCode hash = com.google.common.io.Files
-                .hash(new File(filepath), Hashing.md5());
-
-        log.warn("Calculated md5: " + hash.toString());
-        return hash.toString();
-    }
-
     @Override
     public void run() {
         Timer timer = new Timer();
         // check if license is valid, then attempt SSL handshake with update server.
         try {
-            System.out.println("Update timer started");
+            log.info("Update timer started");
             TimerTask pollTask = new TimerTask() {
                 @Override
                 public void run() {

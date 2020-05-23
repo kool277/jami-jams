@@ -22,8 +22,6 @@
 */
 
 module jams.launcher {
-    opens com.google.guava;
-    opens org.zeromq.ZMQ;
     requires lombok;
     requires org.slf4j;
     requires jsoniter;
@@ -36,5 +34,6 @@ module jams.launcher {
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpclient;
     requires plexus.utils;
+    requires jams.common;
 }
 
