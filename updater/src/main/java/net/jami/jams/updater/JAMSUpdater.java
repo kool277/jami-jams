@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @Getter
 @Setter
-public class JAMSUpdater extends Thread implements AppUpdater {
+public class JAMSUpdater implements AppUpdater {
 
     private final AtomicBoolean updateAvailable = new AtomicBoolean(false);
     private final AtomicBoolean doUpdate;
@@ -18,25 +18,6 @@ public class JAMSUpdater extends Thread implements AppUpdater {
 
     public JAMSUpdater(AtomicBoolean doUpdate) {
         this.doUpdate = doUpdate;
-        this.start();
-        //As a mock I left this here, please remove it when this is done.
-    }
-
-
-    @Override
-    public void run() {
-        try {
-            synchronized (this){
-                this.wait(20_000);
-            }
-            this.doUpdate.set(true);
-            synchronized (doUpdate) {
-                doUpdate.notify();
-            }
-        }
-        catch (Exception e){
-            log.error("An error has occurred! {}",e.getMessage());
-        }
     }
 
     @Override
