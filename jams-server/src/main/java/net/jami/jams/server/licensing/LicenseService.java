@@ -55,6 +55,8 @@ public class LicenseService {
             //If all these checks have passed then:
             Server.activated.set(true);
             licenseInformation = X509Utils.extractSubscriptionTypeFromCertificate(certificate);
+            log.info("Server is activated with valid license: {}", Server.activated.get());
+            log.info("License type: {}",licenseInformation.getType());
         }
         catch (Exception e){
             log.error("A generic occurred while trying to load your license or your license could not be found");

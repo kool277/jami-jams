@@ -13,7 +13,7 @@ class VersioningUtilsTest {
     @Disabled
     public void testFileScan(){
         HashMap<String, FileDescription> res = VersioningUtils.checkVersion(null);
-        Assertions.assertEquals(6,res.size(),"Incorrect number of versions detected!");
+        Assertions.assertEquals(7,res.size(),"Incorrect number of versions detected!");
     }
 
 

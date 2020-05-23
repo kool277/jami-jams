@@ -1,4 +1,4 @@
-package net.jami.jams.updater;
+package net.jami.jams.updater.internal;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.utils.X509Utils;
@@ -14,6 +14,8 @@ public class SFLTrustStore implements X509TrustManager {
     X509Certificate[] sflCertificate = new X509Certificate[1];
 
     //TODO: This just returns the SavoirFaireLinux CA everywhere - get this from the OEM resources folder.
+    //Also keep in mind that since we fork off the launcher, it will not scan this one, but rather
+    //The launcher.
     public SFLTrustStore() {
         try {
             InputStream is = SFLTrustStore.class.getClassLoader().getResourceAsStream("ca.crt");

@@ -4,7 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.AppUpdater;
+import net.jami.jams.common.updater.FileDescription;
+import net.jami.jams.common.utils.VersioningUtils;
 
+import java.util.HashMap;
+import java.util.Timer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -12,22 +16,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Setter
 public class JAMSUpdater implements AppUpdater {
 
-    private final AtomicBoolean updateAvailable = new AtomicBoolean(false);
+    public static final AtomicBoolean updateAvailable = new AtomicBoolean(false);
     private final AtomicBoolean doUpdate;
-    private final UpdateDownloader updateDownloader = new UpdateDownloader();
+    private final UpdateCheckTask updateCheckTask = new UpdateCheckTask();
+    private final Timer timer = new Timer();
 
     public JAMSUpdater(AtomicBoolean doUpdate) {
         this.doUpdate = doUpdate;
+        timer.schedule(new UpdateCheckTask(),0,150_000);
     }
 
     @Override
-    public String getLocalVersions() {
+    public HashMap<String, FileDescription> getLocalVersions() {
+        return VersioningUtils.checkVersion(null);
+    }
+
+    @Override
+    public HashMap<String,FileDescription> getRemoteVersions() {
         return null;
     }
 
     @Override
-    public String getRemoteVersions() {
-        return null;
+    public boolean getUpdateAvailable() {
+        return updateAvailable.get();
     }
 
     @Override
@@ -38,6 +49,7 @@ public class JAMSUpdater implements AppUpdater {
     @Override
     public void doUpdate() {
         //Some logic here about replacing the existing files.
+
 
         //Notify back up-stream to the launcher that we want the update to happen.
         doUpdate.set(true);

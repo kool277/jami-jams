@@ -1,9 +1,12 @@
 package net.jami.jams.common.updater;
 
+import java.util.HashMap;
+
 public interface AppUpdater {
 
-    String getLocalVersions();
-    String getRemoteVersions();
+    HashMap<String,FileDescription> getLocalVersions();
+    HashMap<String,FileDescription> getRemoteVersions();
+    boolean getUpdateAvailable();
     void setLicense();
     void doUpdate();
 

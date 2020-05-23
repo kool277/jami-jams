@@ -30,7 +30,7 @@ public class SubscriptionServlet extends HttpServlet {
     // on disk..
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Create the keystore based on the uploadaded keypair.
+        req.getInputStream().readAllBytes();
 
     }
 }

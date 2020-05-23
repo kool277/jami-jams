@@ -173,10 +173,9 @@ public class X509Utils {
             LdapName ln = new LdapName(certificate.getSubjectDN().toString());
             for (Rdn rdn : ln.getRdns()) {
                 try {
-                    return JsonIterator.deserialize(Base64.getDecoder().decode(((String) rdn.getValue()).getBytes()),
+                    return JsonIterator.deserialize(Base64.getDecoder().decode(rdn.getValue().toString().getBytes()),
                             LicenseInformation.class);
-                } catch (IllegalArgumentException e) {
-                    //Do nothing here, because this is not critical and thit wi
+                } catch (Exception e) {
                 }
             }
             return null;
