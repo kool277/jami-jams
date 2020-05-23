@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 public class LicenseInformation {
 
+    //TODO: Possibly add the expiry date here based on the certificate.
     private SubscriptionType type = SubscriptionType.COMMUNITY;
     private List<String> products = new ArrayList<>();
 
