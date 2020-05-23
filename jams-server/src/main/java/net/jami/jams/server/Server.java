@@ -34,7 +34,6 @@ import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.common.server.ServerSettings;
 import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.utils.LibraryLoader;
-import net.jami.jams.common.utils.UpdateInterface;
 import net.jami.jams.nameserver.LocalNameServer;
 import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.core.TomcatLauncher;
@@ -65,7 +64,6 @@ public class Server {
     public  static AppUpdater appUpdater;
     public  static NameServer nameServer;
     private static TomcatLauncher tomcatLauncher = null;
-    public static final UpdateInterface updateInterface = new UpdateInterface();
     public static final LicenseService licenseService = null;
 
     public static void main(String[] args) {

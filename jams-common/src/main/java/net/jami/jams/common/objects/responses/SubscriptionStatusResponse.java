@@ -3,11 +3,10 @@ package net.jami.jams.common.objects.responses;
 import lombok.Getter;
 import lombok.Setter;
 import net.jami.jams.common.updater.subscription.LicenseInformation;
-import net.jami.jams.common.updater.subscription.SubscriptionType;
 
 import java.util.HashMap;
 
-import static net.jami.jams.common.utils.LicenseUtils.checkVersion;
+import static net.jami.jams.common.utils.VersioningUtils.checkVersion;
 
 @Getter
 @Setter

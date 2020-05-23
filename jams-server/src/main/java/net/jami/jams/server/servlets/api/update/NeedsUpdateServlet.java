@@ -22,21 +22,6 @@ public class NeedsUpdateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
         resp.setContentType("application/json");
-        try {
-            HashMap<String,Object> payload = new HashMap<>();
-            if(!Server.updateInterface.getVersions().equals("{}")) {
-                payload.put("updateAvailable", Server.updateInterface.getUpdateAvailable().get());
-                payload.put("newVersions", Server.updateInterface.getVersions());
-            }
-            else
-                payload.put("updateAvailable",false);
-
-            resp.getOutputStream().write(JsonStream.serialize(payload).getBytes());
-            resp.setStatus(200);
-        }
-        catch (Exception e){
-            resp.setStatus(500);
-        }
     }
 
     @Override

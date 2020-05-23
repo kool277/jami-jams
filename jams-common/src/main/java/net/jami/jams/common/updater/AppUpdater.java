@@ -6,6 +6,4 @@ public interface AppUpdater {
     String getLatestVersion();
     boolean downloadUpdates();
 
-
-
 }

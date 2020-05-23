@@ -18,11 +18,5 @@ public class StartUpdateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
         resp.setContentType("application/json");
-        try {
-            Server.updateInterface.approveUpdate();
-        }
-        catch (Exception e){
-            resp.setStatus(500);
-        }
     }
 }
