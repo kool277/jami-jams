@@ -59,7 +59,7 @@ public class ApiFilter implements Filter {
                     if(signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT)){
                         authsuccess = true;
                         request.setAttribute("username",signedJWT.getJWTClaimsSet().getSubject());
-                        if(signedJWT.getJWTClaimsSet().getClaim("oneTimePassword"){
+                        if((Boolean) signedJWT.getJWTClaimsSet().getClaim("oneTimePassword")){
                             //TODO: use redirect to enforce the /changepassword url or something.
                         }
                     }
