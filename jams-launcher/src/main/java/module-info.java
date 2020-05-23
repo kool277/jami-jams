@@ -22,18 +22,12 @@
 */
 
 module jams.launcher {
+    exports launcher;
     requires lombok;
     requires org.slf4j;
-    requires jsoniter;
-    requires javassist;
-    requires jdk.crypto.cryptoki;
     requires java.base;
-    requires java.sql;
-    requires jeromq;
-    requires guava;
-    requires org.apache.httpcomponents.httpcore;
-    requires org.apache.httpcomponents.httpclient;
-    requires plexus.utils;
     requires jams.common;
+    requires jams.server;
+    requires org.apache.xbean.classloader;
 }
 

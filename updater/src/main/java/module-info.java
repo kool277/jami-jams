@@ -2,5 +2,5 @@ module updater {
     requires jams.common;
     requires lombok;
     requires org.slf4j;
-    requires jeromq;
+    requires jams.launcher;
 }

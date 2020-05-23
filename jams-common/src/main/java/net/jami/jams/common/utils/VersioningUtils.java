@@ -29,11 +29,12 @@ public class VersioningUtils {
         }
     }
 
-    public static HashMap<String, FileDescription> checkVersion() {
+    public static HashMap<String, FileDescription> checkVersion(String baseLocation) {
         try {
             HashMap<String,FileDescription> res = new HashMap<>();
             ArrayList<Path> files = new ArrayList<>();
-            Files.walk(Paths.get(System.getProperty("user.dir"))).filter(Files::isRegularFile).forEach(files::add);
+            if(baseLocation == null) baseLocation = System.getProperty("user.dir");
+            Files.walk(Paths.get(baseLocation)).filter(Files::isRegularFile).forEach(files::add);
             files.forEach( e ->{
                 if(e.toString().endsWith(".jar")){
                     try {

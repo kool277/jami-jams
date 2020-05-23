@@ -15,6 +15,6 @@ public class SubscriptionStatusResponse {
 
     private LicenseInformation licenseInformation;
     private Boolean activated;
-    private HashMap<String, FileDescription> versions = checkVersion();
+    private HashMap<String, FileDescription> versions = checkVersion(null);
 
 }

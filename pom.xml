@@ -20,6 +20,7 @@
         <module>authentication-module</module>
         <module>jami-nameserver</module>
         <module>updater</module>
+        <module>jams-launcher</module>
     </modules>
 
     <properties>

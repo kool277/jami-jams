@@ -34,7 +34,6 @@ import net.jami.jams.nameserver.PublicNameServer;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.servlets.api.install.CachedObjects;
 import net.jami.jams.server.startup.AuthModuleLoader;
-import net.jami.jams.server.startup.UpdaterLoader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -115,8 +114,6 @@ public class InstallationFinalizer {
             ks.store(fos, password);
             fos.close();
             log.info("Successfully built keystore for for tomcat!");
-            appUpdater = UpdaterLoader.loadUpdater();
-            log.info("Started subscription and update service!");
             Server.isInstalled.set(true);
             log.info("The installation has completed successfully, you can now use JAMS!");
         } catch (Exception e) {

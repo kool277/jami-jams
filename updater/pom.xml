@@ -18,9 +18,20 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.zeromq</groupId>
-            <artifactId>jeromq</artifactId>
-            <version>${jeromq.version}</version>
+            <groupId>net.jami</groupId>
+            <artifactId>jams-launcher</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>${apache.httpcore.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${apache.httpclient.version}</version>
         </dependency>
     </dependencies>
 
@@ -38,7 +49,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>../jams/libs/${project.artifactId}.jar</outputFile>
+                            <outputFile>../jams/${project.artifactId}.jar</outputFile>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>

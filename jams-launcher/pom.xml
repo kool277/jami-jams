@@ -12,24 +12,16 @@
     <artifactId>jams-launcher</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>${maven.model.version}</version>
+            <groupId>net.jami</groupId>
+            <artifactId>jams-common</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>${apache.httpcore.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${apache.httpclient.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.zeromq</groupId>
-            <artifactId>jeromq</artifactId>
-            <version>${jeromq.version}</version>
+            <groupId>net.jami</groupId>
+            <artifactId>jams-server</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
