@@ -35,10 +35,11 @@ import net.jami.jams.common.utils.X509Utils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class User extends X509Entity implements BlockchainEntity, DatabaseObject {
 
     private String username;
@@ -125,5 +126,13 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
     @Override
     public PreparedStatement getUpdate(PreparedStatement ps) throws Exception {
         return null;
+    }
+
+    public void setPassword(char[] password){
+        this.password = new String(password);
+    }
+
+    public void setPassword(String password){
+        this.password = password;
     }
 }

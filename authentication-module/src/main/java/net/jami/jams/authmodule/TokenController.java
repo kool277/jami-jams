@@ -51,6 +51,7 @@ public class TokenController{
                 .subject(user.getUsername())
                 .audience("JAMS")
                 .claim("scope",user.getAccessLevel())
+                .claim("oneTimePassword",user.getNeedsPasswordReset())
                 .expirationTime(new Date(System.currentTimeMillis() + 30*60*1000))
                 .notBeforeTime(new Date(System.currentTimeMillis()))
                 .issueTime(new Date(System.currentTimeMillis()))

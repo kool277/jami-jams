@@ -64,7 +64,7 @@ public class Server {
     public  static AppUpdater appUpdater;
     public  static NameServer nameServer;
     private static TomcatLauncher tomcatLauncher = null;
-    public static final LicenseService licenseService = null;
+    public static final LicenseService licenseService = new LicenseService();
 
     public static void main(String[] args) {
         //Start tomcat.
