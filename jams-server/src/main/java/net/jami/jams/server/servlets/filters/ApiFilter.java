@@ -57,11 +57,11 @@ public class ApiFilter implements Filter {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
                     signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
                     if(signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT)){
-                        //TODO: Push this to the client because we know the password was one-time
-                        signedJWT.getJWTClaimsSet().getClaim("oneTimePassword");
-
                         authsuccess = true;
                         request.setAttribute("username",signedJWT.getJWTClaimsSet().getSubject());
+                        if(signedJWT.getJWTClaimsSet().getClaim("oneTimePassword"){
+                            //TODO: use redirect to enforce the /changepassword url or something.
+                        }
                     }
                 } catch (Exception e) {
                     log.info("Received an invalid token, declining access...");
