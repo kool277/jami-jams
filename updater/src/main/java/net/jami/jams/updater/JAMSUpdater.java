@@ -31,7 +31,18 @@ public class JAMSUpdater implements AppUpdater {
     }
 
     @Override
-    public boolean downloadUpdates() {
-        return updateDownloader.doUpdate();
+    public void setLicense() {
+        //Trigger reading the license from disk.
+    }
+
+    @Override
+    public void doUpdate() {
+        //Some logic here about replacing the existing files.
+
+        //Notify back up-stream to the launcher that we want the update to happen.
+        doUpdate.set(true);
+        synchronized (doUpdate){
+            doUpdate.notify();
+        }
     }
 }

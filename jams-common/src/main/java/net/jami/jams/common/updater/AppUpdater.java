@@ -4,6 +4,7 @@ public interface AppUpdater {
 
     String getLocalVersions();
     String getRemoteVersions();
-    boolean downloadUpdates();
+    void setLicense();
+    void doUpdate();
 
 }
