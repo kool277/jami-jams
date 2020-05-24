@@ -67,6 +67,6 @@ public class JAMSUpdater implements AppUpdater {
                 doUpdate.notify();
             }
         }
-        else log.error("Could not perform update!");
+        else log.error("Could not perform update - the downloaded files may have been invalid!");
     }
 }
