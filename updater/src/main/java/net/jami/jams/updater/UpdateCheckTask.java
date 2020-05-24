@@ -17,7 +17,6 @@ import org.apache.http.ssl.SSLContexts;
 import javax.net.ssl.SSLContext;
 import java.io.InputStream;
 import java.security.KeyStore;
-import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.TimerTask;
@@ -33,7 +32,6 @@ public class UpdateCheckTask extends TimerTask {
     private HashMap<String, FileDescription> localData;
     private SSLContext sslContext;
     private volatile KeyStore trustStore;
-    private static final String KEYSTORE_TYPE = "JKS";
 
     protected UpdateCheckTask() {
         try {
