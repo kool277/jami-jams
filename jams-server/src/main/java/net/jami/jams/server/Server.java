@@ -68,8 +68,8 @@ public class Server {
     public static AppUpdater appUpdater;
 
     public Server(AppUpdater appUpdater) {
-        main(new String[]{});
         Server.appUpdater = appUpdater;
+        main(new String[]{});
     }
 
 
