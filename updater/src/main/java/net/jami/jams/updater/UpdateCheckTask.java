@@ -69,7 +69,8 @@ public class UpdateCheckTask extends TimerTask {
             );
             //Compare and set to to true up-stream
             localData.forEach((k,v) -> {
-                if(remoteData.get(k).compareTo(v) > 0){
+                if(remoteData.containsKey(k) && remoteData.get(k).compareTo(v) > 0){
+                    log.info("Detected a new version on SFL servers!");
                     JAMSUpdater.updateAvailable.set(true);
                 }
             });

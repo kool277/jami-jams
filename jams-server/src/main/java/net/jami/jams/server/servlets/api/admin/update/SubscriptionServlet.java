@@ -1,4 +1,4 @@
-package net.jami.jams.server.servlets.api.update;
+package net.jami.jams.server.servlets.api.admin.update;
 
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
