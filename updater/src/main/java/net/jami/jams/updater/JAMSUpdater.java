@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Setter
 public class JAMSUpdater implements AppUpdater {
 
+    public static final String UPDATE_SERVER_URL = "https://updates.jami.net";
+
     public static final AtomicBoolean updateAvailable = new AtomicBoolean(false);
     private final AtomicBoolean doUpdate;
     private final UpdateCheckTask updateCheckTask = new UpdateCheckTask();
@@ -27,9 +29,10 @@ public class JAMSUpdater implements AppUpdater {
     public volatile static X509Certificate certificate;
     public volatile static PrivateKey privateKey;
 
+
     public JAMSUpdater(AtomicBoolean doUpdate) {
         this.doUpdate = doUpdate;
-        timer.schedule(new UpdateCheckTask(),0,150_000);
+        timer.schedule(updateCheckTask,0,10_000);
     }
 
     @Override
@@ -39,7 +42,7 @@ public class JAMSUpdater implements AppUpdater {
 
     @Override
     public HashMap<String,FileDescription> getRemoteVersions() {
-        return null;
+        return updateCheckTask.getRemoteData();
     }
 
     @Override
