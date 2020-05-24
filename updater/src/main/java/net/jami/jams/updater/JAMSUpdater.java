@@ -59,7 +59,7 @@ public class JAMSUpdater implements AppUpdater {
     @Override
     public void doUpdate() {
         //Some logic here about replacing the existing files.
-        boolean res = updateDownloader.downloadFiles();
+        boolean res = updateDownloader.downloadFiles(getRemoteVersions());
         //Notify back up-stream to the launcher that we want the update to happen.
         if(res) {
             doUpdate.set(true);
