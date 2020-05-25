@@ -36,12 +36,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static net.jami.jams.updater.UpdateDaemon.UPDATE_SERVER_URI;
 import org.apache.http.ssl.SSLContexts;
 import javax.net.ssl.SSLContext;
 
@@ -56,6 +59,7 @@ public class UpdateCheckTask extends TimerTask {
     private HashMap<String, FileDescription> localData;
     private SSLContext sslContext;
     private volatile KeyStore trustStore;
+    protected static volatile String UPDATE_SERVER_URI;
 
     protected UpdateCheckTask() {
         try {
@@ -66,6 +70,11 @@ public class UpdateCheckTask extends TimerTask {
             trustStore.setCertificateEntry("ca",certificate);
             //Inject the SSL Connection here for a first time.
             sslContext = SSLContexts.custom().loadTrustMaterial(trustStore, null).build();
+
+            // read config json
+            InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
+            Any any = JsonIterator.deserialize(input.readAllBytes());
+            UPDATE_SERVER_URI = any.get("UPDATE_URL").toString();
         }
         catch (Exception e){
             log.error("Could not initialize the trust store with error {}",e.getMessage());
@@ -86,9 +95,6 @@ public class UpdateCheckTask extends TimerTask {
                 }
             });
 
-
-
-
         }
         catch (Exception e){
             log.error("Could not check for updates with error: {}",e.getMessage());
@@ -101,7 +107,7 @@ public class UpdateCheckTask extends TimerTask {
         try {
             //Step 1: Download a file called versions.json
             HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
-            HttpResponse response = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/versions.json"));
+            HttpResponse response = httpClient.execute(new HttpGet(UPDATE_SERVER_URI + "/versions.json"));
             //Step 2: Load the file into the hashmaps
             Any any = JsonIterator.deserialize(response.getEntity().getContent().readAllBytes());
             any.asMap().forEach((k, v) ->

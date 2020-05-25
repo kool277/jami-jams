@@ -22,6 +22,8 @@
  */
 package net.jami.jams.updater;
 
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,8 @@ import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.VersioningUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -40,7 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Setter
 public class JAMSUpdater implements AppUpdater {
 
-    public static final String UPDATE_SERVER_URL = "https://updates.jami.net";
+    protected static volatile String UPDATE_SERVER_URI;
+    private static volatile Long UPDATE_INTERVAL;
 
     public static final AtomicBoolean updateAvailable = new AtomicBoolean(false);
     private final AtomicBoolean doUpdate;
@@ -53,8 +58,19 @@ public class JAMSUpdater implements AppUpdater {
 
 
     public JAMSUpdater(AtomicBoolean doUpdate) {
+
+        // read config json
+        try {
+            InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
+            Any any = JsonIterator.deserialize(input.readAllBytes());
+            UPDATE_SERVER_URI = any.get("UPDATE_URL").toString();
+            UPDATE_INTERVAL = any.get("UPDATE_INTERVAL").toLong();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         this.doUpdate = doUpdate;
-        timer.schedule(updateCheckTask,0,150_000);
+        timer.schedule(updateCheckTask,0,UPDATE_INTERVAL);
     }
 
     @Override
@@ -89,6 +105,7 @@ public class JAMSUpdater implements AppUpdater {
                 doUpdate.notify();
             }
         }
-        else log.error("Could not perform update - the downloaded files may have been invalid!");
+        else
+            log.error("Could not perform update - the downloaded files may have been invalid!");
     }
 }
