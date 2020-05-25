@@ -27,11 +27,6 @@
             <artifactId>xbean-classloader</artifactId>
             <version>${xbean.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.zeromq</groupId>
-            <artifactId>jeromq</artifactId>
-            <version>0.5.2</version>
-        </dependency>
     </dependencies>
 
 </project>

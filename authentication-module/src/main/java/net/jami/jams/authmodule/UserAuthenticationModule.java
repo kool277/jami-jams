@@ -1,3 +1,25 @@
+/*
+* Copyright (C) 2020 by Savoir-faire Linux
+* Authors: William Enright <william.enright@savoirfairelinux.com>
+*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+*          Johnny Flores <johnny.flores@savoirfairelinux.com>
+*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+*
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 package net.jami.jams.authmodule;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +45,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -126,6 +147,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
                 user.setAccessLevel(AccessLevel.USER);
                 user.setRealm(key.getRealm());
                 user.setUserType(key.getType());
+                //This is legal with a null ONLY because in this case there is no relation with a external server.
                 RegisterUserFlow.createUser(user,null);
                 return tokenController.getToken(user);
             }
@@ -170,6 +192,18 @@ public class UserAuthenticationModule implements AuthenticationModule {
     @Override
     public RSAPublicKey getAuthModulePubKey() {
         return (RSAPublicKey) publicKey;
+    }
+
+    @Override
+    public char[] getOTP(String username) {
+        if(datastore.userExists(username)){
+            StatementList statementList = new StatementList();
+            StatementElement statementElement = new StatementElement("username","=",username,"");
+            statementList.addStatement(statementElement);
+            User user = datastore.getUserDao().getObjects(statementList).get(0);
+            return (user.getPassword()).toCharArray();
+        }
+        return new char[0];
     }
 
 }
