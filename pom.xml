@@ -51,7 +51,6 @@
         <maven.clean.version>3.1.0</maven.clean.version>
         <nimbus.jwt.version>8.17</nimbus.jwt.version>
         <asm.version>8.0</asm.version>
-        <jeromq.version>0.5.2</jeromq.version>
         <maven.model.version>3.2.5</maven.model.version>
         <apache.httpcore.version>4.4.12</apache.httpcore.version>
         <apache.httpclient.version>4.5.10</apache.httpclient.version>
