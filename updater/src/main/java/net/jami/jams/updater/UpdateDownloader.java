@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.VersioningUtils;
 import net.jami.jams.common.utils.X509Utils;
+import net.jami.jams.server.licensing.LicenseService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -43,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -62,6 +64,19 @@ public class UpdateDownloader {
     private HashMap<String, FileDescription> remoteChecksums = new HashMap<>();
 
     public UpdateDownloader() {
+
+        try {
+            InputStream is = UpdateCheckTask.class.getClassLoader().getResourceAsStream("oem/ca.crt");
+            X509Certificate certificate = X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
+            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            trustStore.load(null, null);
+            trustStore.setCertificateEntry("ca", certificate);
+        }
+        catch (Exception e){
+            log.info("Could not load SFL's CA - this should not happen! detailed error: {}",e.getMessage());
+        }
+
+
         try {
             InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
             Any any = JsonIterator.deserialize(input.readAllBytes());
@@ -76,23 +91,36 @@ public class UpdateDownloader {
     public boolean downloadFiles(HashMap<String, FileDescription> files) {
         //I know this contradicts my dogma, but this really would have been an overkill for this project,
         //I just claim that everything which is not core gets dumped to the lib directory.
+        //We can perpetually reload this,it doesn't really harm anything.
+        //Build the SSL context here, (this is fairly simple)
+        KeyStore ks = null;
+        try {
+            ks = KeyStore.getInstance(KEYSTORE_TYPE);
+            ks.load(null);
+            LicenseService licenseService = new LicenseService();
+            licenseService.loadLicense();
+            ks.setKeyEntry("licenses", JAMSUpdater.privateKey,"".toCharArray(),new Certificate[]{JAMSUpdater.certificate});
+            sslContext = SSLContexts.custom().loadKeyMaterial(ks, "".toCharArray()).loadTrustMaterial(trustStore, null).build();
+        } catch (Exception e) {
+            log.warn("Could not download an update with error " + e.toString());
+        }
 
         // temp folder for safe download and integrity check
         File tmpFolder = new File(System.getProperty("user.dir") + "/tmp/");
-        tmpFolder.mkdirs();
+        if(!tmpFolder.mkdirs()){
+            log.error("Could not create temporary folder to store the update files!");
+            return false;
+        }
+
 
         files.forEach((k, v) -> {
             try {
                 HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
                 HttpResponse httpResponse = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/updates/" + v.getFileName()));
-                if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                    log.info(tmpFolder.getPath() + "/" + v.getFileName());
-                    FileOutputStream fos = new FileOutputStream(tmpFolder.getPath() + "/" + v.getFileName());
-                    httpResponse.getEntity().writeTo(fos);
-                    fos.close();
-                } else {
-                    log.warn("The server declared an update but does not have the required files?!");
-                }
+                if (httpResponse.getStatusLine().getStatusCode() != 200) return;
+                FileOutputStream fos = new FileOutputStream(tmpFolder.getPath() + "/" + v.getFileName());
+                httpResponse.getEntity().writeTo(fos);
+                fos.close();
             } catch (Exception e1) {
                 log.warn("Could not download an update with error " + e1.toString());
             }
