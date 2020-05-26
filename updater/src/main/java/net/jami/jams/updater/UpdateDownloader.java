@@ -100,13 +100,4 @@ public class UpdateDownloader {
 
         return true;
     }
-
-//    private static String checksum(String filepath) throws IOException {
-//
-//        HashCode hash = com.google.common.io.Files
-//                .hash(new File(filepath), Hashing.md5());
-//
-//        log.warn("Calculated md5: " + hash.toString());
-//        return hash.toString();
-//    }
 }
