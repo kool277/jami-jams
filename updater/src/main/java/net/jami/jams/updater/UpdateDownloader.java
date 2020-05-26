@@ -57,10 +57,7 @@ public class UpdateDownloader {
     private SSLContext sslContext;
     private static final String KEYSTORE_TYPE = "JKS";
     private KeyStore trustStore;
-
-    private static volatile String CORE_PACKAGE_MAIN_CLASS_NAME;
     private static volatile String UPDATE_SERVER_URL;
-    private static volatile Long UPDATE_INTERVAL;
 
     private HashMap<String, FileDescription> remoteChecksums = new HashMap<>();
 
@@ -68,9 +65,7 @@ public class UpdateDownloader {
         try {
             InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
             Any any = JsonIterator.deserialize(input.readAllBytes());
-            CORE_PACKAGE_MAIN_CLASS_NAME = any.get("CORE_PACKAGE_MAIN_CLASS_NAME").toString();
             UPDATE_SERVER_URL = any.get("UPDATE_URL").toString();
-            UPDATE_INTERVAL = any.get("UPDATE_INTERVAL").toLong();
 
         } catch (IOException e) {
             log.warn("Missing OEM configuration! Please contact software developer");
@@ -89,29 +84,12 @@ public class UpdateDownloader {
         files.forEach((k, v) -> {
             try {
                 HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
-                HttpResponse httpResponse = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/updates/" + v));
+                HttpResponse httpResponse = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/updates/" + v.getFileName()));
                 if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                    log.info(tmpFolder.getPath() + "/" + files.get(k));
-                    FileOutputStream fos = new FileOutputStream(tmpFolder.getPath() + "/" + files.get(k));
-                    if (k.equals(CORE_PACKAGE_MAIN_CLASS_NAME)) {
-                        httpResponse.getEntity().writeTo(fos);
-                        fos.close();
-
-                        if (checksum(tmpFolder.getPath() + "/" + files.get(k)).equals(remoteChecksums.get(k))) {
-                            log.info("Successfully downloaded the core package!");
-                            remoteChecksums.remove(CORE_PACKAGE_MAIN_CLASS_NAME);
-                        }
-
-                    } else {
-                        httpResponse.getEntity().writeTo(fos);
-                        fos.close();
-
-                        if (checksum(tmpFolder.getPath() + "/" + files.get(k)).equals(remoteChecksums.get(k))) {
-                            log.info("Successfully downloaded a library package!");
-                            remoteChecksums.remove(remoteChecksums.get(k));
-                        }
-                    }
-
+                    log.info(tmpFolder.getPath() + "/" + v.getFileName());
+                    FileOutputStream fos = new FileOutputStream(tmpFolder.getPath() + "/" + v.getFileName());
+                    httpResponse.getEntity().writeTo(fos);
+                    fos.close();
                 } else {
                     log.warn("The server declared an update but does not have the required files?!");
                 }
@@ -123,21 +101,12 @@ public class UpdateDownloader {
         return true;
     }
 
-    private static String checksum(String filepath) throws IOException {
-
-        HashCode hash = com.google.common.io.Files
-                .hash(new File(filepath), Hashing.md5());
-
-        log.warn("Calculated md5: " + hash.toString());
-        return hash.toString();
-    }
-
-    private void downloadFile(File tmpFolder,FileDescription fileDescription) throws Exception{
-        HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
-        HttpResponse httpResponse = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/updates/" + fileDescription.getFileName()));
-        if(httpResponse.getStatusLine().getStatusCode() != 200) return;
-        FileOutputStream fos = new FileOutputStream(tmpFolder.getPath() + "/" + fileDescription.getFileName());
-        httpResponse.getEntity().writeTo(fos);
-        fos.close();
-    }
+//    private static String checksum(String filepath) throws IOException {
+//
+//        HashCode hash = com.google.common.io.Files
+//                .hash(new File(filepath), Hashing.md5());
+//
+//        log.warn("Calculated md5: " + hash.toString());
+//        return hash.toString();
+//    }
 }
