@@ -53,6 +53,18 @@
             <artifactId>jeromq</artifactId>
             <version>0.5.2</version>
         </dependency>
+        <dependency>
+            <groupId>net.jami</groupId>
+            <artifactId>jams-common</artifactId>
+            <version>0.5A</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.jami</groupId>
+            <artifactId>jams-common</artifactId>
+            <version>2.0</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
