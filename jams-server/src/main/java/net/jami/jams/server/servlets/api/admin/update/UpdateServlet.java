@@ -49,7 +49,7 @@ public class UpdateServlet extends HttpServlet {
 
     //This is the do-update button.
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         if(appUpdater.getUpdateAvailable()){
             appUpdater.doUpdate();
         }

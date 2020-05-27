@@ -43,7 +43,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.TimerTask;
 
-import static net.jami.jams.updater.JAMSUpdater.UPDATE_SERVER_URL;
+
 
 @Slf4j
 @Getter
@@ -54,6 +54,7 @@ public class UpdateCheckTask extends TimerTask {
     private HashMap<String, FileDescription> localData;
     private SSLContext sslContext;
     private volatile KeyStore trustStore;
+    protected static volatile String UPDATE_SERVER_URI;
 
     protected UpdateCheckTask() {
         try {
@@ -64,6 +65,11 @@ public class UpdateCheckTask extends TimerTask {
             trustStore.setCertificateEntry("ca",certificate);
             //Inject the SSL Connection here for a first time.
             sslContext = SSLContexts.custom().loadTrustMaterial(trustStore, null).build();
+
+            // read config json
+            InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
+            Any any = JsonIterator.deserialize(input.readAllBytes());
+            UPDATE_SERVER_URI = any.get("UPDATE_URL").toString();
         }
         catch (Exception e){
             log.error("Could not initialize the trust store with error {}",e.getMessage());
@@ -76,27 +82,40 @@ public class UpdateCheckTask extends TimerTask {
             //Get the local data
             localData = VersioningUtils.checkVersion(null);
             //Download the info from the remote server.
-            HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
-            HttpResponse response = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/versions.json"));
-            //Step 2: Load the file into the hashmaps
-            Any any = JsonIterator.deserialize(response.getEntity().getContent().readAllBytes());
-            any.asMap().forEach((k, v) ->
-              remoteData.put(v.get("filename").toString(),new FileDescription(
-                      v.get("filename").toString(),
-                      v.get("version").toString(),
-                      v.get("md5").toString(),
-                      k))
-            );
-            //Compare and set to to true up-stream
+            getLatestVersion();
             localData.forEach((k,v) -> {
                 if(remoteData.containsKey(k) && remoteData.get(k).compareTo(v) > 0){
                     log.info("Detected a new version on SFL servers!");
                     JAMSUpdater.updateAvailable.set(true);
                 }
             });
+
         }
         catch (Exception e){
             log.error("Could not check for updates with error: {}",e.getMessage());
         }
     }
+
+    // This reads a file on the server which contains some basic info
+    // about what new versions of WHAT are available.
+    private void getLatestVersion() {
+        try {
+            //Step 1: Download a file called versions.json
+            HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
+            HttpResponse response = httpClient.execute(new HttpGet(UPDATE_SERVER_URI + "/versions.json"));
+            //Step 2: Load the file into the hashmaps
+            Any any = JsonIterator.deserialize(response.getEntity().getContent().readAllBytes());
+            any.asMap().forEach((k, v) ->
+                remoteData.put(v.get("filename").toString(),new FileDescription(
+                        v.get("filename").toString(),
+                        v.get("version").toString(),
+                        v.get("md5").toString(),
+                        k))
+
+            );
+        } catch (Exception e) {
+            log.warn("Could not establish connection to JAMS Update Center with error: " + e.toString());
+        }
+    }
+
 }

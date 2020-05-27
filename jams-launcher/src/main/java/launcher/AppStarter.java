@@ -1,25 +1,25 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package launcher;
 
 import launcher.loaders.ServerLoader;
@@ -49,7 +49,7 @@ public class AppStarter extends Thread {
         appStarter.start();
     }
 
-    //How this works - once the JAMSUpdater has notified back upstread to do an update, we lockdown
+    //How this works - once the JAMSUpdater has notified back upstream to do an update, we lockdown
     //and run the good old routine
     @Override
     public void run() {
@@ -57,21 +57,22 @@ public class AppStarter extends Thread {
         LibraryLoader.loadlibs(System.getProperty("user.dir"),AppStarter.class);
         appUpdater = UpdaterLoader.loadUpdater(doUpdate);
         server = ServerLoader.loadServer(appUpdater);
-        while(true){
-            try{
+        while(true) {
+            try {
                 synchronized (doUpdate){
                     doUpdate.wait();
                 }
                 if(doUpdate.get()){
                     Server.tomcatLauncher.stopTomcat();
                     //This will trigger a force reload of the lib.
-                    LibraryLoader.loadlibs(System.getProperty("user.dir"),AppStarter.class);
+                    LibraryLoader.loadlibs(System.getProperty("user.dir"), AppStarter.class);
                     server = ServerLoader.loadServer(appUpdater);
                     this.doUpdate.set(false);
                 }
             }
-            catch (Exception e){
-
+            catch (Exception e) {
+                log.error("An error occurred. Either while attempting to verify if an update was available, or" +
+                          "when attempting to reload a library: {}", e.getMessage());
             }
         }
     }

@@ -35,7 +35,15 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CRLEntryHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
-import org.bouncycastle.cert.ocsp.*;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.BasicOCSPRespBuilder;
+import org.bouncycastle.cert.ocsp.CertificateID;
+import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPReq;
+import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPRespBuilder;
+import org.bouncycastle.cert.ocsp.Req;
+import org.bouncycastle.cert.ocsp.RespID;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DigestCalculatorProvider;
@@ -51,7 +59,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import static net.jami.jams.ca.JamsCA.*;
+import static net.jami.jams.ca.JamsCA.CA;
+import static net.jami.jams.ca.JamsCA.OCSP;
+import static net.jami.jams.ca.JamsCA.crlLifetime;
 
 @Slf4j
 public class OCSPWorker extends X509Worker<String> {
