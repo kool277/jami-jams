@@ -116,11 +116,11 @@ public class Server {
                 }
                 if (serverSettings.getLocalDirectoryConfiguration() != null) {
                     LocalAuthSettings settings = JsonIterator.deserialize(serverSettings.getActiveDirectoryConfiguration(), LocalAuthSettings.class);
-                    if (settings.getPublicNames()) nameServer = new PublicNameServer(settings.getPublicNameServer());
-                    else
-                        nameServer = new LocalNameServer(dataStore, userAuthenticationModule, serverSettings.getServerPublicURI());
-                } else
-                    nameServer = new LocalNameServer(dataStore, userAuthenticationModule, serverSettings.getServerPublicURI());
+                    if(settings.getPublicNames()) nameServer = new PublicNameServer(settings.getPublicNameServer());
+                    else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
+                }
+                else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
+
                 licenseService.loadLicense();
                 log.info("All services are UP and ready for use...");
             } catch (Exception e) {

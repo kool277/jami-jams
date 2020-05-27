@@ -1,6 +1,6 @@
 import os
 
-dir_name = "/Users/felixsidokhine/Git/jams-refactoring" # Edit as needed
+dir_name = "../"  # Edit as needed
 
 
 for parent, dirnames, filenames in os.walk(dir_name):
@@ -10,6 +10,7 @@ for parent, dirnames, filenames in os.walk(dir_name):
             with open(os.path.join(parent, fn), 'r') as f:
                 lines = f.readlines() #read
                 if "/*" in lines[0]:
+                    print("File already contains license header!")
                     continue
                 else:
                     lines.insert(0,"*/\n")

@@ -37,7 +37,9 @@ import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import java.io.IOException;
 
-import static net.jami.jams.server.Server.*;
+import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.nameServer;
+import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @WebServlet("/api/admin/user")
 public class UserServlet extends HttpServlet {

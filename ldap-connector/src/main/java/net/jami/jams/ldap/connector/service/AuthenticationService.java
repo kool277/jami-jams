@@ -25,7 +25,11 @@ package net.jami.jams.ldap.connector.service;
 import lombok.extern.slf4j.Slf4j;
 import org.ldaptive.ConnectionFactory;
 import org.ldaptive.Credential;
-import org.ldaptive.auth.*;
+import org.ldaptive.auth.AuthenticationRequest;
+import org.ldaptive.auth.AuthenticationResponse;
+import org.ldaptive.auth.Authenticator;
+import org.ldaptive.auth.FormatDnResolver;
+import org.ldaptive.auth.SimpleBindAuthenticationHandler;
 
 import static net.jami.jams.ldap.connector.LDAPConnector.settings;
 

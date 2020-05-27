@@ -25,7 +25,12 @@ package net.jami.jams.ldap.connector.service;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.ldap.connector.LDAPConnector;
-import org.ldaptive.*;
+import org.ldaptive.Connection;
+import org.ldaptive.ConnectionFactory;
+import org.ldaptive.LdapEntry;
+import org.ldaptive.SearchOperation;
+import org.ldaptive.SearchRequest;
+import org.ldaptive.SearchResponse;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

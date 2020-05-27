@@ -26,6 +26,8 @@
     <properties>
         <revision>2.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.version>3.8.1</maven.compiler.version>
         <java.version>11</java.version>
         <bouncy.castle.version>1.65</bouncy.castle.version>
@@ -49,7 +51,6 @@
         <maven.clean.version>3.1.0</maven.clean.version>
         <nimbus.jwt.version>8.17</nimbus.jwt.version>
         <asm.version>8.0</asm.version>
-        <jeromq.version>0.5.2</jeromq.version>
         <maven.model.version>3.2.5</maven.model.version>
         <apache.httpcore.version>4.4.12</apache.httpcore.version>
         <apache.httpclient.version>4.5.10</apache.httpclient.version>

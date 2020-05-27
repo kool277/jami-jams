@@ -1,27 +1,29 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.updater;
 
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,8 @@ import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.VersioningUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -40,7 +44,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Setter
 public class JAMSUpdater implements AppUpdater {
 
-    public static final String UPDATE_SERVER_URL = "https://updates.jami.net";
+    protected static volatile String UPDATE_SERVER_URI;
+    private static volatile Long UPDATE_INTERVAL;
 
     public static final AtomicBoolean updateAvailable = new AtomicBoolean(false);
     private final AtomicBoolean doUpdate;
@@ -53,8 +58,19 @@ public class JAMSUpdater implements AppUpdater {
 
 
     public JAMSUpdater(AtomicBoolean doUpdate) {
+
+        // read config json
+        try {
+            InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
+            Any any = JsonIterator.deserialize(input.readAllBytes());
+            UPDATE_SERVER_URI = any.get("UPDATE_URL").toString();
+            UPDATE_INTERVAL = any.get("UPDATE_INTERVAL").toLong();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         this.doUpdate = doUpdate;
-        timer.schedule(updateCheckTask,0,150_000);
+        timer.schedule(updateCheckTask,0,UPDATE_INTERVAL);
     }
 
     @Override
@@ -89,6 +105,7 @@ public class JAMSUpdater implements AppUpdater {
                 doUpdate.notify();
             }
         }
-        else log.error("Could not perform update - the downloaded files may have been invalid!");
+        else
+            log.error("Could not perform update - the downloaded files may have been invalid!");
     }
 }

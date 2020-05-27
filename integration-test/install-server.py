@@ -128,3 +128,7 @@ print(response.text)
 response = requests.get("http://localhost:8080/api/auth/user",headers=header)
 print(response.status_code)
 print(response.text)
+
+response = requests.post("http://localhost:8080/api/update",headers=header)
+print(response.status_code)
+print(response.text)

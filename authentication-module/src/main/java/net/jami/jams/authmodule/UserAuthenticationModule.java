@@ -38,7 +38,11 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.common.utils.X509Utils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;

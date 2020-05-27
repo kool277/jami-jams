@@ -40,7 +40,10 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.KeyStore;
 
-import static net.jami.jams.server.Server.*;
+import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.nameServer;
+import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @Slf4j
 public class InstallationFinalizer {
