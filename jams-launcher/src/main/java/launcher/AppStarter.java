@@ -24,19 +24,29 @@ package launcher;
 
 import launcher.loaders.ServerLoader;
 import launcher.loaders.UpdaterLoader;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.server.Server;
+import net.jami.jams.server.core.TomcatLauncher;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
+@Getter
+@Setter
 public class AppStarter extends Thread {
 
     private final AtomicBoolean doUpdate = new AtomicBoolean(false);
     private Server server;
     private AppUpdater appUpdater;
+    private static Integer port;
+    private static String serverCertificate;
+    private static String serverPrivateKey;
+
+
     /**
      *  The launcher is essentially responsible of firing up the main application JAR.
      *  The problematic here is whenever we will fire up a JAR (but then we need to be able to
@@ -47,6 +57,20 @@ public class AppStarter extends Thread {
         //system between both systems.
         AppStarter appStarter = new AppStarter();
         appStarter.start();
+
+        switch (args.length) {
+            case 1:
+                port = (Integer.parseInt(args[0]));
+                break;
+            case 3:
+                port = (Integer.parseInt(args[0]));
+                serverCertificate = (args[1]);
+                serverPrivateKey = (args[2]);
+                break;
+            default:
+                log.error("An unknown error occurred when parsing command line arguments!");
+                break;
+        }
     }
 
     //How this works - once the JAMSUpdater has notified back upstream to do an update, we lockdown
@@ -56,7 +80,7 @@ public class AppStarter extends Thread {
         //TODO: Hack this a bit to get it to work better - passing arguments damnit.
         LibraryLoader.loadlibs(System.getProperty("user.dir"),AppStarter.class);
         appUpdater = UpdaterLoader.loadUpdater(doUpdate);
-        server = ServerLoader.loadServer(appUpdater);
+        server = ServerLoader.loadServer(appUpdater, Integer.toString(port), serverCertificate, serverPrivateKey);
         while(true) {
             try {
                 synchronized (doUpdate){
@@ -66,7 +90,7 @@ public class AppStarter extends Thread {
                     Server.tomcatLauncher.stopTomcat();
                     //This will trigger a force reload of the lib.
                     LibraryLoader.loadlibs(System.getProperty("user.dir"), AppStarter.class);
-                    server = ServerLoader.loadServer(appUpdater);
+                    server = ServerLoader.loadServer(appUpdater, Integer.toString(port), serverCertificate, serverPrivateKey);
                     this.doUpdate.set(false);
                 }
             }

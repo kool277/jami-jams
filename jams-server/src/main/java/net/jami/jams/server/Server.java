@@ -67,9 +67,13 @@ public class Server {
     public static LicenseService licenseService = new LicenseService();
     public static AppUpdater appUpdater;
 
-    public Server(AppUpdater appUpdater) {
+    public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
         Server.appUpdater = appUpdater;
-        main(new String[]{});
+
+        String[] args = {port, serverCertificate, serverPrivateKey};
+
+        if ((args.length > 0)) main(args);
+        else main(new String[]{});
     }
 
 

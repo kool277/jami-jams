@@ -30,11 +30,12 @@ import net.jami.jams.server.Server;
 @Slf4j
 public class ServerLoader {
 
-    public static Server loadServer(AppUpdater appUpdater) {
+    public static Server loadServer(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
         try {
             Class<?> cls = LibraryLoader.classLoader.loadClass("net.jami.jams.server.Server");
             log.info("Server found, starting......");
-            return  (Server) cls.getConstructor(AppUpdater.class).newInstance(appUpdater);
+            return  (Server) cls.getConstructor(AppUpdater.class, String.class, String.class, String.class).newInstance
+                    (appUpdater, port, serverCertificate, serverPrivateKey);
         }
         catch (Exception e){
             log.error("Could not find and start the server with error {}",e.getCause().getClass());
