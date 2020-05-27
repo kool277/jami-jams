@@ -24,9 +24,9 @@ package net.jami.jams.updater;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
-import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.VersioningUtils;
 import net.jami.jams.common.utils.X509Utils;
@@ -34,19 +34,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
+import javax.net.ssl.SSLContext;
 import java.io.InputStream;
-import java.net.URL;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.TimerTask;
-import org.apache.http.ssl.SSLContexts;
-import javax.net.ssl.SSLContext;
 
 
 

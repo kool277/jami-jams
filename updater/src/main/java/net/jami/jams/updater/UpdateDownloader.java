@@ -22,19 +22,15 @@
 */
 package net.jami.jams.updater;
 
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.FileDescription;
-import net.jami.jams.common.utils.VersioningUtils;
 import net.jami.jams.common.utils.X509Utils;
 import net.jami.jams.server.licensing.LicenseService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 
@@ -44,18 +40,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Slf4j
 public class UpdateDownloader {
 
-    private SSLSocketFactory sslSocketFactory;
-    private Process applicationProcess;
     private SSLContext sslContext;
     private static final String KEYSTORE_TYPE = "JKS";
     private KeyStore trustStore;

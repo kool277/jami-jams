@@ -35,7 +35,10 @@ import net.jami.jams.dht.DeviceReceiptGenerator;
 
 import java.security.cert.X509Certificate;
 
-import static net.jami.jams.server.Server.*;
+import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.nameServer;
+import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @Slf4j
 public class RegisterDeviceFlow {

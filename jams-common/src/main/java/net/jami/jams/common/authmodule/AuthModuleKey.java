@@ -22,7 +22,11 @@
 */
 package net.jami.jams.common.authmodule;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 
 @Getter
