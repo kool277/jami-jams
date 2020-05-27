@@ -24,15 +24,20 @@ package net.jami.jams.server.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.apache.coyote.http11.Http11NioProtocol;
+import org.apache.tomcat.util.descriptor.web.ErrorPage;
 
 import java.awt.*;
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 //This class boots the tomcat server which provides the subsystem
@@ -40,10 +45,11 @@ import java.net.URI;
 @Slf4j
 public class TomcatLauncher {
 
-    private Tomcat tomcat = null;
+    private Tomcat tomcat = new Tomcat();
+    private static Connector connector;
+    private static StandardContext context;
 
     public TomcatLauncher(int port) {
-        tomcat = new Tomcat();
         tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
         this.startServer();
     }
@@ -51,17 +57,25 @@ public class TomcatLauncher {
     public TomcatLauncher(int port, String certificateFile, String keyFile) {
         //If running in SSL mode, we need a trusts store in order to let clients authenticate.
         //In this case this is a bit of a dirty hack...
-        log.error("This functionality is not yet implemented!");
+
+        log.info(System.getProperty("user.dir") + File.separator + "keystore.jks");
+
+        if(Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks")))
+            tomcat.getService().addConnector(TomcatConnectorFactory.getSSLConnectorWithTrustStore(certificateFile, keyFile, port));
+        else{
+            connector = TomcatConnectorFactory.getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
+            tomcat.getService().addConnector(connector);
+        }
+        this.startServer();
     }
 
 
     public void startServer() {
         String jarName = System.getProperty("user.dir") + File.separator + "jams-server.jar";
         log.info("JAR Resource File = " + jarName);
-        StandardContext context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
-        //Hack to prevent useless verbose messages.
+        context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
+        log.info("Serving application from: " + new File(System.getProperty("user.dir")).getAbsolutePath());
 
-        context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         WebResourceRoot resources = new StandardRoot(context);
         if (jarName.contains(".jar")) {
             resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes", jarName, "/net/jami/jams/server/servlets"));
@@ -80,18 +94,12 @@ public class TomcatLauncher {
         }
         context.setResources(resources);
         //We always go to login by default.
-        context.addWelcomeFile("web/login");
-        try {
-            tomcat.start();
-            //Try to pop-up Web-UI
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI("https://localhost:8080"));
-            }
-            else log.info("There is no graphical interface on this system - please connect remotely!");
-        } catch
-        (Exception e) {
-            log.error("Web-server has failed to start - this is critical, error {}",e.getMessage());
-        }
+        context.addWelcomeFile("index");
+        ErrorPage errorPage = new ErrorPage();
+        errorPage.setErrorCode(404);
+        errorPage.setLocation("/index");
+        context.addErrorPage(errorPage);
+        try{tomcat.start();}catch (Exception e){ log.error("Could not start web-server!");}
     }
 
     public void stopTomcat(){
