@@ -23,6 +23,7 @@
 package net.jami.jams.server.core;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.server.Server;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
@@ -32,7 +33,11 @@ import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 
+import java.awt.*;
 import java.io.File;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -94,7 +99,17 @@ public class TomcatLauncher {
         errorPage.setErrorCode(404);
         errorPage.setLocation("/index");
         context.addErrorPage(errorPage);
-        try{tomcat.start();}catch (Exception e){ log.error("Could not start web-server!");}
+        try{
+            tomcat.start();
+            //Try to pop-up Web-UI
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
+                Desktop.getDesktop().browse(new URI("https://localhost:8080"));
+            else
+                log.info("There is no graphical interface on this system - please connect remotely!");
+
+        } catch (Exception e) {
+            log.error("Could not start web-server!");
+        }
     }
 
     public void stopTomcat(){
