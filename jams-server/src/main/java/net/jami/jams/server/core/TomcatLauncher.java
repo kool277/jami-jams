@@ -52,12 +52,8 @@ public class TomcatLauncher {
     }
 
     public TomcatLauncher(int port, String certificateFile, String keyFile) {
-        //If running in SSL mode, we need a trusts store in order to let clients authenticate.
-        //In this case this is a bit of a dirty hack...
-        //Hack to prevent useless verbose messages.
-        log.info(System.getProperty("user.dir") + File.separator + "keystore.jks");
-
         if(Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks")))
+            log.info("Found a valid trust store, injecting into tomcat!");
             tomcat.getService().addConnector(TomcatConnectorFactory.getSSLConnectorWithTrustStore(certificateFile, keyFile, port));
         else{
             connector = TomcatConnectorFactory.getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
