@@ -88,6 +88,7 @@ public class Server {
                 break;
             case 3:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]), args[1], args[2]);
+                break;
             default:
                 log.error("Incorrect number of start arguments provided!");
                 System.exit(-1);
