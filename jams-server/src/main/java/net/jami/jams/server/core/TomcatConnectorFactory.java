@@ -26,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Slf4j
 public class TomcatConnectorFactory {
@@ -47,13 +45,13 @@ public class TomcatConnectorFactory {
         connector.setPort(port);
         connector.setSecure(true);
         connector.setScheme("https");
-        connector.setAttribute("protocol", "org.apache.coyote.http11.Http11NioProtocol");
+        connector.setAttribute("protocol", "org.apache.coyote.http11.Http11AprProtocol");
         connector.setAttribute("SSLCertificateFile", System.getProperty("user.dir") + File.separator + certificateFile);
         connector.setAttribute("SSLCertificateKeyFile", System.getProperty("user.dir") + File.separator + keyFile);
         connector.setAttribute("protocol", "HTTP/1.1");
         connector.setAttribute("sslProtocol", "TLS");
         connector.setAttribute("maxThreads", "200");
-        connector.setAttribute("SSLEnabled", "true");
+        connector.setAttribute("SSLEnabled", true);
         return connector;
     }
 

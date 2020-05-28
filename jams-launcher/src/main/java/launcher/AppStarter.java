@@ -30,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.server.Server;
-import net.jami.jams.server.core.TomcatLauncher;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

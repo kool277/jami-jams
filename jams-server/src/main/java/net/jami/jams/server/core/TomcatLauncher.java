@@ -30,12 +30,9 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
-import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 
-import java.awt.*;
 import java.io.File;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -58,7 +55,6 @@ public class TomcatLauncher {
         //If running in SSL mode, we need a trusts store in order to let clients authenticate.
         //In this case this is a bit of a dirty hack...
         //Hack to prevent useless verbose messages.
-        context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         log.info(System.getProperty("user.dir") + File.separator + "keystore.jks");
 
         if(Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks")))
@@ -75,6 +71,7 @@ public class TomcatLauncher {
         String jarName = System.getProperty("user.dir") + File.separator + "jams-server.jar";
         log.info("JAR Resource File = " + jarName);
         context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
+        context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         log.info("Serving application from: " + new File(System.getProperty("user.dir")).getAbsolutePath());
 
         WebResourceRoot resources = new StandardRoot(context);
