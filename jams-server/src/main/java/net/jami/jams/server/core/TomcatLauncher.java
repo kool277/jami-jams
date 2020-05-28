@@ -52,9 +52,10 @@ public class TomcatLauncher {
     }
 
     public TomcatLauncher(int port, String certificateFile, String keyFile) {
-        if(Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks")))
+        if(Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks"))){
             log.info("Found a valid trust store, injecting into tomcat!");
             tomcat.getService().addConnector(TomcatConnectorFactory.getSSLConnectorWithTrustStore(certificateFile, keyFile, port));
+        }
         else{
             connector = TomcatConnectorFactory.getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
             tomcat.getService().addConnector(connector);
