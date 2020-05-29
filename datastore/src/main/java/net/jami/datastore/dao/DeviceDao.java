@@ -79,11 +79,6 @@ public class DeviceDao extends AbstractDao<Device> {
     }
 
     @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
-    }
-
-    @Override
     public boolean updateObject(StatementList update, StatementList constraints) {
         return false;
     }

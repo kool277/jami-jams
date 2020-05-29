@@ -83,10 +83,4 @@ public class UserDao extends AbstractDao<User> {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
-
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
-    }
 }

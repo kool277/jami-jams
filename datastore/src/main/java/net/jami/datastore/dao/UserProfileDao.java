@@ -60,9 +60,4 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
     public boolean storeObject(UserProfile object) {
         return false;
     }
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
-    }
 }
