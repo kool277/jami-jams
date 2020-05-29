@@ -30,7 +30,6 @@ import net.jami.jams.common.objects.devices.Device;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 
 @Slf4j
 public class DeviceDao extends AbstractDao<Device> {
@@ -76,11 +75,6 @@ public class DeviceDao extends AbstractDao<Device> {
         finally {
             DataStore.connectionPool.returnConnection(connection);
         }
-    }
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
     }
 
     @Override

@@ -11,6 +11,21 @@ paths:
       tags: []
       responses: {}
       operationId: get-api-auth-contacts
+      description: "Get User's contacts."
+    put:
+      summary: ''
+      operationId: put-api-auth-contacts
+      responses:
+        '200':
+          description: OK
+      description: "Update User's contact."
+    delete:
+      summary: ''
+      operationId: delete-api-auth-contacts
+      responses:
+        '200':
+          description: OK
+      description: "Delete user's contact."
   '/api/auth/device/{deviceId}':
     parameters:
       - schema:
@@ -29,12 +44,21 @@ paths:
               schema:
                 $ref: './Admin-API.v1.yaml#/components/schemas/Device'
       operationId: get-api-auth-device-deviceId
+      description: "Get a user's specified device."
     put:
       summary: ''
       operationId: put-api-auth-device-deviceId
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
+      description: "Update a user's device informations."
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: deviceName
     post:
       summary: ''
       operationId: post-api-auth-device-deviceId
@@ -44,7 +68,23 @@ paths:
           content:
             application/json:
               schema:
-                allOf: []
+                $ref: '#/components/schemas/DeviceRegistrationResponse'
+        '500':
+          description: Internal Server Error
+      description: Create/Store a device for a user.
+    delete:
+      summary: ''
+      operationId: delete-api-auth-device-deviceId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceRevocationResponse'
+        '500':
+          description: Internal Server Error
+      description: "Delete a user's device."
   /api/auth/devices:
     get:
       summary: Get the list of devices
@@ -59,12 +99,22 @@ paths:
                 items:
                   $ref: './Admin-API.v1.yaml#/components/schemas/Device'
       operationId: get-api-auth-devices
+      description: "Get user's devices."
   /api/auth/directories:
     get:
-      summary: Get the directories connect to JAMS
+      summary: "Get the directories connect to JAMS, Authentication Sources' Directories"
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthModuleKey'
       operationId: get-api-auth-directories
+      description: Get directories in Authentication Sources (Local/AD/LDAP).
   /api/auth/directory/entry:
     get:
       summary: Get the profile of a user
@@ -77,6 +127,14 @@ paths:
               schema:
                 $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
       operationId: get-api-auth-directory-entry
+      description: 'This is an endpoint to manipulate directory entry-data, this make sense only for local setups. Get a user profile from a directory.'
+    put:
+      summary: ''
+      operationId: put-api-auth-directory-entry
+      responses:
+        '200':
+          description: OK
+      description: Modify a profile only in the case of a LOCAL directory.
   /api/auth/directory/search:
     get:
       summary: Search the directory
@@ -98,14 +156,65 @@ paths:
                 items:
                   $ref: './Admin-API.v1.yaml#/components/schemas/UserProfile'
       operationId: get-api-auth-directory-search
+      description: Search user profiles in directory.
   /api/auth/user:
     get:
       summary: User endpoint
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
       operationId: get-api-auth-user
+      description: "Read user's profile (User can \"read\" his own profile)."
+    put:
+      summary: ''
+      operationId: put-api-auth-user
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+      description: "Update some user profile's fields(password, privatekey, publickey) if authentication source is LOCAL."
 components:
-  schemas: {}
+  schemas:
+    DeviceRegistrationResponse:
+      title: DeviceRegistrationResponse
+      type: object
+      properties:
+        certificateChain:
+          type: string
+        displayName:
+          type: string
+        nameServer:
+          type: string
+        deviceReceipt:
+          type: string
+        receiptSignature:
+          type: string
+        userPhoto:
+          type: string
+    DeviceRevocationResponse:
+      title: DeviceRevocationResponse
+      type: object
+      properties:
+        success:
+          type: boolean
+        errorDetails:
+          type: string
+        timestamp:
+          type: string
+    AuthModuleKey:
+      title: AuthModuleKey
+      type: object
+      properties:
+        realm:
+          type: string
+        type:
+          type: string
+          enum:
+            - AD
+            - LDAP
+            - LOCAL
   securitySchemes:
     API Key - 1:
       name: API Key

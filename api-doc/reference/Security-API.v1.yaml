@@ -12,5 +12,66 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './Install-API.v1.yaml#/components/schemas/AuthTokenResponse'
+        '403':
+          description: Forbidden
+      description: This method returns the token which is used for all the next calls to the API.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+        - schema:
+            type: string
+          in: query
+          name: password
+        - schema:
+            type: string
+          in: header
+          name: authorization
+  /api/auth/contacts:
+    get:
+      summary: User contacts
+      tags: []
+      responses: {}
+      operationId: get-api-auth-contacts
+      description: "Get User's contacts"
+    put:
+      summary: ''
+      operationId: put-api-auth-contacts
+      responses:
+        '200':
+          description: OK
+      description: "Update User's contact."
+    delete:
+      summary: ''
+      operationId: delete-api-auth-contacts
+      responses:
+        '200':
+          description: OK
+      description: "Delete user's contact."
+  /api/auth/ocsp:
+    get:
+      summary: OCSP
+      tags: []
+      responses: {}
+      operationId: get-api-auth-ocsp
+      description: Get OCSP.
+  /api/auth/crl:
+    get:
+      summary: CRL
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+      operationId: get-api-auth-crl
+      description: Get CRL.
 components:
   schemas: {}

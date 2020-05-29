@@ -22,10 +22,46 @@
 */
 package net.jami.jams.common.objects.contacts;
 
+import com.jsoniter.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.jami.jams.common.serialization.database.DatabaseObject;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 @Getter
 @Setter
-public class Contact {
+@NoArgsConstructor
+public class Contact implements DatabaseObject {
+
+    @JsonIgnore //Ignore the owner because he is irrelevant.
+    private String owner;
+    private String uri;
+    private String displayName;
+
+    public Contact(ResultSet rs) throws Exception {
+        this.owner = rs.getString("owner");
+        this.uri = rs.getString("uri");
+        this.displayName = rs.getString("displayName");
+    }
+
+    @Override
+    public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
+        ps.setString(1,owner);
+        ps.setString(2,uri);
+        ps.setString(3,displayName);
+        return ps;
+    }
+
+    @Override
+    public PreparedStatement getDelete(PreparedStatement ps) throws Exception {
+        return null;
+    }
+
+    @Override
+    public PreparedStatement getUpdate(PreparedStatement ps) throws Exception {
+        return null;
+    }
 }

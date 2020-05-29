@@ -23,7 +23,6 @@
 package net.jami.jams.server.core;
 
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.server.Server;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
@@ -36,8 +35,6 @@ import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import java.awt.*;
 import java.io.File;
 import java.net.URI;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 

@@ -13,6 +13,20 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '500':
+          description: Internal Server Error
+      description: 'Configure Server to use selected Authentication Source as authentication backend, save settings in config.json file.'
+    get:
+      summary: Authentication Source
+      operationId: get-api-install-auth
+      responses:
+        '200':
+          description: OK
+      description: "Get server's Authentication Source."
   /api/install/ca:
     post:
       summary: ''
@@ -20,6 +34,16 @@ paths:
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
+      description: Save Certificate Authority.
+    get:
+      summary: Certificate Request
+      operationId: get-api-install-ca
+      responses:
+        '200':
+          description: OK
+      description: Get Certificate Authority.
   /api/install/settings:
     post:
       summary: ''
@@ -27,6 +51,16 @@ paths:
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
+      description: Finish Server installation.
+    get:
+      summary: ''
+      operationId: get-api-install-settings
+      responses:
+        '200':
+          description: OK
+      description: Get Server Settings.
   /api/install/start:
     post:
       summary: ''
@@ -34,5 +68,52 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '403':
+          description: Forbidden
+      description: Authenticate user.
+    get:
+      summary: ''
+      operationId: get-api-install-start
+      responses:
+        '200':
+          description: OK
+          headers:
+            showLogin:
+              schema:
+                type: boolean
+              description: 'true'
+      description: Check if user should login or sign-up.
+    put:
+      summary: ''
+      operationId: put-api-install-start
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '500':
+          description: Internal Server Error
+      description: Create administrative user account.
 components:
-  schemas: {}
+  schemas:
+    AuthTokenResponse:
+      title: AuthTokenResponse
+      type: object
+      properties:
+        token_type:
+          type: string
+        access_token:
+          type: string
+        expires_in:
+          type: number
+        scope:
+          type: string
+          enum:
+            - ADMIN
+            - USER
