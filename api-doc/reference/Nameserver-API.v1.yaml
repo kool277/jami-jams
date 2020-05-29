@@ -16,8 +16,17 @@ paths:
     get:
       summary: Address lookup
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrLookupResponse'
+        '404':
+          description: Not Found
       operationId: get-api-nameserver-addr-addr
+      description: Get Username from Adress.
   '/api/nameserver/name/{name}':
     parameters:
       - schema:
@@ -31,6 +40,31 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NameLookupResponse'
+        '404':
+          description: Not Found
       operationId: get-api-nameserver-name-name
+      description: Get Address from username.
 components:
-  schemas: {}
+  schemas:
+    AddrLookupResponse:
+      title: AddrLookupResponse
+      type: object
+      properties:
+        name:
+          type: string
+    NameLookupResponse:
+      title: NameLookupResponse
+      type: object
+      properties:
+        name:
+          type: string
+        addr:
+          type: string
+        publicKey:
+          type: string
+        signature:
+          type: string

@@ -17,6 +17,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Device'
+              examples: {}
       operationId: get-api-admin-device
       requestBody:
         description: ''
@@ -29,19 +30,41 @@ paths:
             type: string
           in: query
           name: deviceId
-      description: Returns the device information.
+      description: Returns the device detailed information.
     put:
       summary: ''
       operationId: put-api-admin-device
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
+      description: Update device data.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+        - schema:
+            type: string
+          in: query
+          name: deviceId
+        - schema:
+            type: string
+          in: query
+          name: deviceName
     delete:
       summary: ''
       operationId: delete-api-admin-device
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './User-API.v1.yaml#/components/schemas/DeviceRevocationResponse'
+        '500':
+          description: Internal Server Error
       parameters:
         - schema:
             type: string
@@ -71,9 +94,39 @@ paths:
             type: string
           in: query
           name: username
+      description: Get a list of devices for a user.
   /api/admin/directory/entry:
+    put:
+      summary: ''
+      operationId: put-api-admin-directory-entry
+      responses:
+        '200':
+          description: OK
+      description: "Update a user's profile."
+    post:
+      summary: User profile
+      operationId: post-api-admin-directory-entry
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
+      description: Create a user profile.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: directory
+    delete:
+      summary: ''
+      operationId: delete-api-admin-directory-entry
+      responses:
+        '200':
+          description: OK
+      description: Method might probably never be implemented.
+  /api/admin/user:
     get:
-      summary: Your GET endpoint
+      summary: User profile - User
       tags: []
       responses:
         '200':
@@ -82,50 +135,120 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserProfile'
-      operationId: get-api-admin-directory-entry
-      description: ''
-    put:
-      summary: ''
-      operationId: put-api-admin-directory-entry
-      responses:
-        '200':
-          description: OK
-    post:
-      summary: ''
-      operationId: post-api-admin-directory-entry
-      responses:
-        '200':
-          description: OK
-  /api/admin/user:
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
       operationId: get-api-admin-user
+      description: "Get the user's profile."
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
     post:
       summary: ''
       operationId: post-api-admin-user
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      description: Create an internal user.
     delete:
       summary: ''
       operationId: delete-api-admin-user
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './User-API.v1.yaml#/components/schemas/DeviceRevocationResponse'
+        '500':
+          description: Internal Server Error
+      description: Revoke a user.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
     put:
       summary: ''
       operationId: put-api-admin-user
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
+      description: Update User data.
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: username
+        - schema:
+            type: string
+          in: query
+          name: password
   /api/admin/users:
     get:
-      summary: Your GET endpoint
+      summary: Users Profile
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProfile'
       operationId: get-api-admin-users
+      description: Return a list of users.
+  /api/subscription:
+    get:
+      summary: Subscription status - License
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionStatusResponse'
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              description: Server Domain of Certificate Authority
+      operationId: get-api-subscription
+      description: Get the subscription status.
+    post:
+      summary: ''
+      operationId: post-api-subscription
+      responses:
+        '200':
+          description: OK
+      description: 'Upload the license here, which is basically just uploading a base64 representation of the keypair - and store on disk.'
+  /api/update:
+    get:
+      summary: System Status
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullSystemStatusResponse'
+      operationId: get-api-update
+      description: Return the current version number and the available version number of Jams(for update).
+    post:
+      summary: ''
+      operationId: post-api-update
+      responses:
+        '200':
+          description: OK
+      description: Update the version.
 components:
   schemas:
     Device:
@@ -164,3 +287,65 @@ components:
         organization:
           type: string
       description: "The user's extended information which is not critical to Jami operations, usually provided by LDAP, Active Directory or other backend."
+    User:
+      title: User
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        userType:
+          type: string
+          enum:
+            - AD
+            - LDAP
+            - LOCAL
+        realm:
+          type: string
+        accessLevel:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+        needsPasswordReset:
+          type: boolean
+        ethAddress:
+          type: string
+        ethKey:
+          type: string
+        jamiId:
+          type: string
+    SubscriptionStatusResponse:
+      title: SubscriptionStatusResponse
+      type: object
+      properties:
+        licenseInformation:
+          $ref: '#/components/schemas/LicenseInformation'
+        activated:
+          type: boolean
+        versions:
+          type: object
+    LicenseInformation:
+      title: LicenseInformation
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - COMMUNITY
+            - PREMIUM
+        products:
+          type: array
+          items:
+            type: string
+    FullSystemStatusResponse:
+      title: FullSystemStatusResponse
+      type: object
+      properties:
+        localVersions:
+          type: object
+        remoteVersions:
+          type: object
+        updateAvailable:
+          type: boolean
