@@ -22,18 +22,25 @@
 */
 package net.jami.jams.server.servlets.general;
 
-import javax.servlet.ServletException;
+import com.jsoniter.output.JsonStream;
+import net.jami.jams.server.Server;
+
+import net.jami.jams.ca.JamsCA;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 
 @WebServlet("/api/info")
 public class ServerStatusServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getOutputStream().print("OK");
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
+        HashMap<String,String> statusInfo = new HashMap<>();
+        statusInfo.put("installed",String.valueOf(Server.isInstalled.get()));
+        resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
     }
 }

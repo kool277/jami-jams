@@ -26,6 +26,7 @@ import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
+import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.requests.CredentialsRequest;
 import net.jami.jams.common.objects.user.AccessLevel;
@@ -37,6 +38,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
@@ -48,9 +50,15 @@ public class StartInstallServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Here we must decide which page to show - login or sign-up
         StatementList statementList = new StatementList();
-        statementList.setStatements(null);
-        if(dataStore.getUserDao().getObjects(statementList).size() != 0) resp.setHeader("showLogin","true");
-        else resp.setHeader("showLogin","false");
+        StatementElement statementElement = new StatementElement("username","=","*","");
+        statementList.addStatement(statementElement);
+
+        List<User> results = dataStore.getUserDao().getObjects(statementList);
+        if(results.size() > 0)
+            resp.setStatus(404);
+        else
+            resp.setStatus(200);
+
     }
 
     @Override
@@ -83,6 +91,7 @@ public class StartInstallServlet extends HttpServlet {
         dataStore.getUserDao().storeObject(user);
         AuthTokenResponse res = processUsernamePasswordAuth(user.getUsername(),user.getPassword());
         resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
+        resp.setStatus(200);
         CachedObjects.endpoint = "/api/install/ca";
     }
 }

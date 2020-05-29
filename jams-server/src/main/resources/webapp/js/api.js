@@ -36,19 +36,19 @@ var url_port = backend_address.port;
 var ca_setup_page = 'ca-setup.html';
 var identity_management_page = 'identity-management.html';
 var server_parameters_page = 'server-parameters.html';
-var api_path_post_install_admin = '/api/jumpstart/setupAdmin';
+var api_path_post_install_admin = '/api/install/start';
 var api_path_post_auth_login = '/api/auth/login';
-var api_path_post_install_ca = '/api/jumpstart/setupCA';
+var api_path_post_install_ca = '/api/install/ca';
 var api_path_post_install_auth = '/api/jumpstart/setupAuth';
 var api_path_post_install_server = '/api/jumpstart/setupServer';
-var api_path_get_install_lastKnownStep = '/api/jumpstart/lastStep';
+var api_path_get_install_lastKnownStep = '/api/install/lastStep';
 var api_path_get_auth_users = '/api/auth/users';
 var api_path_get_auth_user_search = '/api/auth/users';
 var api_path_get_auth_devices = '/api/auth/devices';
 var api_path_delete_auth_user_revoke = '/api/auth/user';
 var api_path_delete_auth_device_revoke = '/api/auth/device';
 var api_path_rename_device = '/api/auth/device';
-var api_path_get_server_status = '/api/status';
+var api_path_get_server_status = '/api/info';
 var api_path_post_api_check = '/api/auth/check';
 var api_path_get_logout = '/api/auth/logout';
 var api_path_get_post_configuration_auth_service = '/api/configuration/authservice';
@@ -81,7 +81,7 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
         }};
 
     // pass credentials in the header
-    if (credentials){
+    if (credentials) {
         ajax['headers'] =  {
             "Authorization": "Basic " + btoa(credentials["username"] + ':' + credentials["password"]),
         }}
@@ -118,6 +118,11 @@ function set_installation_response(url, completed){
         if (data) {
             if (data.status == 404) {
                 $('#installCompleteModalCenter').modal('show');
+            } else if ((data.status == 500 || data.status == 0) && url.includes("usePublicNS"))   {
+                $('#installErrorModalLongTitle').text('Connection Failed');
+                $('#install-error-id').text('The information provided appears to be incorrect, the connection to the directory has failed.' +
+                                              'Please check the information and credentials provided and try again.');
+                $('#installErrorModalCenter').modal('show');
             }
             // server error
             else if (data.status == 500 || data.status == 0) {
@@ -125,6 +130,8 @@ function set_installation_response(url, completed){
             }
             // 200 OK
             else if (data.status = 200) {
+                $('#installErrorModalLongTitle').text('Server Error');
+                $('#install-error-id').text('Invalid data.');
                 window.location.replace(url);
             }
         }

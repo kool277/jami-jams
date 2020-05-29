@@ -39,8 +39,8 @@
   <script src="../js/lib/jquery.min.js" charset="utf-8"></script>
   <script>
     $(function () {
-      $("#header").load("/pages/header.html");
-      $("#footer").load("/pages/footer.html");
+      $("#header").load("/templates/header.html");
+      $("#footer").load("/templates/footer.html");
     });
   </script>
   <body>

@@ -30,8 +30,6 @@ document.getElementById("changePasswordButton").addEventListener('click', functi
     var inputConfirmPassword = $('#inputConfirmPassword').val();
     var oldPassword = $('#inputCurrentPassword').val();
     var username = window.location.href.substring(window.location.href.indexOf("=") + 1, window.location.href.length);
-    console.log(username);
-
 
     // In theory we already have the username and we shouldn't be able to change it.
     jsonData = {
@@ -44,9 +42,6 @@ document.getElementById("changePasswordButton").addEventListener('click', functi
         "password": inputPassword,
         "oldPassword": oldPassword
     }
-
-    console.log(jsonData);
-    console.log(credentials);
 
     // If password and confirmPassword not entered
     if (inputPassword == '' || inputConfirmPassword == '') {
