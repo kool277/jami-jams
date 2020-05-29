@@ -24,7 +24,6 @@ package net.jami.jams.server.servlets.api.auth.contacts;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
-import net.jami.datastore.dao.ContactDao;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.contacts.Contact;

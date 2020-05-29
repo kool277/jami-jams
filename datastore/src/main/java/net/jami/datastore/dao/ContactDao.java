@@ -24,14 +24,11 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.contacts.Contact;
-import net.jami.jams.common.objects.devices.Device;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 
 @Slf4j
 public class ContactDao extends AbstractDao<Contact> {

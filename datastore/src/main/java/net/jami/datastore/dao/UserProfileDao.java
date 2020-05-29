@@ -29,7 +29,6 @@ import net.jami.jams.common.objects.user.UserProfile;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 
 @Slf4j
 public class UserProfileDao extends AbstractDao<UserProfile> {

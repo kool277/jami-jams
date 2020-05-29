@@ -30,7 +30,6 @@ import net.jami.jams.common.objects.system.SystemAccount;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 
 @Slf4j
 public class SystemDao extends AbstractDao<SystemAccount> {
