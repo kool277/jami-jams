@@ -67,9 +67,13 @@ public class Server {
     public static LicenseService licenseService = new LicenseService();
     public static AppUpdater appUpdater;
 
-    public Server(AppUpdater appUpdater) {
+    public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
         Server.appUpdater = appUpdater;
-        main(new String[]{});
+
+        String[] args = {port, serverCertificate, serverPrivateKey};
+
+        if ((args.length > 0)) main(args);
+        else main(new String[]{});
     }
 
 
@@ -84,6 +88,7 @@ public class Server {
                 break;
             case 3:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]), args[1], args[2]);
+                break;
             default:
                 log.error("Incorrect number of start arguments provided!");
                 System.exit(-1);

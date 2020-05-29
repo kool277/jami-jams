@@ -26,22 +26,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Connector;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Slf4j
 public class TomcatConnectorFactory {
 
     public static Connector getSSLConnectorWithTrustStore(String certificateFile, String keyFile, int port) {
+        log.info(System.getProperty("user.dir") + File.separator + "keystore.jks");
         Connector connector = getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
-        if (Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks"))) {
-            connector.setAttribute("truststoreFile", System.getProperty("user.dir") + File.separator + "keystore.jks");
-            connector.setAttribute("clientAuth", "optional");
-            connector.setAttribute("truststorePassword", "changeit");
-        } else {
-            log.error("Could not find a keystore for the SSL Connector - this is critical as client auth will not be available!");
-            log.error("Proceeding to boot tomcat with just SSL parameters...");
-        }
+        connector.setAttribute("truststoreFile", System.getProperty("user.dir") + File.separator + "keystore.jks");
+        connector.setAttribute("clientAuth", "optional");
+        connector.setAttribute("truststorePassword", "changeit");
         return connector;
     }
 
@@ -51,13 +45,13 @@ public class TomcatConnectorFactory {
         connector.setPort(port);
         connector.setSecure(true);
         connector.setScheme("https");
-        connector.setAttribute("protocol", "org.apache.coyote.http11.Http11NioProtocol");
+        connector.setAttribute("protocol", "org.apache.coyote.http11.Http11AprProtocol");
         connector.setAttribute("SSLCertificateFile", System.getProperty("user.dir") + File.separator + certificateFile);
         connector.setAttribute("SSLCertificateKeyFile", System.getProperty("user.dir") + File.separator + keyFile);
         connector.setAttribute("protocol", "HTTP/1.1");
-        connector.setAttribute("sslProtocol", "TLSv1.3");
+        connector.setAttribute("sslProtocol", "TLS");
         connector.setAttribute("maxThreads", "200");
-        connector.setAttribute("SSLEnabled", "true");
+        connector.setAttribute("SSLEnabled", true);
         return connector;
     }
 

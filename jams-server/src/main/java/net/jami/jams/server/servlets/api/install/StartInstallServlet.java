@@ -24,11 +24,6 @@ package net.jami.jams.server.servlets.api.install;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.dao.StatementList;
@@ -36,6 +31,11 @@ import net.jami.jams.common.objects.requests.CredentialsRequest;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static net.jami.jams.server.Server.dataStore;
