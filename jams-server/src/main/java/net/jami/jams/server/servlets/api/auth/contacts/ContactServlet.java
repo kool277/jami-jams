@@ -22,28 +22,48 @@
 */
 package net.jami.jams.server.servlets.api.auth.contacts;
 
+import com.jsoniter.JsonIterator;
+import com.jsoniter.output.JsonStream;
+import net.jami.datastore.dao.ContactDao;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.contacts.Contact;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+
+import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/auth/contacts")
 public class ContactServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        StatementList statementList = new StatementList();
+        statementList.addStatement(new StatementElement("owner","=",req.getAttribute("username").toString(),""));
+        List<Contact> contactList = dataStore.getContactDao().getObjects(statementList);
+        resp.getOutputStream().write(JsonStream.serialize(contactList).getBytes());
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        Contact contact = JsonIterator.deserialize(req.getInputStream().readAllBytes(),Contact.class);
+        contact.setOwner(req.getAttribute("username").toString());
+        if(dataStore.getContactDao().storeObject(contact)) resp.setStatus(200);
+        else resp.sendError(500,"Could not store device!");
     }
 
+    //TODO: Because deleting requires sending the URI in the body, didn't want to do this now.
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
+        StatementList statementList = new StatementList();
+        statementList.addStatement(new StatementElement("owner","=",req.getAttribute("username").toString(),"AND"));
+        //if(dataStore.getContactDao().deleteObject()) resp.setStatus(200);
+        //else resp.sendError(500,"Could not delete a contact!");
     }
 }
