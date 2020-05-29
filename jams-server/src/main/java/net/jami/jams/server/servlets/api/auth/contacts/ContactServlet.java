@@ -64,7 +64,7 @@ public class ContactServlet extends HttpServlet {
         StatementList statementList = new StatementList();
         statementList.addStatement(new StatementElement("owner","=",req.getAttribute("username").toString(),"AND"));
         statementList.addStatement(new StatementElement("uri","=",req.getParameter("uri"),""));
-        if(dataStore.getContactDao().deleteObject()) resp.setStatus(200);
+        if(dataStore.getContactDao().deleteObject(statementList)) resp.setStatus(200);
         else resp.sendError(500,"Could not delete a contact!");
     }
 }
