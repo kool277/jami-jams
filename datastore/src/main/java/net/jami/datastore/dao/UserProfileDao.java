@@ -32,10 +32,10 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 
 @Slf4j
-public class UserProfileDAO extends AbstractDao<UserProfile> {
+public class UserProfileDao extends AbstractDao<UserProfile> {
 
     //Fis this to include the fields from AD/LDAP.
-    public UserProfileDAO() {
+    public UserProfileDao() {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
             this.setTableName("local_directory");
@@ -58,11 +58,6 @@ public class UserProfileDAO extends AbstractDao<UserProfile> {
 
     @Override
     public boolean storeObject(UserProfile object) {
-        return false;
-    }
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
         return false;
     }
 }

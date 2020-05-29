@@ -22,25 +22,43 @@
 */
 package net.jami.datastore.dao;
 
+import lombok.extern.slf4j.Slf4j;
+import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.contacts.Contact;
+import net.jami.jams.common.objects.devices.Device;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 
+@Slf4j
 public class ContactDao extends AbstractDao<Contact> {
+
+    public ContactDao() {
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try {
+            this.setTableName("contacts");
+            this.setTClass(Contact.class);
+            String createTable = "CREATE TABLE contacts (" +
+                "owner varchar(255), " +
+                "contact varchar(255)," +
+                "displayName varchar(255),"+
+                "PRIMARY KEY (owner,contact))";
+            PreparedStatement ps = connection.getConnection().prepareStatement(createTable);
+            ps.execute();
+        }
+        catch (SQLException e){
+            log.error("Could not create the contacts table with error " + e.getMessage());
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
+    }
 
     @Override
     public boolean storeObject(Contact object) {
-        return false;
-    }
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
-    }
-
-    @Override
-    public boolean updateObject(StatementList update, StatementList constraints) {
         return false;
     }
 }
