@@ -69,7 +69,6 @@ public class Server {
     public static AppUpdater appUpdater;
 
     public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
-        Runtime.getRuntime().gc();
         Server.appUpdater = appUpdater;
         JsoniterRegistry.initCodecs();
         String[] args = {port, serverCertificate, serverPrivateKey};
