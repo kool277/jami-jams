@@ -77,7 +77,7 @@ public class Server {
     }
 
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
         //Start tomcat.
         switch (args.length) {
             case 0:

@@ -125,9 +125,7 @@ public class TomcatLauncher {
             synchronized (tomcat) {
                 certificateAuthority.shutdownThreads();
                 tomcat.stop();
-                context.destroy();
                 tomcat.destroy();
-                LibraryLoader.classLoader.destroy();
             }
         } catch (Exception e) {
             log.info("Failed to stop tomcat server with error {}", e.getMessage());
