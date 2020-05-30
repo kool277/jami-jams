@@ -51,7 +51,7 @@ import static net.jami.jams.server.Server.certificateAuthority;
 @Slf4j
 public class TomcatLauncher {
 
-    private final Tomcat tomcat = new Tomcat();
+    private Tomcat tomcat = new Tomcat();
     private Connector connector;
     private StandardContext context;
 
