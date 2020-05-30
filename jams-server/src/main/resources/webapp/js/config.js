@@ -36,8 +36,10 @@ function getAllConfigurations(data, statusCode, jqXHR) {
     var userValidity = data.userValidity;
     var ldapConfigurations = data.ldapConfigurations;
     var adConfigurations = data.activeDirectoryConfgurations;
+    // var hsqlConfigurations = data.hsqlConfigurations;
     setADblocks(adConfigurations);
     setLDAPblocks(ldapConfigurations);
+    // setHSQLblocks(hsqlConfigurations);
     setServerParameters(domain,crlValidity,deviceValidity,userValidity);
     $('[data-toggle="tooltip"]').tooltip();
     if(sessionStorage.getItem("auth_added") !== ""){
@@ -123,7 +125,6 @@ $('#addAuthenticationAD').on('click', function () {
 
 // submit create/edit AD authentication
 $(document).on("submit","#AD-form",function (e) {
-  console.log("submit AD form");
   e.preventDefault();
   setADparametersData($(this));
 });
@@ -155,7 +156,7 @@ function setADparametersData(form) {
   }
 }
 
-// set LDAP configruation blocks
+// set AD configruation blocks
 function setADblocks(ad_list) {
   $.each(ad_list, function (index, ad) {
     // set the display values
@@ -173,6 +174,69 @@ function setADblocks(ad_list) {
     $new_ad.insertAfter('#authDataWrapper');
   });
 }
+
+/*======== HSQL =============*/
+
+// display add HSQL template form
+// $('#addAuthenticationHSQL').on('click', function () {
+//     $('#HSQL-form-submit').text('Create HSQL authentication service');
+//     $('#HSQLModalCenter').modal('show');
+//     $("#HSQL-form")[0].reset();
+// });
+//
+// // submit create/edit AD authentication
+// $(document).on("submit","#HSQL-form",function (e) {
+//     e.preventDefault();
+//     setHSQLparametersData($(this));
+// });
+//
+// function setHSQLparametersData(form) {
+//     event.preventDefault();
+//     var checked = "";
+//
+//     if ($('#publicNS')[0].checked)
+//         checked = "http://ns.jami.net";
+//     else
+//         checked = window.location.origin;
+//
+//     var data = {
+//         "CN": checked
+//     };
+//     // edit post request
+//     if (data) {
+//         ajaxApiCall(api_path_get_post_configuration_auth_service,'POST', data, null, callbackAuthentication);
+//     }
+//     // create post request
+//     else {
+//         delete data['configId'];
+//         auth_type = "HSQL";
+//         auth_action = "CREATE";
+//         ajaxApiCall(api_path_get_post_configuration_auth_service,'POST', data, null, callbackAuthentication);
+//     }
+// }
+//
+// // set HSQL configuration blocks
+// function setHSQLblocks(hsql_list) {
+//     $.each(hsql_list, function (index, hsql) {
+//         // set the display values
+//         var hsql_template = $($('#hsqlTemplate').html());
+//         var $new_hsql = hsql_template.clone();
+//         var usePublicNS = '';
+//
+//         if (hsql_list[0].cN == "http://ns.jami.net")
+//             usePublicNS = "Yes";
+//         else
+//             usePublicNS = "No";
+//
+//         $new_hsql.find('.mr-2').html("HSQL Authentication");
+//         $new_hsql.find('.mr-3').html("Using public nameserver: " + usePublicNS);
+//         var edit_button = $new_hsql.find('.edit-auth').attr('data-id', "HSQL");
+//         var delete_button = $new_hsql.find('.delete-auth').attr('data-id', "HSQL");
+//         $(edit_button).on( 'click', editAuthorizationHSQL);
+//         $(delete_button).on( 'click', deleteAuthorization);
+//         $new_hsql.insertAfter('#authDataWrapper');
+//     });
+// }
 
 /*======== SERVER PARAMETERS =============*/
 
@@ -402,10 +466,33 @@ function editAuthorizationAD () {
   $('#ADModalCenter').modal('show');
 }
 
+// function editAuthorizationHSQL () {
+//     var auth_id = $(this).attr('data-id');
+//     var data = $('[data-configId="' + auth_id + '"]');
+//     var value = '';
+//     var form = $('#' + $(data).attr('data-authentication-type') + "-form");
+//     $.each($(form).serializeArray(), function (i, field) {
+//         // pre fill fields
+//         if (selected_names.indexOf(field.name) >= 0) {
+//             $("option[value='" + value + "']", "#HSQL-form").prop('selected', true);
+//         }
+//         else {
+//             $("input[name='" + field.name + "']", "#HSQL-form").val(value);
+//         }
+//     });
+//     // set value for radio button
+//     $('#HSQL-form-submit').text('Update HSQL authentication service');
+//     $('#HSQLModalCenter').modal('show');
+// }
+
 // handles authentication delete modal behaviour
 function deleteAuthorization() {
   var config_id = $(this).attr('data-id');
   var auth_type = $(this).attr('data-type');
+
+    if (auth_type == "")
+        auth_type = "HSQL";
+
   $('#deleteAuthorizationBody').text('Are you sure you want to remove this ' + auth_type + ' connection? Users will not be able to connect to Jami using their ' + auth_type + ' credentials.');
   $('#delete-auth-service-confirm').attr('data-configId', config_id);
   $('#deleteAuthorizationModal').modal('show');
@@ -442,6 +529,13 @@ function callbackAuthentication (data, statusCode, jqXHR){
         $('.configMessageAuth').remove();
       });
     }
+    // if ($('#HSQLModalCenter').is(':visible')) {
+    //   $('.configMessageAuth').remove();
+    //   $('#HSQLModalLongTitle').before('<div class="configMessageAuth" id="configMessageError"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>An error has occured, please try again...</div>');
+    //   $("#HSQLModalCenter").on("hidden.bs.modal", function () {
+    //       $('.configMessageAuth').remove();
+    //   });
+    // }
   }
 }
 
