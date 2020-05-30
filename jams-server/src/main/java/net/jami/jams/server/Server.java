@@ -28,6 +28,8 @@ import com.jsoniter.output.EncodingMode;
 import com.jsoniter.output.JsonStream;
 import com.jsoniter.spi.DecodingMode;
 import com.jsoniter.spi.JsoniterSpi;
+import javassist.ClassPool;
+import javassist.compiler.Javac;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -69,15 +71,16 @@ public class Server {
     public static AppUpdater appUpdater;
 
     public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
-        Server.appUpdater = appUpdater;
         JsoniterRegistry.initCodecs();
+        Server.appUpdater = appUpdater;
         String[] args = {port, serverCertificate, serverPrivateKey};
         main(args);
     }
 
 
     public static void main(String[] args) {
-        //Start tomcat.
+        //This is a fix to drop old cached stuff from the tomcat classloader.
+        ClassPool.getDefault().clearImportedPackages();
         switch (args.length) {
             case 0:
                 tomcatLauncher = new TomcatLauncher(8080);

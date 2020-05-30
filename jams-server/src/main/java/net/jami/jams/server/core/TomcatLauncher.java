@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.server.Server;
+import org.apache.catalina.Context;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
@@ -51,7 +52,8 @@ import static net.jami.jams.server.Server.certificateAuthority;
 @Slf4j
 public class TomcatLauncher {
 
-    private final Tomcat tomcat = new Tomcat();
+    private static final Tomcat tomcat = new Tomcat();
+    private static StandardContext context;
 
     public TomcatLauncher(int port) {
         tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
@@ -79,7 +81,7 @@ public class TomcatLauncher {
     public void startServer() {
         String jarName = System.getProperty("user.dir") + File.separator + "jams-server.jar";
         log.info("JAR Resource File = " + jarName);
-        StandardContext context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
+        context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
         context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         log.info("Serving application from: " + new File(System.getProperty("user.dir")).getAbsolutePath());
 
@@ -123,6 +125,7 @@ public class TomcatLauncher {
             synchronized (tomcat) {
                 certificateAuthority.shutdownThreads();
                 tomcat.stop();
+                context.destroy();
                 tomcat.destroy();
             }
         } catch (Exception e) {
