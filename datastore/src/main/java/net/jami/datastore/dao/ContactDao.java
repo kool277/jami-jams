@@ -40,9 +40,9 @@ public class ContactDao extends AbstractDao<Contact> {
             this.setTClass(Contact.class);
             String createTable = "CREATE TABLE contacts (" +
                 "owner varchar(255), " +
-                "contact varchar(255)," +
+                "uri varchar(255)," +
                 "displayName varchar(255),"+
-                "PRIMARY KEY (owner,contact))";
+                "PRIMARY KEY (owner,uri))";
             PreparedStatement ps = connection.getConnection().prepareStatement(createTable);
             ps.execute();
         }
@@ -56,6 +56,21 @@ public class ContactDao extends AbstractDao<Contact> {
 
     @Override
     public boolean storeObject(Contact object) {
-        return false;
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try{
+            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO contacts " +
+                "(owner, uri, displayName) " +
+                "VALUES " +
+                "(?, ?, ?)");
+            ps = object.getInsert(ps);
+            return ps.execute();
+        }
+        catch (Exception e){
+            log.error("An error has occurred while trying to store a user: " + e.toString());
+            return false;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
     }
 }

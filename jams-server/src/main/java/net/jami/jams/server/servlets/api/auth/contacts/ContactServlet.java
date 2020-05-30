@@ -54,7 +54,7 @@ public class ContactServlet extends HttpServlet {
         Contact contact = JsonIterator.deserialize(req.getInputStream().readAllBytes(),Contact.class);
         contact.setOwner(req.getAttribute("username").toString());
         if(dataStore.getContactDao().storeObject(contact)) resp.setStatus(200);
-        else resp.sendError(500,"Could not store device!");
+        else resp.sendError(500,"Could not store contact!");
     }
 
     //TODO: Because deleting requires sending the URI in the body, didn't want to do this now.

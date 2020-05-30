@@ -44,7 +44,8 @@ public class SelectStatementBuilder {
                         .append(" ")
                         .append("?")
                         .append(" ")
-                        .append(statementElement.getNextStatementRelation());
+                        .append(statementElement.getNextStatementRelation())
+                        .append(" ");
             }
             ps = connection.getConnection().prepareStatement(stringBuilder.toString());
             int i = 1;

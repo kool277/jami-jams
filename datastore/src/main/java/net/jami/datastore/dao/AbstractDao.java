@@ -86,7 +86,7 @@ public abstract class AbstractDao<T> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try{
             PreparedStatement ps = DeleteStatementBuilder.buildStatement(tableName,delete,connection);
-            return ps.execute();
+            return ps.executeUpdate() != 0;
         }
         catch (Exception e){
             log.error("An error has occurred while trying to fetch a device: " + e.toString());
