@@ -66,7 +66,7 @@ public class DeviceDao extends AbstractDao<Device> {
                     "VALUES " +
                     "(?, ?, ?, ?, ?)");
             ps = object.getInsert(ps);
-            return ps.execute();
+            return ps.executeUpdate() != 0;
         }
         catch (Exception e){
             log.error("An error has occurred while trying to store a user: " + e.toString());

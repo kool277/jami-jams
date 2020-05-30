@@ -64,7 +64,7 @@ public class SystemDao extends AbstractDao<SystemAccount> {
                     "VALUES " +
                     "(?, ?, ?)");
             ps = object.getInsert(ps);
-            return ps.execute();
+            return ps.executeUpdate() != 0;
         }
         catch (Exception e){
             log.error("An error has occurred while trying to store a system entity: " + e.toString());
