@@ -54,10 +54,6 @@ public class Server {
     public final static AtomicBoolean isInstalled = new AtomicBoolean(false);
     public final static AtomicBoolean activated = new AtomicBoolean(false);
 
-    static {
-        JsoniterRegistry.initCodecs();
-    }
-
     public static DataStore dataStore;
     //This one gets loaded via JAR, to make it more flexible.
     public static CertificateAuthority certificateAuthority;
@@ -69,7 +65,7 @@ public class Server {
 
     public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
         Server.appUpdater = appUpdater;
-
+        JsoniterRegistry.initCodecs();
         String[] args = {port, serverCertificate, serverPrivateKey};
 
         if ((args.length > 0)) main(args);

@@ -51,9 +51,7 @@ import static net.jami.jams.server.Server.certificateAuthority;
 @Slf4j
 public class TomcatLauncher {
 
-    private final Tomcat tomcat = new Tomcat();
-    private Connector connector;
-    private StandardContext context;
+    private Tomcat tomcat = new Tomcat();
 
     public TomcatLauncher(int port) {
         tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
@@ -72,7 +70,7 @@ public class TomcatLauncher {
             log.info("Found a valid trust store, injecting into tomcat!");
             tomcat.getService().addConnector(TomcatConnectorFactory.getSSLConnectorWithTrustStore(certificateFile, keyFile, port));
         } else {
-            connector = TomcatConnectorFactory.getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
+            Connector connector = TomcatConnectorFactory.getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
             tomcat.getService().addConnector(connector);
         }
         this.startServer();
@@ -81,7 +79,7 @@ public class TomcatLauncher {
     public void startServer() {
         String jarName = System.getProperty("user.dir") + File.separator + "jams-server.jar";
         log.info("JAR Resource File = " + jarName);
-        context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
+        StandardContext context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
         context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
         log.info("Serving application from: " + new File(System.getProperty("user.dir")).getAbsolutePath());
 
@@ -126,6 +124,7 @@ public class TomcatLauncher {
                 certificateAuthority.shutdownThreads();
                 tomcat.stop();
                 tomcat.destroy();
+                tomcat = null;
             }
         } catch (Exception e) {
             log.info("Failed to stop tomcat server with error {}", e.getMessage());

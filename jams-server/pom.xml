@@ -40,6 +40,12 @@
         </dependency>
         <dependency>
             <groupId>net.jami</groupId>
+            <artifactId>jams-common</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.jami</groupId>
             <artifactId>jami-nameserver</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
