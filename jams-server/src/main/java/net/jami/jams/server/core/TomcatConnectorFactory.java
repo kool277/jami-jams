@@ -35,9 +35,9 @@ public class TomcatConnectorFactory {
     public static Connector getSSLConnectorWithTrustStore(String certificateFile, String keyFile, int port) {
         log.info(System.getProperty("user.dir") + File.separator + "keystore.jks");
         Connector connector = getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
-        //connector.setAttribute("truststoreFile", System.getProperty("user.dir") + File.separator + "keystore.jks");
-        //connector.setAttribute("clientAuth", "optional");
-        //connector.setAttribute("truststorePassword", "changeit");
+        connector.findSslHostConfigs()[0].setTruststoreFile(System.getProperty("user.dir") + File.separator + "keystore.jks");
+        connector.findSslHostConfigs()[0].setTruststorePassword("changeit");
+        connector.findSslHostConfigs()[0].setCertificateVerification("optional");
         return connector;
     }
 
