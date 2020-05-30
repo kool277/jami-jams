@@ -23,6 +23,7 @@
 package net.jami.jams.ca.workers.crl;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.X509Worker;
@@ -36,6 +37,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
@@ -43,6 +45,9 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
 
     @Getter
     private AtomicReference<X509CRLHolder> existingCRL = null;
+
+    @Getter @Setter
+    private AtomicBoolean stop = new AtomicBoolean(false);
 
     public CRLWorker(PrivateKey privateKey, X509Certificate certificate) {
         super(privateKey, certificate);
@@ -74,7 +79,7 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
     @Override
     public void run() {
         boolean needsRefresh = false;
-        while(true){
+        while(!stop.get()){
             try{
                 while(getInput().isEmpty()){
                     if(needsRefresh){
@@ -97,5 +102,6 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
                 log.error("An error has occured in the CRL signing thread: " + e.toString());
             }
         }
+        log.info("Stopped CRL Worker Thread...");
     }
 }

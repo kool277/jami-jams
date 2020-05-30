@@ -25,10 +25,13 @@ package net.jami.jams.server.core;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ca.JamsCA;
+import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.server.Server;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.loader.WebappClassLoader;
+import org.apache.catalina.loader.WebappClassLoaderBase;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
@@ -48,9 +51,9 @@ import static net.jami.jams.server.Server.certificateAuthority;
 @Slf4j
 public class TomcatLauncher {
 
-    private Tomcat tomcat = new Tomcat();
-    private static Connector connector;
-    private static StandardContext context;
+    private final Tomcat tomcat = new Tomcat();
+    private Connector connector;
+    private StandardContext context;
 
     public TomcatLauncher(int port) {
         tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
@@ -122,8 +125,9 @@ public class TomcatLauncher {
             synchronized (tomcat) {
                 certificateAuthority.shutdownThreads();
                 tomcat.stop();
-                tomcat.destroy();
                 context.destroy();
+                tomcat.destroy();
+                LibraryLoader.classLoader.destroy();
             }
         } catch (Exception e) {
             log.info("Failed to stop tomcat server with error {}", e.getMessage());

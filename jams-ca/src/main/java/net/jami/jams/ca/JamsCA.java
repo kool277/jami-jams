@@ -140,7 +140,13 @@ public class JamsCA implements CertificateAuthority {
     @Override
     public boolean shutdownThreads() {
         //Unsafe but acceptable.
-        crlWorker.stop();
+        crlWorker.getStop().set(true);
+        crlWorker.interrupt();
+        Thread.State state = crlWorker.getState();
+        while(!state.equals(Thread.State.TERMINATED)){
+            state = crlWorker.getState();
+        }
+        crlWorker = null;
         ocspWorker.stop();
         return true;
     }
