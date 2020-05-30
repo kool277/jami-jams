@@ -52,8 +52,8 @@ import static net.jami.jams.server.Server.certificateAuthority;
 @Slf4j
 public class TomcatLauncher {
 
-    private static final Tomcat tomcat = new Tomcat();
-    private static StandardContext context;
+    private final Tomcat tomcat = new Tomcat();
+    private StandardContext context;
 
     public TomcatLauncher(int port) {
         tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));

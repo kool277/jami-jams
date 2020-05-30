@@ -55,7 +55,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 //In order to make this "stoppable" to simply, I turned the server itself into a thread.
-//The reasoning: the main two problems
 public class Server {
 
     public final static AtomicBoolean isInstalled = new AtomicBoolean(false);
