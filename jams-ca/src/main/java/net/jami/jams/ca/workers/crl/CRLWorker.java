@@ -51,7 +51,6 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
 
     public CRLWorker(PrivateKey privateKey, X509Certificate certificate) {
         super(privateKey, certificate);
-        if(privateKey == null || certificate == null) return;
         this.setDaemon(true);
         this.start();
         //TODO: The CRL needs to be loaded from memory

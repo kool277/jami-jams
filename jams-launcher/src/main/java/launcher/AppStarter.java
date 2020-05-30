@@ -86,7 +86,7 @@ public class AppStarter extends Thread {
                     doUpdate.wait();
                 }
                 if(doUpdate.get()){
-                    Server.tomcatLauncher.stopTomcat();
+                    server.tomcatLauncher.stopTomcat();
                     server = null;
                     //This will trigger a force reload of the lib.
                     LibraryLoader.loadlibs(System.getProperty("user.dir"), AppStarter.class);

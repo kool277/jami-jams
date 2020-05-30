@@ -15,7 +15,6 @@
             <groupId>net.jami</groupId>
             <artifactId>cryptoengine</artifactId>
             <version>${revision}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
@@ -36,25 +35,21 @@
             <groupId>net.jami</groupId>
             <artifactId>datastore</artifactId>
             <version>${revision}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.jami</groupId>
             <artifactId>jams-common</artifactId>
             <version>${revision}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.jami</groupId>
             <artifactId>jami-nameserver</artifactId>
             <version>${revision}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.jami</groupId>
             <artifactId>jami-dht</artifactId>
             <version>${revision}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.nimbusds</groupId>

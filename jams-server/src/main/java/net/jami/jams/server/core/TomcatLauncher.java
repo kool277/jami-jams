@@ -51,7 +51,7 @@ import static net.jami.jams.server.Server.certificateAuthority;
 @Slf4j
 public class TomcatLauncher {
 
-    private Tomcat tomcat = new Tomcat();
+    private final Tomcat tomcat = new Tomcat();
 
     public TomcatLauncher(int port) {
         tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
@@ -109,7 +109,7 @@ public class TomcatLauncher {
             tomcat.start();
             //Try to pop-up Web-UI
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI("https://localhost:8080"));
+                Desktop.getDesktop().browse(new URI(tomcat.getConnector().getScheme() + "://localhost:8080"));
             } else {
                 log.info("There is no graphical interface on this system - please connect remotely!");
             }
@@ -124,7 +124,6 @@ public class TomcatLauncher {
                 certificateAuthority.shutdownThreads();
                 tomcat.stop();
                 tomcat.destroy();
-                tomcat = null;
             }
         } catch (Exception e) {
             log.info("Failed to stop tomcat server with error {}", e.getMessage());
