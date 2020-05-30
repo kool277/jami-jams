@@ -136,4 +136,12 @@ public class JamsCA implements CertificateAuthority {
     public X509Certificate getCA() {
         return CA.getCertificate();
     }
+
+    @Override
+    public boolean shutdownThreads() {
+        //Unsafe but acceptable.
+        crlWorker.stop();
+        ocspWorker.stop();
+        return true;
+    }
 }

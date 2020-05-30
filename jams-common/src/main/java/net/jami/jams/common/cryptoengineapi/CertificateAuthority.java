@@ -44,5 +44,6 @@ public interface CertificateAuthority {
     String getLatestCRLPEMEncoded();
     OCSPResp getOCSPResponse(OCSPReq ocspRequest);
     X509Certificate getCA();
+    boolean shutdownThreads();
 
 }

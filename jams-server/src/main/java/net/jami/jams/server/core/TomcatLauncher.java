@@ -24,6 +24,8 @@
 package net.jami.jams.server.core;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.ca.JamsCA;
+import net.jami.jams.server.Server;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
@@ -38,6 +40,8 @@ import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static net.jami.jams.server.Server.certificateAuthority;
 
 //This class boots the tomcat server which provides the subsystem
 //for the API calls.
@@ -116,8 +120,10 @@ public class TomcatLauncher {
     public void stopTomcat() {
         try {
             synchronized (tomcat) {
+                certificateAuthority.shutdownThreads();
                 tomcat.stop();
                 tomcat.destroy();
+                context.destroy();
             }
         } catch (Exception e) {
             log.info("Failed to stop tomcat server with error {}", e.getMessage());
