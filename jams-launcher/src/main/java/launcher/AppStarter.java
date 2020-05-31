@@ -41,9 +41,9 @@ public class AppStarter extends Thread {
     private final AtomicBoolean doUpdate = new AtomicBoolean(false);
     private Server server;
     private AppUpdater appUpdater;
-    private static Integer port;
-    private static String serverCertificate;
-    private static String serverPrivateKey;
+    private static Integer port = 8080;
+    private static String serverCertificate = null;
+    private static String serverPrivateKey = null;
 
 
     /**

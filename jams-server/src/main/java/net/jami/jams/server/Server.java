@@ -75,9 +75,6 @@ public class Server {
         //This is a fix to drop old cached stuff from the tomcat classloader.
         ClassPool.getDefault().clearImportedPackages();
         switch (args.length) {
-            case 0:
-                tomcatLauncher = new TomcatLauncher(8080);
-                break;
             case 1:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]));
                 break;
