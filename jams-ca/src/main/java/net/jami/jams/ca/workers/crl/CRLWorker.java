@@ -28,12 +28,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.X509Worker;
 import net.jami.jams.common.objects.requests.RevocationRequest;
+import net.jami.jams.common.serialization.fs.FileStorage;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509v2CRLBuilder;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
+import java.io.File;
+import java.io.SyncFailedException;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -44,15 +47,31 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CRLWorker extends X509Worker<RevocationRequest> {
 
     @Getter
-    private AtomicReference<X509CRLHolder> existingCRL = null;
+    private final AtomicReference<X509CRLHolder> existingCRL = new AtomicReference<>();
+
+    @Getter
+    private final CRLFileStorage crlFileStorage = new CRLFileStorage(System.getProperty("user.dir") + File.separator + "crl.pem");
 
     @Getter @Setter
     private AtomicBoolean stop = new AtomicBoolean(false);
 
     public CRLWorker(PrivateKey privateKey, X509Certificate certificate) {
         super(privateKey, certificate);
-        //TODO: The CRL needs to be loaded from somewhere.
-
+        try{
+            existingCRL.set(crlFileStorage.getData());
+        }
+        catch (Exception e){
+            log.warn("Could not find existing CRL file, if this is the first" +
+                " time you are starting the server or no CRL existed, this is fine");
+            X509v2CRLBuilder crlBuilder = new X509v2CRLBuilder(new X500Name((getCertificate()).getSubjectDN().getName()), new Date());
+            try {
+                existingCRL.set(crlBuilder.build(new JcaContentSignerBuilder("SHA512WITHRSA").setProvider("BC").build(getSigningKey())));
+                crlFileStorage.storeData(existingCRL.get());
+            }
+            catch (Exception e1){
+                log.error("Could not create blank CRL!");
+            }
+        }
         this.setDaemon(true);
         this.start();
         log.info("Instantiated & started a CRL Worker...");
@@ -65,11 +84,18 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
             if(revocationRequest != null) {
                 crlBuilder.addCRLEntry(revocationRequest.getIdentifier(), new Date(), CRLReason.privilegeWithdrawn);
             }
-            if (existingCRL != null){
-                crlBuilder.addCRL(existingCRL.get());
-            }
-            else existingCRL = new AtomicReference<>();
+            crlBuilder.addCRL(existingCRL.get());
             existingCRL.set(crlBuilder.build(new JcaContentSignerBuilder("SHA512WITHRSA").setProvider("BC").build(getSigningKey())));
+            boolean failedWrite = true;
+            while(failedWrite){
+                try{
+                    crlFileStorage.storeData(existingCRL.get());
+                    failedWrite = false;
+                }
+                catch (Exception e){
+                    log.warn("Failed to write file, trying again!");
+                }
+            }
             log.info("Successfully ran revocation routine");
         }
         catch (Exception e){
