@@ -51,7 +51,10 @@ public class DirectoryEntryServlet extends HttpServlet {
             UserProfile[] profiles = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(req.getParameter("directory"), AuthenticationSourceType.fromString(req.getParameter("directoryType"))))
                     .getUserProfile(req.getParameter("username"), "LOGON_NAME");
-            resp.getOutputStream().write(JsonStream.serialize(profiles[0]).getBytes());
+            if(req.getParameter("format").equals("vcard")){
+                resp.getOutputStream().write(profiles[0].getAsVCard().getBytes());
+            }
+            else resp.getOutputStream().write(JsonStream.serialize(profiles[0]).getBytes());
             return;
         }
         List<UserProfile> userProfiles = new ArrayList<>();
@@ -59,7 +62,10 @@ public class DirectoryEntryServlet extends HttpServlet {
             UserProfile[] profiles = v.getUserProfile(req.getParameter("username"), "LOGON_NAME");
             if (profiles != null && profiles.length != 0) userProfiles.addAll(Arrays.asList(profiles));
         });
-        resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
+        if(req.getParameter("format").equals("vcard")){
+            resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
+        }
+        else resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
     }
 
     @Override
