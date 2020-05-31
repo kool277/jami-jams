@@ -26,13 +26,15 @@ import net.jami.jams.common.authmodule.AuthTokenResponse;
 
 import java.security.cert.X509Certificate;
 
+import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 public class AuthRequestProcessor {
 
     //This case does not talk to the authentication module, only to the ca
     public static AuthTokenResponse processX509Auth(X509Certificate[] certificates){
-        return userAuthenticationModule.authenticateUser(certificates);
+        return userAuthenticationModule.authenticateUser(certificates,certificateAuthority.getLatestCRL().get(),
+            certificateAuthority.getCA());
     }
 
     public static AuthTokenResponse processUsernamePasswordAuth(String username, String password){
