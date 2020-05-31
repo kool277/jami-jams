@@ -25,9 +25,6 @@ package net.jami.jams.server.servlets.filters;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.SignedJWT;
-import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.server.Server;
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,6 +33,9 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.server.Server;
+
 import java.io.IOException;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;

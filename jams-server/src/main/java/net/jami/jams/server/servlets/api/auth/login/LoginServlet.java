@@ -23,13 +23,13 @@
 package net.jami.jams.server.servlets.api.auth.login;
 
 import com.jsoniter.output.JsonStream;
-import net.jami.jams.common.authmodule.AuthTokenResponse;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.authmodule.AuthTokenResponse;
+
 import java.io.IOException;
 import java.security.cert.X509Certificate;
 

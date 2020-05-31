@@ -1,12 +1,12 @@
 package net.jami.jams.server.servlets.api.install;
 
 import com.jsoniter.output.JsonStream;
-
 import jakarta.servlet.annotation.WebServlet;
-import net.jami.jams.ca.JamsCA;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.ca.JamsCA;
+
 import java.io.IOException;
 import java.util.HashMap;
 

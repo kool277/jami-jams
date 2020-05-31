@@ -24,15 +24,15 @@ package net.jami.jams.server.servlets.api.auth.contacts;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.contacts.Contact;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.contacts.Contact;
+
 import java.io.IOException;
 import java.util.List;
 

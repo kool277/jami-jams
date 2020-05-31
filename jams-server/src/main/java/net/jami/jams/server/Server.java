@@ -23,13 +23,7 @@
 package net.jami.jams.server;
 
 import com.jsoniter.JsonIterator;
-import com.jsoniter.JsonIteratorPool;
-import com.jsoniter.output.EncodingMode;
-import com.jsoniter.output.JsonStream;
-import com.jsoniter.spi.DecodingMode;
-import com.jsoniter.spi.JsoniterSpi;
 import javassist.ClassPool;
-import javassist.compiler.Javac;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;

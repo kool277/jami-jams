@@ -24,14 +24,14 @@ package net.jami.jams.server.servlets.api.install;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
-import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
+import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
+
 import java.io.IOException;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;

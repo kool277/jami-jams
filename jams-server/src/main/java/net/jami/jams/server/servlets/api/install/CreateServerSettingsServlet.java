@@ -23,14 +23,14 @@
 package net.jami.jams.server.servlets.api.install;
 
 import com.jsoniter.JsonIterator;
-import net.jami.jams.common.cryptoengineapi.CertificateAuthorityConfig;
-import net.jami.jams.server.core.workflows.InstallationFinalizer;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.cryptoengineapi.CertificateAuthorityConfig;
+import net.jami.jams.server.core.workflows.InstallationFinalizer;
+
 import java.io.IOException;
 
 @WebServlet("/api/install/settings")

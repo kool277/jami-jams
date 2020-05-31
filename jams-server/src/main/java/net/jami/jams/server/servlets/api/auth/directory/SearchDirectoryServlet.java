@@ -23,13 +23,13 @@
 package net.jami.jams.server.servlets.api.auth.directory;
 
 import com.jsoniter.output.JsonStream;
-import net.jami.jams.common.objects.user.UserProfile;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.objects.user.UserProfile;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

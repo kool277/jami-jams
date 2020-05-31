@@ -24,15 +24,9 @@
 package net.jami.jams.server.core;
 
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.ca.JamsCA;
-import net.jami.jams.common.utils.LibraryLoader;
-import net.jami.jams.server.Server;
-import org.apache.catalina.Context;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.loader.WebappClassLoader;
-import org.apache.catalina.loader.WebappClassLoaderBase;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;

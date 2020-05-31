@@ -23,13 +23,13 @@
 package net.jami.jams.server.servlets.api.jaminameserver;
 
 import com.jsoniter.output.JsonStream;
-import net.jami.jams.common.jami.AddrLookupResponse;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.jami.AddrLookupResponse;
+
 import java.io.IOException;
 
 import static net.jami.jams.server.Server.nameServer;
