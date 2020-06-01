@@ -302,7 +302,7 @@
               <div class="form-label-group">
                 <div class="label-title">Server Address</div>
                 <div class="label-description"></div>
-                <input type="text" name="serverURI" class="form-control" required autocomplete="off" value=""/>
+                <input type="text" name="host" class="form-control" required autocomplete="off" value=""/>
               </div>
               <div class="form-label-group">
                 <div class="label-title">Administrator Username <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Please use LDAP convention (ex : cn=name, ou=unit, dc=domain)"></i></div>
@@ -324,7 +324,7 @@
                 <div class="label-description"></div>
                 <div class="select_wrapper-picker">
                   <select  name="usernameField" id="usernameField" class="selectpicker" required>
-                    <option value="uid=%s">UID</option>
+                    <option value="uid">UID</option>
                   </select>
                 </div>
               </div>
@@ -353,8 +353,8 @@
         <div data-name="useStartTLS"></div>
       </div>
       <div class="label-description d-flex">
-        <div class="mr-2" data-label="serverURI">Server Address:</div>
-        <div data-name="serverURI"></div>
+        <div class="mr-2" data-label="host">Server Address:</div>
+        <div data-name="host"></div>
       </div>
       <div class="label-description d-flex">
         <div class="mr-2" data-label="user">Administrator Username:</div>

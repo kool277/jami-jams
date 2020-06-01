@@ -27,11 +27,16 @@ $("#inputIdentityManagmentType").change(function () {
 // Embedded
 $("#HSQL-form").submit(function (event) {
     event.preventDefault();
-    var inputs = {
+    var authSource = {};
+    var settings = {
         "CN": "http://ns.jami.net"
     };
-    var data = inputs;
-    postParamaters(data);
+
+    authSource['type'] = 'LOCAL';
+    authSource['localAuthSettings'] = settings;
+    var data = authSource;
+    // post request
+    postParameters(data);
 });
 
 // LDAP
@@ -47,35 +52,56 @@ $("#AD-form").submit(function (event) {
 });
 
 function setLDAPParametersData(form) {
-  var inputs = {}
+  var authSource = {};
+  var settings = {};
   $.each(($(form).serializeArray()), function (i, field){
       if (field.name == 'useStartTLS')
-          inputs[field.name] = $.parseJSON(field.value);
+          settings[field.name] = $.parseJSON(field.value);
       else
-          inputs[field.name] = field.value;
+          settings[field.name] = field.value;
   });
-  var data = inputs;
+  // settings['usernameField'] = "uid";
+  // settings['realm'] = "savoirfairelinux";
+  settings['fieldMappings'] = {};
+    settings['fieldMappings']['givenName'] = "FirstName";
+    settings['fieldMappings']['sn'] = "LastName";
+    settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
+    settings['fieldMappings']['mail'] = "Email";
+    settings['fieldMappings']['telephoneNumber'] = "PhoneNumber";
+    settings['fieldMappings']['mobile'] = "MobileNumber";
+    settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
+    settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
+    settings['fieldMappings']['o'] = "Organization";
+  console.log(settings);
+
+  authSource['type'] = 'LDAP';
+  authSource['ldapSettings'] = settings;
+  var data = authSource;
   // post request
-  postParamaters(data);
+    postParameters(data);
 }
 
 function setADParametersData(form) {
-    var inputs = {}
+    var authSource = {};
+    var settings = {};
     $.each(($(form).serializeArray()), function (i, field){
         if (field.name == 'port')
-            inputs[field.name] = parseInt(field.value);
+            settings[field.name] = parseInt(field.value);
         else if (field.name == 'isSSL')
-            inputs[field.name] = $.parseJSON(field.value);
+            settings[field.name] = $.parseJSON(field.value);
         else
-            inputs[field.name] = field.value;
+            settings[field.name] = field.value;
     });
-    var data = inputs;
+
+    authSource['type'] = 'AD';
+    authSource['activeDirectorySettings'] = settings;
+    var data = authSource;
     // post request
-    postParamaters(data);
+    postParameters(data);
 }
 
 // send post request
-function postParamaters(data) {
+function postParameters(data) {
   usePublicNS = $('#publicNS')[0].checked;
   var callback = set_installation_response("server-parameters.html" + "?usePublicNS=" + usePublicNS);
 
