@@ -87,12 +87,9 @@ function createAdminCallBackHandler(data, statusCode, jqXHR) {
     console.log(data);
     console.log(statusCode);
     console.log(jqXHR);
-  if (jqXHR.status == 200 && data.token != 'null') {
-    date.setTime(date.getTime() + (minutes * 60 * 1000));
+  if (jqXHR.status == 200 && data.access_token != 'null') {
     // set username token
-    setCookie(keyUsername, jsonData['username'], { expires: date });
-    // set isAdmin token
-    setCookie(keyAdmin, true, { expires: date });
+    setJWT(data);
     window.location.replace("ca-setup.html");
   }
 }

@@ -90,8 +90,7 @@ public class StartInstallServlet extends HttpServlet {
         user.setAccessLevel(AccessLevel.ADMIN);
         dataStore.getUserDao().storeObject(user);
         AuthTokenResponse res = processUsernamePasswordAuth(user.getUsername(),user.getPassword());
-        resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
-        resp.setStatus(200);
         CachedObjects.endpoint = "/api/install/ca";
+        resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
 }
