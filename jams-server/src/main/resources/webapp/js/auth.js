@@ -28,7 +28,7 @@
      // create Admin
 
      if(data.getResponseHeader('showLogin') == "false") {
-         var inputConfirmPassword = '<div class="form-label-group"><label for="confirmPassword" class="label-title">Confirm Password</label><input type="password" name="confirmPassword" id="inputConfirmPassword" class="form-control" required autocomplete="off"><span id="message"></span></div>';
+         var inputConfirmPassword = '<div class="form-label-group"><label for="confirmPassword" class="label-title">Confirm Password</label><input type="password" name="confirmPassword"          id="inputConfirmPassword" class="form-control" required autocomplete="off"><span id="message"></span></div>';
          admin_account = false;
          $('.title').text("Administrator account creation");
          $('.subtitle').text("Create the account that will have administrative control over JAMS.");
