@@ -26,7 +26,10 @@
 
  function signupPageHandler(data, statusCode, jqXHR) {
      // create Admin
-     if(data.status == "200") {
+     console.log(data);
+     console.log(data.getResponseHeader('showLogin'));
+
+     if(data.getResponseHeader('showLogin') == "false") {
          var inputConfirmPassword = '<div class="form-label-group"><label for="confirmPassword" class="label-title">Confirm Password</label><input type="password" name="confirmPassword" id="inputConfirmPassword" class="form-control" required autocomplete="off"><span id="message"></span></div>';
          admin_account = false;
          $('.title').text("Administrator account creation");
@@ -36,7 +39,7 @@
          $('#form-signup').removeClass('d-none');
          $('#admin-password-progress-bar-container').show();
      }
-     else if (data.status == "404") {
+     else if (data.getResponseHeader('showLogin') == "true") {
          admin_account = true;
          $('.title').text("Access your account");
          $('.form-submit').val("Log in");

@@ -29,6 +29,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.dao.StatementElement;
@@ -43,6 +44,7 @@ import java.util.List;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 
+@Slf4j
 @WebServlet("/api/install/start")
 public class StartInstallServlet extends HttpServlet {
 
@@ -50,14 +52,11 @@ public class StartInstallServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Here we must decide which page to show - login or sign-up
         StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("username","=","*","");
-        statementList.addStatement(statementElement);
-
-        List<User> results = dataStore.getUserDao().getObjects(statementList);
-        if(results.size() > 0)
-            resp.setStatus(404);
+        statementList.addStatement(new StatementElement("username","=","*",""));
+        if(dataStore.getUserDao().getObjects(null).size() > 0)
+            resp.setHeader("showLogin","true");
         else
-            resp.setStatus(200);
+            resp.setHeader("showLogin","false");
 
     }
 

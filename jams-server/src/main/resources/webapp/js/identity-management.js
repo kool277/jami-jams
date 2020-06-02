@@ -63,16 +63,15 @@ function setLDAPParametersData(form) {
   // settings['usernameField'] = "uid";
   // settings['realm'] = "savoirfairelinux";
   settings['fieldMappings'] = {};
-    settings['fieldMappings']['givenName'] = "FirstName";
-    settings['fieldMappings']['sn'] = "LastName";
-    settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
-    settings['fieldMappings']['mail'] = "Email";
-    settings['fieldMappings']['telephoneNumber'] = "PhoneNumber";
-    settings['fieldMappings']['mobile'] = "MobileNumber";
-    settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
-    settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
-    settings['fieldMappings']['o'] = "Organization";
-  console.log(settings);
+  settings['fieldMappings']['givenName'] = "FirstName";
+  settings['fieldMappings']['sn'] = "LastName";
+  settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
+  settings['fieldMappings']['mail'] = "Email";
+  settings['fieldMappings']['telephoneNumber'] = "PhoneNumber";
+  settings['fieldMappings']['mobile'] = "MobileNumber";
+  settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
+  settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
+  settings['fieldMappings']['o'] = "Organization";
 
   authSource['type'] = 'LDAP';
   authSource['ldapSettings'] = settings;

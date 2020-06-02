@@ -20,7 +20,7 @@
 
 // declaring variables
 var selected_names = ['useStartTLS', 'usernameField', 'sSL'];
-var type_int_name_input = ['deviceValidity', 'userValidity'];
+var type_int_name_input = ['deviceLifetime', 'userLifetime'];
 var auth_action = null;
 var auth_type = null;
 
@@ -31,16 +31,16 @@ ajaxApiCall(api_path_get_post_configuration_global_settings,'GET',null,null,getA
 function getAllConfigurations(data, statusCode, jqXHR) {
   if (jqXHR.status == 200 && data.length != 0) {
     var domain = data.domain;
-    var crlValidity = data.crlValidity;
-    var deviceValidity = data.deviceValidity;
-    var userValidity = data.userValidity;
+    var crlLifetime = data.crlLifetime;
+    var deviceLifetime = data.deviceLifetime;
+    var userLifetime = data.userLifetime;
     var ldapConfigurations = data.ldapConfigurations;
     var adConfigurations = data.activeDirectoryConfgurations;
     // var hsqlConfigurations = data.hsqlConfigurations;
     setADblocks(adConfigurations);
     setLDAPblocks(ldapConfigurations);
     // setHSQLblocks(hsqlConfigurations);
-    setServerParameters(domain,crlValidity,deviceValidity,userValidity);
+    setServerParameters(domain,crlLifetime,deviceLifetime,userLifetime);
     $('[data-toggle="tooltip"]').tooltip();
     if(sessionStorage.getItem("auth_added") !== ""){
       var msg = sessionStorage.getItem("auth_added");
@@ -248,14 +248,14 @@ $("#form-server-parameters").submit(function(event) {
 });
 
 // setServerParameters configruation block
-function setServerParameters(domain,crlValidity,deviceValidity,userValidity) {
+function setServerParameters(domain,crlLifetime,deviceLifetime,userLifetime) {
   $('input[name="domain"]').val(domain);
-  $("option[value='" + deviceValidity + "']", "select[name='deviceValidity']").prop('selected', true);
-  $("#deviceValidity").data('selectpicker').refresh();
-  $("option[value='" + crlValidity + "']", "select[name='crlValidity']").prop('selected', true);
-  $("#crlValidity").data('selectpicker').refresh();
-  $("option[value='" + userValidity + "']", "select[name='userValidity']").prop('selected', true);
-  $("#userValidity").data('selectpicker').refresh();
+  $("option[value='" + deviceLifetime + "']", "select[name='deviceLifetime']").prop('selected', true);
+  $("#deviceLifetime").data('selectpicker').refresh();
+  $("option[value='" + crlLifetime + "']", "select[name='crlLifetime']").prop('selected', true);
+  $("#crlLifetime").data('selectpicker').refresh();
+  $("option[value='" + userLifetime + "']", "select[name='userLifetime']").prop('selected', true);
+  $("#userLifetime").data('selectpicker').refresh();
 }
 
 // build server parameters json object

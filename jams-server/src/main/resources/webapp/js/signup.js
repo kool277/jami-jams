@@ -84,9 +84,6 @@ $('#cancel-submit').click(function (event) {
 });
 
 function createAdminCallBackHandler(data, statusCode, jqXHR) {
-    console.log(data);
-    console.log(statusCode);
-    console.log(jqXHR);
   if (jqXHR.status == 200 && data.access_token != 'null') {
     // set username token
     setJWT(data);
@@ -95,9 +92,6 @@ function createAdminCallBackHandler(data, statusCode, jqXHR) {
 }
 
 function signinCallBackHandler(data, statusCode, jqXHR) {
-
-  console.log(jqXHR.status);
-  console.log(data);
 
     if (jqXHR.status == 200 && data.token != 'null' && (data.needsReset == false || data.needsReset == null)) {
     date.setTime(date.getTime() + (minutes * 60 * 1000));

@@ -63,7 +63,7 @@
                   <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Set the domain of the web client server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates."></i></div>
                 <div class="label-description">The domain name of your web client server. Requires http:// or https://</div>
                 <div class="input_wrapper-picker">
-                    <input id="domain" name="domain" type="text"  class="form-control" required>
+                    <input id="domain" name="serverDomain" type="text"  class="form-control" required>
                 </div>
               </div>
               <div class="form-label-group">
@@ -71,7 +71,7 @@
                     <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Set the lifetime of the CRL which contains the list of the certificates that have been revoked before their scheduled expiration date."></i></div>
                 <div class="label-description"></div>
                 <div class="select_wrapper-picker">
-                  <select name="crlValidity" class="selectpicker" required>
+                  <select name="crlLifetime" class="selectpicker" required>
                     <option value="300000">5 minutes</option>
                     <option value="600000">10 minutes</option>
                     <option value="900000">15 minutes</option>
@@ -84,7 +84,7 @@
                 <div class="label-title">Device Lifetime</div>
                 <div class="label-description"></div>
                 <div class="select_wrapper-picker">
-                  <select id="deviceValidity" name="deviceValidity" class="selectpicker" required>
+                  <select id="deviceLifetime" name="deviceLifetime" class="selectpicker" required>
                     <option value="2629746000">1 Month</option>
                     <option value="7889238000">3 Months</option>
                     <option value="15778476000">6 Months</option>
@@ -97,7 +97,7 @@
                 <div class="label-title">User Account Lifetime</div>
                 <div class="label-description"></div>
                 <div class="select_wrapper-picker">
-                  <select id="userValidity" name="userValidity" class="selectpicker" required>
+                  <select id="userLifetime" name="userLifetime" class="selectpicker" required>
                     <option value="31556952000">1 Year</option>
                     <option value="157784760000">5 Years</option>
                     <option value="315569520000">10 Years</option>
