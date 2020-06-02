@@ -97,6 +97,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthTokenResponse'
+              examples:
+                example-1: {}
         '500':
           description: Internal Server Error
       description: Create administrative user account.

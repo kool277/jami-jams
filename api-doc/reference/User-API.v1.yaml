@@ -9,7 +9,15 @@ paths:
     get:
       summary: "Get User's list of contacts"
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
       operationId: get-api-auth-contacts
       description: "Get User's contacts."
     put:
@@ -18,6 +26,8 @@ paths:
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
       description: "Update User's contact."
     delete:
       summary: "Delete a user's contact"
@@ -25,6 +35,8 @@ paths:
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
       description: "Delete user's contact."
   '/api/auth/device/{deviceId}':
     parameters:
@@ -203,6 +215,11 @@ components:
           type: string
         timestamp:
           type: string
+      x-examples:
+        example-1:
+          success: 'true'
+          errorDetails: ''
+          timestamp: '2020-06-01T12:30:01'
     AuthModuleKey:
       title: AuthModuleKey
       type: object
@@ -215,6 +232,17 @@ components:
             - AD
             - LDAP
             - LOCAL
+    Contact:
+      title: Contact
+      type: object
+      description: Contact database object
+      properties:
+        owner:
+          type: string
+        uri:
+          type: string
+        displayName:
+          type: string
   securitySchemes:
     API Key - 1:
       name: API Key

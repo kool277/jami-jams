@@ -17,10 +17,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Device'
-              examples: {}
+              examples:
+                example-1:
+                  value:
+                    deviceId: sfl123
+                    displayName: ThinkpadL30
+                    certificate: sjhgfdszwythudsiuyfdvsxkiwjhyed
       operationId: get-api-admin-device
-      requestBody:
-        description: ''
       parameters:
         - schema:
             type: string
@@ -88,6 +91,15 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Device'
+              examples:
+                example-1:
+                  value:
+                    - deviceId: sfl123
+                      displayName: ThinkpadL30
+                      certificate: sjhgfdszwythudsiuyfdvsxkiwjhyed
+                    - deviceId: sfl1234
+                      displayName: ThinkpadL304
+                      certificate: sjhgfdszwyth4udsiuyfdvsxkiwjhyed
       operationId: get-api-admin-devices
       parameters:
         - schema:
@@ -135,6 +147,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserProfile'
+              examples:
+                example-1:
+                  value:
+                    username: lily
+                    firstName: Lilye
+                    lastName: Aldrin
+                    phoneNumber: '5149876554'
+                    phoneNumberExtension: '123'
+                    mobileNumber: '4381230987'
+                    faxNumber: '1239876543'
+                    profilePicture: eowiiewjdkfjrekjdvreqljdlfrlqdmf
+                    email: askiur@sfl.com
+                    organization: SFL
       operationId: get-api-admin-user
       description: "Get the user's profile."
       parameters:
@@ -152,6 +177,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+              examples:
+                example-1:
+                  value:
+                    username: lily
+                    password: abcs123
+                    userType: LOCAL
+                    realm: ''
+                    accessLevel: USER
+                    needsPasswordReset: 'false'
+                    ethAddress: ''
+                    ethKey: ''
+                    jamiId: ''
       description: Create an internal user.
     delete:
       summary: Delete a user
@@ -163,6 +200,12 @@ paths:
             application/json:
               schema:
                 $ref: './User-API.v1.yaml#/components/schemas/DeviceRevocationResponse'
+              examples:
+                example-1:
+                  value:
+                    success: 'true'
+                    errorDetails: ''
+                    timestamp: '2020-06-01T12:30:01'
         '500':
           description: Internal Server Error
       description: Revoke a user.
@@ -202,6 +245,29 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserProfile'
+              examples:
+                example-1:
+                  value:
+                    - username: lily
+                      firstName: Lilye
+                      lastName: Aldrin
+                      phoneNumber: '5149876554'
+                      phoneNumberExtension: '123'
+                      mobileNumber: '4381230987'
+                      faxNumber: '1239876543'
+                      profilePicture: eowiiewjdkfjrekjdvreqljdlfrlqdmf
+                      email: askiur@sfl.com
+                      organization: SFL
+                    - username: ErikMar
+                      firstName: Marshall
+                      lastName: Eriksen
+                      phoneNumber: '5149876554'
+                      phoneNumberExtension: '123'
+                      mobileNumber: '4381230987'
+                      faxNumber: '1239876543'
+                      profilePicture: eowiiewjdkfjrekjdvreqljdlfrlqdmf
+                      email: askiur@sfl.com
+                      organization: SFL
       operationId: get-api-admin-users
       description: Return a list of users.
   /api/subscription:
@@ -215,6 +281,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SubscriptionStatusResponse'
+              examples:
+                example-1:
+                  value:
+                    licenseInformation:
+                      type: COMMUNITY
+                      products: []
+                    activated: true
+                    versions:
+                      Key: ''
+                      FIleDescription: {}
           headers:
             Access-Control-Allow-Origin:
               schema:
@@ -240,6 +316,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FullSystemStatusResponse'
+              examples:
+                example-1:
+                  value:
+                    localVersions:
+                      Key: ''
+                      FIleDescription: []
+                    remoteVersions:
+                      Key: ''
+                      FIleDescription: {}
+                    updateAvailable: false
       operationId: get-api-update
       description: Return the current version number and the available version number of Jams(for update).
     post:
@@ -262,6 +348,11 @@ components:
         certificate:
           type: string
       description: "The user's Jami device."
+      x-examples:
+        example-1:
+          deviceId: sfl123
+          displayName: ThinkpadL30
+          certificate: sjhgfdszwythudsiuyfdvsxkiwjhyed
     UserProfile:
       title: UserProfile
       type: object
@@ -287,6 +378,18 @@ components:
         organization:
           type: string
       description: "The user's extended information which is not critical to Jami operations, usually provided by LDAP, Active Directory or other backend."
+      x-examples:
+        example-1:
+          username: lily
+          firstName: Lilye
+          lastName: Aldrin
+          phoneNumber: '5149876554'
+          phoneNumberExtension: '123'
+          mobileNumber: '4381230987'
+          faxNumber: '1239876543'
+          profilePicture: eowiiewjdkfjrekjdvreqljdlfrlqdmf
+          email: askiur@sfl.com
+          organization: SFL
     User:
       title: User
       type: object
@@ -316,9 +419,29 @@ components:
           type: string
         jamiId:
           type: string
+      x-examples:
+        example-1:
+          username: lily
+          password: abcs123
+          userType: LOCAL
+          realm: ''
+          accessLevel: USER
+          needsPasswordReset: 'false'
+          ethAddress: ''
+          ethKey: ''
+          jamiId: ''
     SubscriptionStatusResponse:
       title: SubscriptionStatusResponse
       type: object
+      x-examples:
+        example-1:
+          licenseInformation:
+            type: COMMUNITY
+            products: []
+          activated: true
+          versions:
+            Key: ''
+            FIleDescription: {}
       properties:
         licenseInformation:
           $ref: '#/components/schemas/LicenseInformation'
@@ -339,6 +462,7 @@ components:
           type: array
           items:
             type: string
+      x-examples: {}
     FullSystemStatusResponse:
       title: FullSystemStatusResponse
       type: object
@@ -349,3 +473,12 @@ components:
           type: object
         updateAvailable:
           type: boolean
+      x-examples:
+        example-1:
+          localVersions:
+            Key: ''
+            FIleDescription: []
+          remoteVersions:
+            Key: ''
+            FIleDescription: {}
+          updateAvailable: false
