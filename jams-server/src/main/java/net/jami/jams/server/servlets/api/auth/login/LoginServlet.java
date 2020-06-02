@@ -23,13 +23,13 @@
 package net.jami.jams.server.servlets.api.auth.login;
 
 import com.jsoniter.output.JsonStream;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
 
@@ -53,8 +53,8 @@ public class LoginServlet extends HttpServlet {
             res = processUsernamePasswordAuth(req.getHeader("authorization"));
         }
         //Case 3 SSL Certificate
-        if(req.getAttribute("javax.servlet.request.X509Certificate") != null){
-            res = processX509Auth((X509Certificate[])req.getAttribute("javax.servlet.request.X509Certificate"));
+        if(req.getAttribute("jakarta.servlet.request.X509Certificate") != null){
+            res = processX509Auth((X509Certificate[])req.getAttribute("jakarta.servlet.request.X509Certificate"));
         }
         //Here we catch the need to create a user (this is only possible in 1 & 2).
         if(res == null) resp.sendError(403,"Invalid credentials!");

@@ -30,7 +30,6 @@ import net.jami.jams.common.objects.devices.Device;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 
 @Slf4j
 public class DeviceDao extends AbstractDao<Device> {
@@ -67,7 +66,7 @@ public class DeviceDao extends AbstractDao<Device> {
                     "VALUES " +
                     "(?, ?, ?, ?, ?)");
             ps = object.getInsert(ps);
-            return ps.execute();
+            return ps.executeUpdate() != 0;
         }
         catch (Exception e){
             log.error("An error has occurred while trying to store a user: " + e.toString());
@@ -76,11 +75,6 @@ public class DeviceDao extends AbstractDao<Device> {
         finally {
             DataStore.connectionPool.returnConnection(connection);
         }
-    }
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
     }
 
     @Override

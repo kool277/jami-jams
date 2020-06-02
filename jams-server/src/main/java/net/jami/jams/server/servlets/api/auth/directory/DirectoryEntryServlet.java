@@ -23,15 +23,15 @@
 package net.jami.jams.server.servlets.api.auth.directory;
 
 import com.jsoniter.output.JsonStream;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.objects.user.UserProfile;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,10 @@ public class DirectoryEntryServlet extends HttpServlet {
             UserProfile[] profiles = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(req.getParameter("directory"), AuthenticationSourceType.fromString(req.getParameter("directoryType"))))
                     .getUserProfile(req.getParameter("username"), "LOGON_NAME");
-            resp.getOutputStream().write(JsonStream.serialize(profiles[0]).getBytes());
+            if(req.getParameter("format").equals("vcard")){
+                resp.getOutputStream().write(profiles[0].getAsVCard().getBytes());
+            }
+            else resp.getOutputStream().write(JsonStream.serialize(profiles[0]).getBytes());
             return;
         }
         List<UserProfile> userProfiles = new ArrayList<>();
@@ -59,7 +62,10 @@ public class DirectoryEntryServlet extends HttpServlet {
             UserProfile[] profiles = v.getUserProfile(req.getParameter("username"), "LOGON_NAME");
             if (profiles != null && profiles.length != 0) userProfiles.addAll(Arrays.asList(profiles));
         });
-        resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
+        if(req.getParameter("format").equals("vcard")){
+            resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
+        }
+        else resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
     }
 
     @Override

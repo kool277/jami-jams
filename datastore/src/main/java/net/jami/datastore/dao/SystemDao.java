@@ -30,7 +30,6 @@ import net.jami.jams.common.objects.system.SystemAccount;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 
 @Slf4j
 public class SystemDao extends AbstractDao<SystemAccount> {
@@ -65,7 +64,7 @@ public class SystemDao extends AbstractDao<SystemAccount> {
                     "VALUES " +
                     "(?, ?, ?)");
             ps = object.getInsert(ps);
-            return ps.execute();
+            return ps.executeUpdate() != 0;
         }
         catch (Exception e){
             log.error("An error has occurred while trying to store a system entity: " + e.toString());
@@ -74,11 +73,6 @@ public class SystemDao extends AbstractDao<SystemAccount> {
         finally {
             DataStore.connectionPool.returnConnection(connection);
         }
-    }
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
     }
 
     @Override

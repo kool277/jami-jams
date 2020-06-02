@@ -24,6 +24,7 @@ package net.jami.datastore.main;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.jami.datastore.dao.ContactDao;
 import net.jami.datastore.dao.DeviceDao;
 import net.jami.datastore.dao.SystemDao;
 import net.jami.datastore.dao.UserDao;
@@ -46,6 +47,7 @@ public class DataStore implements AuthenticationSource {
     private UserDao userDao;
     private DeviceDao deviceDao;
     private SystemDao systemDao;
+    private ContactDao contactDao;
 
     //Implicitly connect to debry.
     public DataStore(String connectionString) {
@@ -53,6 +55,7 @@ public class DataStore implements AuthenticationSource {
         userDao = new UserDao();
         deviceDao = new DeviceDao();
         systemDao = new SystemDao();
+        contactDao = new ContactDao();
     }
 
     public boolean userExists(String username){

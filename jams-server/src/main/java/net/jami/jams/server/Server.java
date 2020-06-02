@@ -23,6 +23,7 @@
 package net.jami.jams.server;
 
 import com.jsoniter.JsonIterator;
+import javassist.ClassPool;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -48,15 +49,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 //In order to make this "stoppable" to simply, I turned the server itself into a thread.
-//The reasoning: the main two problems
 public class Server {
 
     public final static AtomicBoolean isInstalled = new AtomicBoolean(false);
     public final static AtomicBoolean activated = new AtomicBoolean(false);
-
-    static {
-        JsoniterRegistry.initCodecs();
-    }
 
     public static DataStore dataStore;
     //This one gets loaded via JAR, to make it more flexible.
@@ -68,21 +64,17 @@ public class Server {
     public static AppUpdater appUpdater;
 
     public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
+        JsoniterRegistry.initCodecs();
         Server.appUpdater = appUpdater;
-
         String[] args = {port, serverCertificate, serverPrivateKey};
-
-        if ((args.length > 0)) main(args);
-        else main(new String[]{});
+        main(args);
     }
 
 
     public static void main(String[] args) {
-        //Start tomcat.
+        //This is a fix to drop old cached stuff from the tomcat classloader.
+        ClassPool.getDefault().clearImportedPackages();
         switch (args.length) {
-            case 0:
-                tomcatLauncher = new TomcatLauncher(8080);
-                break;
             case 1:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]));
                 break;

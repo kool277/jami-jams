@@ -1,6 +1,8 @@
 import json
 import requests
 
+baseUri = "https://localhost:8080"
+
 data = {}
 data['username'] = "admin"
 data['password'] = "abc123"
@@ -8,7 +10,7 @@ data['password'] = "abc123"
 header = {}
 header['Content-type'] = "application/json"
 
-response = requests.put('http://localhost:8080/api/install/start',data=json.dumps(data),headers=header)
+response = requests.put(baseUri + '/api/install/start',data=json.dumps(data),headers=header,verify=False)
 if response.status_code == 200:
     print("Succesfully created the administrative user!")
     token = json.loads(response.text)['access_token']
@@ -24,7 +26,7 @@ data['fields']['commonName'] = "TEST CA"
 data['fields']['country'] = "FR"
 data['fields']['lifetime'] = 10000000
 
-response = requests.post('http://localhost:8080/api/install/ca',data=json.dumps(data),headers=header)
+response = requests.post(baseUri + '/api/install/ca',data=json.dumps(data),headers=header,verify=False)
 if response.status_code == 200:
     print("Added CA parameters!")
 else:
@@ -52,7 +54,7 @@ data['ldapSettings']['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber"
 data['ldapSettings']['fieldMappings']['extensionName'] = "PhoneNumberExtension"
 data['ldapSettings']['fieldMappings']['o'] = "Organization"
 
-response = requests.post('http://localhost:8080/api/install/auth',data=json.dumps(data),headers=header)
+response = requests.post(baseUri + '/api/install/auth',data=json.dumps(data),headers=header,verify=False)
 if response.status_code == 200:
     print("Added LDAP parameters!")
 else:
@@ -65,12 +67,12 @@ data['crlLifetime'] = 100000
 data['userLifetime'] = 100000
 data['deviceLifetime'] = 100000
 
-response = requests.post('http://localhost:8080/api/install/settings',data=json.dumps(data),headers=header)
+response = requests.post(baseUri + '/api/install/settings',data=json.dumps(data),headers=header,verify=False)
 
 #This completes the install, now we'll try to enroll.
 
 data = {}
-response = requests.post('http://localhost:8080/api/auth/login',data={"username":"fsidokhine","password":"mes87hesm97daa"})
+response = requests.post(baseUri + '/api/auth/login',data={"username":"fsidokhine","password":"mes87hesm97daa"},verify=False)
 if response.status_code == 200:
     token = json.loads(response.text)['access_token']
 
@@ -110,25 +112,31 @@ oTBLLnRmdyi/SFreL5WRhMm67DHne08LCqnkzEVwMIUECN5f2mkx9KP3BrsXuH2W
 sxMmX+s/PapsdSyUJ2g3hAf6Iv5m0pcUeQ==
 -----END NEW CERTIFICATE REQUEST-----'''
 
-response = requests.post('http://localhost:8080/api/auth/device',headers=header,data=json.dumps(data))
+response = requests.post(baseUri + '/api/auth/device',headers=header,data=json.dumps(data),verify=False)
 print(response.status_code)
 print(response.text)
 
 print(token)
 
-response = requests.get("http://localhost:8080/api/nameserver/name/aberaud",headers=header)
+response = requests.get("http://localhost:8080/api/nameserver/name/aberaud",headers=header,verify=False)
 print(response.status_code)
 print(response.text)
 
 
-response = requests.get("http://localhost:8080//api/auth/directories",headers=header)
+response = requests.get("http://localhost:8080//api/auth/directories",headers=header,verify=False)
 print(response.status_code)
 print(response.text)
 
-response = requests.get("http://localhost:8080/api/auth/user",headers=header)
+response = requests.get("http://localhost:8080/api/auth/user",headers=header,verify=False)
 print(response.status_code)
 print(response.text)
 
-response = requests.post("http://localhost:8080/api/update",headers=header)
+print("Getting user profile as vcard")
+response = requests.get("http://localhost:8080/api/auth/directory/entry?username=aberaud&format=vcard",headers=header,verify=False)
+print(response.status_code)
+print(response.text)
+
+
+response = requests.post("http://localhost:8080/api/update",headers=header,verify=False)
 print(response.status_code)
 print(response.text)

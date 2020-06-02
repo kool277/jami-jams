@@ -79,12 +79,13 @@ public class JamsCA implements CertificateAuthority {
         crlLifetime = config.getCrlLifetime();
         userLifetime = config.getUserLifetime();
         deviceLifetime = config.getDeviceLifetime();
-        crlWorker = new CRLWorker(CA.getPrivateKey(), CA.getCertificate());
-        try {
-            ocspWorker = new OCSPWorker(OCSP.getPrivateKey(), OCSP.getCertificate(), crlWorker);
-        }
-        catch (Exception e){
-            log.error("Could not start OCSP request processor with error {}",e.getMessage());
+        if(ca != null && ocsp != null) {
+            crlWorker = new CRLWorker(CA.getPrivateKey(), CA.getCertificate());
+            try {
+                ocspWorker = new OCSPWorker(OCSP.getPrivateKey(), OCSP.getCertificate(), crlWorker);
+            } catch (Exception e) {
+                log.error("Could not start OCSP request processor with error {}", e.getMessage());
+            }
         }
     }
 
@@ -135,5 +136,19 @@ public class JamsCA implements CertificateAuthority {
     @Override
     public X509Certificate getCA() {
         return CA.getCertificate();
+    }
+
+    @Override
+    public boolean shutdownThreads() {
+        //Unsafe but acceptable.
+        crlWorker.getStop().set(true);
+        crlWorker.interrupt();
+        Thread.State state = crlWorker.getState();
+        while(!state.equals(Thread.State.TERMINATED)){
+            state = crlWorker.getState();
+        }
+        crlWorker = null;
+        ocspWorker.stop();
+        return true;
     }
 }

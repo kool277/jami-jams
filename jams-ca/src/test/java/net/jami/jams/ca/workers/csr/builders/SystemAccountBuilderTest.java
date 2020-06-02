@@ -110,7 +110,7 @@ class SystemAccountBuilderTest {
 
 
         JamsCA jamsCA = new JamsCA();
-        jamsCA.init(JsonStream.serialize(config),caAccount,null);
+        jamsCA.init(JsonStream.serialize(config),caAccount,caAccount);
         RevocationRequest revocationRequest = new RevocationRequest();
         revocationRequest.setIdentifier(new BigInteger("91828882"));
         revocationRequest.setRevocationType(RevocationType.USER);
@@ -119,7 +119,7 @@ class SystemAccountBuilderTest {
             this.wait(2_000);
         }
         Assertions.assertNotNull(jamsCA.getLatestCRL());
-        Assertions.assertEquals(jamsCA.getLatestCRL().get().getRevokedCertificates().toArray().length,1,"Expected only 1 certificate!");
+        Assertions.assertEquals(1,jamsCA.getLatestCRL().get().getRevokedCertificates().toArray().length,"Expected only 1 certificate!");
 
         revocationRequest = new RevocationRequest();
         revocationRequest.setIdentifier(new BigInteger("17262653"));
@@ -129,9 +129,6 @@ class SystemAccountBuilderTest {
             this.wait(2_000);
         }
         Assertions.assertNotNull(jamsCA.getLatestCRL());
-        Assertions.assertEquals(jamsCA.getLatestCRL().get().getRevokedCertificates().toArray().length,2,"Expected only 2 certificates!");
-
-
-
+        Assertions.assertEquals(2,jamsCA.getLatestCRL().get().getRevokedCertificates().toArray().length,"Expected only 2 certificates!");
     }
 }

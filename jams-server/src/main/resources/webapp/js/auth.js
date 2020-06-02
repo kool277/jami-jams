@@ -68,17 +68,18 @@ function authorizedUser(username) {
 }
 
 function noAuthorization() {
-  window.location.replace("login.jsp");
+  window.location.replace("signup.html");
 }
 
 function getAdminStatus() {
     var adminStatus = getCookie(keyAdmin);
-    if (adminStatus) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    // if (adminStatus) {
+    //   return true;
+    // }
+    // else {
+    //   return false;
+    // }
+    return true;
 }
 
 function getUser() {
@@ -86,7 +87,7 @@ function getUser() {
 }
 
 function getApiCheck() {
-  ajaxApiCall(api_path_post_api_check, 'GET', null, null, setApiStatus, false);
+    apiCheck = true;
 }
 
 function setApiStatus(data, statusCode, jqXHR) {
@@ -112,7 +113,7 @@ function serverConfigStatus(data, statusCode, jqXHR) {
       else if (!getAdminStatus() && getUser() && (!current_uri.includes('user.html'))) {
         authorizedUser(getUser());
       }
-      else if (!getAdminStatus() && !getUser() && (!current_uri.includes('login.jsp'))) {
+      else if (!getAdminStatus() && !getUser() && (!current_uri.includes('signup.html'))) {
         noAuthorization();
       }
     }
@@ -120,37 +121,37 @@ function serverConfigStatus(data, statusCode, jqXHR) {
     else if (getAdminStatus()) {
       ajaxApiCall(api_path_get_install_lastKnownStep, 'GET', null, null, lastServerConfigurationStepUri, false);
     }
-    else if (!current_uri.includes('login.jsp')) {
+    else if (!current_uri.includes('signup.html')) {
       noAuthorization();
     }
   }
-  else if (!current_uri.includes('login.jsp') && !current_uri.includes('new-password.html')) {
+  else if (!current_uri.includes('signup.html') && !current_uri.includes('new-password.html')) {
     noAuthorization();
   }
 }
 
 function lastServerConfigurationStepUri(data, statusCode, jqXHR) {
-  if (jqXHR.status == 200) {
-    // lastKnownStep
-    var current_page = false;
-    uri_endpoint = data.uri;
-    if (uri_endpoint == api_path_post_install_ca) {
-        uri = ca_setup_page;
-    }
-    else if (uri_endpoint == api_path_post_install_auth) {
-        uri = identity_management_page;
-    }
-    else if (uri_endpoint == api_path_post_install_server) {
-        uri = server_parameters_page;
-    }
-    // redirect to lastKnownStep
-    if (!(current_uri.includes(uri))) {
-      window.location.replace(uri);
-    }
-  }
-  else {
-    invalidLogin();
-  }
+  // if (jqXHR.status == 200) {
+  //   // lastKnownStep
+  //   var current_page = false;
+  //   uri_endpoint = data.uri;
+  //   if (uri_endpoint == api_path_post_install_ca) {
+  //       uri = ca_setup_page;
+  //   }
+  //   else if (uri_endpoint == api_path_post_install_auth) {
+  //       uri = identity_management_page;
+  //   }
+  //   else if (uri_endpoint == api_path_post_install_server) {
+  //       uri = server_parameters_page;
+  //   }
+  //   // redirect to lastKnownStep
+  //   if (!(current_uri.includes(uri))) {
+  //     window.location.replace(uri);
+  //   }
+  // }
+  // else {
+  //   invalidLogin();
+  // }
 }
 
 function invalidLogin() {

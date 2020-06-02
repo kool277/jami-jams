@@ -37,6 +37,7 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.common.utils.X509Utils;
+import org.bouncycastle.cert.X509CRLHolder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -160,8 +161,29 @@ public class UserAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public AuthTokenResponse authenticateUser(X509Certificate[] certificates) {
-        return null;
+    public AuthTokenResponse authenticateUser(X509Certificate[] certificates, X509CRLHolder crl,
+                                              X509Certificate ca) {
+        //Extract the username for the certificate and verify that it is not revoked.
+        X509Certificate clientCert = certificates[0];
+        try {
+            //Check if the certificate is even valid.
+            clientCert.checkValidity();
+            //Check if the certificate was provided by a valid authority.
+            clientCert.verify(ca.getPublicKey());
+            //Here we need to make a request to the CRL to find out if it has been revoked.
+            if(crl.getRevokedCertificate(clientCert.getSerialNumber()) != null) return null;
+            //If the above cases have passed, then this user is indded valid.
+            //This is yet to be confirmed.
+            String username = clientCert.getSubjectDN().getName();
+            StatementList statementList = new StatementList();
+            StatementElement statementElement = new StatementElement("username","=",username,"");
+            statementList.addStatement(statementElement);
+            User user = datastore.getUserDao().getObjects(statementList).get(0);
+            return tokenController.getToken(user);
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 
     @Override
@@ -180,7 +202,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
             return source.test();
         }
         catch (Exception e){
-            log.error("The testing of the source was unsuccessful!");
+            log.error("The testing of the source was unsuccessful: " + e.toString());
             return false;
         }
     }

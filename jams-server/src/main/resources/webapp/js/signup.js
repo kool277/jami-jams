@@ -24,6 +24,8 @@ var credentials = null;
 var date = new Date();
 var minutes = 15;
 
+checkAdminAccountStatus();
+checkAuthentication();
 
 $(".form-submit").click(function (event) {
   event.preventDefault();
@@ -56,7 +58,7 @@ $(".form-submit").click(function (event) {
           ajaxApiCall(api_path_post_auth_login, "POST", jsonData, null, signinCallBackHandler);
         }
         else {
-          ajaxApiCall(api_path_post_install_admin, "POST", jsonData, null, createAdminCallBackHandler);
+          ajaxApiCall(api_path_post_install_admin, "PUT", jsonData, null, createAdminCallBackHandler);
         }
       }
     }
@@ -82,12 +84,12 @@ $('#cancel-submit').click(function (event) {
 });
 
 function createAdminCallBackHandler(data, statusCode, jqXHR) {
-  if (jqXHR.status == 200 && data.token != 'null') {
-    date.setTime(date.getTime() + (minutes * 60 * 1000));
+    console.log(data);
+    console.log(statusCode);
+    console.log(jqXHR);
+  if (jqXHR.status == 200 && data.access_token != 'null') {
     // set username token
-    setCookie(keyUsername, jsonData['username'], { expires: date });
-    // set isAdmin token
-    setCookie(keyAdmin, true, { expires: date });
+    setJWT(data);
     window.location.replace("ca-setup.html");
   }
 }

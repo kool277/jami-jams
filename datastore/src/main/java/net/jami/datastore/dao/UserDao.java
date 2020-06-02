@@ -29,7 +29,6 @@ import net.jami.jams.common.objects.user.User;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 
 @Slf4j
 public class UserDao extends AbstractDao<User> {
@@ -73,7 +72,7 @@ public class UserDao extends AbstractDao<User> {
                     "VALUES " +
                     "(?, ?, ?, ?, ?, ?, ?,?, ?,?, ?)");
             ps = object.getInsert(ps);
-            return ps.execute();
+            return ps.executeUpdate() != 0;
         }
         catch (Exception e){
             log.error("An error has occurred while trying to store a user: " + e.toString());
@@ -82,11 +81,5 @@ public class UserDao extends AbstractDao<User> {
         finally {
             DataStore.connectionPool.returnConnection(connection);
         }
-    }
-
-
-    @Override
-    public boolean deleteObject(LinkedHashMap<String, String> constraints) {
-        return false;
     }
 }
