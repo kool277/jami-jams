@@ -24,12 +24,9 @@ function setCookie(key, value, expiry) {
     document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
 }
 
-/* If you want to set the cookie to all the path/page/directory then set path attribute to the cookie
-function setCookie(key, value, expiry) {
-    var expires = new Date();
-    expires.setTime(expires.getTime() + (expiry * 24 * 60 * 60 * 1000));
-    document.cookie = key + '=' + value + ';path=/' + ';expires=' + expires.toUTCString();
-}*/
+function setJWT(value) {
+    window.localStorage.setItem('access_token', value.access_token);
+}
 
 function getCookie(key) {
     var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
@@ -40,3 +37,4 @@ function eraseCookie(key) {
     var keyValue = getCookie(key);
     setCookie(key, keyValue, '-1');
 }
+

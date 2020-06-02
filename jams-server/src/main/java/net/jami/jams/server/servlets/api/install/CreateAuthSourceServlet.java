@@ -29,6 +29,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
 
@@ -37,6 +38,7 @@ import java.io.IOException;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @WebServlet("/api/install/auth")
+@Slf4j
 public class CreateAuthSourceServlet extends HttpServlet {
 
     @Override

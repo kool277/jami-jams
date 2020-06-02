@@ -39,7 +39,7 @@ var server_parameters_page = 'server-parameters.html';
 var api_path_post_install_admin = '/api/install/start';
 var api_path_post_auth_login = '/api/auth/login';
 var api_path_post_install_ca = '/api/install/ca';
-var api_path_post_install_auth = '/api/jumpstart/setupAuth';
+var api_path_post_install_auth = '/api/install/auth';
 var api_path_post_install_server = '/api/jumpstart/setupServer';
 var api_path_get_install_lastKnownStep = '/api/install/lastStep';
 var api_path_get_auth_users = '/api/auth/users';
@@ -84,7 +84,20 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
     if (credentials) {
         ajax['headers'] =  {
             "Authorization": "Basic " + btoa(credentials["username"] + ':' + credentials["password"]),
-        }}
+        }
+    }
+
+    if (window.localStorage.getItem('access_token')) {
+
+        var jwt = localStorage.getItem('access_token');
+        console.log(jwt);
+        console.log(data);
+
+        ajax['headers'] =  {
+            "Bearer": jwt,
+        }
+    }
+
     // pass data in the header
     if (data) {
         if (api_path == api_path_get_user_extended_data || api_path == api_path_get_auth_user_search || api_path == api_path_get_user_needs_reset)
@@ -95,8 +108,20 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
             ajax['data'] = data;
         }
         else {
+
+            if (window.localStorage.getItem('access_token')) {
+
+                var jwt = localStorage.getItem('access_token');
+                console.log(jwt);
+
+                ajax['headers'] =  {
+                    "Bearer": jwt,
+                }
+            }
+
             ajax['headers'] =  {
-                "Content-type":"application/json"
+                "Content-type":"application/json",
+                "Bearer": jwt
             }
             ajax['data'] = JSON.stringify(data);
         }

@@ -202,7 +202,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
             return source.test();
         }
         catch (Exception e){
-            log.error("The testing of the source was unsuccessful!");
+            log.error("The testing of the source was unsuccessful: " + e.toString());
             return false;
         }
     }

@@ -131,27 +131,27 @@ function serverConfigStatus(data, statusCode, jqXHR) {
 }
 
 function lastServerConfigurationStepUri(data, statusCode, jqXHR) {
-  if (jqXHR.status == 200) {
-    // lastKnownStep
-    var current_page = false;
-    uri_endpoint = data.uri;
-    if (uri_endpoint == api_path_post_install_ca) {
-        uri = ca_setup_page;
-    }
-    else if (uri_endpoint == api_path_post_install_auth) {
-        uri = identity_management_page;
-    }
-    else if (uri_endpoint == api_path_post_install_server) {
-        uri = server_parameters_page;
-    }
-    // redirect to lastKnownStep
-    if (!(current_uri.includes(uri))) {
-      window.location.replace(uri);
-    }
-  }
-  else {
-    invalidLogin();
-  }
+  // if (jqXHR.status == 200) {
+  //   // lastKnownStep
+  //   var current_page = false;
+  //   uri_endpoint = data.uri;
+  //   if (uri_endpoint == api_path_post_install_ca) {
+  //       uri = ca_setup_page;
+  //   }
+  //   else if (uri_endpoint == api_path_post_install_auth) {
+  //       uri = identity_management_page;
+  //   }
+  //   else if (uri_endpoint == api_path_post_install_server) {
+  //       uri = server_parameters_page;
+  //   }
+  //   // redirect to lastKnownStep
+  //   if (!(current_uri.includes(uri))) {
+  //     window.location.replace(uri);
+  //   }
+  // }
+  // else {
+  //   invalidLogin();
+  // }
 }
 
 function invalidLogin() {
