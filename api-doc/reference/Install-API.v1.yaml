@@ -8,7 +8,7 @@ servers:
 paths:
   /api/install/auth:
     post:
-      summary: ''
+      summary: Configure Authentication Source for Server
       operationId: post-api-install-auth
       responses:
         '200':
@@ -21,7 +21,7 @@ paths:
           description: Internal Server Error
       description: 'Configure Server to use selected Authentication Source as authentication backend, save settings in config.json file.'
     get:
-      summary: Authentication Source
+      summary: Get Authentication Source for server
       operationId: get-api-install-auth
       responses:
         '200':
@@ -29,7 +29,7 @@ paths:
       description: "Get server's Authentication Source."
   /api/install/ca:
     post:
-      summary: ''
+      summary: Save Certificate Authority
       operationId: post-api-install-ca
       responses:
         '200':
@@ -38,7 +38,7 @@ paths:
           description: Internal Server Error
       description: Save Certificate Authority.
     get:
-      summary: Certificate Request
+      summary: Get Certificate Authority
       operationId: get-api-install-ca
       responses:
         '200':
@@ -46,7 +46,7 @@ paths:
       description: Get Certificate Authority.
   /api/install/settings:
     post:
-      summary: ''
+      summary: Finish Server installation
       operationId: post-api-install-settings
       responses:
         '200':
@@ -55,7 +55,7 @@ paths:
           description: Internal Server Error
       description: Finish Server installation.
     get:
-      summary: ''
+      summary: Get Server Settings
       operationId: get-api-install-settings
       responses:
         '200':
@@ -63,7 +63,7 @@ paths:
       description: Get Server Settings.
   /api/install/start:
     post:
-      summary: ''
+      summary: Authenticate user
       operationId: post-api-install-start
       responses:
         '200':
@@ -76,7 +76,7 @@ paths:
           description: Forbidden
       description: Authenticate user.
     get:
-      summary: ''
+      summary: Check if user should login or sign-up
       operationId: get-api-install-start
       responses:
         '200':
@@ -88,7 +88,7 @@ paths:
               description: 'true'
       description: Check if user should login or sign-up.
     put:
-      summary: ''
+      summary: Create administrative user account
       operationId: put-api-install-start
       responses:
         '200':
