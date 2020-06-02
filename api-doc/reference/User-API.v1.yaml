@@ -7,24 +7,36 @@ servers:
 paths:
   /api/auth/contacts:
     get:
-      summary: Contacts endpoint
+      summary: "Get User's list of contacts"
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
       operationId: get-api-auth-contacts
       description: "Get User's contacts."
     put:
-      summary: ''
+      summary: "Update a User's contact"
       operationId: put-api-auth-contacts
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
       description: "Update User's contact."
     delete:
-      summary: ''
+      summary: "Delete a user's contact"
       operationId: delete-api-auth-contacts
       responses:
         '200':
           description: OK
+        '500':
+          description: Internal Server Error
       description: "Delete user's contact."
   '/api/auth/device/{deviceId}':
     parameters:
@@ -34,7 +46,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Device operations
+      summary: Get user specified device
       tags: []
       responses:
         '200':
@@ -46,7 +58,7 @@ paths:
       operationId: get-api-auth-device-deviceId
       description: "Get a user's specified device."
     put:
-      summary: ''
+      summary: "Update user's device informations"
       operationId: put-api-auth-device-deviceId
       responses:
         '200':
@@ -60,7 +72,7 @@ paths:
           in: query
           name: deviceName
     post:
-      summary: ''
+      summary: "Create/Store a user's device"
       operationId: post-api-auth-device-deviceId
       responses:
         '200':
@@ -73,7 +85,7 @@ paths:
           description: Internal Server Error
       description: Create/Store a device for a user.
     delete:
-      summary: ''
+      summary: "Delete user's device"
       operationId: delete-api-auth-device-deviceId
       responses:
         '200':
@@ -159,7 +171,7 @@ paths:
       description: Search user profiles in directory.
   /api/auth/user:
     get:
-      summary: User endpoint
+      summary: Read user profile
       tags: []
       responses:
         '200':
@@ -167,7 +179,7 @@ paths:
       operationId: get-api-auth-user
       description: "Read user's profile (User can \"read\" his own profile)."
     put:
-      summary: ''
+      summary: Update some user profiles fields if LOCAL authentication source
       operationId: put-api-auth-user
       responses:
         '200':
@@ -203,6 +215,11 @@ components:
           type: string
         timestamp:
           type: string
+      x-examples:
+        example-1:
+          success: 'true'
+          errorDetails: ''
+          timestamp: '2020-06-01T12:30:01'
     AuthModuleKey:
       title: AuthModuleKey
       type: object
@@ -215,6 +232,17 @@ components:
             - AD
             - LDAP
             - LOCAL
+    Contact:
+      title: Contact
+      type: object
+      description: Contact database object
+      properties:
+        owner:
+          type: string
+        uri:
+          type: string
+        displayName:
+          type: string
   securitySchemes:
     API Key - 1:
       name: API Key

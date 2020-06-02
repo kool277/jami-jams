@@ -14,7 +14,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Address lookup
+      summary: Get Username from Adress
       tags: []
       responses:
         '200':
@@ -35,7 +35,7 @@ paths:
         in: path
         required: true
     get:
-      summary: Name lookup
+      summary: Get Address from username
       tags: []
       responses:
         '200':
