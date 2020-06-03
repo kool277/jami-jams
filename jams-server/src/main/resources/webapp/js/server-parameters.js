@@ -64,7 +64,6 @@ $('#deviceLifetime').on('change', function() {
 
 function setParametersData(form) {
     var data = {};
-
     $.each($(form).serializeArray(), function (i, field) {
         data[field.name] = parseInt(field.value);
     });
