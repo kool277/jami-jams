@@ -105,7 +105,7 @@ public class TomcatLauncher {
             tomcat.start();
             //Try to pop-up Web-UI
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI(tomcat.getConnector().getScheme() + "://localhost:8080"));
+                Desktop.getDesktop().browse(new URI(tomcat.getConnector().getScheme() + "://localhost:8080/templates/signup.html"));
             } else {
                 log.info("There is no graphical interface on this system - please connect remotely!");
             }

@@ -63,22 +63,15 @@ $('#deviceLifetime').on('change', function() {
 });
 
 function setParametersData(form) {
-    var data = {}
+    var data = {};
 
   $.each($(form).serializeArray(), function (i, field) {
-    if (type_int_name_input.indexOf(field.name) >= 0) {
       data[field.name] = parseInt(field.value);
-    }
-    else {
-      data[field.name] = field.value;
-    }
   });
 
     if ($('#sipContents').val() != "")
         data['sipConfig'] = $('#sipContents').val();
 
-    // no bad dog
-    data['crlLifetime'] = 300000;
     data['serverDomain'] = $('#domain').val();
     data['signingAlgorithm'] = "SHA512WITHRSA";
 
