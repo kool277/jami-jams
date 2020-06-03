@@ -26,8 +26,6 @@
 
  function signupPageHandler(data, statusCode, jqXHR) {
      // create Admin
-     console.log(data);
-     console.log(data.getResponseHeader('showLogin'));
 
      if(data.getResponseHeader('showLogin') == "false") {
          var inputConfirmPassword = '<div class="form-label-group"><label for="confirmPassword" class="label-title">Confirm Password</label><input type="password" name="confirmPassword" id="inputConfirmPassword" class="form-control" required autocomplete="off"><span id="message"></span></div>';
@@ -58,8 +56,10 @@ function checkAuthentication() {
     getServerConfigStatus();
 }
 
-function setLogout() {
-  return true;
+function setLogout(data) {
+  if (data.status == 200) {
+      window.localStorage.removeItem('access_token');
+  }
 }
 
 function authorizedAdmin() {

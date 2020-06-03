@@ -59,7 +59,7 @@
         $(".goSignup").on('click',function() {
           eraseCookie(keyUsername);
           eraseCookie(keyAdmin);
-          ajaxApiCall(api_path_get_logout, 'GET', null, null, setLogout, false);
+          ajaxApiCall(api_path_post_auth_login, 'DELETE', null, null, setLogout, false);
           window.location.href = "../templates/signup.html";
         });
       });
