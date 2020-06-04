@@ -25,8 +25,13 @@ var userEdit = '';
 var userRevoke = '';
 
 $(document).ready(function() {
+
+    var data = {
+        'queryString': "*"
+    }
+
     // load all users
-    ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', data, null, listAllUsers);
 
     setTimeout(function() {
         ajaxApiCall(api_path_get_needs_update, 'GET', null, null, handleUpdate, false);
@@ -118,7 +123,6 @@ function listAllUsers(data, statusCode, jqXHR)
     for (i = 0; i < resultSet.length; i++) {
       var firstName = '';
       var lastName = '';
-      console.log("listAllUsers");
       console.log(resultSet[i]);
 
       if (resultSet[i].firstName)
@@ -154,7 +158,7 @@ function listAllUsers(data, statusCode, jqXHR)
   });
 
     setTimeout(function() {
-        ajaxApiCall(api_path_get_auth_services, 'GET', null, null, ishsqlConfig);
+        ajaxApiCall(api_path_get_directories, 'GET', null, null, ishsqlConfig);
     }, 100);
     addListenersForActions();
 }
@@ -317,13 +321,13 @@ function handleUpdate(data, statusCode, jqXHR) {
         var resultSet = data;
         if (resultSet.updateAvailable == true) {
             $('#update-title-div').show();
-            $('#update-title').text("UPGRADE TO JAMS " + resultSet.newVersions.substring(resultSet.newVersions.indexOf("=") + 1, resultSet.newVersions.length - 1));
+            $('#update-title').text("UPGRADE TO JAMS " + resultSet.remoteVersions.substring(resultSet.remoteVersions.indexOf("=") + 1, resultSet.remoteVersions.length - 1));
 
             document.getElementsByClassName("update-title")[0].addEventListener('click', function(){
                 if (isActive == true) {
                     $('#downloadUpdateModalCenter').modal('show');
                     document.getElementsByClassName("auto-update")[0].addEventListener('click', function() {
-                        ajaxApiCall(api_path_get_start_update, 'GET', null, null, handleUpdateStart, false);
+                        ajaxApiCall(api_path_get_start_update, 'POST', null, null, handleUpdateStart, false);
                     });
                 }
                 else

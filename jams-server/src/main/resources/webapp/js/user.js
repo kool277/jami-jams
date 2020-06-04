@@ -160,7 +160,7 @@ $(document).ready(function() {
         if (searchAccess) {
             // set User information fields
             setTimeout(function() {
-                ajaxApiCall(api_path_get_auth_services, 'GET', null, null, ishsqlConfig);
+                ajaxApiCall(api_path_get_directories, 'GET', null, null, ishsqlConfig);
                 ajaxApiCall(api_path_get_auth_user_search, 'GET', searchData, null, setUserInfoDataSource);
                 ajaxApiCall(api_path_get_user_extended_data, 'GET', searchData, null, setUserExtendedData);
             }, 300);

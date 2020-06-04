@@ -25,6 +25,7 @@ function setCookie(key, value, expiry) {
 }
 
 function setJWT(value) {
+    window.localStorage.removeItem('access_token');
     window.localStorage.setItem('access_token', value.access_token);
 }
 

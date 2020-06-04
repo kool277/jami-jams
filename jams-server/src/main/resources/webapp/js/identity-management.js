@@ -72,6 +72,7 @@ function setLDAPParametersData(form) {
   settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
   settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
   settings['fieldMappings']['o'] = "Organization";
+  settings['fieldMappings']['uid'] = "Username";
 
   authSource['type'] = 'LDAP';
   authSource['ldapSettings'] = settings;
