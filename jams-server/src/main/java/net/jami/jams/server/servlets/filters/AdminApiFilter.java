@@ -75,7 +75,7 @@ public class AdminApiFilter implements Filter {
             if (authsuccess || isLogin){
                 filterChain.doFilter(servletRequest, servletResponse);
             }
-            else response.sendError(403,"This endpoint requires setup to be complete!");
+            else response.sendError(403,"An error occurred, we have probably received an invalid token.");
         }
     }
 
