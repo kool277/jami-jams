@@ -70,7 +70,7 @@ response = requests.post('http://localhost:8080/api/install/settings',data=json.
 #This completes the install, now we'll try to enroll.
 
 data = {}
-response = requests.post('http://localhost:8080/api/auth/login',data={"username":"fsidokhine","password":"mes87hesm97daa"})
+response = requests.post('http://localhost:8080/api/login',data={"username":"fsidokhine","password":"mes87hesm97daa"})
 if response.status_code == 200:
     token = json.loads(response.text)['access_token']
 
