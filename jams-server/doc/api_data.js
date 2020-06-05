@@ -86,7 +86,7 @@ define({ "api": [
             "type": "body",
             "optional": false,
             "field": "Contact",
-            "description": "<p>(contact JSON representation of the contact object)</p>"
+            "description": "<p>JSON representation of the contact object</p>"
           }
         ]
       }

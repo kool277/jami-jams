@@ -63,7 +63,7 @@ public class ContactServlet extends HttpServlet {
      * @apiName putContact
      * @apiGroup Contacts
      *
-     * @apiParam {body} Contact (contact JSON representation of the contact object)
+     * @apiParam {body} Contact JSON representation of the contact object
      *
      * @apiSuccess (200) {null} null successfully added contact
      * @apiError (500) {null} null contact could not be successfully added
