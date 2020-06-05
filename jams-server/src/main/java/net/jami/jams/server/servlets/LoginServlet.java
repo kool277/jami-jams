@@ -31,6 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
 import net.minidev.json.JSONObject;
 
 import java.io.IOException;
@@ -43,14 +44,26 @@ import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.
 //This method returns the token which is used for all the next calls to the API.
 public class LoginServlet extends HttpServlet {
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {post} /api/login Obtain an 0Auth token
+     * @apiName postLogin
+     * @apiGroup Login
+     * @apiParam {header} [authorization] classical HTTP auth header
+     * @apiParam {attribute} [X509Certificate] X509 User certificate
+     * @apiParam {body} [LoginRequest] username/password sent to server as JSON object
+     *
+     * @apiSuccess (200) {body} AuthTokenResponse the 0Auth authentication token
+     * @apiError (403) {null} null The user is unauthorized
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //There are 3 possible cases here.
         //Case 1: form submitted username/password
         AuthTokenResponse res = null;
-        JSONObject object = JsonIterator.deserialize(req.getInputStream().readAllBytes(), JSONObject.class);
-        if(object.get("username") != null && object.get("password") != null){
-            res = processUsernamePasswordAuth(object.get("username").toString(), object.get("password").toString());
+        LoginRequest object = JsonIterator.deserialize(req.getInputStream().readAllBytes(), LoginRequest.class);
+        if(object.getUsername() != null && object.getPassword() != null){
+            res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());
         }
         //Case 2: Authorization header.
         if(req.getHeader("authorization") != null){

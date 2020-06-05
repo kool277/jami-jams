@@ -523,6 +523,69 @@ define({ "api": [
   },
   {
     "version": "1.0.0",
+    "type": "post",
+    "url": "/api/login",
+    "title": "Obtain an 0Auth token",
+    "name": "postLogin",
+    "group": "Login",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "header",
+            "optional": true,
+            "field": "authorization",
+            "description": "<p>classical HTTP auth header</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "attribute",
+            "optional": true,
+            "field": "X509Certificate",
+            "description": "<p>X509 User certificate</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "body",
+            "optional": true,
+            "field": "LoginRequest",
+            "description": "<p>username/password sent to server as JSON object</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "AuthTokenResponse",
+            "description": "<p>the 0Auth authentication token</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "403": [
+          {
+            "group": "403",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>The user is unauthorized</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/LoginServlet.java",
+    "groupTitle": "Login"
+  },
+  {
+    "version": "1.0.0",
     "type": "get",
     "url": "/api/auth/user",
     "title": "Get JAMS user info",
