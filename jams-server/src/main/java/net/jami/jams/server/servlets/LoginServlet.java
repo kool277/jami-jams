@@ -24,15 +24,12 @@ package net.jami.jams.server.servlets;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
-import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
-import net.minidev.json.JSONObject;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;

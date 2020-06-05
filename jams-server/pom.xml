@@ -66,23 +66,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>net.wasdev.maven.plugins</groupId>
-                <artifactId>swaggerdocgen-maven-plugin</artifactId>
-                <version>1.2</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <warFile>${project.build.directory}/jams-server-2.0.jar</warFile>
-                    <outputFile>${project.build.directory}/swagger.json</outputFile>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>${maven.shade.version}</version>

@@ -39,7 +39,6 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 
 import java.io.IOException;
-import java.util.List;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
