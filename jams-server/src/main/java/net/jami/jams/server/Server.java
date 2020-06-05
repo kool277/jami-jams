@@ -64,6 +64,7 @@ public class Server {
     public static AppUpdater appUpdater;
 
     public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
+        ClassPool.getDefault().clearImportedPackages();
         JsoniterRegistry.initCodecs();
         Server.appUpdater = appUpdater;
         String[] args = {port, serverCertificate, serverPrivateKey};

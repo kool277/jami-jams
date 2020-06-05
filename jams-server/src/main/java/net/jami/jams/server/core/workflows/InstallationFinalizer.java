@@ -23,6 +23,7 @@
 package net.jami.jams.server.core.workflows;
 
 import com.jsoniter.output.JsonStream;
+import javassist.ClassPool;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.roots.X509Fields;
