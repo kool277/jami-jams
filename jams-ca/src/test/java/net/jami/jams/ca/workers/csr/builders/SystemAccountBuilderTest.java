@@ -34,12 +34,17 @@ import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.system.SystemAccountType;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 class SystemAccountBuilderTest {
 
@@ -47,6 +52,9 @@ class SystemAccountBuilderTest {
 
     @BeforeAll
     static void setUp() throws Exception{
+        //Delete the crl.pem file if it exists.
+        File file = new File(System.getProperty("user.dir") + File.separator + "crl.pem");
+        file.delete();
         InputStream path;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         path = classLoader.getResourceAsStream("pkcs10request.txt");
@@ -130,5 +138,11 @@ class SystemAccountBuilderTest {
         }
         Assertions.assertNotNull(jamsCA.getLatestCRL());
         Assertions.assertEquals(2,jamsCA.getLatestCRL().get().getRevokedCertificates().toArray().length,"Expected only 2 certificates!");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        File file = new File(System.getProperty("user.dir") + File.separator + "crl.pem");
+        file.delete();
     }
 }
