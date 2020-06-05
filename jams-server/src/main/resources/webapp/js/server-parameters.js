@@ -18,7 +18,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-var type_int_name_input = ['deviceValidity', 'userValidity'];
+var type_int_name_input = ['deviceLifetime', 'userLifetime'];
 var callback = set_installation_response("search.html", true);
 
 $(document).ready(function () {
@@ -49,10 +49,10 @@ $("#form-server-parameters").submit(function (event) {
 
 });
 
-$('#deviceValidity').on('change', function() {
+$('#deviceLifetime').on('change', function() {
     // disable userlife time if it's less than the device lifetime
     var device_value = $(this).val();
-    $('#userValidity > option').each(function(){
+    $('#userLifetime > option').each(function(){
         if(parseInt(device_value) <= parseInt(this.value)){
             $(this).prop('disabled', false);
         }
@@ -63,27 +63,20 @@ $('#deviceValidity').on('change', function() {
 });
 
 function setParametersData(form) {
-    var parameters_data = {
-        'settings': {
-        }
-    }
+    var data = {};
 
   $.each($(form).serializeArray(), function (i, field) {
-    if (type_int_name_input.indexOf(field.name) >= 0) {
-      parameters_data['settings'][field.name] = parseInt(field.value);
-    }
-    else {
-      parameters_data['settings'][field.name] = field.value;
-    }
+      data[field.name] = parseInt(field.value);
   });
 
     if ($('#sipContents').val() != "")
-        parameters_data['settings']['sipConfig'] = $('#sipContents').val();
+        data['sipConfig'] = $('#sipContents').val();
 
-    parameters_data['settings']['domain'] = $('#domain').val();
+    data['serverDomain'] = $('#domain').val();
+    data['signingAlgorithm'] = "SHA512WITHRSA";
 
     // send parameters via POST request
-    postParameters(parameters_data)
+    postParameters(data)
 }
 
 // send AJAX request

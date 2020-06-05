@@ -68,10 +68,10 @@ public class InstallationFinalizer {
             }
             if (CachedObjects.localAuthSettings != null) {
                 serverSettings.setLocalDirectoryConfiguration(JsonStream.serialize(CachedObjects.localAuthSettings));
-                if(CachedObjects.localAuthSettings.getPublicNames()){
+                if (CachedObjects.localAuthSettings.getPublicNames()) {
                     useLocalNS = false;
                     nameServer = new PublicNameServer(CachedObjects.localAuthSettings.getPublicNameServer());
-                    log.warn("Server configured to use {} as the nameserver for Jami clients !",CachedObjects.localAuthSettings.getPublicNameServer());
+                    log.warn("Server configured to use {} as the nameserver for Jami clients !", CachedObjects.localAuthSettings.getPublicNameServer());
                 }
                 log.info("Server is configured to use local authentication engine");
             }

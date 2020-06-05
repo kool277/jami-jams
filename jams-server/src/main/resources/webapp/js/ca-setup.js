@@ -46,14 +46,14 @@ $(document).ready(function () {
     $('#form-ca-auto').submit(function (event) {
         event.preventDefault();
         var data = {
-            'generationData': {
+            'fields': {
                 'commonName': $('#inputCaName').val(),
                 'organizationalUnit': $('#inputOrgUnit').val(),
                 'organization': $('#inputOrganization').val(),
                 'city': $('#inputCity').val(),
                 'state': $('#inputState').val(),
                 'country': $('#inputCountry').val(),
-                'validity': parseInt($('#inputValidity').val())
+                'lifetime': parseInt($('#inputValidity').val())
             }
         }
         // send post request

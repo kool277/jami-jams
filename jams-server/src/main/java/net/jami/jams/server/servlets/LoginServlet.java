@@ -20,8 +20,9 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package net.jami.jams.server.servlets.api.auth.login;
+package net.jami.jams.server.servlets;
 
+import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -29,6 +30,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
+import net.jami.jams.common.objects.user.UserProfile;
+import net.minidev.json.JSONObject;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
@@ -36,18 +39,18 @@ import java.security.cert.X509Certificate;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processX509Auth;
 
-
-@WebServlet("/api/auth/login")
+@WebServlet("/api/login")
 //This method returns the token which is used for all the next calls to the API.
 public class LoginServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //There are 3 possible cases here.
         //Case 1: form submitted username/password
         AuthTokenResponse res = null;
-        if(req.getParameter("username") != null && req.getParameter("password") != null){
-            res = processUsernamePasswordAuth(req.getParameter("username"),req.getParameter("password"));
+        JSONObject object = JsonIterator.deserialize(req.getInputStream().readAllBytes(), JSONObject.class);
+        if(object.get("username") != null && object.get("password") != null){
+            res = processUsernamePasswordAuth(object.get("username").toString(), object.get("password").toString());
         }
         //Case 2: Authorization header.
         if(req.getHeader("authorization") != null){
