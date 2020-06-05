@@ -35,18 +35,16 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class FileDescription implements Comparable {
+public class FileDescription implements Comparable<FileDescription> {
 
     private String fileName;
     private String version;
     private String md5hash;
     private String mainClass;
 
-
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(FileDescription o) {
         if(o == null) throw new NullPointerException();
-        if(!(o instanceof FileDescription)) throw new ClassCastException();
-        return new BigDecimal(this.version).compareTo(new BigDecimal(((FileDescription) o).getVersion()));
+        return new BigDecimal(this.version).compareTo(new BigDecimal(o.getVersion()));
     }
 }
