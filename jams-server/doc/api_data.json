@@ -1,0 +1,609 @@
+[
+  {
+    "version": "1.0.0",
+    "type": "delete",
+    "url": "/api/auth/contacts",
+    "title": "Delete a contact",
+    "name": "deleteContact",
+    "group": "Contacts",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": false,
+            "field": "uri",
+            "description": "<p>uri of the contact to delete</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>successfully deleted contact</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>contact could not be successfully deleted</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/contacts/ContactServlet.java",
+    "groupTitle": "Contacts"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/auth/contacts",
+    "title": "View contacts",
+    "name": "getContact",
+    "group": "Contacts",
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "Contact[]",
+            "description": "<p>List of contacts for the user</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/contacts/ContactServlet.java",
+    "groupTitle": "Contacts"
+  },
+  {
+    "version": "1.0.0",
+    "type": "put",
+    "url": "/api/auth/contacts",
+    "title": "Add a contact",
+    "name": "putContact",
+    "group": "Contacts",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "body",
+            "optional": false,
+            "field": "Contact",
+            "description": "<p>(contact JSON representation of the contact object)</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>successfully added contact</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>contact could not be successfully added</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/contacts/ContactServlet.java",
+    "groupTitle": "Contacts"
+  },
+  {
+    "version": "1.0.0",
+    "type": "delete",
+    "url": "/api/auth/device",
+    "title": "Deactivate a device",
+    "name": "deleteDevice",
+    "group": "Device",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "path",
+            "optional": false,
+            "field": "deviceId",
+            "description": "<p>id of the device</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>device successfully deactivated</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>device could not be deactivated</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/device/DeviceServlet.java",
+    "groupTitle": "Device"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/auth/device",
+    "title": "Get device info",
+    "name": "getDevice",
+    "group": "Device",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "path",
+            "optional": false,
+            "field": "deviceId",
+            "description": "<p>id of the device</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "Device",
+            "description": "<p>device information</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>Device could not be retrieved</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/device/DeviceServlet.java",
+    "groupTitle": "Device"
+  },
+  {
+    "version": "1.0.0",
+    "type": "post",
+    "url": "/api/auth/device",
+    "title": "Enroll a device",
+    "name": "postDevice",
+    "group": "Device",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "body",
+            "optional": false,
+            "field": "DeviceRegistrationRequest",
+            "description": "<p>device registration request</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "DeviceRegistrationResponse",
+            "description": "<p>registration response</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>Device could not be enrolled</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/device/DeviceServlet.java",
+    "groupTitle": "Device"
+  },
+  {
+    "version": "1.0.0",
+    "type": "put",
+    "url": "/api/auth/device",
+    "title": "Change the name of a device",
+    "name": "putDevice",
+    "group": "Device",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "path",
+            "optional": false,
+            "field": "deviceId",
+            "description": "<p>id of the device</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": false,
+            "field": "deviceName",
+            "description": "<p>new name for the device</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>name changed successfully</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>device name could not be changed</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/device/DeviceServlet.java",
+    "groupTitle": "Device"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/auth/devices",
+    "title": "List the devices of a user",
+    "name": "getDevices",
+    "group": "Devices",
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "Device[]",
+            "description": "<p>array of devices owned by the user</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not fetch devices</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/device/DevicesServlet.java",
+    "groupTitle": "Devices"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/auth/directories",
+    "title": "Return the list of directories",
+    "name": "getDirectories",
+    "group": "Directories",
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "AuthenticationSource[]",
+            "description": "<p>array of available authentication sources</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not return any authentication sources</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/directory/DirectoriesServlet.java",
+    "groupTitle": "Directories"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/auth/directory/entry",
+    "title": "Return the user's profile within a directory",
+    "name": "getDirectoryEntry",
+    "group": "Directory_Entries",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": true,
+            "field": "directory",
+            "description": "<p>name of the directory</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": true,
+            "field": "directoryType",
+            "description": "<p>type of the directory</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": true,
+            "field": "format",
+            "description": "<p>vcard</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": true,
+            "field": "username",
+            "description": "<p>username we are looking for</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "UserProfile",
+            "description": "<p>json-representation of the user profile</p>"
+          },
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "vCard",
+            "description": "<p>vcard-representation of the user profile</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not return any authentication sources</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/directory/DirectoryEntryServlet.java",
+    "groupTitle": "Directory_Entries"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/auth/directory/search",
+    "title": "Search profiles within a directory",
+    "name": "getDirectoryEntries",
+    "group": "Directory_Search",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": true,
+            "field": "queryString",
+            "description": "<p>the full-text query</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "UserProfile[]",
+            "description": "<p>json-representation of the user profiles</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not return any authentication sources</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/directory/SearchDirectoryServlet.java",
+    "groupTitle": "Directory_Search"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/auth/user",
+    "title": "Get JAMS user info",
+    "name": "getUser",
+    "group": "User",
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "body",
+            "optional": false,
+            "field": "User",
+            "description": "<p>json user object representation</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not fetch user information</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/user/UserServlet.java",
+    "groupTitle": "User"
+  },
+  {
+    "version": "1.0.0",
+    "type": "put",
+    "url": "/api/auth/user",
+    "title": "Modify the user's info (for now just the password)",
+    "name": "putUser",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "query",
+            "optional": false,
+            "field": "password",
+            "description": "<p>new password</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>password successfully changed</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not changed password</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/auth/user/UserServlet.java",
+    "groupTitle": "User"
+  }
+]

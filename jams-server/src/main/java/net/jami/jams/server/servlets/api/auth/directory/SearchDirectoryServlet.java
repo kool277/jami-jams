@@ -43,6 +43,17 @@ public class SearchDirectoryServlet extends HttpServlet {
     //The search directory function does not automatically create users, this would be costly at this point
     //right now, we will implement it when Jami supports lists of users. this is a work in progress as it
     //requires changes on the name server as well.
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/auth/directory/search Search profiles within a directory
+     * @apiName getDirectoryEntries
+     * @apiGroup Directory Search
+     *
+     * @apiParam {query} [queryString] the full-text query
+     *
+     * @apiSuccess (200) {body} UserProfile[] json-representation of the user profiles
+     * @apiError (500) {null} null could not return any authentication sources
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<UserProfile> userProfiles = new ArrayList<>();

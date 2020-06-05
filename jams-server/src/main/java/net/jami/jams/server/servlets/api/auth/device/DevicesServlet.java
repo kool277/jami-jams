@@ -38,6 +38,16 @@ import static net.jami.jams.server.Server.dataStore;
 @WebServlet("/api/auth/devices")
 public class DevicesServlet extends HttpServlet {
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/auth/devices List the devices of a user
+     * @apiName getDevices
+     * @apiGroup Devices
+     *
+     *
+     * @apiSuccess (200) {body} Device[] array of devices owned by the user
+     * @apiError (500) {null} null could not fetch devices
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();

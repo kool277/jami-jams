@@ -31,6 +31,7 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.apache.catalina.webresources.WarResourceSet;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 
 import java.awt.*;

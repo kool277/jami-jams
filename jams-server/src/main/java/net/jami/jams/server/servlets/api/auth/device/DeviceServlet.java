@@ -44,6 +44,17 @@ import static net.jami.jams.server.Server.dataStore;
 @WebServlet("/api/auth/device/*")
 public class DeviceServlet extends HttpServlet {
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/auth/device Get device info
+     * @apiName getDevice
+     * @apiGroup Device
+     *
+     * @apiParam {path} deviceId id of the device
+     *
+     * @apiSuccess (200) {body} Device device information
+     * @apiError (500) {null} null Device could not be retrieved
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
@@ -56,6 +67,17 @@ public class DeviceServlet extends HttpServlet {
         resp.getOutputStream().write(JsonStream.serialize(dataStore.getDeviceDao().getObjects(statementList).get(0)).getBytes());
     }
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {post} /api/auth/device Enroll a device
+     * @apiName postDevice
+     * @apiGroup Device
+     *
+     * @apiParam {body} DeviceRegistrationRequest device registration request
+     *
+     * @apiSuccess (200) {body} DeviceRegistrationResponse registration response
+     * @apiError (500) {null} null Device could not be enrolled
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
@@ -64,6 +86,18 @@ public class DeviceServlet extends HttpServlet {
         else resp.sendError(500,"An exception has occurred while trying to enroll a device!");
     }
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {put} /api/auth/device Change the name of a device
+     * @apiName putDevice
+     * @apiGroup Device
+     *
+     * @apiParam {path} deviceId id of the device
+     * @apiParam {query} deviceName new name for the device
+     *
+     * @apiSuccess (200) {null} null name changed successfully
+     * @apiError (500) {null} null device name could not be changed
+     */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
@@ -81,6 +115,17 @@ public class DeviceServlet extends HttpServlet {
         else resp.sendError(500,"could not update the device's information!");
     }
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {delete} /api/auth/device Deactivate a device
+     * @apiName deleteDevice
+     * @apiGroup Device
+     *
+     * @apiParam {path} deviceId id of the device
+     *
+     * @apiSuccess (200) {null} null device successfully deactivated
+     * @apiError (500) {null} null device could not be deactivated
+     */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String deviceId = req.getPathInfo().replace("/","");

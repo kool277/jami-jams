@@ -44,7 +44,21 @@ import static net.jami.jams.server.Server.userAuthenticationModule;
 @WebServlet("/api/auth/directory/entry")
 public class DirectoryEntryServlet extends HttpServlet {
 
-    //Get a profile from a directory, we are assuming here
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/auth/directory/entry Return the user's profile within a directory
+     * @apiName getDirectoryEntry
+     * @apiGroup Directory Entries
+     *
+     * @apiParam {query} [directory] name of the directory
+     * @apiParam {query} [directoryType] type of the directory
+     * @apiParam {query} [format] vcard
+     * @apiParam {query} [username] username we are looking for
+     *
+     * @apiSuccess (200) {body} UserProfile json-representation of the user profile
+     * @apiSuccess (200) {body} vCard vcard-representation of the user profile
+     * @apiError (500) {null} null could not return any authentication sources
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("directory") != null && req.getParameter("directoryType") != null) {

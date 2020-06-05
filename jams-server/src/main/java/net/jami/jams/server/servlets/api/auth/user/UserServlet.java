@@ -40,6 +40,15 @@ import static net.jami.jams.server.Server.dataStore;
 public class UserServlet extends HttpServlet {
 
     //User can "read" his own profile.
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/auth/user Get JAMS user info
+     * @apiName getUser
+     * @apiGroup User
+     *
+     * @apiSuccess (200) {body} User json user object representation
+     * @apiError (500) {null} null could not fetch user information
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
@@ -51,6 +60,16 @@ public class UserServlet extends HttpServlet {
 
     //The user can update 3 fields: password,privatekey,publickey
     //For now we do not consider the possibility for privatekey, publickey for other reasons.
+    /**
+     * @apiVersion 1.0.0
+     * @api {put} /api/auth/user Modify the user's info (for now just the password)
+     * @apiName putUser
+     * @apiGroup User
+     * @apiParam {query} password new password
+     *
+     * @apiSuccess (200) {null} null password successfully changed
+     * @apiError (500) {null} null could not changed password
+     */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();

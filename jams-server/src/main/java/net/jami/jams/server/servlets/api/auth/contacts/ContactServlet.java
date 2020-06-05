@@ -41,6 +41,14 @@ import static net.jami.jams.server.Server.dataStore;
 @WebServlet("/api/auth/contacts")
 public class ContactServlet extends HttpServlet {
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/auth/contacts View contacts
+     * @apiName getContact
+     * @apiGroup Contacts
+     *
+     * @apiSuccess (200) {body} Contact[] List of contacts for the user
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         StatementList statementList = new StatementList();
@@ -49,6 +57,17 @@ public class ContactServlet extends HttpServlet {
         resp.getOutputStream().write(JsonStream.serialize(contactList).getBytes());
     }
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {put} /api/auth/contacts Add a contact
+     * @apiName putContact
+     * @apiGroup Contacts
+     *
+     * @apiParam {body} Contact (contact JSON representation of the contact object)
+     *
+     * @apiSuccess (200) {null} null successfully added contact
+     * @apiError (500) {null} null contact could not be successfully added
+     */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Contact contact = JsonIterator.deserialize(req.getInputStream().readAllBytes(),Contact.class);
@@ -57,7 +76,17 @@ public class ContactServlet extends HttpServlet {
         else resp.sendError(500,"Could not store contact!");
     }
 
-    //TODO: Because deleting requires sending the URI in the body, didn't want to do this now.
+    /**
+     * @apiVersion 1.0.0
+     * @api {delete} /api/auth/contacts Delete a contact
+     * @apiName deleteContact
+     * @apiGroup Contacts
+     *
+     * @apiParam {query} uri uri of the contact to delete
+     *
+     * @apiSuccess (200) {null} null successfully deleted contact
+     * @apiError (500) {null} null contact could not be successfully deleted
+     */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         StatementList statementList = new StatementList();

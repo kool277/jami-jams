@@ -36,6 +36,16 @@ import static net.jami.jams.server.Server.userAuthenticationModule;
 @WebServlet("/api/auth/directories")
 public class DirectoriesServlet extends HttpServlet {
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/auth/directories Return the list of directories
+     * @apiName getDirectories
+     * @apiGroup Directories
+     *
+     *
+     * @apiSuccess (200) {body} AuthenticationSource[] array of available authentication sources
+     * @apiError (500) {null} null could not return any authentication sources
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.getOutputStream().write(JsonStream.serialize(userAuthenticationModule.getAuthSources().keySet()).getBytes());
