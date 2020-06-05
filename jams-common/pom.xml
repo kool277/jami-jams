@@ -34,26 +34,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.gravitee.maven.plugins</groupId>
-                <artifactId>json-schema-generator-maven-plugin</artifactId>
-                <version>1.4.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>generate-json-schemas</goal>
-                        </goals>
-                        <configuration>
-                            <buildDirectory>${project.build.outputDirectory}</buildDirectory>
-                            <outputDirectory>${project.build.outputDirectory}/schemas</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
