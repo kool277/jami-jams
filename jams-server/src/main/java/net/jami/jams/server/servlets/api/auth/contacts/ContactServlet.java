@@ -47,7 +47,12 @@ public class ContactServlet extends HttpServlet {
      * @apiName getContact
      * @apiGroup Contacts
      *
-     * @apiSuccess (200) {body} Contact[] List of contacts for the user
+     * @apiSuccess (200) {body} Contact[]  List of contacts for the user
+     * @apiSuccessExample {json} Success-Response:
+     *     [{
+     *       "uri": "jami://7e3ab29383",
+     *       "displayName": "John Doe"
+     *     }]
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -64,6 +69,11 @@ public class ContactServlet extends HttpServlet {
      * @apiGroup Contacts
      *
      * @apiParam {body} Contact JSON representation of the contact object
+     * @apiParamExample {json} Request-Example:
+     *      {
+     *        "uri": "jami://7e3ab29383",
+     *        "displayName": "John Doe"
+     *      }
      *
      * @apiSuccess (200) {null} null successfully added contact
      * @apiError (500) {null} null contact could not be successfully added

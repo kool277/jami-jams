@@ -37,4 +37,5 @@ public class X509Entity {
     //These can be null because they are only used if this is a request.
     private X509Fields x509Fields;
     private PKCS10CertificationRequest certificationRequest;
+    private Boolean revoked;
 }

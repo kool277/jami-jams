@@ -51,6 +51,14 @@ public class LoginServlet extends HttpServlet {
      * @apiParam {body} [LoginRequest] username/password sent to server as JSON object
      *
      * @apiSuccess (200) {body} AuthTokenResponse the 0Auth authentication token
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     *     "token_type":"Bearer",
+     *     "access_token":"JWT representation of the token",
+     *     "expires_in":180000,
+     *     "scope":"USER"
+     * }
+     *
      * @apiError (403) {null} null The user is unauthorized
      */
     @Override

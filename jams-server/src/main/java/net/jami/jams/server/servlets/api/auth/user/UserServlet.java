@@ -31,9 +31,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.user.User;
 
 import java.io.IOException;
 
+import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/auth/user")
@@ -47,6 +49,21 @@ public class UserServlet extends HttpServlet {
      * @apiGroup User
      *
      * @apiSuccess (200) {body} User json user object representation
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     *      "username":"jdoe",
+     *      "password":null,
+     *      "userType":"AD",
+     *      "realm":"savoirfairelinux",
+     *      "accessLevel":"USER",
+     *      "needsPasswordReset":false,
+     *      "ethAddress":"8272773ac",
+     *      "ethKey":"192938ae72772ab",
+     *      "jamiId":"6e3552723df",
+     *      "certificate":"pem_formatted_certificate",
+     *      "privateKey":"pem_formatted_key",
+     *      "revoked":false
+     * }
      * @apiError (500) {null} null could not fetch user information
      */
     @Override
@@ -55,7 +72,9 @@ public class UserServlet extends HttpServlet {
         StatementList select = new StatementList();
         StatementElement st = new StatementElement("username","=",username,"");
         select.addStatement(st);
-        resp.getOutputStream().write(JsonStream.serialize(dataStore.getUserDao().getObjects(select).get(0)).getBytes());
+        User user = dataStore.getUserDao().getObjects(select).get(0);
+        user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
+        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
     }
 
     //The user can update 3 fields: password,privatekey,publickey

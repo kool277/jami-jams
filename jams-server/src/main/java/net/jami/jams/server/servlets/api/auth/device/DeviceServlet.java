@@ -31,6 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
@@ -39,6 +40,7 @@ import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
 import java.io.IOException;
 
+import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/auth/device/*")
@@ -53,6 +55,13 @@ public class DeviceServlet extends HttpServlet {
      * @apiParam {path} deviceId id of the device
      *
      * @apiSuccess (200) {body} Device device information
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     *     "certificate":"pem_encoded_certificate",
+     *     "displayName":"My Galaxy S8",
+     *     "deviceId":"6aec6252ad",
+     *     "revoked":true
+     * }
      * @apiError (500) {null} null Device could not be retrieved
      */
     @Override
@@ -64,7 +73,9 @@ public class DeviceServlet extends HttpServlet {
         StatementElement st2 = new StatementElement("deviceId","=",deviceId,"");
         statementList.addStatement(st1);
         statementList.addStatement(st2);
-        resp.getOutputStream().write(JsonStream.serialize(dataStore.getDeviceDao().getObjects(statementList).get(0)).getBytes());
+        Device device = dataStore.getDeviceDao().getObjects(statementList).get(0);
+        device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
+        resp.getOutputStream().write(JsonStream.serialize(device).getBytes());
     }
 
     /**
@@ -74,9 +85,23 @@ public class DeviceServlet extends HttpServlet {
      * @apiGroup Device
      *
      * @apiParam {body} DeviceRegistrationRequest device registration request
+     * @apiParamExample {json} Request-Example:
+     * {
+     *     "csr":"pem_encoded_csr",
+     *     "deviceName":"My Galaxy S8"
+     * }
      *
      * @apiSuccess (200) {body} DeviceRegistrationResponse registration response
      * @apiError (500) {null} null Device could not be enrolled
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     *     "certificateChain":"pem_encoded_certificate_chain"
+     *     "displayName":"John Doe"
+     *     "nameServer":"https://mydomain.com"
+     *     "deviceReceipt": "device_receipt_object"
+     *     "receiptSignature":"receipt_signature_object"
+     *     "userPhoto":"base64_encoded_photo"
+     * }
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

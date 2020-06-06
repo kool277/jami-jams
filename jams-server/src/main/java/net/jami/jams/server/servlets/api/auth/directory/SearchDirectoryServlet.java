@@ -52,6 +52,19 @@ public class SearchDirectoryServlet extends HttpServlet {
      * @apiParam {query} [queryString] the full-text query
      *
      * @apiSuccess (200) {body} UserProfile[] json-representation of the user profiles
+     * @apiSuccessExample {json} Success-Response:
+     * [{
+     *       "username":"jdoe",
+     *       "firstName":"John",
+     *       "lastName":"Doe",
+     *       "phoneNumber":"+1-514-000-0000",
+     *       "phoneNumberExtension":"363",
+     *       "mobileNumber":"+1-514-000-0000",
+     *       "faxNumber":"+1-514-000-0000",
+     *       "profilePicture":"base64_encoded_picture",
+     *       "email":"jdoe@savoirfairelinux.com",
+     *       "organization":"SFL"
+     *  }]
      * @apiError (500) {null} null could not return any authentication sources
      */
     @Override

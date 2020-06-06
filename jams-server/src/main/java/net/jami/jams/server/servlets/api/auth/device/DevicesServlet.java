@@ -30,9 +30,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.devices.Device;
 
 import java.io.IOException;
+import java.util.List;
 
+import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/auth/devices")
@@ -40,20 +43,31 @@ public class DevicesServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {get} /api/auth/devices List the devices of a user
+     * @api {get} /api/auth/devices Get device info
      * @apiName getDevices
      * @apiGroup Devices
      *
      *
-     * @apiSuccess (200) {body} Device[] array of devices owned by the user
-     * @apiError (500) {null} null could not fetch devices
+     * @apiSuccess (200) {body} Device device information
+     * @apiSuccessExample {json} Success-Response:
+     * [{
+     *     "certificate":"pem_encoded_certificate",
+     *     "displayName":"My Galaxy S8",
+     *     "deviceId":"6aec6252ad",
+     *     "revoked":true
+     * }]
+     * @apiError (500) {null} null Device could not be retrieved
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
         StatementList statementList = new StatementList();
         statementList.addStatement(new StatementElement("owner","=",username,""));
-        resp.getOutputStream().write(JsonStream.serialize(dataStore.getDeviceDao().getObjects(statementList)).getBytes());
+        List<Device> devices = dataStore.getDeviceDao().getObjects(statementList);
+        devices.forEach( device -> {
+            device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
+        });
+        resp.getOutputStream().write(JsonStream.serialize(devices).getBytes());
     }
 
 
