@@ -28,6 +28,7 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import net.jami.jams.common.authmodule.AuthScope;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.user.User;
 
@@ -43,20 +44,21 @@ public class TokenController{
         TokenController.signingKey = signingKey;
     }
 
-    public AuthTokenResponse getToken(User user) {
+    public AuthTokenResponse getToken(User user, AuthScope authScope) {
         AuthTokenResponse authTokenResponse = new AuthTokenResponse();
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType.JWT).build();
-        JWTClaimsSet jwtClaims = new JWTClaimsSet.Builder()
+         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .issuer("JAMS")
                 .subject(user.getUsername())
                 .audience("JAMS")
-                .claim("scope",user.getAccessLevel())
                 .claim("oneTimePassword",user.getNeedsPasswordReset())
                 .expirationTime(new Date(System.currentTimeMillis() + 30*60*1000))
                 .notBeforeTime(new Date(System.currentTimeMillis()))
                 .issueTime(new Date(System.currentTimeMillis()))
-                .jwtID(UUID.randomUUID().toString())
-                .build();
+                .jwtID(UUID.randomUUID().toString());
+        if(authScope == null) builder.claim("scope",user.getAccessLevel());
+        else builder.claim("scope",authScope);
+        JWTClaimsSet jwtClaims =  builder.build();
         SignedJWT signedJWT = new SignedJWT(jwsHeader, jwtClaims);
         try {
             signedJWT.sign(new RSASSASigner(signingKey));

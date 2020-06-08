@@ -27,6 +27,7 @@ import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
+import net.jami.jams.common.authmodule.AuthScope;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
@@ -140,7 +141,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
             User user = datastore.getUserDao().getObjects(statementList).get(0);
             if(authenticationSources.get(new AuthModuleKey(user.getRealm(),user.getUserType()))
                     .authenticate(username,password))
-                return tokenController.getToken(user);
+                return tokenController.getToken(user,null);
         }
         //The second case is much more violent, because we don't know in advance "where" this user comes
         //from, so we have to infer (this is only really true for "users", all others are usually pre-marked)
@@ -154,7 +155,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
                 user.setUserType(key.getType());
                 //This is legal with a null ONLY because in this case there is no relation with a external server.
                 RegisterUserFlow.createUser(user,null);
-                return tokenController.getToken(user);
+                return tokenController.getToken(user,null);
             }
         }
         return res;
@@ -179,7 +180,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
             StatementElement statementElement = new StatementElement("username","=",username,"");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
-            return tokenController.getToken(user);
+            return tokenController.getToken(user, AuthScope.DEVICE);
         }
         catch (Exception e){
             return null;
