@@ -75,18 +75,7 @@ function noAuthorization() {
 }
 
 function getAdminStatus() {
-    var adminStatus = getCookie(keyAdmin);
-    // if (adminStatus) {
-    //   return true;
-    // }
-    // else {
-    //   return false;
-    // }
     return true;
-}
-
-function getUser() {
-  return getCookie(keyUsername);
 }
 
 function getApiCheck() {
@@ -113,10 +102,10 @@ function serverConfigStatus(data, statusCode, jqXHR) {
       if (getAdminStatus() && (!current_uri.includes('search.html')) && (!current_uri.includes('user.html')) && (!current_uri.includes('config.html'))) {
         authorizedAdmin();
       }
-      else if (!getAdminStatus() && getUser() && (!current_uri.includes('user.html'))) {
+      else if (!getAdminStatus() && (!current_uri.includes('user.html'))) {
         authorizedUser(getUser());
       }
-      else if (!getAdminStatus() && !getUser() && (!current_uri.includes('signup.html'))) {
+      else if (!getAdminStatus() && (!current_uri.includes('signup.html'))) {
         noAuthorization();
       }
     }

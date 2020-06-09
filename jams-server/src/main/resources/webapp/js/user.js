@@ -37,15 +37,6 @@ $(document).ready(function() {
     }
     var username = $.urlParam('username');
 
-    // check if User has access to page
-    var currentUser = getUser();
-    if ((currentUser == username)  || getAdminStatus() ) {
-        searchAccess = true;
-        if (currentUser == username) {
-            $('.goToBack').remove();
-        }
-    }
-
     // check if we have a username parameter
     if (username != '' && username != null) {
         isSearch = true;

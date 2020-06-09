@@ -25,14 +25,9 @@
       duration: 500
     });
     $(function() {
-      // set current username
-      currentUser = getCookie('username');
-      isAdmin = getCookie('isAdmin');
       var logoutTemplate = "";
       var logoutTemplate2 = "";
-      if (currentUser == null) {
-        currentUser = "User"
-      }
+      var currentUser = "User"
       if (isAdmin) {
         logoutTemplate = '<div class="container-fluid"><div class="row"><div class="col-xl-12 col-lg-12 col-md-12 col-sm-12"><div class="wrapper-logout"><div class="left"></div></li></ul></div></div></div></div>';
         logoutTemplate2 = '<ul class="nav navbar-nav ml-auto"><li class="nav-item dropdown"><a style="color: #ffffff; text-align: right;" href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>' + currentUser + '</a><div class="dropdown-menu dropdown-menu-right"><a href="config.html"><button type="button" class="dropdown-item"><i class="fa fa-cog" aria-hidden="true"></i>Configurations</button></a><div class="dropdown-divider"></div><button type="button" class="logout_link dropdown-item" data-toggle="modal" data-target="#logoutModalCenter"><i class="fa fa-sign-out" aria-hidden="true"></i>Log out</button></div>'
@@ -57,8 +52,6 @@
       }
       $(".logout_link").on('click',function() {
         $(".goSignup").on('click',function() {
-          eraseCookie(keyUsername);
-          eraseCookie(keyAdmin);
           ajaxApiCall(api_path_post_auth_login, 'DELETE', null, null, setLogout, false);
           window.location.href = "../templates/signup.html";
         });

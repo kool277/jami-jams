@@ -55,7 +55,7 @@ var api_path_get_post_configuration_auth_service = '/api/configuration/authservi
 var api_path_get_post_configuration_global_settings = '/api/configuration/globalsettings';
 var api_path_post_configuration_change_password = '/api/configuration/changepassword';
 var api_path_post_configuration_register_license = '/api/subscription';
-var api_path_get_auth_license = '/api/auth/license';
+var api_path_get_subscription_status = '/api/subscription';
 var api_path_get_directories = '/api/auth/directories';
 var api_path_get_needs_update = '/api/update';
 var api_path_get_start_update = '/api/update';
@@ -110,7 +110,6 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
 
             if (window.localStorage.getItem('access_token')) {
                 var jwt = localStorage.getItem('access_token');
-                console.log(jwt);
 
                 ajax['headers'] =  {
                     "Bearer": jwt,
@@ -135,7 +134,12 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
     return data;
 }
 
-function set_installation_response(url, completed){
+function setJWT(value) {
+    window.localStorage.removeItem('access_token');
+    window.localStorage.setItem('access_token', value.access_token);
+}
+
+function set_installation_response(url) {
     return function (data, statusCode, jqXHR) {
         // endpoint does not exists
         if (data) {

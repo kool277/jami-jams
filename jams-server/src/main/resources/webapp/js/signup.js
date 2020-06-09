@@ -93,14 +93,8 @@ function createAdminCallBackHandler(data, statusCode, jqXHR) {
 
 function signinCallBackHandler(data, statusCode, jqXHR) {
 
-    if (jqXHR.status == 200 && data.token != 'null' && (data.needsReset == false || data.needsReset == null)) {
-    date.setTime(date.getTime() + (minutes * 60 * 1000));
-    // set username token
-    setCookie(keyUsername, jsonData['username'], { expires: date });
-    // set isAdmin token
-    if (data.isAdmin) {
-      setCookie(keyAdmin, data.isAdmin, { expires: date });
-    }
+    if (jqXHR.status == 200 && data.access_token != 'null' && (data.needsReset == false || data.needsReset == null)) {
+    setJWT(data);
     // check server configuration status
     getServerConfigStatus();
   }  else if (jqXHR.status == 200 && data.needsReset == true) {
