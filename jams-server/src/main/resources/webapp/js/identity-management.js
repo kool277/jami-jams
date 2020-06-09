@@ -93,6 +93,18 @@ function setADParametersData(form) {
             settings[field.name] = field.value;
     });
 
+    settings['fieldMappings'] = {};
+    settings['fieldMappings']['givenName'] = "FirstName";
+    settings['fieldMappings']['sn'] = "LastName";
+    settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
+    settings['fieldMappings']['mail'] = "Email";
+    settings['fieldMappings']['telephoneNumber'] = "PhoneNumber";
+    settings['fieldMappings']['mobile'] = "MobileNumber";
+    settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
+    settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
+    settings['fieldMappings']['o'] = "Organization";
+    settings['fieldMappings']['uid'] = "Username";
+
     authSource['type'] = 'AD';
     authSource['activeDirectorySettings'] = settings;
     var data = authSource;

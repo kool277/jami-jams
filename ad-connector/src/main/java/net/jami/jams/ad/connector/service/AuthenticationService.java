@@ -30,7 +30,9 @@ import net.jami.jams.ad.connector.ADConnector;
 public class AuthenticationService {
 
     public boolean authenticateUser(String username, String password) {
-        Endpoint endpoint = ADConnector.getConnection(username, password);
+
+        String marked_username = username.substring(username.indexOf("cn=") + 3, username.indexOf(",")); //ADConnector.settings.getRealm() + "\\" + ADConnector.settings.getUsername();
+        Endpoint endpoint = ADConnector.getConnection(marked_username, password);
         try {
             ConnectionResponse connectionResponse = DirectoryConnectorService.authenticate(endpoint);
             return !connectionResponse.isError();
