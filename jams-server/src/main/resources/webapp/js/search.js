@@ -158,7 +158,7 @@ function listAllUsers(data, statusCode, jqXHR)
   });
 
     setTimeout(function() {
-        ajaxApiCall(api_path_get_directories, 'GET', null, null, ishsqlConfig);
+        ajaxApiCall(api_path_get_directories, 'GET', null, null, isLocalDB);
     }, 100);
     addListenersForActions();
 }
@@ -443,20 +443,9 @@ function handleUserAutofill(data, statusCode, jqXHR) {
     }
 }
 
-function ishsqlConfig(data, statusCode, jqXHR){
-    if (jqXHR.status == 200 && data.length > 1) {
-        var resultSet = data;
-        // ignore the first result since it's the auth service for admin accounts that is always present.
-        for (i = 1; i < resultSet.length; i++) {
-            if (resultSet[i] === "net.jami.accountmanagementserver.hsqlconnector.HSQLConnector") {
-                $('.user-create-div').show();
-                $('.edit-user').show();
-                break;
-            }
-        }
-    } else if (jqXHR.status == 200 && data.length == 1) {
-        // ignore the first result since it's the auth service for admin accounts that is always present.
-        if (data[0] === "net.jami.accountmanagementserver.hsqlconnector.HSQLConnector") {
+function isLocalDB(data, statusCode, jqXHR){
+    if (jqXHR.status == 200) {
+        if (data[0].type === "LOCAL" && data[0].realm === "LOCAL") {
             $('.user-create-div').show();
             $('.edit-user').show();
         }
