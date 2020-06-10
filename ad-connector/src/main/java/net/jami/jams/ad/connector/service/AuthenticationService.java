@@ -31,8 +31,13 @@ public class AuthenticationService {
 
     public boolean authenticateUser(String username, String password) {
 
-        String marked_username = username.substring(username.indexOf("cn=") + 3, username.indexOf(",")); //ADConnector.settings.getRealm() + "\\" + ADConnector.settings.getUsername();
-        Endpoint endpoint = ADConnector.getConnection(marked_username, password);
+        Endpoint endpoint = ADConnector.getConnection(username, password);
+
+        if (username.contains("cn=")) {
+            String marked_username = username.substring(username.indexOf("cn=") + 3, username.indexOf(",")); //ADConnector.settings.getRealm() + "\\" + ADConnector.settings.getUsername();
+            endpoint = ADConnector.getConnection(marked_username, password);
+        }
+
         try {
             ConnectionResponse connectionResponse = DirectoryConnectorService.authenticate(endpoint);
             return !connectionResponse.isError();
