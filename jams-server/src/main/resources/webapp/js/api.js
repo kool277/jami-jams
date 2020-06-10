@@ -42,7 +42,7 @@ var api_path_post_install_ca = '/api/install/ca';
 var api_path_post_install_auth = '/api/install/auth';
 var api_path_post_install_server = '/api/install/settings';
 var api_path_get_install_lastKnownStep = '/api/install/lastStep';
-var api_path_get_auth_users = '/api/auth/users';
+var api_path_get_user = '/api/auth/user';
 var api_path_get_auth_user_search = '/api/auth/users';
 var api_path_get_auth_devices = '/api/auth/devices';
 var api_path_delete_auth_user_revoke = '/api/auth/user';
@@ -99,7 +99,8 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
 
     // pass data in the header
     if (data) {
-        if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search || api_path == api_path_get_user_needs_reset)
+        if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search ||
+            api_path == api_path_get_user || api_path == api_path_get_user_needs_reset)
             isSearch = true;
 
         // search dataType

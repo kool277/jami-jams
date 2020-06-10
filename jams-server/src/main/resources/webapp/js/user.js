@@ -19,10 +19,11 @@
  */
 
 var deviceId = '';
-var searchAccess = false;
+var searchData = {};
 var userData = {};
 var b64;
 var hsqlconfig = false;
+var username = '';
 
 $(document).ready(function() {
 
@@ -35,14 +36,14 @@ $(document).ready(function() {
             return decodeURI(results[1]) || 0;
         }
     }
-    var username = $.urlParam('username');
+
+    username = $.urlParam('username');
 
     // check if we have a username parameter
     if (username != '' && username != null) {
-        isSearch = true;
 
-        var searchData = {
-            "username":username
+        searchData = {
+            "queryString":username
         };
 
         userData = {
@@ -62,7 +63,7 @@ $(document).ready(function() {
             var userDataParams = new URLSearchParams(userData).toString();
             $('#form-user-update')[0].reset();
             // attempt auto-fill
-            ajaxApiCall(api_path_get_user_extended_data, 'GET', userDataParams, null, handleUserAutofill);
+            ajaxApiCall(api_path_get_user_directory_search, 'GET', userDataParams, null, handleUserAutofill);
             document.getElementById('picture-filename-update').addEventListener('change', handleFileSelect, false);
             $('#updateUserModalCenter').modal('show');
             $('#updateUserButton').replaceWith($('#updateUserButton').clone());
@@ -97,14 +98,6 @@ $(document).ready(function() {
         });
 
         $( '.user-information' ).on( 'click', '.reset-password', function (e) {
-            //e.preventDefault();
-            console.log("murloc noises");
-            var username = $.urlParam('username');
-            var searchData = {
-                "username":username
-            };
-
-
             ajaxApiCall(api_path_get_user_needs_reset, 'GET', searchData, null, handleNewOTP);
         });
 
@@ -148,17 +141,14 @@ $(document).ready(function() {
             $('#device-id-modal').text('');
         });
 
-        if (searchAccess) {
-            // set User information fields
-            setTimeout(function() {
-                ajaxApiCall(api_path_get_directories, 'GET', null, null, ishsqlConfig);
-                ajaxApiCall(api_path_get_auth_user_search, 'GET', searchData, null, setUserInfoDataSource);
-                ajaxApiCall(api_path_get_user_extended_data, 'GET', searchData, null, setUserExtendedData);
-            }, 300);
-        }
-        else {
-            $('.user-information-container').remove();
-        }
+
+        // set User information fields
+        setTimeout(function() {
+            ajaxApiCall(api_path_get_directories, 'GET', null, null, ishsqlConfig);
+            ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
+            ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
+        }, 300);
+
     }
     else {
         $('.user-information-container').remove();
@@ -235,9 +225,6 @@ function setUserExtendedData(data, statusCode, jqXHR) {
                 var telephoneNumber = '';
                 var mobile = '';
 
-                console.log("setUserExtendedData");
-                console.log(resultSet[i]);
-
                 if (resultSet[i].firstName)
                     givenName = resultSet[i].firstName;
                 else
@@ -248,26 +235,26 @@ function setUserExtendedData(data, statusCode, jqXHR) {
                 else
                     sn = "Unavailable";
 
-                if (resultSet[i].mail)
-                    mail = resultSet[i].mail;
+                if (resultSet[i].email)
+                    mail = resultSet[i].email;
 
-                if (resultSet[i].jpegPhoto)
-                    jpegPhoto = resultSet[i].jpegPhoto;
+                if (resultSet[i].profilePicture)
+                    jpegPhoto = resultSet[i].profilePicture;
 
-                if (resultSet[i].org)
-                    o = resultSet[i].org;
+                if (resultSet[i].organization)
+                    o = resultSet[i].organization;
 
-                if (resultSet[i].extension)
-                    extension = resultSet[i].extension;
+                if (resultSet[i].phoneNumberExtension)
+                    extension = resultSet[i].phoneNumberExtension;
 
                 if (resultSet[i].faxNumber)
                     facsimileTelephoneNumber = resultSet[i].faxNumber;
 
-                if (resultSet[i].telephoneNumber)
-                    telephoneNumber = resultSet[i].telephoneNumber;
+                if (resultSet[i].phoneNumber)
+                    telephoneNumber = resultSet[i].phoneNumber;
 
-                if (resultSet[i].mobilePhoneNumber)
-                    mobile = resultSet[i].mobilePhoneNumber;
+                if (resultSet[i].mobileNumber)
+                    mobile = resultSet[i].mobileNumber;
 
 
                 userRow +=
@@ -280,6 +267,7 @@ function setUserExtendedData(data, statusCode, jqXHR) {
                     '</span></h5><h5 class="user-detail"><strong id="input-telephoneNumber">Phone Number  </strong><span class="telephoneNumber">' + telephoneNumber +
                     '</span></h5><h5 class="user-detail"><strong id="input-mobile">Mobile  </strong><span class="mobile">' + mobile +
                     '</span></h5></pre>';
+
 
                 setTimeout(function() {
                     var span = document.createElement('span');
@@ -406,16 +394,11 @@ function renameDeviceHandler(data, statusCode, jqXHR) {
 
 function handleUserUpdate(){
 
-    var username = $.urlParam('username');
-    var searchData = {
-        "username":username
-    };
-
     $('.user-information').empty();
 
     setTimeout(function() {
-        ajaxApiCall(api_path_get_auth_user_search, 'GET', searchData, null, setUserInfoDataSource);
-        ajaxApiCall(api_path_get_user_extended_data, 'GET', searchData, null, setUserExtendedData);
+        ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
+        ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
     }, 300);
 }
 
