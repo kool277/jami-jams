@@ -29,7 +29,8 @@ $("#HSQL-form").submit(function (event) {
     event.preventDefault();
     var authSource = {};
     var settings = {
-        "CN": "http://ns.jami.net"
+        "publicNameServer": "http://ns.jami.net",
+        "publicNames": $('#publicNS')[0].checked
     };
 
     authSource['type'] = 'LOCAL';
@@ -60,8 +61,6 @@ function setLDAPParametersData(form) {
       else
           settings[field.name] = field.value;
   });
-  // settings['usernameField'] = "uid";
-  // settings['realm'] = "savoirfairelinux";
   settings['fieldMappings'] = {};
   settings['fieldMappings']['givenName'] = "FirstName";
   settings['fieldMappings']['sn'] = "LastName";

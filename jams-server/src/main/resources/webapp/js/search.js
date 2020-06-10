@@ -123,7 +123,6 @@ function listAllUsers(data, statusCode, jqXHR)
     for (i = 0; i < resultSet.length; i++) {
       var firstName = '';
       var lastName = '';
-      console.log(resultSet[i]);
 
       if (resultSet[i].firstName)
           firstName = resultSet[i].firstName;
@@ -263,8 +262,8 @@ function handleFileSelectUpdate(evt) {
 
 function isActivated(data) {
     var resultSet = data;
-    $('#license-type-display').text("Current version JAMS Alpha " + resultSet.currentVersion);
-    isActive = resultSet.isActive;
+    $('#license-type-display').text("Current version JAMS Alpha " + resultSet.versions["jams-server.jar"]["version"]);
+    isActive = resultSet.activated;
 }
 
 function searchFunction(data, statusCode, jqXHR) {
@@ -314,14 +313,15 @@ function searchFunction(data, statusCode, jqXHR) {
 
 function handleUpdate(data, statusCode, jqXHR) {
 
-    ajaxApiCall(api_path_get_auth_license, 'GET', null, null, isActivated, false);
+    ajaxApiCall(api_path_get_subscription_status, 'GET', null, null, isActivated, false);
 
     if (jqXHR.status == 200 && data.length != 0) {
         // parse JSON response
         var resultSet = data;
         if (resultSet.updateAvailable == true) {
             $('#update-title-div').show();
-            $('#update-title').text("UPGRADE TO JAMS " + resultSet.remoteVersions.substring(resultSet.remoteVersions.indexOf("=") + 1, resultSet.remoteVersions.length - 1));
+            window.localStorage.setItem('test', resultSet.remoteVersions);
+            $('#update-title').text("UPGRADE TO JAMS " + resultSet.remoteVersions["jams-server.jar"]["version"]);
 
             document.getElementsByClassName("update-title")[0].addEventListener('click', function(){
                 if (isActive == true) {
@@ -358,11 +358,11 @@ function handleUserCreation(data, statusCode, jqXHR) {
     else
         $('#user-pw-modal-body').text("New user successfully created. Here is the one time password: " + data.pw);
 
-    ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', null, null, listAllUsers);
 }
 
 function handleUserUpdate() {
-    ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', null, null, listAllUsers);
 }
 
 function handleUserExists(data) {
@@ -438,8 +438,6 @@ function handleUserAutofill(data, statusCode, jqXHR) {
         $('#input-telephoneNumber-update').val(resultSet.telephoneNumber);
         $('#input-extension-update').val(resultSet.extension);
         $('#input-mobile-update').val(resultSet.mobilePhoneNumber);
-
-
     }
 }
 
