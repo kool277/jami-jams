@@ -409,23 +409,22 @@ function revokeUser(data, statusCode, jqXHR) {
     }
 
     ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
-    ajaxApiCall(api_path_post_create_user_profile, 'GET', {"username":"*"}, null, listAllUsers);
     userRevoke = '';
 }
 
 function handleUserAutofill(data, statusCode, jqXHR) {
     if (jqXHR.status == 200) {
         var resultSet = data[0];
-        if (resultSet.jpegPhoto)
-            b64 = resultSet.jpegPhoto;
+        if (resultSet.profilePicture)
+            b64 = resultSet.profilePicture;
         $('#input-givenName-update').val(resultSet.firstName);
         $('#input-sn-update').val(resultSet.lastName);
-        $('#input-mail-update').val(resultSet.mail);
-        $('#input-o-update').val(resultSet.org);
+        $('#input-mail-update').val(resultSet.email);
+        $('#input-o-update').val(resultSet.organization);
         $('#input-facsimileTelephoneNumber-update').val(resultSet.faxNumber);
-        $('#input-telephoneNumber-update').val(resultSet.telephoneNumber);
-        $('#input-extension-update').val(resultSet.extension);
-        $('#input-mobile-update').val(resultSet.mobilePhoneNumber);
+        $('#input-telephoneNumber-update').val(resultSet.phoneNumber);
+        $('#input-extension-update').val(resultSet.phoneNumberExtension);
+        $('#input-mobile-update').val(resultSet.mobileNumber);
     }
 }
 

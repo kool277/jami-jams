@@ -24,6 +24,7 @@ var userData = {};
 var b64;
 var local = false;
 var username = '';
+var userStatus = '';
 
 $(document).ready(function() {
 
@@ -39,6 +40,7 @@ $(document).ready(function() {
 
     username = $.urlParam('username');
 
+
     // check if we have a username parameter
     if (username != '' && username != null) {
 
@@ -49,6 +51,20 @@ $(document).ready(function() {
         userData = {
             "username":username
         };
+
+        ajaxApiCall(api_path_get_directories, 'GET', null, null, isLocalDB).then(function() {
+            setTimeout(function() {
+                ajaxApiCall(api_path_get_user, 'GET', userData, null, setStatus).then(function() {
+                    ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource).then(function() {
+                        setTimeout(function() {
+                            ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
+                        }, 300);
+
+                    });
+                });
+            }, 300)
+
+        });
 
         // set User devices information
         ajaxApiCall(api_path_get_auth_devices, 'GET', userData, null, setUserDevices);
@@ -71,18 +87,19 @@ $(document).ready(function() {
                 e.preventDefault();
 
                 var data = {
-                    'givenName': $('#input-givenName-update').val(),
-                    'sn': $('#input-sn-update').val(),
-                    'CN': encodeURIComponent(userData["username"]),
-                    'mail': $('#input-mail-update').val(),
-                    'jpegPhoto': b64,
-                    'o': $('#input-o-update').val(),
-                    'facsimileTelephoneNumber': $('#input-facsimileTelephoneNumber-update').val(),
-                    'telephoneNumber': $('#input-telephoneNumber-update').val(),
-                    'extension': $('#input-extension-update').val(),
-                    'mobile': $('#input-mobile-update').val()
+                    'firstName': $('#input-givenName-update').val(),
+                    'lastName': $('#input-sn-update').val(),
+                    'username': username,
+                    'email': $('#input-mail-update').val(),
+                    'profilePicture': b64,
+                    'organization': $('#input-o-update').val(),
+                    'faxNumber': $('#input-facsimileTelephoneNumber-update').val(),
+                    'phoneNumber': $('#input-telephoneNumber-update').val(),
+                    'phoneNumberExtension': $('#input-extension-update').val(),
+                    'mobileNumber': $('#input-mobile-update').val()
                 }
-                ajaxApiCall(api_path_post_update_user, 'POST', data, null, handleUserUpdate);
+
+                ajaxApiCall(api_path_put_update_user_profile, 'PUT', data, null, handleUserUpdate);
             });
 
         });
@@ -98,7 +115,7 @@ $(document).ready(function() {
         });
 
         $( '.user-information' ).on( 'click', '.reset-password', function (e) {
-            ajaxApiCall(api_path_post_update_user, 'GET', userData, null, handleNewOTP);
+            ajaxApiCall(api_path_get_user, 'GET', userData, null, handleNewOTP);
         });
 
         // change device name
@@ -141,14 +158,6 @@ $(document).ready(function() {
             $('#device-id-modal').text('');
         });
 
-
-        // set User information fields
-        setTimeout(function() {
-            ajaxApiCall(api_path_get_directories, 'GET', null, null, isLocalDB);
-            ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
-            ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
-        }, 300);
-
     }
     else {
         $('.user-information-container').remove();
@@ -165,15 +174,13 @@ function setUserInfoDataSource(data, statusCode, jqXHR) {
         if (resultSet.length > 0) {
             // build table row for User item
             for (i = 0; i < resultSet.length; i++) {
-                var status = '';
+
                 // determine User status
-                if (resultSet[i].revoked) {
-                    status = 'Revoked';
+                if (userStatus == "Revoked") {
                     disabled = true;
                     status_class = 'text-danger';
                 }
                 else {
-                    status = 'Active';
                     status_class = '';
                 }
 
@@ -181,7 +188,7 @@ function setUserInfoDataSource(data, statusCode, jqXHR) {
 
                 userRow +=
                     '<div class="row"><div class="col-md-4 col-sm-12"><div id="left_panel" class="user-information__left"><h5 class="user-detail"></h5></div></div><div id="rightcolumn" class="col-md-8 col-sm-12"></div></div>' +
-                    '<h5 className="user-detail"><i id="status-whatever" class="'+ status_class +'">' + status +
+                    '<h5 className="user-detail"><i id="status-whatever" class="'+ status_class +'">' + userStatus +
                     '</i></h5>';
 
                 if (getAdminStatus()) {
@@ -212,6 +219,11 @@ function setUserExtendedData(data, statusCode, jqXHR) {
         var resultSet = data;
         var userRow = '';
         var disabled = '';
+
+        if (getAdminStatus()) {
+            $('.mt-5')[0].style = 'display: flex';
+        }
+
         if (resultSet.length > 0) {
             // build table row for User item
             for (i = 0; i < 1; i++) {
@@ -291,10 +303,6 @@ function setUserExtendedData(data, statusCode, jqXHR) {
 
             if (disabled) {
                 $('.de-authorize-user').prop('disabled', true);
-            }
-
-            if (getAdminStatus()) {
-                $('.mt-5')[0].show();
             }
         }
     }
@@ -400,10 +408,12 @@ function handleUserUpdate(){
 
     $('.user-information').empty();
 
-    setTimeout(function() {
-        ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
-        ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
-    }, 1000);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource).then(function() {
+        setTimeout(function() {
+            ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
+        }, 300);
+
+    });
 }
 
 function handleFileSelect(evt) {
@@ -449,16 +459,16 @@ function handleUserAutofill(data, statusCode, jqXHR) {
     if (jqXHR.status == 200) {
         var resultSet = data[0];
 
-        if (resultSet.jpegPhoto)
-            b64 = resultSet.jpegPhoto;
+        if (resultSet.profilePicture)
+            b64 = resultSet.profilePicture;
         $('#input-givenName-update').val(resultSet.firstName);
         $('#input-sn-update').val(resultSet.lastName);
-        $('#input-mail-update').val(resultSet.mail);
-        $('#input-o-update').val(resultSet.org);
+        $('#input-mail-update').val(resultSet.email);
+        $('#input-o-update').val(resultSet.organization);
         $('#input-facsimileTelephoneNumber-update').val(resultSet.faxNumber);
-        $('#input-telephoneNumber-update').val(resultSet.telephoneNumber);
-        $('#input-extension-update').val(resultSet.extension);
-        $('#input-mobile-update').val(resultSet.mobilePhoneNumber);
+        $('#input-telephoneNumber-update').val(resultSet.phoneNumber);
+        $('#input-extension-update').val(resultSet.phoneNumberExtension);
+        $('#input-mobile-update').val(resultSet.mobileNumber);
     }
 }
 
@@ -495,6 +505,13 @@ function handleNewOTP(data) {
             $('#user-pw-modal-body').text("User has not changed his temporary password. Current password: " + data.getResponseHeader('password'));
         }
     }
+}
+
+function setStatus(data) {
+    if (data.getResponseHeader('revoked') == 'true')
+        userStatus = "Revoked";
+    else
+        userStatus = "Active";
 }
 
 // clean error messages when button selected
