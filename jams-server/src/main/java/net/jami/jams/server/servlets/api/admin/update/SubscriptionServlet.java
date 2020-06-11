@@ -34,7 +34,7 @@ import net.jami.jams.server.Server;
 
 import java.io.IOException;
 
-@WebServlet("/api/subscription")
+@WebServlet("/api/admin/subscription")
 public class SubscriptionServlet extends HttpServlet {
 
     //Get the subscription status (see: SubscriptionStatusResponse.class)

@@ -34,7 +34,7 @@ import java.io.IOException;
 
 import static net.jami.jams.server.Server.appUpdater;
 
-@WebServlet("/api/update")
+@WebServlet("/api/admin/update")
 public class UpdateServlet extends HttpServlet {
 
     //Return the current version number and the available version number.

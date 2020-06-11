@@ -75,7 +75,7 @@ public class ApiFilter implements Filter {
                         if ((Boolean) signedJWT.getJWTClaimsSet().getClaim("oneTimePassword")) {
                             //TODO: use redirect to enforce the /changepassword url or something.
                         }
-                        request.setAttribute("accessLevel", AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("accessLevel").toString()));
+                        request.setAttribute("accessLevel", AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()));
                     }
                 } catch (Exception e) {
                     log.info("Received an invalid token, declining access...");

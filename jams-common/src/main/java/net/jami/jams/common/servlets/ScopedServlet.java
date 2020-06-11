@@ -23,11 +23,11 @@ public abstract class ScopedServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getAttribute("accessLevel") instanceof AccessLevel){
+        if(!(req.getAttribute("accessLevel") instanceof AccessLevel)){
             resp.sendError(403,"No valid access level found!");
             return;
         }
-        if(!GET_accessLevels.contains(req.getAttribute("accessLevel"))){
+        if(!GET_accessLevels.contains((AccessLevel) req.getAttribute("accessLevel"))){
             resp.sendError(403,"You do not have enough rights to access this endpoint!");
             return;
         }
@@ -35,11 +35,11 @@ public abstract class ScopedServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getAttribute("accessLevel") instanceof AccessLevel){
+        if(!(req.getAttribute("accessLevel") instanceof AccessLevel)){
             resp.sendError(403,"No valid access level found!");
             return;
         }
-        if(!POST_accessLevels.contains(req.getAttribute("accessLevel"))){
+        if(!POST_accessLevels.contains((AccessLevel) req.getAttribute("accessLevel"))){
             resp.sendError(403,"You do not have enough rights to access this endpoint!");
             return;
         }
@@ -47,11 +47,11 @@ public abstract class ScopedServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getAttribute("accessLevel") instanceof AccessLevel){
+        if(!(req.getAttribute("accessLevel") instanceof AccessLevel)){
             resp.sendError(403,"No valid access level found!");
             return;
         }
-        if(!PUT_accessLevels.contains(req.getAttribute("accessLevel"))){
+        if(!PUT_accessLevels.contains((AccessLevel) req.getAttribute("accessLevel"))){
             resp.sendError(403,"You do not have enough rights to access this endpoint!");
             return;
         }
@@ -59,11 +59,11 @@ public abstract class ScopedServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getAttribute("accessLevel") instanceof AccessLevel){
+        if(!(req.getAttribute("accessLevel") instanceof AccessLevel)){
             resp.sendError(403,"No valid access level found!");
             return;
         }
-        if(!DELETE_accessLevels.contains(req.getAttribute("accessLevel"))){
+        if(!DELETE_accessLevels.contains((AccessLevel) req.getAttribute("accessLevel"))){
             resp.sendError(403,"You do not have enough rights to access this endpoint!");
             return;
         }
