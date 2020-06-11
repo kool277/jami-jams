@@ -26,12 +26,13 @@ import com.nimbusds.jwt.SignedJWT;
 import net.jami.jams.common.objects.user.AccessLevel;
 
 import java.util.Date;
+import java.util.Set;
 
 public class JWTValidator {
 
-    public static boolean verifyLevel(SignedJWT signedJWT, AccessLevel TARGET_LEVEL){
+    public static boolean verifyLevel(SignedJWT signedJWT, Set<AccessLevel> targetLevels){
         try {
-            return AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()).equals(TARGET_LEVEL);
+            return targetLevels.contains(AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()));
         }
         catch (Exception e){
             return false;

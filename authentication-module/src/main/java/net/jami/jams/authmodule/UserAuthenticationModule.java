@@ -27,7 +27,6 @@ import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
-import net.jami.jams.common.authmodule.AuthScope;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
@@ -180,7 +179,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
             StatementElement statementElement = new StatementElement("username","=",username,"");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
-            return tokenController.getToken(user, AuthScope.DEVICE);
+            return tokenController.getToken(user, AccessLevel.DEVICE);
         }
         catch (Exception e){
             return null;

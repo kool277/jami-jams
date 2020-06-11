@@ -35,8 +35,11 @@ import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
+import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.servlets.ScopedServlet;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
+import net.jami.jams.server.servlets.api.auth.contacts.ContactServlet;
 
 import java.io.IOException;
 
@@ -44,8 +47,13 @@ import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/auth/device/*")
-public class DeviceServlet extends HttpServlet {
+public class DeviceServlet extends ScopedServlet {
 
+    @Override
+    public void init() throws ServletException {
+        DeviceServlet.DELETE_accessLevels.add(AccessLevel.USER);
+        DeviceServlet.POST_accessLevels.add(AccessLevel.USER);
+    }
     /**
      * @apiVersion 1.0.0
      * @api {get} /api/auth/device Get device info
@@ -105,6 +113,7 @@ public class DeviceServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doPost(req,resp);
         DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
         DeviceRegistrationResponse devResponse = RegisterDeviceFlow.registerDevice(req.getAttribute("username").toString(),request);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
@@ -153,6 +162,7 @@ public class DeviceServlet extends HttpServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doDelete(req,resp);
         String deviceId = req.getPathInfo().replace("/","");
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());

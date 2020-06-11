@@ -31,6 +31,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
+import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.servlets.ScopedServlet;
 
 import java.io.IOException;
 import java.util.List;

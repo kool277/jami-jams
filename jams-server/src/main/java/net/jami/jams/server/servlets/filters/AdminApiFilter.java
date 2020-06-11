@@ -38,6 +38,7 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 import static net.jami.jams.server.servlets.filters.JWTValidator.verifyLevel;
@@ -64,7 +65,9 @@ public class AdminApiFilter implements Filter {
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
                     signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
-                    if(signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT) && verifyLevel(signedJWT,TARGET_LEVEL)){
+                    HashSet<AccessLevel> permissionLevels = new HashSet<>();
+                    permissionLevels.add(AccessLevel.ADMIN);
+                    if(signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT) && verifyLevel(signedJWT,permissionLevels)){
                         authsuccess = true;
                         request.setAttribute("username",signedJWT.getJWTClaimsSet().getSubject());
                     }

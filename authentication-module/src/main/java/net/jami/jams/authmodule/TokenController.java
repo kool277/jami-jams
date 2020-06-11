@@ -28,8 +28,8 @@ import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import net.jami.jams.common.authmodule.AuthScope;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 
 import java.security.PrivateKey;
@@ -44,7 +44,7 @@ public class TokenController{
         TokenController.signingKey = signingKey;
     }
 
-    public AuthTokenResponse getToken(User user, AuthScope authScope) {
+    public AuthTokenResponse getToken(User user, AccessLevel authScope) {
         AuthTokenResponse authTokenResponse = new AuthTokenResponse();
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType.JWT).build();
          JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
