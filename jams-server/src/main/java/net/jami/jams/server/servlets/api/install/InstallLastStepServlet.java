@@ -40,6 +40,6 @@ public class InstallLastStepServlet extends HttpServlet {
         resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
         HashMap<String,String> payload = new HashMap<>();
         payload.put("uri",CachedObjects.endpoint);
-        resp.getOutputStream().write(JsonStream.serialize(resp).getBytes());
+        resp.getOutputStream().write(JsonStream.serialize(payload).getBytes());
     }
 }
