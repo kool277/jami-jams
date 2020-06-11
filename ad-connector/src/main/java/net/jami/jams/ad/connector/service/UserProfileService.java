@@ -52,6 +52,10 @@ public class UserProfileService {
     public UserProfile[] getUserProfile(String queryString, String field){
         Endpoint endpoint = ADConnector.getConnection();
         UserProfile[] profiles = null;
+
+        if (!queryString.startsWith("*"))
+            queryString = queryString.concat("*");
+
         try{
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;

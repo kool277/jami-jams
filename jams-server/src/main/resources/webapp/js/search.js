@@ -92,18 +92,16 @@ $(document).ready(function() {
 // search for Users on every keyup
 $('#search').keyup(function(e) {
     var input =  e.currentTarget.value;
-    var inputLength = e.currentTarget.value.length;
     // search for non empty input
     if (input != '') {
-        // searchFunction(input);
         var data = {
-            "username":input
+            "queryString":input
         }
         isSearch = true;
-        ajaxApiCall(api_path_get_user_extended_data, 'GET', data, null, searchFunction);
+        ajaxApiCall(api_path_get_user_directory_search, 'GET', data, null, searchFunction);
     }
     else
-        ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+        ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
 
     // reset previous resultset
     $('.user-data').remove();
@@ -186,12 +184,12 @@ function addListenersForActions() {
         userEdit = (e.currentTarget.getAttribute('user-id'));
 
         var data = {
-            "username":userEdit
+            "queryString":userEdit
         }
         var URLSearchData = new URLSearchParams(data).toString();
 
         // attempt auto-fill
-        ajaxApiCall(api_path_get_user_extended_data, 'GET', URLSearchData, null, handleUserAutofill);
+        ajaxApiCall(api_path_get_user_directory_search, 'GET', URLSearchData, null, handleUserAutofill);
 
 
 
@@ -358,11 +356,11 @@ function handleUserCreation(data, statusCode, jqXHR) {
     else
         $('#user-pw-modal-body').text("New user successfully created. Here is the one time password: " + data.pw);
 
-    ajaxApiCall(api_path_get_user_directory_search, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
 }
 
 function handleUserUpdate() {
-    ajaxApiCall(api_path_get_user_directory_search, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
 }
 
 function handleUserExists(data) {
@@ -421,7 +419,7 @@ function revokeUser(data, statusCode, jqXHR) {
         isSearch = true;
     }
 
-    ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
     userRevoke = '';
 }
 

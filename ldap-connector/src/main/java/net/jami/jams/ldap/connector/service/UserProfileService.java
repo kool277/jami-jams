@@ -82,10 +82,14 @@ public class UserProfileService {
 
 
     public static SearchRequest buildRequest(String queryString, String field) {
+
+        if (!queryString.startsWith("*"))
+            queryString = queryString.concat("*");
+
         if(field.equals("LOGON_NAME")) {
             return SearchRequest.builder()
                     .dn(LDAPConnector.settings.getBaseDN())
-                    .filter("(&("+LDAPConnector.settings.getUsernameField()+"=" + queryString + "))")
+                    .filter("(&(uid=" + queryString + "))")
                     .build();
         }
         if(field.equals("FULL_TEXT_NAME")){
