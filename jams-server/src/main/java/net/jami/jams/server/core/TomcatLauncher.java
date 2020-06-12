@@ -80,6 +80,7 @@ public class TomcatLauncher {
         log.info("Serving application from: " + new File(System.getProperty("user.dir")).getAbsolutePath());
 
         WebResourceRoot resources = new StandardRoot(context);
+        //We probably need to scan the annotations here, because they should be loaded AFTER the classes are loaded.
         if (jarName.contains(".jar")) {
             resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes", jarName, "/net/jami/jams/server/servlets"));
             resources.addPreResources(new JarResourceSet(resources, "/", jarName, "/webapp"));

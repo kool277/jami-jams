@@ -26,6 +26,7 @@ import com.jsoniter.JsonIterator;
 import javassist.ClassPool;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.annotations.ScopedServletAnnotationScanner;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authentication.local.LocalAuthSettings;
 import net.jami.jams.common.authmodule.AuthenticationModule;
@@ -41,10 +42,12 @@ import net.jami.jams.server.core.TomcatLauncher;
 import net.jami.jams.server.licensing.LicenseService;
 import net.jami.jams.server.startup.AuthModuleLoader;
 import net.jami.jams.server.startup.CryptoEngineLoader;
+import net.jami.jams.server.startup.PackageScanner;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -75,6 +78,14 @@ public class Server {
     public static void main(String[] args) {
         //This is a fix to drop old cached stuff from the tomcat classloader.
         ClassPool.getDefault().clearImportedPackages();
+        ScopedServletAnnotationScanner scanner = new ScopedServletAnnotationScanner();
+        //Here we need to scan and modify our servlets, this is not necessarily the greatest thing ever.
+        try {
+            scanner.scanAndModify(PackageScanner.getClasses());
+        }
+        catch (Exception e){
+            log.error("Could not modify the annotated files");
+        }
         switch (args.length) {
             case 1:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]));

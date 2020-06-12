@@ -35,7 +35,6 @@ import net.jami.jams.common.objects.system.SystemAccountType;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -43,8 +42,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 class SystemAccountBuilderTest {
 

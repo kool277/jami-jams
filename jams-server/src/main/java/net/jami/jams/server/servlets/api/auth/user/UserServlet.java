@@ -25,15 +25,15 @@ package net.jami.jams.server.servlets.api.auth.user;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.servlets.ScopedServlet;
-import net.jami.jams.server.servlets.api.auth.device.DeviceServlet;
 
 import java.io.IOException;
 
@@ -41,12 +41,8 @@ import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/auth/user")
-public class UserServlet extends ScopedServlet {
+public class UserServlet extends HttpServlet {
 
-    @Override
-    public void init() throws ServletException {
-        UserServlet.PUT_accessLevels.add(AccessLevel.USER);
-    }
     //User can "read" his own profile.
     /**
      * @apiVersion 1.0.0
@@ -74,7 +70,6 @@ public class UserServlet extends ScopedServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req,resp);
         String username = req.getAttribute("username").toString();
         StatementList select = new StatementList();
         StatementElement st = new StatementElement("username","=",username,"");
@@ -97,8 +92,8 @@ public class UserServlet extends ScopedServlet {
      * @apiError (500) {null} null could not changed password
      */
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.USER})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req,resp);
         String username = req.getAttribute("username").toString();
         //Check if he is AD/LDAP - then return a 401, because we can't set such password.
         StatementList select = new StatementList();

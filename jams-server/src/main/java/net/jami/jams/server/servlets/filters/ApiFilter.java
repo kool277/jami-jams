@@ -32,7 +32,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 import static net.jami.jams.server.servlets.filters.JWTValidator.verifyValidity;
