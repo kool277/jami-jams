@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.DeleteStatementBuilder;
 import net.jami.jams.common.dao.SelectStatementBuilder;
+import net.jami.jams.common.dao.StatementConstraints;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.UpdateStatementBuilder;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
@@ -51,7 +52,7 @@ public abstract class AbstractDao<T> {
         List<T> result = new ArrayList<>();
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try{
-            PreparedStatement ps = SelectStatementBuilder.buildStatement(tableName,constraints,connection);
+            PreparedStatement ps = SelectStatementBuilder.buildStatement(tableName,constraints,null,connection);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
@@ -66,6 +67,28 @@ public abstract class AbstractDao<T> {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
+
+
+    public List<T> getObjects(StatementList constraints,StatementConstraints statementConstraints){
+        List<T> result = new ArrayList<>();
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try{
+            PreparedStatement ps = SelectStatementBuilder.buildStatement(tableName,constraints,statementConstraints,connection);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
+            }
+            return result;
+        }
+        catch (Exception e){
+            log.error("An error has occurred while trying to fetch a device: " + e.toString());
+            return null;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
+    }
+
 
     public boolean updateObject(StatementList update, StatementList constraints){
         SQLConnection connection = DataStore.connectionPool.getConnection();

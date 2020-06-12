@@ -29,6 +29,7 @@ import java.sql.PreparedStatement;
 public class SelectStatementBuilder {
 
     public static PreparedStatement buildStatement(String table, StatementList statementElements,
+                                        StatementConstraints statementConstraints,
                                         SQLConnection connection) throws Exception
     {
         PreparedStatement ps = null;
@@ -55,6 +56,10 @@ public class SelectStatementBuilder {
             }
         }
         else{
+            if(statementConstraints != null){
+                stringBuilder.append(" LIMIT ").append(statementConstraints.getRowCount())
+                    .append(" OFFSET ").append(statementConstraints.getOffset());
+            }
             ps = connection.getConnection().prepareStatement(stringBuilder.toString());
         }
         return ps;
