@@ -29,7 +29,8 @@ $("#HSQL-form").submit(function (event) {
     event.preventDefault();
     var authSource = {};
     var settings = {
-        "CN": "http://ns.jami.net"
+        "publicNameServer": "http://ns.jami.net",
+        "publicNames": $('#publicNS')[0].checked
     };
 
     authSource['type'] = 'LOCAL';
@@ -60,8 +61,6 @@ function setLDAPParametersData(form) {
       else
           settings[field.name] = field.value;
   });
-  // settings['usernameField'] = "uid";
-  // settings['realm'] = "savoirfairelinux";
   settings['fieldMappings'] = {};
   settings['fieldMappings']['givenName'] = "FirstName";
   settings['fieldMappings']['sn'] = "LastName";
@@ -72,6 +71,7 @@ function setLDAPParametersData(form) {
   settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
   settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
   settings['fieldMappings']['o'] = "Organization";
+  settings['fieldMappings']['uid'] = "Username";
 
   authSource['type'] = 'LDAP';
   authSource['ldapSettings'] = settings;
@@ -91,6 +91,18 @@ function setADParametersData(form) {
         else
             settings[field.name] = field.value;
     });
+
+    settings['fieldMappings'] = {};
+    settings['fieldMappings']['givenName'] = "FirstName";
+    settings['fieldMappings']['sn'] = "LastName";
+    settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
+    settings['fieldMappings']['mail'] = "Email";
+    settings['fieldMappings']['telephoneNumber'] = "PhoneNumber";
+    settings['fieldMappings']['mobile'] = "MobileNumber";
+    settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
+    settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
+    settings['fieldMappings']['o'] = "Organization";
+    settings['fieldMappings']['uid'] = "Username";
 
     authSource['type'] = 'AD';
     authSource['activeDirectorySettings'] = settings;

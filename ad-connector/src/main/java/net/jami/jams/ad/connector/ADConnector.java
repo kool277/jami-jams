@@ -43,18 +43,19 @@ public class ADConnector implements AuthenticationSource {
     private static final ConcurrentLinkedQueue<Endpoint> endpoints = new ConcurrentLinkedQueue<>();
     public static ActiveDirectorySettings settings;
     private final AuthenticationService authenticationService = new AuthenticationService();
-    private final UserProfileService userProfileService = new UserProfileService();
+    private final UserProfileService userProfileService;
 
     public ADConnector(String settings) {
         JsoniterRegistry.initCodecs();
         ADConnector.settings = JsonIterator.deserialize(settings,ActiveDirectorySettings.class);
         for(int i=0; i<10;i++){
             Endpoint endpoint = new Endpoint();
-            endpoint.setSecuredConnection(ADConnector.settings.getSsl());
+            endpoint.setSecuredConnection(ADConnector.settings.getIsSSL());
             endpoint.setPort(ADConnector.settings.getPort());
             endpoint.setHost(ADConnector.settings.getHost());
             endpoints.add(endpoint);
         }
+        userProfileService = new UserProfileService();
         log.info("Started Active Directory Connector!");
     }
 

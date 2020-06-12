@@ -47,7 +47,7 @@ public class TokenController{
     public AuthTokenResponse getToken(User user, AccessLevel authScope) {
         AuthTokenResponse authTokenResponse = new AuthTokenResponse();
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType.JWT).build();
-         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
+        JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .issuer("JAMS")
                 .subject(user.getUsername())
                 .audience("JAMS")

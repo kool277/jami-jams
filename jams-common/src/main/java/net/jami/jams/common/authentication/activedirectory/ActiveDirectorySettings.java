@@ -31,7 +31,7 @@ import java.util.HashMap;
 @Setter
 public class ActiveDirectorySettings {
 
-    private Boolean ssl;
+    private Boolean isSSL;
     private int     port;
     private String  realm;
     private String  host;

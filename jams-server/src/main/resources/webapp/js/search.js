@@ -25,8 +25,13 @@ var userEdit = '';
 var userRevoke = '';
 
 $(document).ready(function() {
+
+    var data = {
+        'queryString': "*"
+    }
+
     // load all users
-    ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', data, null, listAllUsers);
 
     setTimeout(function() {
         ajaxApiCall(api_path_get_needs_update, 'GET', null, null, handleUpdate, false);
@@ -118,8 +123,6 @@ function listAllUsers(data, statusCode, jqXHR)
     for (i = 0; i < resultSet.length; i++) {
       var firstName = '';
       var lastName = '';
-      console.log("listAllUsers");
-      console.log(resultSet[i]);
 
       if (resultSet[i].firstName)
           firstName = resultSet[i].firstName;
@@ -154,7 +157,7 @@ function listAllUsers(data, statusCode, jqXHR)
   });
 
     setTimeout(function() {
-        ajaxApiCall(api_path_get_auth_services, 'GET', null, null, ishsqlConfig);
+        ajaxApiCall(api_path_get_directories, 'GET', null, null, isLocalDB);
     }, 100);
     addListenersForActions();
 }
@@ -259,8 +262,8 @@ function handleFileSelectUpdate(evt) {
 
 function isActivated(data) {
     var resultSet = data;
-    $('#license-type-display').text("Current version JAMS Alpha " + resultSet.currentVersion);
-    isActive = resultSet.isActive;
+    $('#license-type-display').text("Current version JAMS Alpha " + resultSet.versions["jams-server.jar"]["version"]);
+    isActive = resultSet.activated;
 }
 
 function searchFunction(data, statusCode, jqXHR) {
@@ -310,20 +313,21 @@ function searchFunction(data, statusCode, jqXHR) {
 
 function handleUpdate(data, statusCode, jqXHR) {
 
-    ajaxApiCall(api_path_get_auth_license, 'GET', null, null, isActivated, false);
+    ajaxApiCall(api_path_get_subscription_status, 'GET', null, null, isActivated, false);
 
     if (jqXHR.status == 200 && data.length != 0) {
         // parse JSON response
         var resultSet = data;
         if (resultSet.updateAvailable == true) {
             $('#update-title-div').show();
-            $('#update-title').text("UPGRADE TO JAMS " + resultSet.newVersions.substring(resultSet.newVersions.indexOf("=") + 1, resultSet.newVersions.length - 1));
+            window.localStorage.setItem('test', resultSet.remoteVersions);
+            $('#update-title').text("UPGRADE TO JAMS " + resultSet.remoteVersions["jams-server.jar"]["version"]);
 
             document.getElementsByClassName("update-title")[0].addEventListener('click', function(){
                 if (isActive == true) {
                     $('#downloadUpdateModalCenter').modal('show');
                     document.getElementsByClassName("auto-update")[0].addEventListener('click', function() {
-                        ajaxApiCall(api_path_get_start_update, 'GET', null, null, handleUpdateStart, false);
+                        ajaxApiCall(api_path_get_start_update, 'POST', null, null, handleUpdateStart, false);
                     });
                 }
                 else
@@ -354,11 +358,11 @@ function handleUserCreation(data, statusCode, jqXHR) {
     else
         $('#user-pw-modal-body').text("New user successfully created. Here is the one time password: " + data.pw);
 
-    ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', null, null, listAllUsers);
 }
 
 function handleUserUpdate() {
-    ajaxApiCall(api_path_get_user_extended_data, 'GET', null, null, listAllUsers);
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', null, null, listAllUsers);
 }
 
 function handleUserExists(data) {
@@ -434,25 +438,12 @@ function handleUserAutofill(data, statusCode, jqXHR) {
         $('#input-telephoneNumber-update').val(resultSet.telephoneNumber);
         $('#input-extension-update').val(resultSet.extension);
         $('#input-mobile-update').val(resultSet.mobilePhoneNumber);
-
-
     }
 }
 
-function ishsqlConfig(data, statusCode, jqXHR){
-    if (jqXHR.status == 200 && data.length > 1) {
-        var resultSet = data;
-        // ignore the first result since it's the auth service for admin accounts that is always present.
-        for (i = 1; i < resultSet.length; i++) {
-            if (resultSet[i] === "net.jami.accountmanagementserver.hsqlconnector.HSQLConnector") {
-                $('.user-create-div').show();
-                $('.edit-user').show();
-                break;
-            }
-        }
-    } else if (jqXHR.status == 200 && data.length == 1) {
-        // ignore the first result since it's the auth service for admin accounts that is always present.
-        if (data[0] === "net.jami.accountmanagementserver.hsqlconnector.HSQLConnector") {
+function isLocalDB(data, statusCode, jqXHR){
+    if (jqXHR.status == 200) {
+        if (data[0].type === "LOCAL" && data[0].realm === "LOCAL") {
             $('.user-create-div').show();
             $('.edit-user').show();
         }

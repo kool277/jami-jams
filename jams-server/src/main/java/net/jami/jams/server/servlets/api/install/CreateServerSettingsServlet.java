@@ -44,7 +44,7 @@ public class CreateServerSettingsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         CertificateAuthorityConfig config = JsonIterator.deserialize(
                 req.getInputStream().readAllBytes(),CertificateAuthorityConfig.class);
         CachedObjects.certificateAuthorityConfig = config;

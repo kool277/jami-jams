@@ -74,6 +74,14 @@ public class SearchDirectoryServlet extends HttpServlet {
                 UserProfile[] profiles = v.getUserProfile(req.getParameter("queryString"),"FULL_TEXT_NAME");
                 if(profiles != null && profiles.length != 0) userProfiles.addAll(Arrays.asList(profiles));
         });
+
+        // check logon names if nothing was found
+        if (userProfiles.isEmpty()) {
+            userAuthenticationModule.getAuthSources().forEach( (k,v) ->{
+                UserProfile[] profiles = v.getUserProfile(req.getParameter("queryString"),"LOGON_NAME");
+                if(profiles != null && profiles.length != 0) userProfiles.addAll(Arrays.asList(profiles));
+            });
+        }
         resp.getOutputStream().write(JsonStream.serialize(userProfiles).getBytes());
     }
 }

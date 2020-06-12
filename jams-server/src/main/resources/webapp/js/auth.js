@@ -28,7 +28,7 @@
      // create Admin
 
      if(data.getResponseHeader('showLogin') == "false") {
-         var inputConfirmPassword = '<div class="form-label-group"><label for="confirmPassword" class="label-title">Confirm Password</label><input type="password" name="confirmPassword" id="inputConfirmPassword" class="form-control" required autocomplete="off"><span id="message"></span></div>';
+         var inputConfirmPassword = '<div class="form-label-group"><label for="confirmPassword" class="label-title">Confirm Password</label><input type="password" name="confirmPassword"          id="inputConfirmPassword" class="form-control" required autocomplete="off"><span id="message"></span></div>';
          admin_account = false;
          $('.title').text("Administrator account creation");
          $('.subtitle').text("Create the account that will have administrative control over JAMS.");
@@ -75,18 +75,7 @@ function noAuthorization() {
 }
 
 function getAdminStatus() {
-    var adminStatus = getCookie(keyAdmin);
-    // if (adminStatus) {
-    //   return true;
-    // }
-    // else {
-    //   return false;
-    // }
     return true;
-}
-
-function getUser() {
-  return getCookie(keyUsername);
 }
 
 function getApiCheck() {
@@ -113,10 +102,10 @@ function serverConfigStatus(data, statusCode, jqXHR) {
       if (getAdminStatus() && (!current_uri.includes('search.html')) && (!current_uri.includes('user.html')) && (!current_uri.includes('config.html'))) {
         authorizedAdmin();
       }
-      else if (!getAdminStatus() && getUser() && (!current_uri.includes('user.html'))) {
+      else if (!getAdminStatus() && (!current_uri.includes('user.html'))) {
         authorizedUser(getUser());
       }
-      else if (!getAdminStatus() && !getUser() && (!current_uri.includes('signup.html'))) {
+      else if (!getAdminStatus() && (!current_uri.includes('signup.html'))) {
         noAuthorization();
       }
     }

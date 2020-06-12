@@ -37,12 +37,12 @@ var ca_setup_page = 'ca-setup.html';
 var identity_management_page = 'identity-management.html';
 var server_parameters_page = 'server-parameters.html';
 var api_path_post_install_admin = '/api/install/start';
-var api_path_post_auth_login = '/api/auth/login';
+var api_path_post_auth_login = '/api/login';
 var api_path_post_install_ca = '/api/install/ca';
 var api_path_post_install_auth = '/api/install/auth';
 var api_path_post_install_server = '/api/install/settings';
 var api_path_get_install_lastKnownStep = '/api/install/lastStep';
-var api_path_get_auth_users = '/api/auth/users';
+var api_path_get_user = '/api/auth/user';
 var api_path_get_auth_user_search = '/api/auth/users';
 var api_path_get_auth_devices = '/api/auth/devices';
 var api_path_delete_auth_user_revoke = '/api/auth/user';
@@ -54,15 +54,16 @@ var api_path_get_logout = '/api/auth/logout';
 var api_path_get_post_configuration_auth_service = '/api/configuration/authservice';
 var api_path_get_post_configuration_global_settings = '/api/configuration/globalsettings';
 var api_path_post_configuration_change_password = '/api/configuration/changepassword';
-var api_path_post_configuration_register_license = '/api/configuration/registerlicense';
-var api_path_get_auth_license = '/api/auth/license';
-var api_path_get_auth_services = '/api/auth/authservices';
-var api_path_get_needs_update = '/api/checkupdate';
-var api_path_get_start_update = '/api/startupdate';
+var api_path_post_configuration_register_license = '/api/subscription';
+var api_path_get_subscription_status = '/api/subscription';
+var api_path_get_directories = '/api/auth/directories';
+var api_path_get_needs_update = '/api/update';
+var api_path_get_start_update = '/api/update';
 var api_path_post_create_user = '/api/user/create';
 var api_path_post_update_user = '/api/user/update';
 var api_path_post_exists_user = '/api/user/exists';
-var api_path_get_user_extended_data ='/api/auth/user/extendeddata';
+var api_path_get_user_directory_search ='/api/auth/directory/search';
+var api_path_get_user_directory_entry ='/api/auth/directory/entry';
 var api_path_get_user_needs_reset ='/api/user/needsreset';
 
 
@@ -90,8 +91,6 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
     if (window.localStorage.getItem('access_token')) {
 
         var jwt = localStorage.getItem('access_token');
-        console.log(jwt);
-        console.log(data);
 
         ajax['headers'] =  {
             "Bearer": jwt,
@@ -100,7 +99,8 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
 
     // pass data in the header
     if (data) {
-        if (api_path == api_path_get_user_extended_data || api_path == api_path_get_auth_user_search || api_path == api_path_get_user_needs_reset)
+        if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search ||
+            api_path == api_path_get_user || api_path == api_path_get_user_needs_reset)
             isSearch = true;
 
         // search dataType
@@ -110,9 +110,7 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
         else {
 
             if (window.localStorage.getItem('access_token')) {
-
                 var jwt = localStorage.getItem('access_token');
-                console.log(jwt);
 
                 ajax['headers'] =  {
                     "Bearer": jwt,
@@ -137,7 +135,12 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
     return data;
 }
 
-function set_installation_response(url, completed){
+function setJWT(value) {
+    window.localStorage.removeItem('access_token');
+    window.localStorage.setItem('access_token', value.access_token);
+}
+
+function set_installation_response(url) {
     return function (data, statusCode, jqXHR) {
         // endpoint does not exists
         if (data) {
