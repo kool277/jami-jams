@@ -43,7 +43,7 @@ public class ScopedServletAnnotationScanner {
                             classChanged = true;
                             accessLevels.add(accessLevel);
                         }
-                        log.info("Detected scoped servlet, modifying method accordingly [" + classname + "]");
+                        log.info("[{}] has secured method {}, modifying method... ",cc.getSimpleName(), ctMethods[i].getName());
                         //Build the code block that enforces security.
                         StringBuilder sb = new StringBuilder();
                         sb.append("{\n");
