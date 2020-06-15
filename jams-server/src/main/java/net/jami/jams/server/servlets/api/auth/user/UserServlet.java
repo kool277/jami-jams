@@ -92,7 +92,7 @@ public class UserServlet extends HttpServlet {
      * @apiError (500) {null} null could not changed password
      */
     @Override
-    @ScopedServletMethod(securityGroups = {AccessLevel.USER})
+    @ScopedServletMethod(securityGroups = AccessLevel.USER)
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
         //Check if he is AD/LDAP - then return a 401, because we can't set such password.

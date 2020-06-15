@@ -65,7 +65,6 @@ public class ScopedServletAnnotationScanner {
             if(classChanged){
                 try {
                     if (cc.isFrozen()) cc.defrost();
-                    cc.writeFile(".");
                     cc.toClass();
                     log.info("Successfully modified class " + classname);
                 }
