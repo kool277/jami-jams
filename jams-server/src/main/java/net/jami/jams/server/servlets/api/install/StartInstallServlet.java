@@ -52,7 +52,7 @@ public class StartInstallServlet extends HttpServlet {
         //Here we must decide which page to show - login or sign-up
         StatementList statementList = new StatementList();
         statementList.addStatement(new StatementElement("username","=","*",""));
-        if(dataStore != null && dataStore.getUserDao() != null && dataStore.getUserDao().getObjects(null).size() > 0)
+        if(dataStore != null && dataStore.getUserDao() != null && !dataStore.getUserDao().getObjects(null).isEmpty())
             resp.setHeader("showLogin","true");
         else
             resp.setHeader("showLogin","false");

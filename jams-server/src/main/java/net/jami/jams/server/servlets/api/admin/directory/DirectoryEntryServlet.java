@@ -23,6 +23,7 @@
 package net.jami.jams.server.servlets.api.admin.directory;
 
 import com.jsoniter.JsonIterator;
+import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -34,6 +35,7 @@ import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
@@ -45,11 +47,15 @@ public class DirectoryEntryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Create a user profile.
         try {
-            String realm = req.getParameter("directory");
+            String realm = "LOCAL";
             UserProfile userProfile = JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
             userAuthenticationModule.getAuthSources().get(new AuthModuleKey(realm, AuthenticationSourceType.LOCAL))
                     .setUserProfile(userProfile);
+
             resp.setStatus(200);
+            HashMap<String,String> profileName = new HashMap<>();
+            profileName.put("username", userProfile.getUsername());
+            resp.getOutputStream().write(JsonStream.serialize(profileName).getBytes());
         }
         catch (Exception e){
             log.error("Could not store a user profile with error {}",e.getMessage());

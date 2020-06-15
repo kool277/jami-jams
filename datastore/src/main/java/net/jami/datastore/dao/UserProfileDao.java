@@ -39,11 +39,21 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
         try {
             this.setTableName("local_directory");
             this.setTClass(UserProfile.class);
-            String createTable = "CREATE TABLE directory (" +
+
+            String createTable  = "CREATE TABLE local_directory (" +
                     "username varchar(255), " +
-                    "telephone varchar(5000), "+
-                    "picture varchar(5000)," +
+                    "firstName varchar(255), " +
+                    "lastName varchar(255), " +
+                    "email varchar(255), " +
+                    "profilePicture long varchar, " +
+                    "organization varchar(255), " +
+                    "phoneNumber varchar(255), " +
+                    "phoneNumberExtension varchar(255), " +
+                    "faxNumber varchar(255), " +
+                    "mobileNumber varchar(255), " +
                     "PRIMARY KEY (username))";
+
+
             PreparedStatement ps = connection.getConnection().prepareStatement(createTable);
             ps.execute();
         }
@@ -57,6 +67,21 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
 
     @Override
     public boolean storeObject(UserProfile object) {
-        return false;
+
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try{
+            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO local_directory " +
+                    "(username, firstName, lastName, email, profilePicture, organization, phoneNumber, phoneNumberExtension, faxNumber, mobileNumber)" +
+                    " VALUES " + "(?,?,?,?,?,?,?,?,?,?)");
+            ps = object.getInsert(ps);
+            return ps.executeUpdate() != 0;
+        }
+        catch (Exception e){
+            log.error("An error has occurred while trying to store a user profile: " + e.toString());
+            return false;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
     }
 }

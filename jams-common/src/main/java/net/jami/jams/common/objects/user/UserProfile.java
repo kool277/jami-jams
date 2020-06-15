@@ -31,18 +31,27 @@ import ezvcard.parameter.ImageType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Photo;
 import ezvcard.property.StructuredName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
+import net.jami.jams.common.serialization.database.DatabaseObject;
+import net.jami.jams.common.utils.X509Utils;
 import org.bouncycastle.util.encoders.Base64;
 
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashMap;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class UserProfile {
+public class UserProfile implements DatabaseObject {
 
     public static HashMap<String, Method> exposedMethods = new HashMap<>();
 
@@ -56,13 +65,26 @@ public class UserProfile {
     private String username;
     private String firstName;
     private String lastName;
+    private String email;
+    private String profilePicture;
+    private String organization;
     private String phoneNumber;
     private String phoneNumberExtension;
-    private String mobileNumber;
     private String faxNumber;
-    private String profilePicture;
-    private String email;
-    private String organization;
+    private String mobileNumber;
+
+    public UserProfile(ResultSet rs) throws Exception {
+        this.username = rs.getString("username");
+        this.firstName = rs.getString("firstName");
+        this.lastName = rs.getString("lastName");
+        this.email = rs.getString("email");
+        this.profilePicture = rs.getString("profilePicture");
+        this.organization = rs.getString("organization");
+        this.phoneNumber = rs.getString("phoneNumber");
+        this.phoneNumberExtension = rs.getString("phoneNumberExtension");
+        this.faxNumber = rs.getString("faxNumber");
+        this.mobileNumber = rs.getString("mobileNumber");
+    }
 
     @JsonIgnore
     //Ignore this if we pass through JSON iterator.
@@ -88,6 +110,31 @@ public class UserProfile {
         }
 
         return Ezvcard.write(vCard).version(VCardVersion.V3_0).go();
+    }
+
+    @Override
+    public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
+        ps.setString(1, username);
+        ps.setString(2, firstName);
+        ps.setString(3, lastName);
+        ps.setString(4, email);
+        ps.setString(5, profilePicture);
+        ps.setString(6, organization);
+        ps.setString(7, phoneNumber);
+        ps.setString(8, phoneNumberExtension);
+        ps.setString(9, faxNumber);
+        ps.setString(10, mobileNumber);
+        return ps;
+    }
+
+    @Override
+    public PreparedStatement getDelete(PreparedStatement ps) throws Exception {
+        return null;
+    }
+
+    @Override
+    public PreparedStatement getUpdate(PreparedStatement ps) throws Exception {
+        return null;
     }
 
 }

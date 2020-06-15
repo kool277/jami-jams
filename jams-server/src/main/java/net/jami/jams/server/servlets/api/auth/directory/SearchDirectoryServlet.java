@@ -68,7 +68,7 @@ public class SearchDirectoryServlet extends HttpServlet {
      * @apiError (500) {null} null could not return any authentication sources
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         List<UserProfile> userProfiles = new ArrayList<>();
         userAuthenticationModule.getAuthSources().forEach( (k,v) ->{
                 UserProfile[] profiles = v.getUserProfile(req.getParameter("queryString"),"FULL_TEXT_NAME");

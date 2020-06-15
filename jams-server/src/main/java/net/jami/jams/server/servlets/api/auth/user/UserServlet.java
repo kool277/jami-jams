@@ -39,6 +39,7 @@ import java.io.IOException;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.nameServer;
 
 @WebServlet("/api/auth/user")
 public class UserServlet extends HttpServlet {

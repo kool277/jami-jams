@@ -42,29 +42,26 @@ var api_path_post_install_ca = '/api/install/ca';
 var api_path_post_install_auth = '/api/install/auth';
 var api_path_post_install_server = '/api/install/settings';
 var api_path_get_install_lastKnownStep = '/api/install/lastStep';
-var api_path_get_user = '/api/auth/user';
 var api_path_get_auth_user_search = '/api/auth/users';
 var api_path_get_auth_devices = '/api/auth/devices';
 var api_path_delete_auth_user_revoke = '/api/auth/user';
 var api_path_delete_auth_device_revoke = '/api/auth/device';
 var api_path_rename_device = '/api/auth/device';
 var api_path_get_server_status = '/api/info';
-var api_path_post_api_check = '/api/auth/check';
-var api_path_get_logout = '/api/auth/logout';
 var api_path_get_post_configuration_auth_service = '/api/configuration/authservice';
 var api_path_get_post_configuration_global_settings = '/api/configuration/globalsettings';
 var api_path_post_configuration_change_password = '/api/configuration/changepassword';
 var api_path_post_configuration_register_license = '/api/subscription';
-var api_path_get_subscription_status = '/api/subscription';
+var api_path_get_subscription_status = '/api/admin/subscription';
 var api_path_get_directories = '/api/auth/directories';
-var api_path_get_needs_update = '/api/update';
-var api_path_get_start_update = '/api/update';
-var api_path_post_create_user = '/api/user/create';
-var api_path_post_update_user = '/api/user/update';
-var api_path_post_exists_user = '/api/user/exists';
+var api_path_get_needs_update = '/api/admin/update';
+var api_path_get_start_update = '/api/admin/update';
+var api_path_post_create_user = '/api/admin/user';
+var api_path_put_update_user = '/api/admin/user';
+var api_path_get_exists_user = '/api/admin/user';
 var api_path_get_user_directory_search ='/api/auth/directory/search';
-var api_path_get_user_directory_entry ='/api/auth/directory/entry';
 var api_path_get_user_needs_reset ='/api/user/needsreset';
+var api_path_post_create_user_profile = '/api/admin/directory/entry';
 
 
 function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction, async) {
@@ -100,7 +97,7 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
     // pass data in the header
     if (data) {
         if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search ||
-            api_path == api_path_get_user || api_path == api_path_get_user_needs_reset)
+            api_path == api_path_get_user_needs_reset || (api_path == api_path_post_create_user && request_type == 'POST'))
             isSearch = true;
 
         // search dataType

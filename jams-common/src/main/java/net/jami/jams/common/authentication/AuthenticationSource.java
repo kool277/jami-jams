@@ -29,7 +29,7 @@ public interface AuthenticationSource {
 
     boolean createUser(User user);
     UserProfile[] getUserProfile(String queryString, String field);
-    void setUserProfile(UserProfile userProfile);
+    boolean setUserProfile(UserProfile userProfile);
     boolean authenticate(String username, String password);
     AuthenticationSourceInfo getInfo();
     boolean test();

@@ -24,11 +24,15 @@ package net.jami.datastore.main;
 
 import lombok.Getter;
 import lombok.Setter;
+<<<<<<< HEAD
 import net.jami.datastore.dao.ContactDao;
 import net.jami.datastore.dao.DeviceDao;
 import net.jami.datastore.dao.JwtDao;
 import net.jami.datastore.dao.SystemDao;
 import net.jami.datastore.dao.UserDao;
+=======
+import net.jami.datastore.dao.*;
+>>>>>>> 18375d3... cleanup for local users display
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -50,8 +54,9 @@ public class DataStore implements AuthenticationSource {
     private SystemDao systemDao;
     private ContactDao contactDao;
     private JwtDao jwtDao;
+    private UserProfileDao userProfileDao;
 
-    //Implicitly connect to debry.
+    //Implicitly connect to derby.
     public DataStore(String connectionString) {
         connectionPool = new ConnectionPool(connectionString);
         userDao = new UserDao();
@@ -59,6 +64,7 @@ public class DataStore implements AuthenticationSource {
         systemDao = new SystemDao();
         contactDao = new ContactDao();
         jwtDao = new JwtDao();
+        userProfileDao = new UserProfileDao();
     }
 
     public boolean userExists(String username){
@@ -73,15 +79,24 @@ public class DataStore implements AuthenticationSource {
     public boolean createUser(User user) {
         return userDao.storeObject(user);
     }
-
     @Override
     public UserProfile[] getUserProfile(String queryString, String field) {
-        return null;
+        List<UserProfile> userList;
+
+        if (!queryString.equals("*")) {
+            StatementList statementList = new StatementList();
+            StatementElement statementElement = new StatementElement("username","=",queryString,"");
+            statementList.addStatement(statementElement);
+            userList = userProfileDao.getObjects(statementList);
+        } else
+            userList = userProfileDao.getObjects(null);
+
+        return userList.toArray(new UserProfile[userList.size()]);
     }
 
     @Override
-    public void setUserProfile(UserProfile userProfile) {
-        //TODO: Implement this.
+    public boolean setUserProfile(UserProfile userProfile) {
+        return userProfileDao.storeObject(userProfile);
     }
 
     @Override

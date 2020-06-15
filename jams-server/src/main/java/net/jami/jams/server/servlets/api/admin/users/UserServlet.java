@@ -22,6 +22,7 @@
 */
 package net.jami.jams.server.servlets.api.admin.users;
 
+import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,8 +32,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.jami.NameRegistrationRequest;
+import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import java.io.IOException;
@@ -46,7 +50,7 @@ public class UserServlet extends HttpServlet {
 
     //Get the user profile.
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         StatementList statementList = new StatementList();
         StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");
         statementList.addStatement(st1);

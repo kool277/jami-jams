@@ -59,7 +59,7 @@ $(document).ready(function() {
                 var data = {
                     "username": input
                 }
-                ajaxApiCall(api_path_post_exists_user, 'POST', data, null, handleUserExists);
+                ajaxApiCall(api_path_get_exists_user, 'GET', data, null, handleUserExists);
             }
         });
 
@@ -69,16 +69,16 @@ $(document).ready(function() {
             e.preventDefault();
 
             var data = {
-                'givenName': $('#input-givenName').val(),
-                'sn': $('#input-sn').val(),
-                'CN': $('#input-cn').val(),
-                'mail': $('#input-mail').val(),
-                'jpegPhoto': b64,
-                'o': $('#input-o').val(),
-                'facsimileTelephoneNumber': $('#input-facsimileTelephoneNumber').val(),
-                'telephoneNumber': $('#input-telephoneNumber').val(),
-                'extension': $('#input-extension').val(),
-                'mobile': $('#input-mobile').val()
+                'firstName': $('#input-givenName').val(),
+                'lastName': $('#input-sn').val(),
+                'username': $('#input-cn').val(),
+                'email': $('#input-mail').val(),
+                'profilePicture': b64,
+                'organization': $('#input-o').val(),
+                'faxNumber': $('#input-facsimileTelephoneNumber').val(),
+                'phoneNumber': $('#input-telephoneNumber').val(),
+                'phoneNumberExtension': $('#input-extension').val(),
+                'mobileNumber': $('#input-mobile').val()
             }
 
             // send post request
@@ -114,45 +114,45 @@ $('#search').keyup(function(e) {
 
 function listAllUsers(data, statusCode, jqXHR)
 {
-  if (jqXHR.status == 200 && data.length != 0) {
-    var resultSet = data;
-    var userRow = '';
-    // build table row for each User item
-    for (i = 0; i < resultSet.length; i++) {
-      var firstName = '';
-      var lastName = '';
+    if (jqXHR.status == 200 && data.length != 0) {
+        var resultSet = data;
+        var userRow = '';
+        // build table row for each User item
+        for (i = 0; i < resultSet.length; i++) {
+            var firstName = '';
+            var lastName = '';
 
-      if (resultSet[i].firstName)
-          firstName = resultSet[i].firstName;
-      else
-          firstName = "Unavailable";
+            if (resultSet[i].firstName)
+                firstName = resultSet[i].firstName;
+            else
+                firstName = "Unavailable";
 
-      if (resultSet[i].lastName)
-          lastName = resultSet[i].lastName;
-      else
-          lastName = "Unavailable";
+            if (resultSet[i].lastName)
+                lastName = resultSet[i].lastName;
+            else
+                lastName = "Unavailable";
 
-      userRow +=
-        '<tr class="user-data bubble"><td data-href="aa" class="mobile">Username</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + resultSet[i].username +
-        '</td><td class="mobile">First Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + firstName + '' +
-        '</td><td class="mobile">Last Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + lastName +
-        '</td><td class="mobile">Devices</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) +'"><i class="fa fa-mobile"></i></td><td class="spacer--table">spacer</td>' +
-        '<td class="mobile">Actions</td><td class="user-information-search"><button class="edit-user" title="Edit User" style="display: none;" user-id="' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-edit"></i></button>' +
-        '<button type="button" id="de-authorize-user" class="btn-danger de-authorize-user" title="Revoke User" user-id="' + encodeURIComponent(resultSet[i].username) + '"' + '><i class="fa fa-trash"></i></button>' +
-        '</td><td class="spacer--table">spacer</td></tr>'
+            userRow +=
+                '<tr class="user-data bubble"><td data-href="aa" class="mobile">Username</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + resultSet[i].username +
+                '</td><td class="mobile">First Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + firstName + '' +
+                '</td><td class="mobile">Last Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + lastName +
+                '</td><td class="mobile">Devices</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) +'"><i class="fa fa-mobile"></i></td><td class="spacer--table">spacer</td>' +
+                '<td class="mobile">Actions</td><td class="user-information-search"><button class="edit-user" title="Edit User" style="display: none;" user-id="' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-edit"></i></button>' +
+                '<button type="button" id="de-authorize-user" class="btn-danger de-authorize-user" title="Revoke User" user-id="' + encodeURIComponent(resultSet[i].username) + '"' + '><i class="fa fa-trash"></i></button>' +
+                '</td><td class="spacer--table">spacer</td></tr>'
+        }
+
+        $('.empty-results').remove();
+        $('tbody').empty();
+        $('tbody').append(userRow).fadeIn('slow');
+    }
+    else {
+        $('tbody').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">No users found</td></tr>').fadeIn('slow');
     }
 
-    $('.empty-results').remove();
-    $('tbody').empty();
-    $('tbody').append(userRow).fadeIn('slow');
-  }
-  else {
-    $('tbody').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">No users found</td></tr>').fadeIn('slow');
-  }
-
-  $('*[data-href]').on('click', function() {
-    window.location = $(this).data("href");
-  });
+    $('*[data-href]').on('click', function() {
+        window.location = $(this).data("href");
+    });
 
     setTimeout(function() {
         ajaxApiCall(api_path_get_directories, 'GET', null, null, isLocalDB);
@@ -214,7 +214,7 @@ function addListenersForActions() {
             }
 
             // send post request
-            ajaxApiCall(api_path_post_update_user, 'POST', data, null, handleUserUpdate);
+            ajaxApiCall(api_path_put_update_user, 'POST', data, null, handleUserUpdate);
         });
 
     });
@@ -265,48 +265,48 @@ function isActivated(data) {
 }
 
 function searchFunction(data, statusCode, jqXHR) {
-  if (jqXHR.status == 200 && data.length != 0) {
-    // parse JSON response
-    var resultSet = data;
-    var userRow = '';
-    // build table row for each User item
-    for (i = 0; i < resultSet.length; i++) {
-      var status = '';
-      // determine User status
-        var firstName = '';
-        var lastName = '';
-        if (resultSet[i].firstName)
-            firstName = resultSet[i].firstName;
-        else
-            firstName = "Unavailable";
+    if (jqXHR.status == 200 && data.length != 0) {
+        // parse JSON response
+        var resultSet = data;
+        var userRow = '';
+        // build table row for each User item
+        for (i = 0; i < resultSet.length; i++) {
+            var status = '';
+            // determine User status
+            var firstName = '';
+            var lastName = '';
+            if (resultSet[i].firstName)
+                firstName = resultSet[i].firstName;
+            else
+                firstName = "Unavailable";
 
-        if (resultSet[i].lastName)
-            lastName = resultSet[i].lastName;
-        else
-            lastName = "Unavailable";
+            if (resultSet[i].lastName)
+                lastName = resultSet[i].lastName;
+            else
+                lastName = "Unavailable";
 
-        userRow +=
-            '<tr class="user-data bubble"><td data-href="aa" class="mobile">Username</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + resultSet[i].username +
-            '</td><td class="mobile">First Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + firstName + '' +
-            '</td><td class="mobile">Last Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + lastName +
-            '</td><td class="mobile">Devices</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-mobile"></i></td><td class="spacer--table">spacer</td>' +
-            '<td class="mobile">Actions</td><td class="user-information-search"><button class="edit-user" user-id="' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-edit"></i></button>' +
-            '<button type="button" id="de-authorize-user" class="btn-danger de-authorize-user" user-id="' + encodeURIComponent(resultSet[i].username) + '"' + '><i class="fa fa-trash"></i></button>' +
-            '</td><td class="spacer--table">spacer</td></tr>'
+            userRow +=
+                '<tr class="user-data bubble"><td data-href="aa" class="mobile">Username</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + resultSet[i].username +
+                '</td><td class="mobile">First Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + firstName + '' +
+                '</td><td class="mobile">Last Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + lastName +
+                '</td><td class="mobile">Devices</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-mobile"></i></td><td class="spacer--table">spacer</td>' +
+                '<td class="mobile">Actions</td><td class="user-information-search"><button class="edit-user" user-id="' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-edit"></i></button>' +
+                '<button type="button" id="de-authorize-user" class="btn-danger de-authorize-user" user-id="' + encodeURIComponent(resultSet[i].username) + '"' + '><i class="fa fa-trash"></i></button>' +
+                '</td><td class="spacer--table">spacer</td></tr>'
+        }
+
+        $('.empty-results').remove();
+        $('tbody').empty();
+        $('tbody').append(userRow).fadeIn('slow');
+    }
+    else {
+        // reset table
+        $('.user-data').remove();
+        if($('.empty-results').length == 0)
+            $('tbody').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">No users found</td></tr>').fadeIn('slow');
     }
 
-    $('.empty-results').remove();
-    $('tbody').empty();
-    $('tbody').append(userRow).fadeIn('slow');
-  }
-  else {
-    // reset table
-    $('.user-data').remove();
-    if($('.empty-results').length == 0)
-    $('tbody').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">No users found</td></tr>').fadeIn('slow');
-  }
-
-  addListenersForActions();
+    addListenersForActions();
 }
 
 function handleUpdate(data, statusCode, jqXHR) {
@@ -342,31 +342,23 @@ function handleUpdateStart() {
 
 // send post request
 function submitForm(data) {
-    ajaxApiCall(api_path_post_create_user, 'POST', data, null, handleUserCreation);
+    ajaxApiCall(api_path_post_create_user_profile, 'POST', data, null, handleUserProfileCreation);
 }
 
-function handleUserCreation(data, statusCode, jqXHR) {
-    $('#user-pw-modal-body').text("");
-    $('#userPasswordModalCenter').modal('show');
-
-    if (data.status == 567)
-        $('#user-pw-modal-body').text("Username is already in use on the public nameserver. Please choose another one.");
-    else if (data.pw == null)
-        $('#user-pw-modal-body').text("Failed to create new user. Please try again.");
-    else
-        $('#user-pw-modal-body').text("New user successfully created. Here is the one time password: " + data.pw);
-
-    ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
+function handleUserProfileCreation(data) {
+    console.log(data);
+    ajaxApiCall(api_path_post_create_user, 'POST', {"username": data.username}, null, handleUserCreation);
 }
 
 function handleUserUpdate() {
     ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
+    ajaxApiCall(api_path_post_create_user_profile, 'GET', {"username":"*"}, null, listAllUsers);
 }
 
 function handleUserExists(data) {
     $('#valid-cn').text("");
 
-    if (data != null && data.exists == "true"){
+    if (data == '[]'){
         $('#valid-cn').text("Username is already taken!");
         $('#valid-cn').css('color', '#bd2130');
     }
@@ -420,6 +412,7 @@ function revokeUser(data, statusCode, jqXHR) {
     }
 
     ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
+    ajaxApiCall(api_path_post_create_user_profile, 'GET', {"username":"*"}, null, listAllUsers);
     userRevoke = '';
 }
 
@@ -440,10 +433,36 @@ function handleUserAutofill(data, statusCode, jqXHR) {
 }
 
 function isLocalDB(data, statusCode, jqXHR){
-    if (jqXHR.status == 200) {
-        if (data[0].type === "LOCAL" && data[0].realm === "LOCAL") {
+    if (jqXHR.status == 200 && data.length != 0) {
+        var firstFound = false;
+        if (data.length == 1 && data[0].type === "LOCAL" && data[0].realm === "LOCAL") {
             $('.user-create-div').show();
             $('.edit-user').show();
         }
+
+        for (i = 0; i < data.length; i++) {
+            if (firstFound && data[i].type === "LOCAL" && data[i].realm === "LOCAL") {
+                $('.user-create-div').show();
+                $('.edit-user').show();
+                break;
+            }
+            if (!firstFound && data[i].type === "LOCAL" && data[i].realm === "LOCAL")
+                firstFound = true;
+
+        }
     }
+}
+
+function handleUserCreation(data) {
+    $('#user-pw-modal-body').text("");
+    $('#userPasswordModalCenter').modal('show');
+
+    if (data.status == 500)
+        $('#user-pw-modal-body').text("Failed to create new user. This is either because the username is already in use" +
+            " on the public nameserver, or another unknown error has occurred. " +
+            "Please choose another one.");
+    else
+        $('#user-pw-modal-body').text("New user successfully created. Here is the one time password: " + data.pw);
+
+    ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
 }
