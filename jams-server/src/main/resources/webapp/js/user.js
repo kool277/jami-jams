@@ -399,7 +399,7 @@ function handleUserUpdate(){
     setTimeout(function() {
         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
-    }, 300);
+    }, 500);
 }
 
 function handleFileSelect(evt) {

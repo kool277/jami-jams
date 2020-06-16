@@ -62,6 +62,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = new User();
         user.setUsername(req.getParameter("username"));
+        user.setNeedsPasswordReset(true);
         user.setPassword("TEMP-PASSWORD");
         user.setRealm("LOCAL");
         user.setUserType(AuthenticationSourceType.LOCAL);

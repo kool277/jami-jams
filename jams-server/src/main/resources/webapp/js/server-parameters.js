@@ -18,7 +18,6 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-var type_int_name_input = ['deviceLifetime', 'userLifetime'];
 var callback = set_installation_response("search.html", true);
 
 $(document).ready(function () {

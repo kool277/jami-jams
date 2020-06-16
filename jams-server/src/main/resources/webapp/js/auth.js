@@ -24,8 +24,7 @@
     ajaxApiCall(api_path_post_install_admin, "GET", null, null, signupPageHandler);
  }
 
- function signupPageHandler(data, statusCode, jqXHR) {
-     // create Admin
+ function signupPageHandler(data) {
 
      if(data.getResponseHeader('showLogin') == "false") {
          var inputConfirmPassword = '<div class="form-label-group"><label for="confirmPassword" class="label-title">Confirm Password</label><input type="password" name="confirmPassword"          id="inputConfirmPassword" class="form-control" required autocomplete="off"><span id="message"></span></div>';
@@ -37,7 +36,7 @@
          $('#form-signup').removeClass('d-none');
          $('#admin-password-progress-bar-container').show();
      }
-     else if (data.getResponseHeader('showLogin') == "true") {
+     else if (data.getResponseHeader('showLogin') == "true" || data.status == 404) {
          admin_account = true;
          $('.title').text("Access your account");
          $('.form-submit').val("Log in");
@@ -62,88 +61,54 @@ function setLogout(data) {
   }
 }
 
-function authorizedAdmin() {
-  window.location.replace("search.html");
-}
-
-function authorizedUser(username) {
-  window.location.replace("user.html?username=" + username);
-}
-
 function noAuthorization() {
   window.location.replace("signup.html");
 }
 
 function getAdminStatus() {
-    return true;
+
+    var tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
+    if (tokenJSON.scope == "ADMIN")
+        return true;
+    else
+        return false;
 }
 
-function getApiCheck() {
-    apiCheck = true;
-}
-
-function setApiStatus(data, statusCode, jqXHR) {
-  if (data.status == 200) {
-      apiCheck = true;
-  }
+function getUser() {
+    var tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
+    if (tokenJSON.scope == "USER")
+        return tokenJSON.sub;
+    else
+        return "";
 }
 
 function getServerConfigStatus() {
   ajaxApiCall(api_path_get_server_status, 'GET', null, null, serverConfigStatus, false);
 }
 
-function serverConfigStatus(data, statusCode, jqXHR) {
-  // hasConnectionToAPI
-  getApiCheck();
-
-  if (apiCheck) {
-    // server is installed
+function serverConfigStatus(data) {
+    // check if server is installed
     if (data.installed == "true") {
-      if (getAdminStatus() && (!current_uri.includes('search.html')) && (!current_uri.includes('user.html')) && (!current_uri.includes('config.html'))) {
-        authorizedAdmin();
-      }
-      else if (!getAdminStatus() && (!current_uri.includes('user.html'))) {
-        authorizedUser(getUser());
-      }
-      else if (!getAdminStatus() && (!current_uri.includes('signup.html'))) {
-        noAuthorization();
-      }
+        if (getAdminStatus() && (!current_uri.includes('search.html')) && (!current_uri.includes('user.html')) && (!current_uri.includes('config.html'))) {
+            window.location.replace("search.html");
+        }
+        else if (!getAdminStatus() && getUser() && (!current_uri.includes('user.html'))) {
+            window.location.replace("user.html?username=" + getUser());
+        }
+        else if (!getAdminStatus() && !getUser() && (!current_uri.includes('signup.html'))) {
+            noAuthorization();
+        }
     }
     // has an Admin account but server is not installed
     else if (getAdminStatus()) {
-      ajaxApiCall(api_path_get_install_lastKnownStep, 'GET', null, null, lastServerConfigurationStepUri, false);
+        ajaxApiCall(api_path_get_install_lastKnownStep, 'GET', null, null, lastServerConfigurationStepUri, false);
     }
     else if (!current_uri.includes('signup.html')) {
-      noAuthorization();
+        noAuthorization();
     }
-  }
-  else if (!current_uri.includes('signup.html') && !current_uri.includes('new-password.html')) {
-    noAuthorization();
-  }
 }
 
 function lastServerConfigurationStepUri(data, statusCode, jqXHR) {
-  // if (jqXHR.status == 200) {
-  //   // lastKnownStep
-  //   var current_page = false;
-  //   uri_endpoint = data.uri;
-  //   if (uri_endpoint == api_path_post_install_ca) {
-  //       uri = ca_setup_page;
-  //   }
-  //   else if (uri_endpoint == api_path_post_install_auth) {
-  //       uri = identity_management_page;
-  //   }
-  //   else if (uri_endpoint == api_path_post_install_server) {
-  //       uri = server_parameters_page;
-  //   }
-  //   // redirect to lastKnownStep
-  //   if (!(current_uri.includes(uri))) {
-  //     window.location.replace(uri);
-  //   }
-  // }
-  // else {
-  //   invalidLogin();
-  // }
 }
 
 function invalidLogin() {

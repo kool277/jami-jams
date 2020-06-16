@@ -160,10 +160,8 @@ function set_installation_response(url) {
                 window.location.replace(url);
             }
         }
-        else if (jqXHR) {
-            if (jqXHR.status = 200) {
-                window.location.replace(url);
-            }
-        }
+        else if (jqXHR && jqXHR.status == 200)
+            window.location.replace(url);
+
     }
 }

@@ -25,7 +25,6 @@ var date = new Date();
 var minutes = 15;
 
 checkAdminAccountStatus();
-checkAuthentication();
 
 $(".form-submit").click(function (event) {
   event.preventDefault();
@@ -95,9 +94,10 @@ function signinCallBackHandler(data, statusCode, jqXHR) {
 
     if (jqXHR.status == 200 && data.access_token != 'null' && (data.needsReset == false || data.needsReset == null)) {
     setJWT(data);
+    var tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
     // check server configuration status
     getServerConfigStatus();
-  }  else if (jqXHR.status == 200 && data.needsReset == true) {
+  }  else if (jqXHR.status == 200 && tokenJSON.oneTimePassword == true) {
       getServerConfigStatus();
       window.location.replace("new-password.html?username=" + credentials["username"]);
   }

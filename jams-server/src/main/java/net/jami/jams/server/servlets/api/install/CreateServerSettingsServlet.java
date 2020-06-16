@@ -52,6 +52,6 @@ public class CreateServerSettingsServlet extends HttpServlet {
             resp.sendError(500, "Could not store settings, a problem occured with finishing the installation");
             return;
         }
-        resp.sendRedirect("/");
+        resp.setStatus(200);
     }
 }

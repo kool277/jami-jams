@@ -75,4 +75,9 @@ public class LoginServlet extends HttpServlet {
         if(res == null) TomcatCustomErrorHandler.sendCustomError(resp,401,"Invalid credentials provided!");
         else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setStatus(200);
+    }
 }
