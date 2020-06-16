@@ -95,10 +95,9 @@ public class TomcatLauncher {
         }
         context.setResources(resources);
         //We always go to login by default.
-        context.addWelcomeFile("index");
+        context.addWelcomeFile("/templates/signup.html");
         ErrorPage errorPage = new ErrorPage();
         errorPage.setErrorCode(404);
-        errorPage.setLocation("/templates/signup.html");
         context.addErrorPage(errorPage);
         try {
             tomcat.start();
