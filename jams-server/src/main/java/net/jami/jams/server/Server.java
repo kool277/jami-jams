@@ -78,15 +78,6 @@ public class Server {
     public static void main(String[] args) {
         //This is a fix to drop old cached stuff from the tomcat classloader.
         ClassPool.getDefault().clearImportedPackages();
-        //TODO: Remove this entirely, as we no longer need to do dynamic codegen.
-        //ScopedServletAnnotationScanner scanner = new ScopedServletAnnotationScanner();
-        //Here we need to scan and modify our servlets, this is not necessarily the greatest thing ever.
-        //try {
-        //    scanner.scanAndModify(PackageScanner.getClasses());
-        //}
-        //catch (Exception e){
-        //    log.error("Could not modify the annotated files");
-        //}
         switch (args.length) {
             case 1:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]));
