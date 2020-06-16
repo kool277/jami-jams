@@ -98,7 +98,7 @@ public class TomcatLauncher {
         context.addWelcomeFile("index");
         ErrorPage errorPage = new ErrorPage();
         errorPage.setErrorCode(404);
-        errorPage.setLocation("/index");
+        errorPage.setLocation("/templates/signup.html");
         context.addErrorPage(errorPage);
         try {
             tomcat.start();
