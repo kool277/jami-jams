@@ -47,6 +47,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Vector;
 
 @Slf4j
@@ -186,6 +187,15 @@ public class X509Utils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static HashMap<String,String> extractDNFromCertificate(X509Certificate certificate) throws Exception{
+        HashMap<String,String> subjectMap = new HashMap<>();
+        LdapName ln = new LdapName(certificate.getSubjectDN().toString());
+        for (Rdn rdn : ln.getRdns()) {
+            subjectMap.put(rdn.getType(),rdn.getValue().toString());
+        }
+        return subjectMap;
     }
 
 }

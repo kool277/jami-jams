@@ -22,6 +22,8 @@
 */
 package net.jami.jams.authmodule;
 
+import com.nimbusds.jwt.SignedJWT;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSource;
@@ -64,7 +66,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
     private final TokenController tokenController;
     private PrivateKey privateKey = null;
     private PublicKey publicKey = null;
-
+    //The data storage layer for tokens.
 
     private final ConcurrentHashMap<AuthModuleKey, AuthenticationSource> authenticationSources = new ConcurrentHashMap<>();
 
@@ -172,14 +174,13 @@ public class UserAuthenticationModule implements AuthenticationModule {
             clientCert.verify(ca.getPublicKey());
             //Here we need to make a request to the CRL to find out if it has been revoked.
             if(crl.getRevokedCertificate(clientCert.getSerialNumber()) != null) return null;
-            //If the above cases have passed, then this user is indded valid.
-            //This is yet to be confirmed.
             String username = clientCert.getSubjectDN().getName();
+            //We need to extract the deviceId from the certificate
             StatementList statementList = new StatementList();
             StatementElement statementElement = new StatementElement("username","=",username,"");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
-            return tokenController.getToken(user, AccessLevel.DEVICE);
+            return tokenController.getToken(user,X509Utils.extractDNFromCertificate(clientCert).get("UID"));
         }
         catch (Exception e){
             return null;
@@ -232,4 +233,13 @@ public class UserAuthenticationModule implements AuthenticationModule {
         return new char[0];
     }
 
+    @Override
+    public boolean verifyToken(SignedJWT token) {
+        return false;
+    }
+
+    @Override
+    public void deleteToken(SignedJWT token) {
+
+    }
 }

@@ -42,6 +42,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 class SystemAccountBuilderTest {
 
@@ -94,6 +97,16 @@ class SystemAccountBuilderTest {
         device.setCertificationRequest(X509Utils.getCSRFromString(strPkcs10Request));
         device = DeviceBuilder.generateDevice(user,device);
         Assertions.assertNotNull(device.getCertificate(),"Device certificate was not generated!");
+        //Check that we can decode the rdn.
+        try {
+            HashMap<String,String> data = X509Utils.extractDNFromCertificate(device.getCertificate());
+            Assertions.assertEquals(2,data.size());
+        }
+        catch (Exception e){
+            fail();
+        }
+
+
     }
 
     @Test

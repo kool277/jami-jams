@@ -638,14 +638,7 @@
             "description": "<p>the 0Auth authentication token</p>"
           }
         ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n    \"token_type\":\"Bearer\",\n    \"access_token\":\"JWT representation of the token\",\n    \"expires_in\":180000,\n    \"scope\":\"USER\"\n}",
-          "type": "json"
-        }
-      ]
+      }
     },
     "error": {
       "fields": {
@@ -662,6 +655,110 @@
     },
     "filename": "src/main/java/net/jami/jams/server/servlets/LoginServlet.java",
     "groupTitle": "Login"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/nameserver/addr/*",
+    "title": "Lookup user from address",
+    "name": "getAddr",
+    "group": "NameServer",
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "path",
+            "optional": false,
+            "field": "String",
+            "description": "<p>username</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n     \"name\": \"sidokhine6\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "404": [
+          {
+            "group": "404",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>Address does not exist</p>"
+          }
+        ],
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not fetch user information</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/jaminameserver/AddressServlet.java",
+    "groupTitle": "NameServer"
+  },
+  {
+    "version": "1.0.0",
+    "type": "get",
+    "url": "/api/nameserver/name/*",
+    "title": "Look up a user on the nameserver",
+    "name": "getName",
+    "group": "NameServer",
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "path",
+            "optional": false,
+            "field": "String",
+            "description": "<p>username</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n  \"publickey\": \"\",\n  \"signature\": \"\",\n  \"name\": \"sidokhine6\",\n  \"addr\": \"0d1f0002ce728d6aa8b98b5227c75fc773735f9e\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "404": [
+          {
+            "group": "404",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>user does not exist</p>"
+          }
+        ],
+        "500": [
+          {
+            "group": "500",
+            "type": "null",
+            "optional": false,
+            "field": "null",
+            "description": "<p>could not fetch user information</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/main/java/net/jami/jams/server/servlets/api/jaminameserver/NameServlet.java",
+    "groupTitle": "NameServer"
   },
   {
     "version": "1.0.0",

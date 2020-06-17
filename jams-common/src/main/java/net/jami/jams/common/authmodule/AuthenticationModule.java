@@ -22,6 +22,7 @@
 */
 package net.jami.jams.common.authmodule;
 
+import com.nimbusds.jwt.SignedJWT;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.jami.NameServer;
@@ -42,4 +43,7 @@ public interface AuthenticationModule {
     boolean createUser(AuthenticationSourceType type, String realm, NameServer nameServer, User user);
     RSAPublicKey getAuthModulePubKey();
     char[] getOTP(String username);
+    //In both cases, the tokens are signed, we can
+    boolean verifyToken(SignedJWT token);
+    void deleteToken(SignedJWT token);
 }

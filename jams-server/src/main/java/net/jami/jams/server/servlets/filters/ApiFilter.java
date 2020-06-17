@@ -35,12 +35,14 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
+import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 import static net.jami.jams.server.servlets.filters.JWTValidator.verifyValidity;
 
 @WebFilter(urlPatterns = {"/api/auth/*"})
@@ -61,7 +63,13 @@ public class ApiFilter implements Filter {
             if (request.getServletPath().contains("login")) {
                 isLogin = true;
             }
-            if (request.getHeader("Bearer") != null) {
+            //This is a backward compatibility function to provide the ability for clients to use the
+            //authorization header instead of tokens.
+            if(request.getHeader("authorization") != null){
+                AuthTokenResponse res = processUsernamePasswordAuth(request.getHeader("authorization"));
+                if(res != null) authsuccess = true;
+            }
+            else if (request.getHeader("Bearer") != null) {
                 SignedJWT signedJWT = null;
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());

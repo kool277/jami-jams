@@ -37,6 +37,21 @@ import static net.jami.jams.server.Server.nameServer;
 @WebServlet("/api/nameserver/addr/*")
 public class AddressServlet extends HttpServlet {
 
+    /**
+     * @apiVersion 1.0.0
+     * @api {get} /api/nameserver/addr/* Lookup user from address
+     * @apiName getAddr
+     * @apiGroup NameServer
+     *
+     * @apiSuccess (200) {path} String username
+     * @apiSuccessExample {json} Success-Response:
+     *{
+     *      "name": "sidokhine6"
+     * }
+     *
+     * @apiError (404) {null} null Address does not exist
+     * @apiError (500) {null} null could not fetch user information
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] path = req.getServletPath().split("/");

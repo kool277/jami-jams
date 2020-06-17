@@ -29,12 +29,13 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
-import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 
 import java.security.PrivateKey;
 import java.util.Date;
 import java.util.UUID;
+
+import static net.jami.jams.common.objects.user.AccessLevel.DEVICE;
 
 public class TokenController{
 
@@ -44,7 +45,7 @@ public class TokenController{
         TokenController.signingKey = signingKey;
     }
 
-    public AuthTokenResponse getToken(User user, AccessLevel authScope) {
+    public AuthTokenResponse getToken(User user, String deviceId) {
         AuthTokenResponse authTokenResponse = new AuthTokenResponse();
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256).type(JOSEObjectType.JWT).build();
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
@@ -56,12 +57,18 @@ public class TokenController{
                 .notBeforeTime(new Date(System.currentTimeMillis()))
                 .issueTime(new Date(System.currentTimeMillis()))
                 .jwtID(UUID.randomUUID().toString());
-        if(authScope == null) builder.claim("scope",user.getAccessLevel());
-        else builder.claim("scope",authScope);
+        if(deviceId != null){
+            builder.claim("scope",DEVICE);
+            builder.claim("deviceId",deviceId);
+        }
+        else{
+            builder.claim("scope",user.getAccessLevel());
+        }
         JWTClaimsSet jwtClaims =  builder.build();
         SignedJWT signedJWT = new SignedJWT(jwsHeader, jwtClaims);
         try {
             signedJWT.sign(new RSASSASigner(signingKey));
+            UserAuthenticationModule.datastore.getJwtDao().storeObject(signedJWT);
             authTokenResponse.setAccess_token(signedJWT.serialize());
             authTokenResponse.setExpires_in(30*60*1000L);
             authTokenResponse.setScope(user.getAccessLevel());
