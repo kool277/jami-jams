@@ -66,8 +66,9 @@ public class ApiFilter implements Filter {
             //This is a backward compatibility function to provide the ability for clients to use the
             //authorization header instead of tokens.
             if(request.getHeader("authorization") != null){
-                AuthTokenResponse res = processUsernamePasswordAuth(request.getHeader("authorization"));
+                AuthTokenResponse res = null;
                 try {
+                    res = processUsernamePasswordAuth(request.getHeader("authorization"));
                     SignedJWT token = SignedJWT.parse(res.getAccess_token());
                     request.setAttribute("username", token.getJWTClaimsSet().getSubject());
                     request.setAttribute("accessLevel",AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
