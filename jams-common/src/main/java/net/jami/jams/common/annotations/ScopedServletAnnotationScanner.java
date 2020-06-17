@@ -14,6 +14,7 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import java.util.HashSet;
 
 @Slf4j
+@Deprecated(since = "2.0", forRemoval = true)
 public class ScopedServletAnnotationScanner {
 
     public void scanAndModify(HashSet<String> classes){
