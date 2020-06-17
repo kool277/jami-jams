@@ -82,7 +82,7 @@ $(document).ready(function() {
                     'extension': $('#input-extension-update').val(),
                     'mobile': $('#input-mobile-update').val()
                 }
-                ajaxApiCall(api_path_post_update_user, 'POST', data, null, handleUserUpdate);
+                ajaxApiCall(api_path_put_update_user, 'POST', data, null, handleUserUpdate);
             });
 
         });

@@ -24,15 +24,7 @@ package net.jami.datastore.main;
 
 import lombok.Getter;
 import lombok.Setter;
-<<<<<<< HEAD
-import net.jami.datastore.dao.ContactDao;
-import net.jami.datastore.dao.DeviceDao;
-import net.jami.datastore.dao.JwtDao;
-import net.jami.datastore.dao.SystemDao;
-import net.jami.datastore.dao.UserDao;
-=======
 import net.jami.datastore.dao.*;
->>>>>>> 18375d3... cleanup for local users display
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;

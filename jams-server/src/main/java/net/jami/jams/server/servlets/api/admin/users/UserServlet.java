@@ -40,6 +40,9 @@ import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
@@ -63,11 +66,15 @@ public class UserServlet extends HttpServlet {
         User user = new User();
         user.setUsername(req.getParameter("username"));
         user.setNeedsPasswordReset(true);
-        user.setPassword("TEMP-PASSWORD");
+        String pw = new SecureRandom().ints(12, 48, 58).mapToObj(i -> String.valueOf((char)i)).collect(Collectors.joining());
+        user.setPassword(pw);
         user.setRealm("LOCAL");
         user.setUserType(AuthenticationSourceType.LOCAL);
         if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)){
-            resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+            // resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+            HashMap<String,String> statusInfo = new HashMap<>();
+            statusInfo.put("password", pw);
+            resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
             return;
         }
         resp.sendError(500,"Could not create a user successfully!");
@@ -75,7 +82,7 @@ public class UserServlet extends HttpServlet {
 
     //Update user data.
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String username = req.getParameter("username");
         //Check if he is AD/LDAP - then return a 403, because we can't set such password.
         StatementList select = new StatementList();
@@ -96,7 +103,7 @@ public class UserServlet extends HttpServlet {
 
     //Revoke a user.
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         DeviceRevocationResponse devResponse = RevokeUserFlow.revokeUser(req.getParameter("username"));
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         else resp.sendError(500,"An exception has occurred while trying to revoke a device!");

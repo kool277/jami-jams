@@ -94,11 +94,12 @@ public class UserServlet extends HttpServlet {
      */
     @Override
     @ScopedServletMethod(securityGroups = AccessLevel.USER)
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
         //Check if he is AD/LDAP - then return a 401, because we can't set such password.
         StatementList select = new StatementList();
         StatementElement st = new StatementElement("username","=",username,"");
+        select.addStatement(st);
         if(dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL){
             resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
             return;

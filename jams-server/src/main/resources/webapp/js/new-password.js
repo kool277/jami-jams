@@ -25,7 +25,6 @@ var credentials = null;
 document.getElementById("changePasswordButton").addEventListener('click', function() {
 
     event.preventDefault();
-    console.log("in click event");
     var inputPassword = $('#inputNewPassword').val();
     var inputConfirmPassword = $('#inputConfirmPassword').val();
     var oldPassword = $('#inputCurrentPassword').val();
@@ -53,15 +52,14 @@ document.getElementById("changePasswordButton").addEventListener('click', functi
     else if (inputPassword == inputConfirmPassword) {
         $('#message').html('Password Match: Welcome to Jams').css('color', '#28a745');
         if (credentials["username"] && credentials["password"] && credentials["oldPassword"]) {
-            console.log("updating local account...");
-            ajaxApiCall(api_path_post_update_user, "POST", jsonData, null, updateLocalAccountPasswordCallBackHandler);
+            ajaxApiCall(api_path_put_update_user, "POST", credentials, null, updateLocalAccountPasswordCallBackHandler);
         }
     }
 });
 
 
-function updateLocalAccountPasswordCallBackHandler() {
-    console.log("account update successful!");
+function updateLocalAccountPasswordCallBackHandler(data) {
     // now we can login normally
-    ajaxApiCall(api_path_post_auth_login, "POST", jsonData, null, signinCallBackHandler);
+    if (data.status != 500)
+        ajaxApiCall(api_path_post_auth_login, "POST", jsonData, null, signinCallBackHandler);
 }

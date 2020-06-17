@@ -24,6 +24,7 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.User;
 
@@ -76,6 +77,33 @@ public class UserDao extends AbstractDao<User> {
         }
         catch (Exception e){
             log.error("An error has occurred while trying to store a user: " + e.toString());
+            return false;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
+    }
+
+    @Override
+    public boolean updateObject(StatementList update, StatementList constraints) {
+
+        String pw = update.getStatements().get(0).getValue();
+        String user = update.getStatements().get(1).getValue();
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+
+        try{
+            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE users SET password = ? WHERE username = ?");
+            ps.setString(1, pw);
+            ps.setString(2, user);
+            ps.executeUpdate();
+
+            ps = connection.getConnection().prepareStatement("UPDATE users SET needsPasswordReset = ? WHERE username = ?");
+            ps.setString(1, "false");
+            ps.setString(2, user);
+            return ps.executeUpdate() != 0;
+        }
+        catch (Exception e){
+            log.error("An error has occurred while trying to update a user: " + e.toString());
             return false;
         }
         finally {

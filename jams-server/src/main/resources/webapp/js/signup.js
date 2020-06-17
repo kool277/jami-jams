@@ -92,14 +92,18 @@ function createAdminCallBackHandler(data, statusCode, jqXHR) {
 
 function signinCallBackHandler(data, statusCode, jqXHR) {
 
-    if (jqXHR.status == 200 && data.access_token != 'null' && (data.needsReset == false || data.needsReset == null)) {
-    setJWT(data);
-    var tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
+    var tokenJSON = '';
+    if (data.access_token) {
+        setJWT(data);
+        tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
+    }
+
+    if (jqXHR.status == 200 && tokenJSON != '' && tokenJSON.oneTimePassword == false) {
+
     // check server configuration status
     getServerConfigStatus();
-  }  else if (jqXHR.status == 200 && tokenJSON.oneTimePassword == true) {
-      getServerConfigStatus();
-      window.location.replace("new-password.html?username=" + credentials["username"]);
+  }  else if (jqXHR.status == 200 && tokenJSON != '' && tokenJSON.oneTimePassword == true) {
+      window.location.replace("new-password.html?username=" + getUser());
   }
   else {
     invalidLogin();

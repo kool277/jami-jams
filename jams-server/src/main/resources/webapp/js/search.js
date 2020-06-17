@@ -346,7 +346,6 @@ function submitForm(data) {
 }
 
 function handleUserProfileCreation(data) {
-    console.log(data);
     ajaxApiCall(api_path_post_create_user, 'POST', {"username": data.username}, null, handleUserCreation);
 }
 
@@ -462,7 +461,7 @@ function handleUserCreation(data) {
             " on the public nameserver, or another unknown error has occurred. " +
             "Please choose another one.");
     else
-        $('#user-pw-modal-body').text("New user successfully created. Here is the one time password: " + data.pw);
+        $('#user-pw-modal-body').text("New user successfully created. Here is the one time password: " + data.password);
 
     ajaxApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null, listAllUsers);
 }
