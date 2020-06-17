@@ -18,24 +18,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-var key = 'JSESSIONID';
-var keyUsername = 'username';
-var keyAdmin = 'isAdmin';
-var cookie = '';
-var connectedUsername = '';
 var admin_account = false;
 var isAdmin = false;
 var isSearch = false;
-var uri_endpoint = '';
 var uri = '';
-var apiCheck = false;
 var current_uri = window.location.href;
 var backend_address = new URL(window.location.href);
 var url_path = backend_address.protocol + "//" + backend_address.hostname;
 var url_port = backend_address.port;
-var ca_setup_page = 'ca-setup.html';
-var identity_management_page = 'identity-management.html';
-var server_parameters_page = 'server-parameters.html';
 var api_path_post_install_admin = '/api/install/start';
 var api_path_post_auth_login = '/api/login';
 var api_path_post_install_ca = '/api/install/ca';
