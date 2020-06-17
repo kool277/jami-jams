@@ -56,12 +56,12 @@ public class UserProfileService {
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;
             if(field.equals("LOGON_NAME")){
-                sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.EQUAL, queryString)
+                sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.CONTAINS, queryString)
                         .closeSentence();
             }
             if(field.equals("FULL_TEXT_NAME")) {
-                sentence = new QueryAssembler().addPhrase(FieldType.FIRST_NAME, PhraseOperator.EQUAL, queryString)
-                        .addPhrase(FieldType.LAST_NAME, PhraseOperator.EQUAL, queryString)
+                sentence = new QueryAssembler().addPhrase(FieldType.FIRST_NAME, PhraseOperator.CONTAINS, queryString)
+                        .addPhrase(FieldType.LAST_NAME, PhraseOperator.CONTAINS, queryString)
                         .closeSentence(SentenceOperator.OR);
             }
             queryRequest.addSearchSentence(sentence);
