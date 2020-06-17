@@ -108,7 +108,6 @@ public class DeviceServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.USER})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //super.doPost(req,resp);
         DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
         DeviceRegistrationResponse devResponse = RegisterDeviceFlow.registerDevice(req.getAttribute("username").toString(),request);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());

@@ -67,6 +67,14 @@ public class ApiFilter implements Filter {
             //authorization header instead of tokens.
             if(request.getHeader("authorization") != null){
                 AuthTokenResponse res = processUsernamePasswordAuth(request.getHeader("authorization"));
+                try {
+                    SignedJWT token = SignedJWT.parse(res.getAccess_token());
+                    request.setAttribute("username", token.getJWTClaimsSet().getSubject());
+                    request.setAttribute("accessLevel",AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
+                }
+                catch (Exception e){
+                    log.error("Could not authenticate user!");
+                }
                 if(res != null) authsuccess = true;
             }
             else if (request.getHeader("Bearer") != null) {
