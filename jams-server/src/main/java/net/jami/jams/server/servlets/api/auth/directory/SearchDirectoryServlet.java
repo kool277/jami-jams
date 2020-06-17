@@ -31,8 +31,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

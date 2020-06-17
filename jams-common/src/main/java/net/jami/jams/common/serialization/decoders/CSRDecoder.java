@@ -30,8 +30,18 @@ import java.io.IOException;
 
 public class CSRDecoder implements Decoder {
 
+    private static final String CSR_HEAD = "-----BEGIN NEW CERTIFICATE REQUEST-----\n";
+    private static final String CSR_TAIL = "\n-----END NEW CERTIFICATE REQUEST-----";
+
     @Override
     public Object decode(JsonIterator jsonIterator) throws IOException {
-        return X509Utils.getCSRFromString(jsonIterator.readString());
+        //This is legacy code, we need to sanitize the string
+        String input = jsonIterator.readString();
+        input = input.replace(CSR_HEAD,"");
+        input = input.replace(CSR_TAIL,"");
+        input = input.replace("\n","");
+        input = CSR_HEAD + input + CSR_TAIL;
+        //Once all legacy clients stop existing, this can safely be removed leaving only the jsonIter.readString()
+        return X509Utils.getCSRFromString(input);
     }
 }

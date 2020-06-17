@@ -41,7 +41,7 @@ public class DeviceRegistrationResponse {
 
     public void setCertificateChain(X509Certificate[] certificateChain){
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i=0;i<certificateChain.length;i++){
+        for(int i=certificateChain.length-1;i > 0;i--){
             stringBuilder.append(X509Utils.getPEMStringFromCertificate(certificateChain[i])).append("\n");
         }
         //remove the last \n because it's useless.

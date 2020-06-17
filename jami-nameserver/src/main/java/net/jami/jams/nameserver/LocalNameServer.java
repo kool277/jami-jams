@@ -40,6 +40,8 @@ import java.util.List;
 @Slf4j
 public class LocalNameServer implements NameServer {
 
+    private static final String NAME_SERVER_PATH = "/api/nameserver";
+
     private final DataStore dataStore;
     private final String nameserverURI;
     private final AuthenticationModule authenticationModule;
@@ -91,7 +93,7 @@ public class LocalNameServer implements NameServer {
     @Override
     public String getNameFromAddress(String address) {
         StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("ethAddress","=",address,"");
+        StatementElement statementElement = new StatementElement("jamiId","=",address,"");
         statementList.addStatement(statementElement);
         List<User> results = dataStore.getUserDao().getObjects(statementList);
         if(results.size() == 0) return null;
@@ -100,6 +102,6 @@ public class LocalNameServer implements NameServer {
 
     @Override
     public String getURI() {
-        return this.nameserverURI;
+        return this.nameserverURI + NAME_SERVER_PATH;
     }
 }

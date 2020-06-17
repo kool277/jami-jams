@@ -39,8 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ad.connector.ADConnector;
 import net.jami.jams.common.objects.user.UserProfile;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

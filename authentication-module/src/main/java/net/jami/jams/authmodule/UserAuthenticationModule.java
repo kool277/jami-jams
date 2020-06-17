@@ -23,7 +23,6 @@
 package net.jami.jams.authmodule;
 
 import com.nimbusds.jwt.SignedJWT;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSource;

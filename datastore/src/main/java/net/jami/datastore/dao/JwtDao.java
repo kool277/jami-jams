@@ -7,10 +7,7 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
