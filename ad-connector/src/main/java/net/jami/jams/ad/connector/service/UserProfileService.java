@@ -39,6 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ad.connector.ADConnector;
 import net.jami.jams.common.objects.user.UserProfile;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,14 +57,20 @@ public class UserProfileService {
         try{
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;
-            if(field.equals("LOGON_NAME")){
-                sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.CONTAINS, queryString)
-                        .closeSentence();
+            if(queryString.contains("*")) {
+                sentence = new QueryAssembler().addPhrase(FieldType.OBJECT_CLASS, PhraseOperator.EQUAL, ObjectType.USER.toString()).closeSentence();
             }
-            if(field.equals("FULL_TEXT_NAME")) {
-                sentence = new QueryAssembler().addPhrase(FieldType.FIRST_NAME, PhraseOperator.CONTAINS, queryString)
+            else {
+                if (field.equals("LOGON_NAME")) {
+
+                    sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.CONTAINS, queryString)
+                        .closeSentence();
+                }
+                if (field.equals("FULL_TEXT_NAME")) {
+                    sentence = new QueryAssembler().addPhrase(FieldType.FIRST_NAME, PhraseOperator.CONTAINS, queryString)
                         .addPhrase(FieldType.LAST_NAME, PhraseOperator.CONTAINS, queryString)
                         .closeSentence(SentenceOperator.OR);
+                }
             }
             queryRequest.addSearchSentence(sentence);
             QueryResponse queryResponse;
@@ -91,7 +99,7 @@ public class UserProfileService {
         QueryRequest queryRequest = new QueryRequest();
         queryRequest.setDirectoryType(DirectoryType.MS_ACTIVE_DIRECTORY);
         queryRequest.setEndpoints(new ArrayList<>() {{ add(endpoint);}});
-        queryRequest.setSizeLimit(1);
+        queryRequest.setSizeLimit(1000);
         queryRequest.setTimeLimit(1000);
         queryRequest.setObjectType(ObjectType.USER);
         for(String field : fieldMap.keySet()) queryRequest.addRequestedField(field);

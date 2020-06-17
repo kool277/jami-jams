@@ -1,25 +1,26 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.jami.jams.ad.connector;
 
 import com.imperva.ddc.core.query.Endpoint;
@@ -47,8 +48,8 @@ public class ADConnector implements AuthenticationSource {
 
     public ADConnector(String settings) {
         JsoniterRegistry.initCodecs();
-        ADConnector.settings = JsonIterator.deserialize(settings,ActiveDirectorySettings.class);
-        for(int i=0; i<10;i++){
+        ADConnector.settings = JsonIterator.deserialize(settings, ActiveDirectorySettings.class);
+        for (int i = 0; i < 10; i++) {
             Endpoint endpoint = new Endpoint();
             endpoint.setSecuredConnection(ADConnector.settings.getIsSSL());
             endpoint.setPort(ADConnector.settings.getPort());
@@ -59,19 +60,19 @@ public class ADConnector implements AuthenticationSource {
         log.info("Started Active Directory Connector!");
     }
 
-    public static Endpoint getConnection(){
+    public static Endpoint getConnection() {
         Endpoint endpoint = null;
-        while(endpoint == null){
+        while (endpoint == null) {
             endpoint = endpoints.poll();
         }
-        endpoint.setUserAccountName(settings.getUsername()); //* You can use the user's Distinguished Name as well
+        endpoint.setUserAccountName(ADConnector.settings.getRealm() + "\\" + settings.getUsername()); //* You can use the user's Distinguished Name as well
         endpoint.setPassword(settings.getPassword());
         return endpoint;
     }
 
-    public static Endpoint getConnection(String username, String password){
+    public static Endpoint getConnection(String username, String password) {
         Endpoint endpoint = null;
-        while(endpoint == null){
+        while (endpoint == null) {
             endpoint = endpoints.poll();
         }
         endpoint.setUserAccountName(ADConnector.settings.getRealm() + "\\" + username); //* You can use the user's Distinguished Name as well
@@ -79,12 +80,11 @@ public class ADConnector implements AuthenticationSource {
         return endpoint;
     }
 
-    public static void returnConnection(Endpoint connection){
-        connection.setUserAccountName(settings.getUsername());
+    public static void returnConnection(Endpoint connection) {
+        connection.setUserAccountName(ADConnector.settings.getRealm() + "\\" + settings.getUsername());
         connection.setPassword(settings.getPassword());
         endpoints.add(connection);
     }
-
 
     @Override
     public boolean createUser(User user) {
@@ -93,7 +93,7 @@ public class ADConnector implements AuthenticationSource {
 
     @Override
     public UserProfile[] getUserProfile(String queryString, String field) {
-        return userProfileService.getUserProfile(queryString,field);
+        return userProfileService.getUserProfile(queryString, field);
     }
 
     @Override
@@ -105,8 +105,7 @@ public class ADConnector implements AuthenticationSource {
     public boolean authenticate(String username, String password) {
         try {
             return authenticationService.authenticateUser(username, password);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
@@ -125,6 +124,4 @@ public class ADConnector implements AuthenticationSource {
     public boolean updatePassword(User user, String password) {
         return false;
     }
-
-
 }

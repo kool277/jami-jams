@@ -99,7 +99,7 @@ public class ApiFilter implements Filter {
             if (authsuccess || isLogin) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {
-                response.sendError(403, "This endpoint requires setup to be complete!");
+                response.sendError(403, "Your credentials are invalid!");
             }
         }
     }
