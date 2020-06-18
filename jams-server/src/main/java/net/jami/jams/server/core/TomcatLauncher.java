@@ -34,14 +34,11 @@ import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 
-import java.awt.*;
 import java.io.File;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static net.jami.jams.server.Server.certificateAuthority;
-import static net.jami.jams.server.Server.userAuthenticationModule;
 
 //This class boots the tomcat server which provides the subsystem
 //for the API calls.
