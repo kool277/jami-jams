@@ -49,7 +49,7 @@ public class TomcatConnectorFactory {
         sslHostConfigCertificate.setCertificateFile(System.getProperty("user.dir") + File.separator + certificateFile);
         sslHostConfigCertificate.setCertificateKeyFile(System.getProperty("user.dir") + File.separator + keyFile);
         sslConfig.addCertificate(sslHostConfigCertificate);
-        sslConfig.setProtocols("TLSv1.3");
+        sslConfig.setProtocols("TLSv1.2");
         connector.addSslHostConfig(sslConfig);
         connector.setPort(port);
         connector.setSecure(true);

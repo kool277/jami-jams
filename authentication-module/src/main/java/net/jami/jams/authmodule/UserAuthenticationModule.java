@@ -165,7 +165,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
     public AuthTokenResponse authenticateUser(X509Certificate[] certificates, X509CRLHolder crl,
                                               X509Certificate ca) {
         //Extract the username for the certificate and verify that it is not revoked.
-        X509Certificate clientCert = certificates[0];
+        X509Certificate clientCert = certificates[1];
+        X509Certificate deviceCert = certificates[0];
         try {
             //Check if the certificate is even valid.
             clientCert.checkValidity();
@@ -173,13 +174,13 @@ public class UserAuthenticationModule implements AuthenticationModule {
             clientCert.verify(ca.getPublicKey());
             //Here we need to make a request to the CRL to find out if it has been revoked.
             if(crl.getRevokedCertificate(clientCert.getSerialNumber()) != null) return null;
-            String username = clientCert.getSubjectDN().getName();
+            String username = X509Utils.extractDNFromCertificate(clientCert).get("CN");
             //We need to extract the deviceId from the certificate
             StatementList statementList = new StatementList();
             StatementElement statementElement = new StatementElement("username","=",username,"");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
-            return tokenController.getToken(user,X509Utils.extractDNFromCertificate(clientCert).get("UID"));
+            return tokenController.getToken(user,X509Utils.extractDNFromCertificate(deviceCert).get("UID"));
         }
         catch (Exception e){
             return null;
