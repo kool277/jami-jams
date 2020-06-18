@@ -46,10 +46,10 @@ public class TomcatConnectorFactory {
         Connector connector = new Connector();
         SSLHostConfig sslConfig = new SSLHostConfig();
         SSLHostConfigCertificate sslHostConfigCertificate = new SSLHostConfigCertificate(sslConfig, SSLHostConfigCertificate.Type.RSA);
-        sslHostConfigCertificate.setCertificateFile(System.getProperty("user.dir") + File.separator + certificateFile);
+        sslHostConfigCertificate.setCertificateChainFile(System.getProperty("user.dir") + File.separator + certificateFile);
         sslHostConfigCertificate.setCertificateKeyFile(System.getProperty("user.dir") + File.separator + keyFile);
         sslConfig.addCertificate(sslHostConfigCertificate);
-        sslConfig.setProtocols("TLSv1.2");
+        sslConfig.setProtocols("TLSv1,TLSv1.2,TLSv1.3");
         connector.addSslHostConfig(sslConfig);
         connector.setPort(port);
         connector.setSecure(true);

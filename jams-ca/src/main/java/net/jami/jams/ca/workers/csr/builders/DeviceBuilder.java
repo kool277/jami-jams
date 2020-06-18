@@ -36,6 +36,8 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
 
+import static net.jami.jams.ca.workers.csr.CertificateWorker.SHIFT;
+
 @Slf4j
 public class DeviceBuilder {
 
@@ -47,7 +49,7 @@ public class DeviceBuilder {
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
                     new JcaX509CertificateHolder(user.getCertificate()).getSubject(),
                     new BigInteger(256, new SecureRandom()),
-                    new Date(System.currentTimeMillis()),
+                    new Date(System.currentTimeMillis() - SHIFT),
                     new Date(System.currentTimeMillis() + JamsCA.deviceLifetime),
                     device.getCertificationRequest().getSubject(),
                     device.getCertificationRequest().getSubjectPublicKeyInfo()

@@ -38,6 +38,8 @@ import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
 import java.util.Date;
 
+import static net.jami.jams.ca.workers.csr.CertificateWorker.SHIFT;
+
 @Slf4j
 public class UserBuilder {
 
@@ -49,7 +51,7 @@ public class UserBuilder {
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
                     new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),
                     new BigInteger(256, new SecureRandom()),
-                    new Date(System.currentTimeMillis()),
+                    new Date(System.currentTimeMillis() - SHIFT),
                     new Date(System.currentTimeMillis() + JamsCA.userLifetime),
                     new X500Name(user.getX509Fields().getDN()),
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())

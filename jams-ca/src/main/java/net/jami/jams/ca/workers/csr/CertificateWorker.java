@@ -33,6 +33,8 @@ import net.jami.jams.common.objects.user.User;
 @Slf4j
 public class CertificateWorker {
 
+    public static final long SHIFT = 43200000L;
+
     //The CSR here is null because we generate a certificate and keypair.
     public static SystemAccount getSignedCertificate(SystemAccount systemAccount) {
         switch (systemAccount.getSystemAccountType()){
