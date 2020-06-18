@@ -37,6 +37,7 @@ import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
@@ -76,7 +77,12 @@ public class DeviceServlet extends HttpServlet {
         statementList.addStatement(st1);
         statementList.addStatement(st2);
         Device device = dataStore.getDeviceDao().getObjects(statementList).get(0);
-        device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
+        if(certificateAuthority.getLatestCRL().get() !=  null) {
+            device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
+        }
+        else{
+            device.setRevoked(false);
+        }
         resp.getOutputStream().write(JsonStream.serialize(device).getBytes());
     }
 
@@ -111,7 +117,7 @@ public class DeviceServlet extends HttpServlet {
         DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
         DeviceRegistrationResponse devResponse = RegisterDeviceFlow.registerDevice(req.getAttribute("username").toString(),request);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
-        else resp.sendError(500,"An exception has occurred while trying to enroll a device!");
+        else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not enroll a device due to server-side error");
     }
 
     /**
@@ -140,7 +146,7 @@ public class DeviceServlet extends HttpServlet {
         update.addStatement(st1);
         update.addStatement(st2);
         if(dataStore.getDeviceDao().updateObject(update,constraint)) resp.setStatus(200);
-        else resp.sendError(500,"could not update the device's information!");
+        else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not update device information due to server-side error");
     }
 
     /**
@@ -161,6 +167,6 @@ public class DeviceServlet extends HttpServlet {
         String deviceId = req.getPathInfo().replace("/","");
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
-        else resp.sendError(500,"An exception has occurred while trying to revoke a device!");
+        TomcatCustomErrorHandler.sendCustomError(resp,500,"could not revoke device due to server-side error");
     }
 }

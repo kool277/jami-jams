@@ -35,18 +35,18 @@ public class ScopedServletProcessor extends AbstractProcessor {
         //Get the current project working directory:
         moduleDirectory = processingEnv.getOptions().get("moduleDir");
         parentDirectory = processingEnv.getOptions().get("parentDir");
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Project Directory: " + moduleDirectory);
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Project Directory: " + moduleDirectory);
         if (roundEnv.processingOver()) {
             return false;
         }
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING,"Working in directory: " + System.getProperty("user.dir"));
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,"Working in directory: " + System.getProperty("user.dir"));
         Set<? extends Element> annotatedElements = roundEnv.getElementsAnnotatedWith(ScopedServletMethod.class);
         //Inside each annotation, we have a list of stuff.
         HashMap<String, HashMap<String,AccessLevel[]>> annList = new HashMap<>();
         annotatedElements.forEach(element -> {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Found class: " + element.getEnclosingElement().toString());
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Found method: " + element.toString());
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING,"Found " + element.getAnnotation(ScopedServletMethod.class).securityGroups().length + " groups");
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Found class: " + element.getEnclosingElement().toString());
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Found method: " + element.toString());
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,"Found " + element.getAnnotation(ScopedServletMethod.class).securityGroups().length + " groups");
             String clsName = element.getEnclosingElement().toString();
             String mthName = element.toString();
             AccessLevel[] levels = element.getAnnotation(ScopedServletMethod.class).securityGroups();
@@ -79,7 +79,8 @@ public class ScopedServletProcessor extends AbstractProcessor {
             ClassPool pool = ClassPool.getDefault();
             //Load tomcat & commons classpath..
             pool.insertClassPath(new LoaderClassPath(cpUrlLoader));
-            CtClass aclClass = pool.makeClass(new FileInputStream(parentDirectory+"/jams-common/target/classes/net/jami/jams/common/objects/user/AccessLevel.class"));
+            pool.makeClass(new FileInputStream(parentDirectory+"/jams-common/target/classes/net/jami/jams/common/objects/user/AccessLevel.class"));
+            pool.makeClass(new FileInputStream(parentDirectory+"/jams-common/target/classes/net/jami/jams/common/serialization/tomcat/TomcatCustomErrorHandler.class"));
             CtClass ctClass = pool.makeClass(new FileInputStream(path.toString()));
             processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING,ctClass.getName());
             //Now that we have the CtClass we copy past
@@ -97,15 +98,15 @@ public class ScopedServletProcessor extends AbstractProcessor {
                             sb.append("if(level == net.jami.jams.common.objects.user.AccessLevel.valueOf(\"").append(methodNames.get(rawmethodName)[j].toString()).append("\")) allowed = true;\n");
                         }
                         sb.append("if(!allowed){\n");
-                        sb.append("resp.sendError(403,\"No valid access level found!\");\n");
+                        sb.append("net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler.sendCustomError(resp,403,\"You do not have sufficient permissions to access this resource!\");\n");
                         sb.append("return;\n");
                         sb.append("}\n");
                         sb.append("}\n");
                         ctClass.getMethods()[i].insertBefore(sb.toString());
-                        //Persist the class.
                     }
                 }
             }
+            //Perist the class before it gets copied into the binary.
             path = new StringBuilder();
             path.append(moduleDirectory);
             path.append(File.separator);
@@ -113,7 +114,7 @@ public class ScopedServletProcessor extends AbstractProcessor {
             path.append(File.separator);
             path.append("generated-sources");
             ctClass.writeFile(path.toString());
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Saved the class...");
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Saved the class...");
         } catch (Exception e) {
             processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,e.getMessage());
         }

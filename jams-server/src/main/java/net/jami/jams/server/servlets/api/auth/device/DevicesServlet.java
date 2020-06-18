@@ -64,9 +64,14 @@ public class DevicesServlet extends HttpServlet {
         StatementList statementList = new StatementList();
         statementList.addStatement(new StatementElement("owner","=",username,""));
         List<Device> devices = dataStore.getDeviceDao().getObjects(statementList);
-        devices.forEach( device -> {
-            device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
-        });
+        if(certificateAuthority.getLatestCRL() != null) {
+            devices.forEach(device -> {
+                device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
+            });
+        }
+        else{
+            devices.forEach(device -> device.setRevoked(false));
+        }
         resp.getOutputStream().write(JsonStream.serialize(devices).getBytes());
     }
 

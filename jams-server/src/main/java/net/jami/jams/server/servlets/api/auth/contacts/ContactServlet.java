@@ -32,6 +32,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.contacts.Contact;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -83,7 +84,7 @@ public class ContactServlet extends HttpServlet {
         Contact contact = JsonIterator.deserialize(req.getInputStream().readAllBytes(),Contact.class);
         contact.setOwner(req.getAttribute("username").toString());
         if(dataStore.getContactDao().storeObject(contact)) resp.setStatus(200);
-        else resp.sendError(500,"Could not store contact!");
+        else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not store a contact due to server-side error");
     }
 
     /**
@@ -103,6 +104,6 @@ public class ContactServlet extends HttpServlet {
         statementList.addStatement(new StatementElement("owner","=",req.getAttribute("username").toString(),"AND"));
         statementList.addStatement(new StatementElement("uri","=",req.getParameter("uri"),""));
         if(dataStore.getContactDao().deleteObject(statementList)) resp.setStatus(200);
-        else resp.sendError(500,"Could not delete a contact!");
+        else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not delete a contact due to server-side error");
     }
 }

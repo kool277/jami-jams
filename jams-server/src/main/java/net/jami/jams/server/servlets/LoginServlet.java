@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
 
 import java.io.IOException;
@@ -55,23 +56,23 @@ public class LoginServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //There are 3 possible cases here.
-        //Case 1: form submitted username/password
         AuthTokenResponse res = null;
-        LoginRequest object = JsonIterator.deserialize(req.getInputStream().readAllBytes(), LoginRequest.class);
-        if(object.getUsername() != null && object.getPassword() != null){
-            res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());
-        }
-        //Case 2: Authorization header.
+        //Case 1: Authorization header.
         if(req.getHeader("authorization") != null){
             res = processUsernamePasswordAuth(req.getHeader("authorization"));
         }
         //Case 3 SSL Certificate
-        if(req.getAttribute("jakarta.servlet.request.X509Certificate") != null){
+        else if(req.getAttribute("jakarta.servlet.request.X509Certificate") != null){
             res = processX509Auth((X509Certificate[])req.getAttribute("jakarta.servlet.request.X509Certificate"));
         }
-        //Here we catch the need to create a user (this is only possible in 1 & 2).
-        if(res == null) resp.sendError(403,"Invalid credentials!");
+        else{
+            //Case 3: form submitted username/password
+            LoginRequest object = JsonIterator.deserialize(req.getInputStream().readAllBytes(), LoginRequest.class);
+            if(object.getUsername() != null && object.getPassword() != null){
+                res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());
+            }
+        }
+        if(res == null) TomcatCustomErrorHandler.sendCustomError(resp,401,"Invalid credentials provided!");
         else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
 }

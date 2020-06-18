@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.jami.NameLookupResponse;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
 import java.io.IOException;
 
@@ -57,7 +58,7 @@ public class NameServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NameLookupResponse nameLookupResponse = nameServer.getAddressFromName(req.getPathInfo().replace("/",""));
-        if(nameLookupResponse == null) resp.sendError(404);
+        if(nameLookupResponse == null) TomcatCustomErrorHandler.sendCustomError(resp,404,"name not found");
         else resp.getOutputStream().write(JsonStream.serialize(nameLookupResponse).getBytes());
     }
 }

@@ -37,6 +37,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class ApiFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         if (!Server.isInstalled.get()) {
-            response.sendError(404, "This endpoint requires setup to be complete!");
+            TomcatCustomErrorHandler.sendCustomError(response,404,"Setup has not yet been completed!");
         } else {
             boolean authsuccess = false;
             boolean isLogin = false;
@@ -99,7 +100,7 @@ public class ApiFilter implements Filter {
             if (authsuccess || isLogin) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {
-                response.sendError(403, "Your credentials are invalid!");
+                TomcatCustomErrorHandler.sendCustomError(response,401,"You are not authenticated!");
             }
         }
     }

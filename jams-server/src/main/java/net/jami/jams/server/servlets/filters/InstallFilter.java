@@ -34,6 +34,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class InstallFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         if(Server.isInstalled.get()){
-            response.sendError(404,"The server has already been configured, this endpoint is not available!");
+            TomcatCustomErrorHandler.sendCustomError(response,404,"The server is already installed");
         }
         else{
             boolean authsuccess = false;
@@ -71,7 +72,7 @@ public class InstallFilter implements Filter {
                 }
             }
             if(authsuccess || isLogin) filterChain.doFilter(servletRequest,servletResponse);
-            else response.sendError(403,"You are not authorized to access this page!");
+            else TomcatCustomErrorHandler.sendCustomError(response,401,"You are not authenticated!");
         }
     }
 

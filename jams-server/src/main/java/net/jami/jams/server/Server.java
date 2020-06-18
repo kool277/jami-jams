@@ -42,9 +42,11 @@ import net.jami.jams.server.licensing.LicenseService;
 import net.jami.jams.server.startup.AuthModuleLoader;
 import net.jami.jams.server.startup.CryptoEngineLoader;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -129,5 +131,30 @@ public class Server {
             userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
             log.info("Started server with empty modules waiting for setup...");
         }
+        //Now pop-up the GUI
+        //Here we need to do a small spin-wait because keys may be slow to generate.
+        try {
+            startGUI();
+        }
+        catch (Exception e){
+            log.error("Could not start GUI with error {}",e.getMessage());
+        }
+
+
     }
+
+    public static void startGUI() throws Exception{
+        boolean ready = false;
+        while(!ready){
+            if(userAuthenticationModule.getAuthModulePubKey() != null){
+                ready = true;
+            }
+        }
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            Desktop.getDesktop().browse(new URI(tomcatLauncher.getTomcat().getConnector().getScheme() + "://localhost:" + tomcatLauncher.getTomcat().getService().findConnectors()[0].getPort() +"/templates/signup.html"));
+        } else {
+            log.info("There is no graphical interface on this system - please connect remotely!");
+        }
+    }
+
 }

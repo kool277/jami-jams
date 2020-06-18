@@ -23,6 +23,7 @@
 
 package net.jami.jams.server.core;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
@@ -40,10 +41,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.Server.userAuthenticationModule;
 
 //This class boots the tomcat server which provides the subsystem
 //for the API calls.
 @Slf4j
+@Getter
 public class TomcatLauncher {
 
     private final Tomcat tomcat = new Tomcat();
@@ -96,17 +99,17 @@ public class TomcatLauncher {
         context.setResources(resources);
         //We always go to login by default.
         context.addWelcomeFile("index");
-        ErrorPage errorPage = new ErrorPage();
-        errorPage.setErrorCode(404);
-        context.addErrorPage(errorPage);
+        //Register error pages.
+        ErrorPage notFound = new ErrorPage();
+        notFound.setErrorCode(404);
+        notFound.setLocation("/404");
+        ErrorPage genericError = new ErrorPage();
+        genericError.setErrorCode(500);
+        genericError.setLocation("/500");
+        context.addErrorPage(notFound);
+        context.addErrorPage(genericError);
         try {
             tomcat.start();
-            //Try to pop-up Web-UI
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI(tomcat.getConnector().getScheme() + "://localhost:" + tomcat.getService().findConnectors()[0].getPort() +"/templates/signup.html"));
-            } else {
-                log.info("There is no graphical interface on this system - please connect remotely!");
-            }
         } catch (Exception e) {
             log.error("Could not start web-server!");
         }

@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.jami.AddrLookupResponse;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
 import java.io.IOException;
 
@@ -54,9 +55,9 @@ public class AddressServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String[] path = req.getServletPath().split("/");
+        String[] path = req.getPathInfo().split("/");
         String username = nameServer.getNameFromAddress(path[path.length - 1]);
-        if(username == null) resp.sendError(404);
+        if (username == null) TomcatCustomErrorHandler.sendCustomError(resp,404,"address not found");
         else resp.getOutputStream().write(JsonStream.serialize(new AddrLookupResponse(username)).getBytes());
     }
 }
