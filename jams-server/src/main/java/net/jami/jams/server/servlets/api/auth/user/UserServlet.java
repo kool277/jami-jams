@@ -34,6 +34,7 @@ import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.utils.PasswordGenerator;
 
 import java.io.IOException;
 
@@ -71,13 +72,28 @@ public class UserServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = req.getAttribute("username").toString();
         StatementList select = new StatementList();
-        StatementElement st = new StatementElement("username","=",username,"");
+        StatementElement st = new StatementElement("username","=",req.getParameter("username"),"");
         select.addStatement(st);
         User user = dataStore.getUserDao().getObjects(select).get(0);
-        user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
-        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+        String password = user.getPassword();
+        if (!user.getNeedsPasswordReset()) {
+            password = PasswordGenerator.generatePassword();
+            StatementList update = new StatementList();
+            StatementElement st0 = new StatementElement("password","=",password,"");
+            update.addStatement(st0);
+            StatementList constraint = new StatementList();
+            StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");
+            update.addStatement(st1);
+            StatementElement st2 = new StatementElement("needsPasswordReset","=","true","");
+            update.addStatement(st2);
+            // refresh variable
+            user = dataStore.getUserDao().getObjects(select).get(0);
+            dataStore.getUserDao().updateObject(update,constraint);
+        }
+
+        resp.setHeader("needspasswordreset", (user.getNeedsPasswordReset()).toString());
+        resp.setHeader("password", password);
     }
 
     //The user can update 3 fields: password,privatekey,publickey

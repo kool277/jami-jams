@@ -52,7 +52,7 @@ document.getElementById("changePasswordButton").addEventListener('click', functi
     else if (inputPassword == inputConfirmPassword) {
         $('#message').html('Password Match: Welcome to Jams').css('color', '#28a745');
         if (credentials["username"] && credentials["password"] && credentials["oldPassword"]) {
-            ajaxApiCall(api_path_put_update_user, "POST", credentials, null, updateLocalAccountPasswordCallBackHandler);
+            ajaxApiCall(api_path_post_update_user, "POST", credentials, null, updateLocalAccountPasswordCallBackHandler);
         }
     }
 });

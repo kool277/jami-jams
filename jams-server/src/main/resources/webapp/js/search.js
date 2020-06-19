@@ -214,7 +214,7 @@ function addListenersForActions() {
             }
 
             // send post request
-            ajaxApiCall(api_path_put_update_user, 'POST', data, null, handleUserUpdate);
+            ajaxApiCall(api_path_post_update_user, 'POST', data, null, handleUserUpdate);
         });
 
     });

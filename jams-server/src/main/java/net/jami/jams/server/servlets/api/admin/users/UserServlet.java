@@ -37,6 +37,7 @@ import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.utils.PasswordGenerator;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import java.io.IOException;
@@ -66,12 +67,11 @@ public class UserServlet extends HttpServlet {
         User user = new User();
         user.setUsername(req.getParameter("username"));
         user.setNeedsPasswordReset(true);
-        String pw = new SecureRandom().ints(12, 48, 58).mapToObj(i -> String.valueOf((char)i)).collect(Collectors.joining());
+        String pw = PasswordGenerator.generatePassword();
         user.setPassword(pw);
         user.setRealm("LOCAL");
         user.setUserType(AuthenticationSourceType.LOCAL);
         if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)){
-            // resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
             HashMap<String,String> statusInfo = new HashMap<>();
             statusInfo.put("password", pw);
             resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());

@@ -28,7 +28,7 @@ class PasswordGeneratorTest {
 
     @Test
     void testPasswordGeneration() {
-        char[] res = PasswordGenerator.generatePassword();
+        String res = PasswordGenerator.generatePassword();
         System.out.println(res);
     }
 }

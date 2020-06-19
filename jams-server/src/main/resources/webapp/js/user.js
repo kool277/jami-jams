@@ -82,7 +82,7 @@ $(document).ready(function() {
                     'extension': $('#input-extension-update').val(),
                     'mobile': $('#input-mobile-update').val()
                 }
-                ajaxApiCall(api_path_put_update_user, 'POST', data, null, handleUserUpdate);
+                ajaxApiCall(api_path_post_update_user, 'POST', data, null, handleUserUpdate);
             });
 
         });
@@ -98,7 +98,7 @@ $(document).ready(function() {
         });
 
         $( '.user-information' ).on( 'click', '.reset-password', function (e) {
-            ajaxApiCall(api_path_get_user_needs_reset, 'GET', searchData, null, handleNewOTP);
+            ajaxApiCall(api_path_post_update_user, 'GET', userData, null, handleNewOTP);
         });
 
         // change device name
@@ -399,7 +399,7 @@ function handleUserUpdate(){
     setTimeout(function() {
         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
-    }, 500);
+    }, 700);
 }
 
 function handleFileSelect(evt) {
@@ -474,19 +474,18 @@ function ishsqlConfig(data, statusCode, jqXHR){
     }
 }
 
-function handleNewOTP(data, statusCode, jqXHR) {
+function handleNewOTP(data) {
 
-    if (jqXHR.status == 200) {
+    if (data.status == 200) {
 
-        if (data.needsReset == "false") {
+        if (data.getResponseHeader('needspasswordreset') == "false") {
             $('#otpModalCenter').modal('show');
-            $('#user-pw-modal-body').text("User password reset. Here is the new one time password: " + data.newPW);
-        } else {
+            $('#user-pw-modal-body').text("User password reset. Here is the new one time password: " + data.getResponseHeader('password'));
+        } else if (data.getResponseHeader('needspasswordreset') == "true") {
             // show modal
             $('#otpModalCenter').modal('show');
-            $('#user-pw-modal-body').text("User has not changed his temporary password. Current password: " + data.otp);
+            $('#user-pw-modal-body').text("User has not changed his temporary password. Current password: " + data.getResponseHeader('password'));
         }
-
     }
 }
 
