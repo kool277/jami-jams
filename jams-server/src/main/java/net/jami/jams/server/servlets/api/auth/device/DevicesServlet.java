@@ -73,6 +73,7 @@ public class DevicesServlet extends HttpServlet {
             devices.forEach(device -> device.setRevoked(false));
         }
         resp.getOutputStream().write(JsonStream.serialize(devices).getBytes());
+        resp.setStatus(200);
     }
 
 

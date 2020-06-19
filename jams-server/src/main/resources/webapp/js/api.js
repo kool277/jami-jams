@@ -83,7 +83,8 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
     // pass data in the header
     if (data) {
         if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search ||
-           (api_path == api_path_post_create_user && request_type == 'POST') || api_path == api_path_post_update_user)
+           (api_path == api_path_post_create_user && request_type == 'POST') || api_path == api_path_post_update_user
+           || api_path == api_path_get_auth_devices)
             isSearch = true;
 
         // search dataType

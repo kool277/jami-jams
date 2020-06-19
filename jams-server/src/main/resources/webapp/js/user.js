@@ -296,16 +296,17 @@ function setUserExtendedData(data, statusCode, jqXHR) {
     }
 }
 
-function setUserDevices(data, statusCode, jqXHR) {
-    if (jqXHR.status == 200) {
-        var resultSet = data;
+function setUserDevices(data) {
+    if (data.status == 200) {
+        var resultSet = data.responseText;
+        resultSet = resultSet.replace(/\s+/g, ' ').trim();
+        resultSet = JSON.parse(resultSet);
         var deviceRow = '';
         // build table row for User device items
         if (resultSet.length > 0) {
             for (i = 0; i < resultSet.length; i++) {
                 var status = '';
                 var disabled = '';
-                var date = resultSet[i].activationDate;
                 // determine User status
                 if (!(resultSet[i].revoked)) {
                     status = 'Active';
@@ -316,8 +317,7 @@ function setUserDevices(data, statusCode, jqXHR) {
                 }
                 deviceRow +=
                     '<tr data-device-id="' + resultSet[i].deviceId + '"><td class="mobile">Device ID</td><td>' + resultSet[i].deviceId +
-                    '</td><td class="mobile">Device Name</td><td class="device-name">' + resultSet[i].deviceName +
-                    '</td><td class="mobile">Creation Date</td><td>' + date +
+                    '</td><td class="mobile">Device Name</td><td class="device-name">' + resultSet[i].displayName +
                     '</td><td class="mobile">Status</td><td id="device-status" data-device-id="' + resultSet[i].deviceId + '">' + status +
                     '</td><td class="mobile">Actions</td><td><button class="edit-device-name" data-device-id="' + resultSet[i].deviceId + '"><i class="fa fa-edit"></i></button>' +
                     '<button class="btn-danger de-activate-device" data-device-id="' + resultSet[i].deviceId + '"' + disabled + '><i class="fa fa-trash"></i></button>' +
@@ -399,7 +399,7 @@ function handleUserUpdate(){
     setTimeout(function() {
         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
-    }, 700);
+    }, 1000);
 }
 
 function handleFileSelect(evt) {
