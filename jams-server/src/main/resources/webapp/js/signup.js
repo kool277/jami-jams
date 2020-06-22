@@ -25,6 +25,7 @@ var date = new Date();
 var minutes = 15;
 
 checkAdminAccountStatus();
+checkAuthentication();
 
 $(".form-submit").click(function (event) {
   event.preventDefault();
