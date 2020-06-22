@@ -22,7 +22,7 @@ var deviceId = '';
 var searchData = {};
 var userData = {};
 var b64;
-var hsqlconfig = false;
+var local = false;
 var username = '';
 
 $(document).ready(function() {
@@ -60,7 +60,7 @@ $(document).ready(function() {
 
         //edit user
         $( '.user-information' ).on( 'click', '.edit-user', function () {
-            var userDataParams = new URLSearchParams(userData).toString();
+            var userDataParams = new URLSearchParams(searchData).toString();
             $('#form-user-update')[0].reset();
             // attempt auto-fill
             ajaxApiCall(api_path_get_user_directory_search, 'GET', userDataParams, null, handleUserAutofill);
@@ -144,7 +144,7 @@ $(document).ready(function() {
 
         // set User information fields
         setTimeout(function() {
-            ajaxApiCall(api_path_get_directories, 'GET', null, null, ishsqlConfig);
+            ajaxApiCall(api_path_get_directories, 'GET', null, null, isLocalDB);
             ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource);
             ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
         }, 300);
@@ -185,7 +185,7 @@ function setUserInfoDataSource(data, statusCode, jqXHR) {
                     '</i></h5>';
 
                 if (getAdminStatus()) {
-                    if(hsqlconfig)
+                    if(local)
                         userRow += '<div class="user-information__right"><button class="reset-password text-uppercase"><i class="fa fa-edit"></i>Reset Password</button><button class="edit-user text-uppercase"><i class="fa fa-edit"></i>Edit User</button><button class="btn-danger text-uppercase de-authorize-user">Revoke User</button></div>';
                     else
                         userRow += '<div class="user-information__right"><button class="btn-danger text-uppercase de-authorize-user">Revoke User</button></div>';
@@ -458,19 +458,23 @@ function handleUserAutofill(data, statusCode, jqXHR) {
     }
 }
 
-function ishsqlConfig(data, statusCode, jqXHR){
-    var isAd = false;
-    var isLdap = false;
+function isLocalDB(data, statusCode, jqXHR){
     if (jqXHR.status == 200 && data.length != 0) {
-        var resultSet = data;
-        for (i = 0; i < resultSet.length; i++) {
-            if (resultSet[i] === "net.jami.accountmanagementserver.activedirectoryconnector.ActiveDirectoryConnector")
-                isAd = true;
-            if (resultSet[i] === "net.jami.accountmanagementserver.ldapconnector.LDAPConnector")
-                isLdap = true;
+        local = false;
+        var firstFound = false;
+        if (data.length == 1 && data[0].type === "LOCAL" && data[0].realm === "LOCAL") {
+            local = true;
         }
-        if(!isAd && !isLdap)
-            hsqlconfig = true;
+
+        for (i = 0; i < data.length; i++) {
+            if (firstFound && data[i].type === "LOCAL" && data[i].realm === "LOCAL") {
+                local = true;
+                break;
+            }
+            if (!firstFound && data[i].type === "LOCAL" && data[i].realm === "LOCAL")
+                firstFound = true;
+
+        }
     }
 }
 
