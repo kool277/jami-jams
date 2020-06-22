@@ -319,11 +319,13 @@ $("#form-change-password").submit(function (event) {
       $('#changePasswordTitle').before('<div class="configMessage" id="configMessageError"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>New password must be different from the current password.</div>');
     }
     else if (newPassword == inputConfirmPassword && oldPassword != null) {
-      jsonData = {
-        "oldPassword": oldPassword,
-        "newPassword": newPassword
-      }
-      ajaxApiCall(api_path_post_configuration_change_password, 'POST', jsonData, null, changePasswordHandler, null);
+
+      var username = '';
+      var tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
+      if (tokenJSON.scope == "ADMIN")
+            username = tokenJSON.sub;
+
+      ajaxApiCall(api_path_post_configuration_change_password+ "?username=" + username + "&password=" +  newPassword, 'PUT', null, null, changePasswordHandler);
     }
     else {
       $('.configMessage').remove();

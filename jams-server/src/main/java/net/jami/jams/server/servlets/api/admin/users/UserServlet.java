@@ -22,7 +22,6 @@
 */
 package net.jami.jams.server.servlets.api.admin.users;
 
-import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,18 +31,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.jami.NameRegistrationRequest;
-import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.utils.PasswordGenerator;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
@@ -85,9 +79,7 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String username = req.getParameter("username");
         //Check if he is AD/LDAP - then return a 403, because we can't set such password.
-        StatementList select = new StatementList();
-        StatementElement st = new StatementElement("username","=",username,"");
-        if(dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL){
+        if(dataStore.getUserDao().getObjects(null).get(0).getUserType() != AuthenticationSourceType.LOCAL){
             resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
             return;
         }

@@ -39,7 +39,7 @@ var api_path_rename_device = '/api/auth/device';
 var api_path_get_server_status = '/api/info';
 var api_path_get_post_configuration_auth_service = '/api/configuration/authservice';
 var api_path_get_post_configuration_global_settings = '/api/configuration/globalsettings';
-var api_path_post_configuration_change_password = '/api/configuration/changepassword';
+var api_path_post_configuration_change_password = '/api/admin/user';
 var api_path_post_configuration_register_license = '/api/subscription';
 var api_path_get_subscription_status = '/api/admin/subscription';
 var api_path_get_directories = '/api/auth/directories';
@@ -84,7 +84,7 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
     if (data) {
         if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search ||
            (api_path == api_path_post_create_user && request_type == 'POST') || api_path == api_path_post_update_user
-           || api_path == api_path_get_auth_devices)
+           || api_path == api_path_get_auth_devices || api_path == api_path_post_configuration_change_password)
             isSearch = true;
 
         // search dataType
