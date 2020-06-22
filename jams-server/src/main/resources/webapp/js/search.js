@@ -106,10 +106,6 @@ $('#search').keyup(function(e) {
     // reset previous resultset
     $('.user-data').remove();
     $('.empty-results').remove();
-
-    $('*[data-href]').on('click', function() {
-        window.location = $(this).data("href");
-    });
 });
 
 function listAllUsers(data, statusCode, jqXHR)
@@ -163,11 +159,9 @@ function listAllUsers(data, statusCode, jqXHR)
 function addListenersForActions() {
     // revoke user
     $( '.de-authorize-user' ).on( 'click', function (e) {
-        console.log("revoke user");
         userRevoke = (e.currentTarget.getAttribute('user-id'));
         $('#deAuthorizeModalCenter').modal('show');
         $('#de-authorize-user-button').on('click', function() {
-            console.log("click event");
             $('#deAuthorizeModalCenter').modal('hide');
             var w = $('.de-authorize-user').width();
             isSearch = false;
@@ -179,7 +173,7 @@ function addListenersForActions() {
         });
     });
 
-
+    // edit user
     $( '.user-information-search' ).on( 'click', '.edit-user', function (e) {
         userEdit = (e.currentTarget.getAttribute('user-id'));
 
@@ -290,8 +284,8 @@ function searchFunction(data, statusCode, jqXHR) {
                 '</td><td class="mobile">First Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + firstName + '' +
                 '</td><td class="mobile">Last Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + lastName +
                 '</td><td class="mobile">Devices</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-mobile"></i></td><td class="spacer--table">spacer</td>' +
-                '<td class="mobile">Actions</td><td class="user-information-search"><button class="edit-user" user-id="' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-edit"></i></button>' +
-                '<button type="button" id="de-authorize-user" class="btn-danger de-authorize-user" user-id="' + encodeURIComponent(resultSet[i].username) + '"' + '><i class="fa fa-trash"></i></button>' +
+                '<td class="mobile"><Actions</td><td class="user-information-search"><button class="edit-user" title="Edit User" style="display: none;" user-id="' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-edit"></i></button>' +
+                '<button type="button" id="de-authorize-user" class="btn-danger de-authorize-user" title="Revoke User" user-id="' + encodeURIComponent(resultSet[i].username) + '"' + '><i class="fa fa-trash"></i></button>' +
                 '</td><td class="spacer--table">spacer</td></tr>'
         }
 
@@ -305,6 +299,10 @@ function searchFunction(data, statusCode, jqXHR) {
         if($('.empty-results').length == 0)
             $('tbody').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">No users found</td></tr>').fadeIn('slow');
     }
+
+    $('*[data-href]').on('click', function() {
+        window.location = $(this).data("href");
+    });
 
     addListenersForActions();
 }
