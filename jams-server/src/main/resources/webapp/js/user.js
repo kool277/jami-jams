@@ -292,6 +292,10 @@ function setUserExtendedData(data, statusCode, jqXHR) {
             if (disabled) {
                 $('.de-authorize-user').prop('disabled', true);
             }
+
+            if (getAdminStatus()) {
+                $('.mt-5')[0].show();
+            }
         }
     }
 }
