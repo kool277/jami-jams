@@ -63,7 +63,6 @@ $(document).ready(function() {
                     });
                 });
             }, 300)
-
         });
 
         // set User devices information
