@@ -33,3 +33,18 @@ and install it from source.
 To build the documentation, change enter the ``jams-server`` directory and simply run:
 
 ```apidoc -i src/ -o doc/```
+
+##### Building the Docker container
+
+You can build the docker container using:
+
+```
+docker build -f Dockerfile -t jams:latest .
+```
+
+To run the docker container (assuming you want to have it on port 80 locally):
+
+```
+docker run -p 80:8080 --rm jams:latest
+```
+

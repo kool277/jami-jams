@@ -73,7 +73,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         StatementList select = new StatementList();
-        StatementElement st = new StatementElement("username","=",req.getParameter("username"),"");
+        StatementElement st = new StatementElement("username","=",req.getAttribute("username").toString(),"");
         select.addStatement(st);
         User user = dataStore.getUserDao().getObjects(select).get(0);
         String password = user.getPassword();

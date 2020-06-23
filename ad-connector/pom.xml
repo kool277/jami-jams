@@ -15,7 +15,7 @@
             <groupId>net.jami</groupId>
             <artifactId>jams-common</artifactId>
             <version>${revision}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <artifactId>ddc-core</artifactId>
