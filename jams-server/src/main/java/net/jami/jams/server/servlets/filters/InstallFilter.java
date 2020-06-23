@@ -58,10 +58,10 @@ public class InstallFilter implements Filter {
             boolean isLogin = false;
             if(request.getServletPath().contains("start")) isLogin = true;
             SignedJWT signedJWT = null;
-            if(request.getHeader("Bearer") != null) {
+            if(request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer")){
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
-                    signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
+                    signedJWT = SignedJWT.parse(request.getHeader("authorization").replace("bearer","").replace("Bearer",""));
                     if (signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0) {
                         authsuccess = true;
                         request.setAttribute("username", signedJWT.getJWTClaimsSet().getSubject());

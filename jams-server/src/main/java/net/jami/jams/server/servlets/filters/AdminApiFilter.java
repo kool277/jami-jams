@@ -61,11 +61,11 @@ public class AdminApiFilter implements Filter {
             boolean authsuccess = false;
             boolean isLogin = false;
             if (request.getServletPath().contains("login")) isLogin = true;
-            if (request.getHeader("Bearer") != null){
+            if(request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer")){
                 SignedJWT signedJWT = null;
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
-                    signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
+                    signedJWT = SignedJWT.parse(request.getHeader("authorization").replace("bearer","").replace("Bearer",""));
                     HashSet<AccessLevel> permissionLevels = new HashSet<>();
                     permissionLevels.add(AccessLevel.ADMIN);
                     if(signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT) && verifyLevel(signedJWT,permissionLevels)){
