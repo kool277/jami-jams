@@ -42,6 +42,7 @@ import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
@@ -165,6 +166,14 @@ public class DeviceServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doDelete(req,resp);
         String deviceId = req.getPathInfo().replace("/","");
+        //If the device does not belong to the user throw a 403
+        StatementList statementList = new StatementList();
+        StatementElement statementElement = new StatementElement("owner","=",req.getAttribute("username").toString(),"");
+        statementList.addStatement(statementElement);
+        if(dataStore.getDeviceDao().getObjects(statementList).stream().filter(device ->
+            device.getDeviceId().equals(deviceId)).collect(Collectors.toList()).size() == 0){
+            TomcatCustomErrorHandler.sendCustomError(resp,403,"You do not have sufficient rights to revoke this device!");
+        }
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         TomcatCustomErrorHandler.sendCustomError(resp,500,"could not revoke device due to server-side error");
