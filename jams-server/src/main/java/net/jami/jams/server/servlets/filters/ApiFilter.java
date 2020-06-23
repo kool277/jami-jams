@@ -50,8 +50,6 @@ import static net.jami.jams.server.servlets.filters.JWTValidator.verifyValidity;
 @Slf4j
 public class ApiFilter implements Filter {
 
-    private static final String SERVLET_AUTH_METHOD = "authorize";
-
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -64,37 +62,37 @@ public class ApiFilter implements Filter {
             if (request.getServletPath().contains("login")) {
                 isLogin = true;
             }
-            //This is a backward compatibility function to provide the ability for clients to use the
-            //authorization header instead of tokens.
+            //We need to support 2 types of authorization tokens here: the basic and the bearer.
             if(request.getHeader("authorization") != null){
                 AuthTokenResponse res = null;
-                try {
-                    res = processUsernamePasswordAuth(request.getHeader("authorization"));
-                    SignedJWT token = SignedJWT.parse(res.getAccess_token());
-                    request.setAttribute("username", token.getJWTClaimsSet().getSubject());
-                    request.setAttribute("accessLevel",AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
-                }
-                catch (Exception e){
-                    log.error("Could not authenticate user!");
-                }
-                if(res != null) authsuccess = true;
-            }
-            else if (request.getHeader("Bearer") != null) {
-                SignedJWT signedJWT = null;
-                try {
-                    JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
-                    signedJWT = SignedJWT.parse(request.getHeader("Bearer"));
-                    //In this case, we need to ask the "target" resource what are the allowed access levels.
-                    if (signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT)) {
-                        authsuccess = true;
-                        request.setAttribute("username", signedJWT.getJWTClaimsSet().getSubject());
-                        if ((Boolean) signedJWT.getJWTClaimsSet().getClaim("oneTimePassword")) {
-                            //TODO: use redirect to enforce the /changepassword url or something.
-                        }
-                        request.setAttribute("accessLevel", AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()));
+                if(request.getHeader("authorization").contains("basic")) {
+                    try {
+                        res = processUsernamePasswordAuth(request.getHeader("authorization"));
+                        SignedJWT token = SignedJWT.parse(res.getAccess_token());
+                        request.setAttribute("username", token.getJWTClaimsSet().getSubject());
+                        request.setAttribute("accessLevel", AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
+                    } catch (Exception e) {
+                        log.error("Could not authenticate user!");
                     }
-                } catch (Exception e) {
-                    log.info("Received an invalid token, declining access...");
+                    if (res != null) authsuccess = true;
+                }
+                else if(request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer")){
+                    SignedJWT signedJWT = null;
+                    try {
+                        JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
+                        signedJWT = SignedJWT.parse(request.getHeader("authorization").replace("bearer","").replace("Bearer",""));
+                        //In this case, we need to ask the "target" resource what are the allowed access levels.
+                        if (signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT)) {
+                            authsuccess = true;
+                            request.setAttribute("username", signedJWT.getJWTClaimsSet().getSubject());
+                            if ((Boolean) signedJWT.getJWTClaimsSet().getClaim("oneTimePassword")) {
+                                //TODO: use redirect to enforce the /changepassword url or something.
+                            }
+                            request.setAttribute("accessLevel", AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()));
+                        }
+                    } catch (Exception e) {
+                        log.info("Received an invalid token, declining access...");
+                    }
                 }
             }
             if (authsuccess || isLogin) {
