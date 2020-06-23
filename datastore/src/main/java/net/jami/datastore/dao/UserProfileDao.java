@@ -24,6 +24,8 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.UserProfile;
 
@@ -78,6 +80,27 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
         }
         catch (Exception e){
             log.error("An error has occurred while trying to store a user profile: " + e.toString());
+            return false;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
+    }
+
+    @Override
+    public boolean updateObject(StatementList update, StatementList constraints){
+
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try{
+            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE local_directory SET firstname = ?, lastName = ?, email = ?, profilePicture = ?, organization = ?, phoneNumber = ?, phoneNumberExtension = ?, faxNumber = ?, mobileNumber = ? WHERE username = ?");
+            for(int i=1;i<update.getStatements().size();i++){
+                ps.setString(i, update.getStatements().get(i).getValue());
+            }
+            ps.setString(update.getStatements().size(), update.getStatements().get(0).getValue());
+            return ps.executeUpdate() != 0;
+        }
+        catch(Exception e){
+            log.error("An error has occurred while trying to update a user profile: " + e.toString());
             return false;
         }
         finally {

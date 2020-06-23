@@ -195,20 +195,20 @@ function addListenersForActions() {
             e.preventDefault();
 
             var data = {
-                'givenName': $('#input-givenName-update').val(),
-                'sn': $('#input-sn-update').val(),
-                'CN': userEdit,
-                'mail': $('#input-mail-update').val(),
-                'jpegPhoto': b64,
-                'o': $('#input-o-update').val(),
-                'facsimileTelephoneNumber': $('#input-facsimileTelephoneNumber-update').val(),
-                'telephoneNumber': $('#input-telephoneNumber-update').val(),
-                'extension': $('#input-extension-update').val(),
-                'mobile': $('#input-mobile-update').val()
+                'firstName': $('#input-givenName-update').val(),
+                'lastName': $('#input-sn-update').val(),
+                'username': userEdit,
+                'email': $('#input-mail-update').val(),
+                'profilePicture': b64,
+                'organization': $('#input-o-update').val(),
+                'faxNumber': $('#input-facsimileTelephoneNumber-update').val(),
+                'phoneNumber': $('#input-telephoneNumber-update').val(),
+                'phoneNumberExtension': $('#input-extension-update').val(),
+                'mobileNumber': $('#input-mobile-update').val()
             }
 
             // send post request
-            ajaxApiCall(api_path_post_update_user, 'POST', data, null, handleUserUpdate);
+            ajaxApiCall(api_path_put_update_user_profile, 'PUT', data, null, handleUserUpdate);
         });
 
     });

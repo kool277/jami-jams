@@ -30,14 +30,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
+import static net.jami.jams.server.Server.dataStore;
+
 
 @WebServlet("/api/admin/directory/entry")
 @Slf4j
@@ -67,6 +72,22 @@ public class DirectoryEntryServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Update a user's profile.
+        try{
+            //Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
+            UserProfile userProfile = JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
+            StatementList select = new StatementList();
+            StatementElement st = new StatementElement("username","=",userProfile.getUsername(),"");
+            select.addStatement(st);
+            if(dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL){
+                resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
+                return;
+            }
+            if(dataStore.updateUserProfile(userProfile))
+                resp.setStatus(200);
+            else resp.sendError(500,"could not update the users's profile information");
+        }
+        catch(Exception e){}
+
     }
 
     @Override

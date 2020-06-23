@@ -39,6 +39,6 @@ public class UsersServlet extends HttpServlet {
     //Returns a list of users.
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getOutputStream().write(JsonStream.serialize(dataStore.getDeviceDao().getObjects(null).get(0)).getBytes());
+        resp.getOutputStream().write(JsonStream.serialize(dataStore.getUserDao().getObjects(null).get(0)).getBytes());
     }
 }

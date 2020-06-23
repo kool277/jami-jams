@@ -91,6 +91,24 @@ public class DataStore implements AuthenticationSource {
         return userProfileDao.storeObject(userProfile);
     }
 
+    public boolean updateUserProfile(UserProfile userProfile){
+
+        StatementList update = new StatementList();
+        StatementList constraints = new StatementList();
+        update.addStatement(new StatementElement("username","=",userProfile.getUsername(),""));
+        update.addStatement(new StatementElement("firstName","=",userProfile.getFirstName(),""));
+        update.addStatement(new StatementElement("lastName","=",userProfile.getLastName(),""));
+        update.addStatement(new StatementElement("email","=",userProfile.getEmail(),""));
+        update.addStatement(new StatementElement("profilePicture","=",userProfile.getProfilePicture(),""));
+        update.addStatement(new StatementElement("organization","=",userProfile.getOrganization(),""));
+        update.addStatement(new StatementElement("phoneNumber","=",userProfile.getPhoneNumber(),""));
+        update.addStatement(new StatementElement("phoneNumberExtension","=",userProfile.getPhoneNumberExtension(),""));
+        update.addStatement(new StatementElement("faxNumber","=",userProfile.getFaxNumber(),""));
+        update.addStatement(new StatementElement("mobileNumber","=",userProfile.getMobileNumber(),""));
+
+        return userProfileDao.updateObject(update, constraints);
+    }
+
     @Override
     public boolean authenticate(String username, String password) {
         StatementList statementList = new StatementList();
