@@ -70,7 +70,7 @@ $(document).ready(function() {
 
         // revoke user
         $( '.user-information' ).on( 'click', '.de-authorize-user', function () {
-            $('#deAuthorizeModal').modal('show');
+            $('#deAuthorizeModalCenter').modal('show');
         });
 
         //edit user
@@ -104,13 +104,13 @@ $(document).ready(function() {
         });
 
         $('#de-authorize-user').on('click', function() {
-            $('#deAuthorizeModal').modal('hide');
+            $('#deAuthorizeModalCenter').modal('hide');
             var w = $('.de-authorize-user').width();
             isSearch = false;
             $('.de-authorize-user').width(w);
             $('.de-authorize-user').text("");
             $('.de-authorize-user').append("<span class=\"spinner-border text-light spinner-border-sm\" role=\"status\"></span>");
-            ajaxApiCall(api_path_delete_auth_user_revoke + "?username=" + encodeURIComponent(userData["username"]), 'DELETE', null, null, revokeUser);
+            ajaxApiCall(api_path_delete_admin_user_revoke + "?username=" + encodeURIComponent(userData["username"]), 'DELETE', null, null, revokeUser);
         });
 
         $( '.user-information' ).on( 'click', '.reset-password', function (e) {
@@ -346,9 +346,10 @@ function setUserDevices(data) {
 }
 
 function revokeUser(data, statusCode, jqXHR) {
+
     if (jqXHR.status == 200) {
-        $('#user-status').text("Revoked");
-        $('#user-status').addClass("text-danger");
+        $('#status-whatever').text("Revoked");
+        $('#status-whatever').addClass("text-danger");
         $('.de-authorize-user').prop('disabled', true);
         $('.devices-results-container').empty();
         // update User devices information
