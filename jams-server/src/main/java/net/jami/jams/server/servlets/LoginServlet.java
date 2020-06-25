@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet {
         if(req.getHeader("authorization") != null){
             res = processUsernamePasswordAuth(req.getHeader("authorization"));
         }
-        //Case 3 SSL Certificate
+        //Case 2 SSL Certificate
         else if(req.getAttribute("jakarta.servlet.request.X509Certificate") != null){
             res = processX509Auth((X509Certificate[])req.getAttribute("jakarta.servlet.request.X509Certificate"));
         }

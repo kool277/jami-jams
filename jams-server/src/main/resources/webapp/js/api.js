@@ -79,7 +79,7 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
 
         var jwt = localStorage.getItem('access_token');
         ajax['headers'] =  {
-            "Bearer": jwt,
+            "Authorization": "Bearer " + jwt,
         }
     }
 
@@ -100,14 +100,15 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
                 var jwt = localStorage.getItem('access_token');
 
                 ajax['headers'] =  {
-                    "Bearer": jwt,
+                    "Authorization": "Bearer " + jwt,
+                }
+            } else {
+                ajax['headers'] =  {
+                    "Content-type":"application/json"
+
                 }
             }
 
-            ajax['headers'] =  {
-                "Content-type":"application/json",
-                "Bearer": jwt
-            }
             ajax['data'] = JSON.stringify(data);
         }
     }

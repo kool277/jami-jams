@@ -58,7 +58,7 @@ public class InstallFilter implements Filter {
             boolean isLogin = false;
             if(request.getServletPath().contains("start")) isLogin = true;
             SignedJWT signedJWT = null;
-            if(request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer")){
+            if(request.getHeader("authorization") != null && (request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer"))){
                 try {
                     JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
                     signedJWT = SignedJWT.parse(request.getHeader("authorization").replace("bearer","").replace("Bearer",""));
