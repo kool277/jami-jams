@@ -46,10 +46,13 @@ var api_path_get_directories = '/api/auth/directories';
 var api_path_get_needs_update = '/api/admin/update';
 var api_path_get_start_update = '/api/admin/update';
 var api_path_post_create_user = '/api/admin/user';
+var api_path_get_user = '/api/auth/user';
 var api_path_post_update_user = '/api/auth/user';
 var api_path_get_exists_user = '/api/admin/user';
 var api_path_get_user_directory_search ='/api/auth/directory/search';
 var api_path_post_create_user_profile = '/api/admin/directory/entry';
+var api_path_put_update_user_profile = '/api/admin/directory/entry';
+var api_path_get_user_search = '/api/admin/users';
 
 function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction, async) {
     // build AJAX call

@@ -35,8 +35,10 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.PasswordGenerator;
+import org.bouncycastle.openssl.PEMWriter;
 
 import java.io.IOException;
+import java.io.StringWriter;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
@@ -45,7 +47,7 @@ import static net.jami.jams.server.Server.nameServer;
 @WebServlet("/api/auth/user")
 public class UserServlet extends HttpServlet {
 
-    //User can "read" his own profile.
+    //User can "read" himself.
     /**
      * @apiVersion 1.0.0
      * @api {get} /api/auth/user Get JAMS user info
@@ -94,6 +96,12 @@ public class UserServlet extends HttpServlet {
 
         resp.setHeader("needspasswordreset", (user.getNeedsPasswordReset()).toString());
         resp.setHeader("password", password);
+
+        if (certificateAuthority.getLatestCRL().get()
+                .getRevokedCertificate(user.getCertificate().getSerialNumber()) == null)
+            resp.setHeader("revoked", "false");
+        else
+            resp.setHeader("revoked", "true");
     }
 
     //The user can update 3 fields: password,privatekey,publickey
