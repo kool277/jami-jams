@@ -412,7 +412,6 @@ function handleUserUpdate(){
         setTimeout(function() {
             ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
         }, 300);
-
     });
 }
 
