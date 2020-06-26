@@ -47,7 +47,7 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
                     "firstName varchar(255), " +
                     "lastName varchar(255), " +
                     "email varchar(255), " +
-                    "profilePicture long varchar, " +
+                    "profilePicture CLOB, " +
                     "organization varchar(255), " +
                     "phoneNumber varchar(255), " +
                     "phoneNumberExtension varchar(255), " +
