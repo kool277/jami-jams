@@ -77,8 +77,14 @@ public class DataStore implements AuthenticationSource {
 
         if (!queryString.equals("*")) {
             StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username","=",queryString,"");
-            statementList.addStatement(statementElement);
+            if(field.equals("LOGON_NAME")){
+                statementList.addStatement(new StatementElement("username","LIKE", queryString,""));
+            }
+            else{
+                String startQueryString = queryString.concat("%");
+                statementList.addStatement(new StatementElement("firstName","LIKE", startQueryString,"OR"));
+                statementList.addStatement(new StatementElement("lastName","LIKE", startQueryString, ""));
+            }
             userList = userProfileDao.getObjects(statementList);
         } else
             userList = userProfileDao.getObjects(null);
