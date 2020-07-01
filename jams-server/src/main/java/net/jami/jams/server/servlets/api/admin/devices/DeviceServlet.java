@@ -28,9 +28,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class DeviceServlet extends HttpServlet {
 
     //Get a detailed device info.
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String deviceId = req.getParameter("deviceId");
@@ -55,6 +58,7 @@ public class DeviceServlet extends HttpServlet {
 
     //Update device data.
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String deviceId = req.getParameter("deviceId");
@@ -73,6 +77,7 @@ public class DeviceServlet extends HttpServlet {
 
     //Revoke/delete a device.
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getParameter("username").toString(),req.getParameter("deviceId"));
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());

@@ -149,7 +149,10 @@ $(document).ready(function() {
             deviceId = $('#revokeDeviceModal').attr("data-device-id");
             isSearch = false;
             $('.loading').show();
-            ajaxApiCall(api_path_delete_auth_device_revoke + "?deviceId=" + deviceId, 'DELETE', null, null, revokeDeviceHandler);
+            if (getAdminStatus())
+                ajaxApiCall(api_path_delete_admin_device_revoke + "?deviceId=" + deviceId, 'DELETE', null, null, revokeDeviceHandler);
+            else
+                ajaxApiCall(api_path_delete_auth_device_revoke + "?deviceId=" + deviceId, 'DELETE', null, null, revokeDeviceHandler);
         });
 
         $('.dismiss-device').on('click', function(){
@@ -346,7 +349,6 @@ function setUserDevices(data) {
 }
 
 function revokeUser(data, statusCode, jqXHR) {
-
     if (jqXHR.status == 200) {
         $('#status-whatever').text("Revoked");
         $('#status-whatever').addClass("text-danger");

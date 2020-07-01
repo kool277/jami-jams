@@ -22,9 +22,6 @@
 */
 package net.jami.jams.server.servlets.filters;
 
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,9 +35,8 @@ import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
-import java.util.Date;
 
-import static net.jami.jams.server.Server.userAuthenticationModule;
+import static net.jami.jams.server.servlets.filters.FilterUtils.doAuthCheck;
 
 @WebFilter("/api/install/*")
 @Slf4j
@@ -57,20 +53,7 @@ public class InstallFilter implements Filter {
             boolean authsuccess = false;
             boolean isLogin = false;
             if(request.getServletPath().contains("start")) isLogin = true;
-            SignedJWT signedJWT = null;
-            if(request.getHeader("authorization") != null && (request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer"))){
-                try {
-                    JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
-                    signedJWT = SignedJWT.parse(request.getHeader("authorization").replace("bearer","").replace("Bearer",""));
-                    if (signedJWT.verify(jwsVerifier) && signedJWT.getJWTClaimsSet().getExpirationTime().compareTo(new Date()) > 0) {
-                        authsuccess = true;
-                        request.setAttribute("username", signedJWT.getJWTClaimsSet().getSubject());
-                        request.setAttribute("accessLevel", signedJWT.getJWTClaimsSet().getClaim("scope"));
-                    }
-                } catch (Exception e) {
-                    log.info("Received an invalid token, declining access...");
-                }
-            }
+            else authsuccess = doAuthCheck(request);
             if(authsuccess || isLogin) filterChain.doFilter(servletRequest,servletResponse);
             else TomcatCustomErrorHandler.sendCustomError(response,401,"You are not authenticated!");
         }

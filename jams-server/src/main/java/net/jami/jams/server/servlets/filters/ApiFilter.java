@@ -23,9 +23,6 @@
 
 package net.jami.jams.server.servlets.filters;
 
-import com.nimbusds.jose.JWSVerifier;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,18 +32,18 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.authmodule.AuthTokenResponse;
-import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
 
-import static net.jami.jams.server.Server.userAuthenticationModule;
-import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
-import static net.jami.jams.server.servlets.filters.JWTValidator.verifyValidity;
+import static net.jami.jams.server.servlets.filters.FilterUtils.doAuthCheck;
 
-@WebFilter(urlPatterns = {"/api/auth/*"})
+/**
+ * Since we have the @ScopedServletMethod annotation, the admin filter became absolutely useless
+ * as we can simply scope things.
+ */
+@WebFilter(urlPatterns = {"/api/auth/*","/api/admin/*"})
 @Slf4j
 public class ApiFilter implements Filter {
 
@@ -59,42 +56,8 @@ public class ApiFilter implements Filter {
         } else {
             boolean authsuccess = false;
             boolean isLogin = false;
-            if (request.getServletPath().contains("login")) {
-                isLogin = true;
-            }
-            //We need to support 2 types of authorization tokens here: the basic and the bearer.
-            if(request.getHeader("authorization") != null){
-                AuthTokenResponse res = null;
-                if(request.getHeader("authorization").contains("basic")) {
-                    try {
-                        res = processUsernamePasswordAuth(request.getHeader("authorization"));
-                        SignedJWT token = SignedJWT.parse(res.getAccess_token());
-                        request.setAttribute("username", token.getJWTClaimsSet().getSubject());
-                        request.setAttribute("accessLevel", AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
-                    } catch (Exception e) {
-                        log.error("Could not authenticate user!");
-                    }
-                    if (res != null) authsuccess = true;
-                }
-                else if(request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer")){
-                    SignedJWT signedJWT = null;
-                    try {
-                        JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
-                        signedJWT = SignedJWT.parse(request.getHeader("authorization").replace("bearer","").replace("Bearer",""));
-                        //In this case, we need to ask the "target" resource what are the allowed access levels.
-                        if (signedJWT.verify(jwsVerifier) && verifyValidity(signedJWT)) {
-                            authsuccess = true;
-                            request.setAttribute("username", signedJWT.getJWTClaimsSet().getSubject());
-                            if ((Boolean) signedJWT.getJWTClaimsSet().getClaim("oneTimePassword")) {
-                                //TODO: use redirect to enforce the /changepassword url or something.
-                            }
-                            request.setAttribute("accessLevel", AccessLevel.valueOf(signedJWT.getJWTClaimsSet().getClaim("scope").toString()));
-                        }
-                    } catch (Exception e) {
-                        log.info("Received an invalid token, declining access...");
-                    }
-                }
-            }
+            if (request.getServletPath().contains("login")) isLogin = true;
+            else authsuccess = doAuthCheck(request);
             if (authsuccess || isLogin) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {

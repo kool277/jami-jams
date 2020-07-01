@@ -23,7 +23,24 @@
             <artifactId>ldaptive</artifactId>
             <version>${ldaptive.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.zapodot</groupId>
+            <artifactId>embedded-ldap-junit</artifactId>
+            <version>0.8.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>forgerock</id>
+            <url>https://maven.forgerock.org/repo/community//</url>
+        </repository>
+        <repository>
+            <id>dcache</id>
+            <url>http://download.dcache.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

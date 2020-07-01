@@ -30,8 +30,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
+import net.jami.jams.common.objects.user.AccessLevel;
 
 import java.io.IOException;
 
@@ -42,11 +44,13 @@ import static net.jami.jams.server.Server.userAuthenticationModule;
 public class CreateAuthSourceServlet extends HttpServlet {
 
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doGet(req, resp);
     }
 
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CreateAuthSourceRequest authSourceRequest = JsonIterator.deserialize(
                 req.getInputStream().readAllBytes(),CreateAuthSourceRequest.class);

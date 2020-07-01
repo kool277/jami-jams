@@ -28,7 +28,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.requests.CreateCARequest;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.utils.Validator;
 
 import java.io.IOException;
@@ -37,11 +39,13 @@ import java.io.IOException;
 public class CreateCAServlet extends HttpServlet {
 
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doGet(req, resp);
     }
 
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CreateCARequest caRequest = JsonIterator.deserialize(req.getInputStream().readAllBytes(),CreateCARequest.class);
         if(!Validator.validateCARequests(caRequest)){

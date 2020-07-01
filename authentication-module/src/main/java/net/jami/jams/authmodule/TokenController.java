@@ -60,9 +60,11 @@ public class TokenController{
         if(deviceId != null){
             builder.claim("scope",DEVICE);
             builder.claim("deviceId",deviceId);
+            authTokenResponse.setScope(DEVICE);
         }
         else{
             builder.claim("scope",user.getAccessLevel());
+            authTokenResponse.setScope(user.getAccessLevel());
         }
         JWTClaimsSet jwtClaims =  builder.build();
         SignedJWT signedJWT = new SignedJWT(jwsHeader, jwtClaims);
@@ -71,7 +73,6 @@ public class TokenController{
             UserAuthenticationModule.datastore.getJwtDao().storeObject(signedJWT);
             authTokenResponse.setAccess_token(signedJWT.serialize());
             authTokenResponse.setExpires_in(30*60*1000L);
-            authTokenResponse.setScope(user.getAccessLevel());
             authTokenResponse.setToken_type("Bearer");
             return authTokenResponse;
         }

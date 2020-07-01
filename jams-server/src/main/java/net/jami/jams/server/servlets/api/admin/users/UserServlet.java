@@ -28,10 +28,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.PasswordGenerator;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
@@ -48,6 +50,7 @@ public class UserServlet extends HttpServlet {
 
     //Get the user profile.
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         StatementList statementList = new StatementList();
         StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");
@@ -57,6 +60,7 @@ public class UserServlet extends HttpServlet {
 
     //Create an internal user - this is always technically available, because internal users have the right to exist.
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = new User();
         user.setUsername(req.getParameter("username"));
@@ -76,6 +80,7 @@ public class UserServlet extends HttpServlet {
 
     //Update user data.
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String username = req.getParameter("username");
         //Check if he is AD/LDAP - then return a 403, because we can't set such password.
@@ -95,6 +100,7 @@ public class UserServlet extends HttpServlet {
 
     //Revoke a user.
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         DeviceRevocationResponse devResponse = RevokeUserFlow.revokeUser(req.getParameter("username"));
         if(devResponse != null && devResponse.isSuccess()) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());

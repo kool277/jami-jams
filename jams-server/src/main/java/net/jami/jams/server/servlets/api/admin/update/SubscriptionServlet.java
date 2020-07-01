@@ -29,7 +29,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.ca.JamsCA;
+import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.responses.SubscriptionStatusResponse;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
@@ -39,6 +41,7 @@ public class SubscriptionServlet extends HttpServlet {
 
     //Get the subscription status (see: SubscriptionStatusResponse.class)
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
         resp.setContentType("application/json");
@@ -51,6 +54,7 @@ public class SubscriptionServlet extends HttpServlet {
     //Upload the license here, which is really just uploading a base64 representation of the keypair - and store it
     // on disk..
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getInputStream().readAllBytes();
 

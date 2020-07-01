@@ -22,7 +22,6 @@
 */
 package net.jami.jams.server.servlets.api.auth.user;
 
-import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -35,14 +34,11 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.PasswordGenerator;
-import org.bouncycastle.openssl.PEMWriter;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
-import static net.jami.jams.server.Server.nameServer;
 
 @WebServlet("/api/auth/user")
 public class UserServlet extends HttpServlet {

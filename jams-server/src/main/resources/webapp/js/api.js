@@ -138,7 +138,7 @@ function setJWT(value) {
 
 function set_installation_response(url) {
     return function (data, statusCode, jqXHR) {
-        // endpoint does not exists
+        // endpoint does not exist - revoke
         if (data) {
             if (data.status == 404) {
                 $('#installCompleteModalCenter').modal('show');

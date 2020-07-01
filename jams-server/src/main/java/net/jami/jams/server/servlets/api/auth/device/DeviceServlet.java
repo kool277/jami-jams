@@ -42,7 +42,6 @@ import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
@@ -171,8 +170,9 @@ public class DeviceServlet extends HttpServlet {
         StatementElement statementElement = new StatementElement("owner","=",req.getAttribute("username").toString(),"");
         statementList.addStatement(statementElement);
         if(dataStore.getDeviceDao().getObjects(statementList).stream().filter(device ->
-            device.getDeviceId().equals(deviceId)).collect(Collectors.toList()).size() == 0){
+            device.getDeviceId().equals(deviceId)).count() == 0){
             TomcatCustomErrorHandler.sendCustomError(resp,403,"You do not have sufficient rights to revoke this device!");
+            return;
         }
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());

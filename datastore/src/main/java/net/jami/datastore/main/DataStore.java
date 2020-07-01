@@ -24,7 +24,12 @@ package net.jami.datastore.main;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.jami.datastore.dao.*;
+import net.jami.datastore.dao.ContactDao;
+import net.jami.datastore.dao.DeviceDao;
+import net.jami.datastore.dao.JwtDao;
+import net.jami.datastore.dao.SystemDao;
+import net.jami.datastore.dao.UserDao;
+import net.jami.datastore.dao.UserProfileDao;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;

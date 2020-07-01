@@ -28,6 +28,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.ca.JamsCA;
+import net.jami.jams.common.annotations.ScopedServletMethod;
+import net.jami.jams.common.objects.user.AccessLevel;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import java.util.HashMap;
 public class InstallLastStepServlet extends HttpServlet {
 
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
         HashMap<String,String> payload = new HashMap<>();

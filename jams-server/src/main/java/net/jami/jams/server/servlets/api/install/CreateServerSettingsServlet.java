@@ -28,7 +28,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthorityConfig;
+import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.core.workflows.InstallationFinalizer;
 
 import java.io.IOException;
@@ -39,11 +41,13 @@ public class CreateServerSettingsServlet extends HttpServlet {
     InstallationFinalizer finalizer = new InstallationFinalizer();
 
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doGet(req, resp);
     }
 
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         CertificateAuthorityConfig config = JsonIterator.deserialize(
                 req.getInputStream().readAllBytes(),CertificateAuthorityConfig.class);
