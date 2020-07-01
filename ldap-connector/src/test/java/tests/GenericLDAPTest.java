@@ -54,6 +54,7 @@ public class GenericLDAPTest {
         initLdapConnector();
         UserProfile[] profiles = ldapConnector.getUserProfile("Felix","FULL_TEXT_NAME");
         Assert.assertEquals(1,profiles.length);
+        Assert.assertNotNull(profiles[0].getUsername());
         String vcard = profiles[0].getAsVCard();
         Assert.assertNotNull(vcard);
     }

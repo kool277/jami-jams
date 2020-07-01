@@ -1,25 +1,26 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.jami.jams.ad.connector.service;
 
 import com.imperva.ddc.core.Connector;
@@ -47,24 +48,21 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserProfileService {
 
-    private static final HashMap<String,String> fieldMap = ADConnector.settings.getFieldMappings();
+    private static final HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
 
-    public UserProfile[] getUserProfile(String queryString, String field){
+    public UserProfile[] getUserProfile(String queryString, String field) {
         Endpoint endpoint = ADConnector.getConnection();
         UserProfile[] profiles = null;
-
-        if (!queryString.startsWith("*"))
+        if (!queryString.startsWith("*")) {
             queryString = queryString.concat("*");
-
-        try{
+        }
+        try {
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;
-            if(queryString.contains("*")) {
+            if (queryString.contains("*")) {
                 sentence = new QueryAssembler().addPhrase(FieldType.OBJECT_CLASS, PhraseOperator.EQUAL, ObjectType.USER.toString()).closeSentence();
-            }
-            else {
+            } else {
                 if (field.equals("LOGON_NAME")) {
-
                     sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.CONTAINS, queryString)
                         .closeSentence();
                 }
@@ -76,54 +74,55 @@ public class UserProfileService {
             }
             queryRequest.addSearchSentence(sentence);
             QueryResponse queryResponse;
-            try(Connector connector = new Connector(queryRequest)) {
+            try (Connector connector = new Connector(queryRequest)) {
                 queryResponse = connector.execute();
             }
             List<List<Field>> results = queryResponse.getAll().stream().map(EntityResponse::getValue).collect(Collectors.toList());
-            if(results.size() > 0) profiles = new UserProfile[results.size()];
-            else return null;
-            for(int i=0;i< profiles.length; i++){
+            if (results.size() > 0) {
+                profiles = new UserProfile[results.size()];
+            } else {
+                return null;
+            }
+            for (int i = 0; i < profiles.length; i++) {
                 profiles[i] = profileFromResponse(results.get(i));
             }
             return profiles;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("Could not find entity with specified parameters.");
             return null;
-        }
-        finally {
+        } finally {
             ADConnector.returnConnection(endpoint);
         }
     }
 
-
     public static QueryRequest buildRequest(Endpoint endpoint) {
         QueryRequest queryRequest = new QueryRequest();
         queryRequest.setDirectoryType(DirectoryType.MS_ACTIVE_DIRECTORY);
-        queryRequest.setEndpoints(new ArrayList<>() {{ add(endpoint);}});
+        queryRequest.setEndpoints(new ArrayList<>() {{
+            add(endpoint);
+        }});
         queryRequest.setSizeLimit(1000);
         queryRequest.setTimeLimit(1000);
         queryRequest.setObjectType(ObjectType.USER);
-        for(String field : fieldMap.keySet()) queryRequest.addRequestedField(field);
+        for (String field : fieldMap.keySet()) {
+            queryRequest.addRequestedField(field);
+        }
         return queryRequest;
     }
 
-    public static UserProfile profileFromResponse(List<Field> fields){
+    public static UserProfile profileFromResponse(List<Field> fields) {
         //Use reflection to remap.
         try {
             UserProfile userProfile = new UserProfile();
             for (Field field : fields) {
-                if(fieldMap.containsKey(field.getName())) {
+                if (fieldMap.containsKey(field.getName())) {
                     UserProfile.exposedMethods.get("set" + fieldMap.get(field.getName())).invoke(userProfile, field.getValue());
                 }
             }
             return userProfile;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("An error occured while trying to invoke methods: " + e.toString());
             return null;
         }
     }
-
-
 }
