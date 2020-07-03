@@ -40,7 +40,6 @@ $(document).ready(function() {
 
     username = $.urlParam('username');
 
-
     // check if we have a username parameter
     if (username != '' && username != null) {
 
@@ -56,6 +55,7 @@ $(document).ready(function() {
             setTimeout(function() {
                 if (getAdminStatus()) {
                     ajaxApiCall(api_path_get_admin_user, 'GET', userData, null, setStatus).then(function() {
+                        ajaxApiCall(api_path_get_admin_devices, 'GET', userData, null, setUserDevices);
                         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource).then(function() {
                             setTimeout(function() {
                                 ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
@@ -65,6 +65,7 @@ $(document).ready(function() {
                     });
                 } else {
                     ajaxApiCall(api_path_get_auth_user, 'GET', null, null, setStatus).then(function() {
+                        ajaxApiCall(api_path_get_auth_devices, 'GET', null, null, setUserDevices);
                         ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource).then(function() {
                             setTimeout(function() {
                                 ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
@@ -75,12 +76,6 @@ $(document).ready(function() {
                 }
             }, 700)
         });
-
-        // set User devices information
-        if (getAdminStatus())
-            ajaxApiCall(api_path_get_admin_devices, 'GET', userData, null, setUserDevices);
-        else
-            ajaxApiCall(api_path_get_auth_devices, 'GET', null, null, setUserDevices);
 
         // revoke user
         $( '.user-information' ).on( 'click', '.de-authorize-user', function () {
@@ -180,7 +175,7 @@ $(document).ready(function() {
     }
     else {
         $('.user-information-container').remove();
-        $('.devices-results-container').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">Cannot get user\'s devices</td></tr>').fadeIn('slow');
+        $('.devices-results-container').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">An error occurred when attempting to retrieve user devices</td></tr>').fadeIn('slow');
     }
 });
 
@@ -327,41 +322,40 @@ function setUserExtendedData(data, statusCode, jqXHR) {
     }
 }
 
-function setUserDevices(data) {
-    if (data.status == 200) {
-        var resultSet = data.responseText;
-        resultSet = resultSet.replace(/\s+/g, ' ').trim();
-        resultSet = JSON.parse(resultSet);
-        var deviceRow = '';
-        // build table row for User device items
-        if (resultSet.length > 0) {
-            for (i = 0; i < resultSet.length; i++) {
-                var status = '';
-                var disabled = '';
-                // determine User status
-                if (!(resultSet[i].revoked)) {
-                    status = 'Active';
+function setUserDevices(data, statusCode, jqXHR) {
+
+    if ((jqXHR.status == 200 || data.status == 200 ) && $('.devices-results-container')[0].childNodes.length == 0) {
+        if (data.responseText != undefined) {
+            var resultSet = JSON.parse(data.responseText.replace(/\s+/g, ' ').trim());
+            var deviceRow = '';
+            // build table row for User device items
+            if (resultSet.length > 0) {
+                for (i = 0; i < resultSet.length; i++) {
+                    var status = '';
+                    var disabled = '';
+                    // determine User status
+                    if (!(resultSet[i].revoked)) {
+                        status = 'Active';
+                    }
+                    else {
+                        status = 'Revoked';
+                        disabled = 'disabled';
+                    }
+                    deviceRow +=
+                        '<tr data-device-id="' + resultSet[i].deviceId + '"><td class="mobile">Device ID</td><td>' + resultSet[i].deviceId +
+                        '</td><td class="mobile">Device Name</td><td class="device-name">' + resultSet[i].displayName +
+                        '</td><td class="mobile">Status</td><td id="device-status" data-device-id="' + resultSet[i].deviceId + '">' + status +
+                        '</td><td class="mobile">Actions</td><td><button class="edit-device-name" data-device-id="' + resultSet[i].deviceId + '"><i class="fa fa-edit"></i></button>' +
+                        '<button class="btn-danger de-activate-device" data-device-id="' + resultSet[i].deviceId + '"' + disabled + '><i class="fa fa-trash"></i></button>' +
+                        '</td><td class="spacer--table">spacer</td></tr>';
                 }
-                else {
-                    status = 'Revoked';
-                    disabled = 'disabled';
-                }
-                deviceRow +=
-                    '<tr data-device-id="' + resultSet[i].deviceId + '"><td class="mobile">Device ID</td><td>' + resultSet[i].deviceId +
-                    '</td><td class="mobile">Device Name</td><td class="device-name">' + resultSet[i].displayName +
-                    '</td><td class="mobile">Status</td><td id="device-status" data-device-id="' + resultSet[i].deviceId + '">' + status +
-                    '</td><td class="mobile">Actions</td><td><button class="edit-device-name" data-device-id="' + resultSet[i].deviceId + '"><i class="fa fa-edit"></i></button>' +
-                    '<button class="btn-danger de-activate-device" data-device-id="' + resultSet[i].deviceId + '"' + disabled + '><i class="fa fa-trash"></i></button>' +
-                    '</td><td class="spacer--table">spacer</td></tr>';
-            }
-            $('.devices-results-container').append(deviceRow);
-        }
-        else {
-            $('.devices-results-container').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">No device found</td></tr>').fadeIn('slow');
-        }
-    }
-    else {
-        $('.devices-results-container').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">Cannot get user\'s devices</td></tr>').fadeIn('slow');
+                $('.devices-results-container').append(deviceRow);
+            } else
+                $('.devices-results-container').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">The user has no devices enrolled</td></tr>').fadeIn('slow');
+        } else
+            $('.devices-results-container').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">The user has no devices enrolled</td></tr>').fadeIn('slow');
+
+
     }
 }
 
@@ -526,14 +520,14 @@ function handleNewOTP(data) {
 }
 
 function setStatus(data) {
-    var resultSet = data.responseText;
-    resultSet = resultSet.replace(/\s+/g, ' ').trim();
-    resultSet = JSON.parse(resultSet);
-
-    if (data.getResponseHeader('revoked') == 'true' || resultSet.revoked)
+    var resultSet = JSON.parse(data.responseText.replace(/\s+/g, ' ').trim());
+    if (resultSet.revoked)
         userStatus = "Revoked";
     else
         userStatus = "Active";
+
+    if (data.status == 500)
+        $('.devices-results-container').append('<tr class="empty-results bubble"><td colspan="5" class="text-alert">An error occurred when attempting to retrieve user devices</td></tr>').fadeIn('slow');
 }
 
 // clean error messages when button selected
