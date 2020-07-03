@@ -56,6 +56,7 @@
         <apache.httpclient.version>4.5.10</apache.httpclient.version>
         <ez.vcard.version>0.10.6</ez.vcard.version>
         <maven.resources.version>3.1.0</maven.resources.version>
+        <embedded.ldap.unit>0.8.1</embedded.ldap.unit>
     </properties>
 
     <dependencies>

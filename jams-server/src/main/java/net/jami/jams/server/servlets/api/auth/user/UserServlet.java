@@ -22,6 +22,7 @@
 */
 package net.jami.jams.server.servlets.api.auth.user;
 
+import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -69,35 +70,17 @@ public class UserServlet extends HttpServlet {
      * @apiError (500) {null} null could not fetch user information
      */
     @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.USER})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         StatementList statementList = new StatementList();
-        StatementElement st = new StatementElement("username","=",req.getParameter("username").toString(),"");
+        StatementElement st = new StatementElement("username","=",req.getAttribute("username").toString(),"");
         statementList.addStatement(st);
         User user = dataStore.getUserDao().getObjects(statementList).get(0);
-        String password = user.getPassword();
-        if (!user.getNeedsPasswordReset()) {
-            password = PasswordGenerator.generatePassword();
-            StatementList update = new StatementList();
-            StatementElement st0 = new StatementElement("password","=",password,"");
-            update.addStatement(st0);
-            StatementList constraint = new StatementList();
-            StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");
-            update.addStatement(st1);
-            StatementElement st2 = new StatementElement("needsPasswordReset","=","true","");
-            update.addStatement(st2);
-            // refresh variable
-            user = dataStore.getUserDao().getObjects(statementList).get(0);
-            dataStore.getUserDao().updateObject(update,constraint);
+        if(certificateAuthority.getLatestCRL().get() != null) {
+            user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) == null);
         }
-
-        resp.setHeader("needspasswordreset", (user.getNeedsPasswordReset()).toString());
-        resp.setHeader("password", password);
-
-        if (certificateAuthority.getLatestCRL().get()
-                .getRevokedCertificate(user.getCertificate().getSerialNumber()) == null)
-            resp.setHeader("revoked", "false");
-        else
-            resp.setHeader("revoked", "true");
+        else user.setRevoked(false);
+        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
     }
 
     //The user can update 3 fields: password,privatekey,publickey
@@ -116,12 +99,12 @@ public class UserServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = AccessLevel.USER)
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
-        //Check if he is AD/LDAP - then return a 401, because we can't set such password.
+        //Check if he is AD/LDAP - then return a 403, because we can't set such password.
         StatementList select = new StatementList();
         StatementElement st = new StatementElement("username","=",username,"");
         select.addStatement(st);
         if(dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL){
-            resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
+            resp.sendError(403,"The user is not a local user, therefore we cannot change his data!");
             return;
         }
         StatementList update = new StatementList();
@@ -129,7 +112,7 @@ public class UserServlet extends HttpServlet {
         update.addStatement(st0);
         StatementList constraint = new StatementList();
         StatementElement st1 = new StatementElement("username","=",username,"");
-        update.addStatement(st1);
+        constraint.addStatement(st1);
         if(dataStore.getUserDao().updateObject(update,constraint)) resp.setStatus(200);
         else resp.sendError(500,"could not update the users's data field!");
     }

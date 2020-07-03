@@ -163,7 +163,6 @@ public class DeviceServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.USER})
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req,resp);
         String deviceId = req.getPathInfo().replace("/","");
         //If the device does not belong to the user throw a 403
         StatementList statementList = new StatementList();
@@ -176,6 +175,7 @@ public class DeviceServlet extends HttpServlet {
         }
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
         if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
-        TomcatCustomErrorHandler.sendCustomError(resp,500,"could not revoke device due to server-side error");
+        else
+            TomcatCustomErrorHandler.sendCustomError(resp,500,"could not revoke device due to server-side error");
     }
 }

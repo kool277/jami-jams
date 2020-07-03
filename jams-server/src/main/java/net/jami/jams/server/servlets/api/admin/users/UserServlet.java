@@ -41,6 +41,7 @@ import net.jami.jams.server.core.workflows.RevokeUserFlow;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
@@ -55,7 +56,12 @@ public class UserServlet extends HttpServlet {
         StatementList statementList = new StatementList();
         StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");
         statementList.addStatement(st1);
-        resp.getOutputStream().write(JsonStream.serialize(dataStore.getUserDao().getObjects(statementList)).getBytes());
+        User user = dataStore.getUserDao().getObjects(statementList).get(0);
+        if(certificateAuthority.getLatestCRL().get() != null) {
+            user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) == null);
+        }
+        else user.setRevoked(false);
+        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
     }
 
     //Create an internal user - this is always technically available, because internal users have the right to exist.

@@ -62,6 +62,7 @@ function setLDAPParametersData(form) {
           settings[field.name] = field.value;
   });
   settings['fieldMappings'] = {};
+  settings['fieldMappings']['uid'] = "Username"
   settings['fieldMappings']['givenName'] = "FirstName";
   settings['fieldMappings']['sn'] = "LastName";
   settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
@@ -93,6 +94,7 @@ function setADParametersData(form) {
     });
 
     settings['fieldMappings'] = {};
+    settings['fieldMappings']['sAMAccountName'] = "Username"
     settings['fieldMappings']['givenName'] = "FirstName";
     settings['fieldMappings']['sn'] = "LastName";
     settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";

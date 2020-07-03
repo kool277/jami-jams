@@ -32,6 +32,7 @@ var api_path_post_install_auth = '/api/install/auth';
 var api_path_post_install_server = '/api/install/settings';
 var api_path_get_install_lastKnownStep = '/api/install/lastStep';
 var api_path_get_auth_user_search = '/api/auth/users';
+var api_path_get_admin_devices = '/api/admin/devices';
 var api_path_get_auth_devices = '/api/auth/devices';
 var api_path_delete_admin_user_revoke = '/api/admin/user';
 var api_path_delete_auth_user_revoke = '/api/auth/user';
@@ -48,7 +49,8 @@ var api_path_get_directories = '/api/auth/directories';
 var api_path_get_needs_update = '/api/admin/update';
 var api_path_get_start_update = '/api/admin/update';
 var api_path_post_create_user = '/api/admin/user';
-var api_path_get_user = '/api/auth/user';
+var api_path_get_auth_user = '/api/auth/user';
+var api_path_get_admin_user = '/api/admin/user';
 var api_path_post_update_user = '/api/auth/user';
 var api_path_get_exists_user = '/api/admin/user';
 var api_path_get_user_directory_search ='/api/auth/directory/search';
@@ -97,7 +99,7 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
         if (data) {
             if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search || api_path == api_path_get_user_search ||
                 (api_path == api_path_post_create_user && request_type == 'POST') || api_path == api_path_post_update_user
-                || api_path == api_path_get_auth_devices || api_path == api_path_post_configuration_change_password)
+                || api_path == api_path_get_auth_devices || api_path == api_path_post_configuration_change_password || api_path == api_path_get_admin_devices)
                 isSearch = true;
 
             // search dataType

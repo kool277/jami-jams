@@ -54,19 +54,33 @@ $(document).ready(function() {
 
         ajaxApiCall(api_path_get_directories, 'GET', null, null, isLocalDB).then(function() {
             setTimeout(function() {
-                ajaxApiCall(api_path_get_user, 'GET', userData, null, setStatus).then(function() {
-                    ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource).then(function() {
-                        setTimeout(function() {
-                            ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
-                        }, 300);
+                if (getAdminStatus()) {
+                    ajaxApiCall(api_path_get_admin_user, 'GET', userData, null, setStatus).then(function() {
+                        ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource).then(function() {
+                            setTimeout(function() {
+                                ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
+                            }, 700);
 
+                        });
                     });
-                });
-            }, 300)
+                } else {
+                    ajaxApiCall(api_path_get_auth_user, 'GET', null, null, setStatus).then(function() {
+                        ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserInfoDataSource).then(function() {
+                            setTimeout(function() {
+                                ajaxApiCall(api_path_get_user_directory_search, 'GET', searchData, null, setUserExtendedData);
+                            }, 700);
+
+                        });
+                    });
+                }
+            }, 700)
         });
 
         // set User devices information
-        ajaxApiCall(api_path_get_auth_devices, 'GET', userData, null, setUserDevices);
+        if (getAdminStatus())
+            ajaxApiCall(api_path_get_admin_devices, 'GET', userData, null, setUserDevices);
+        else
+            ajaxApiCall(api_path_get_auth_devices, 'GET', null, null, setUserDevices);
 
         // revoke user
         $( '.user-information' ).on( 'click', '.de-authorize-user', function () {
@@ -114,7 +128,10 @@ $(document).ready(function() {
         });
 
         $( '.user-information' ).on( 'click', '.reset-password', function (e) {
-            ajaxApiCall(api_path_get_user, 'GET', userData, null, handleNewOTP);
+            if (getAdminStatus())
+                ajaxApiCall(api_path_get_admin_user, 'GET', userData, null, handleNewOTP);
+            else
+                ajaxApiCall(api_path_get_auth_user, 'GET', null, null, handleNewOTP);
         });
 
         // change device name
@@ -150,9 +167,9 @@ $(document).ready(function() {
             isSearch = false;
             $('.loading').show();
             if (getAdminStatus())
-                ajaxApiCall(api_path_delete_admin_device_revoke + "?deviceId=" + deviceId, 'DELETE', null, null, revokeDeviceHandler);
+                ajaxApiCall(api_path_delete_admin_device_revoke + "?username=" + username + "&deviceId=" + deviceId, 'DELETE', null, null, revokeDeviceHandler);
             else
-                ajaxApiCall(api_path_delete_auth_device_revoke + "?deviceId=" + deviceId, 'DELETE', null, null, revokeDeviceHandler);
+                ajaxApiCall(api_path_delete_auth_device_revoke + "/" + deviceId, 'DELETE', null, null, revokeDeviceHandler);
         });
 
         $('.dismiss-device').on('click', function(){
