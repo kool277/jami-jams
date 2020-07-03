@@ -168,7 +168,7 @@ function addListenersForActions() {
             $('.de-authorize-user').width(w);
             $('.de-authorize-user').text("");
             $('.de-authorize-user').append("<span class=\"spinner-border text-light spinner-border-sm\" role=\"status\"></span>");
-            ajaxApiCall(api_path_delete_auth_user_revoke + "?username=" + userRevoke, 'DELETE', null, null, revokeUser);
+            ajaxApiCall(api_path_delete_admin_user_revoke + "?username=" + userRevoke, 'DELETE', null, null, revokeUser);
 
         });
     });
