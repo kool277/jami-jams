@@ -77,11 +77,11 @@ public class DataStore implements AuthenticationSource {
 
         if (!queryString.equals("*")) {
             StatementList statementList = new StatementList();
+            String startQueryString = queryString.concat("%");
             if(field.equals("LOGON_NAME")){
-                statementList.addStatement(new StatementElement("username","LIKE", queryString,""));
+                statementList.addStatement(new StatementElement("username","LIKE", startQueryString,""));
             }
-            else{
-                String startQueryString = queryString.concat("%");
+            else if(field.equals("FULL_TEXT_NAME")){
                 statementList.addStatement(new StatementElement("firstName","LIKE", startQueryString,"OR"));
                 statementList.addStatement(new StatementElement("lastName","LIKE", startQueryString, ""));
             }
@@ -100,7 +100,6 @@ public class DataStore implements AuthenticationSource {
     public boolean updateUserProfile(UserProfile userProfile){
 
         StatementList update = new StatementList();
-        StatementList constraints = new StatementList();
         update.addStatement(new StatementElement("username","=",userProfile.getUsername(),""));
         update.addStatement(new StatementElement("firstName","=",userProfile.getFirstName(),""));
         update.addStatement(new StatementElement("lastName","=",userProfile.getLastName(),""));
@@ -112,7 +111,7 @@ public class DataStore implements AuthenticationSource {
         update.addStatement(new StatementElement("faxNumber","=",userProfile.getFaxNumber(),""));
         update.addStatement(new StatementElement("mobileNumber","=",userProfile.getMobileNumber(),""));
 
-        return userProfileDao.updateObject(update, constraints);
+        return userProfileDao.updateObject(update, null);
     }
 
     @Override
