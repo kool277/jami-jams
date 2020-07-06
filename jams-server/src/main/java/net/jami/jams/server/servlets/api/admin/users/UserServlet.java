@@ -58,7 +58,7 @@ public class UserServlet extends HttpServlet {
         statementList.addStatement(st1);
         User user = dataStore.getUserDao().getObjects(statementList).get(0);
         if(certificateAuthority.getLatestCRL().get() != null) {
-            user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) == null);
+            user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
         }
         else user.setRevoked(false);
         resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
