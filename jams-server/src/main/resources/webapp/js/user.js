@@ -526,7 +526,11 @@ function handleNewOTP(data) {
 }
 
 function setStatus(data) {
-    if (data.getResponseHeader('revoked') == 'true')
+    var resultSet = data.responseText;
+    resultSet = resultSet.replace(/\s+/g, ' ').trim();
+    resultSet = JSON.parse(resultSet);
+
+    if (data.getResponseHeader('revoked') == 'true' || resultSet.revoked)
         userStatus = "Revoked";
     else
         userStatus = "Active";
