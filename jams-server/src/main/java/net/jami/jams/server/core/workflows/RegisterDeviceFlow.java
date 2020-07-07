@@ -48,13 +48,17 @@ public class RegisterDeviceFlow {
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            UserProfile userProfile = userAuthenticationModule.getAuthSources()
+                    .get(new AuthModuleKey(user.getRealm(),user.getUserType()))
+                    .getUserProfile(username,"LOGON_NAME")[0];
+
             if (user == null) {
                 log.error("Tried to enroll a device, but could not find a user, this is impossible!");
             }
             Device device = new Device();
             device.setCertificationRequest(registrationRequest.getCsr());
             device.setOwner(username);
-            device.setDisplayName(registrationRequest.getDeviceName());
+            device.setDisplayName(userProfile.getFirstName()+" "+userProfile.getLastName());
             device = certificateAuthority.getSignedCertificate(user, device);
             if(device == null){
                 log.error("Could not succesfully create a device certificate!");
@@ -71,10 +75,6 @@ public class RegisterDeviceFlow {
             response.setDisplayName(device.getDisplayName());
             //We need to set
             response.setNameServer(nameServer.getURI());
-            UserProfile userProfile = userAuthenticationModule.getAuthSources()
-                    .get(new AuthModuleKey(user.getRealm(),user.getUserType()))
-                    .getUserProfile(username,"LOGON_NAME")[0];
-
             if(userProfile.getProfilePicture() != null) response.setUserPhoto(userProfile.getProfilePicture());
             //Finally we set the certificate chain.
             response.setCertificateChain(new X509Certificate[]{certificateAuthority.getCA(),user.getCertificate(),device.getCertificate()});
