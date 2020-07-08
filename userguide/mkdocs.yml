@@ -1,0 +1,4 @@
+site_name: Jams User Guide
+plugins:
+    - search
+    - mkpdfs
