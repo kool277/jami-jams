@@ -36,6 +36,6 @@ public class IndexServlet extends HttpServlet {
     //This is to by-pass the path issue.
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.sendRedirect("templates/signup.html");
+        resp.sendRedirect("index.html");
     }
 }

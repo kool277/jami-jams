@@ -91,3 +91,8 @@ target/
 testdb/
 tomcat.*/
 /jams
+
+# React client
+jams-react-client/node_modules/
+jams-react-client/build/
+jams-server/src/main/resources/webapp/
