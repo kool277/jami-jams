@@ -73,7 +73,7 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
             },
             error: function (data, statusCode, jqXHR) {
                 callBackFunction(data, statusCode, jqXHR);
-                if(data.status == 401){
+                if(data.status == 401 && !url.includes("api/login")){
                     window.localStorage.removeItem('access_token');
                     window.location.replace(url_path + ":" + url_port+"/templates/signup.html");
                 }

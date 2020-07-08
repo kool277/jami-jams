@@ -122,11 +122,9 @@ $(document).ready(function() {
             ajaxApiCall(api_path_delete_admin_user_revoke + "?username=" + encodeURIComponent(userData["username"]), 'DELETE', null, null, revokeUser);
         });
 
-        $( '.user-information' ).on( 'click', '.reset-password', function (e) {
+        $( '.user-information' ).on( 'click', '.reset-password', function () {
             if (getAdminStatus())
-                ajaxApiCall(api_path_get_admin_user, 'GET', userData, null, handleNewOTP);
-            else
-                ajaxApiCall(api_path_get_auth_user, 'GET', null, null, handleNewOTP);
+                ajaxApiCall(api_path_get_admin_user, 'GET', {"username":username, "needPW": "needPW"}, null, handleNewOTP);
         });
 
         // change device name
@@ -505,17 +503,17 @@ function isLocalDB(data, statusCode, jqXHR){
 }
 
 function handleNewOTP(data) {
-
     if (data.status == 200) {
-
-        if (data.getResponseHeader('needspasswordreset') == "false") {
+        var resultSet = JSON.parse(data.responseText.replace(/\s+/g, ' ').trim());
+        if (resultSet.needsPasswordReset == true) {
             $('#otpModalCenter').modal('show');
-            $('#user-pw-modal-body').text("User password reset. Here is the new one time password: " + data.getResponseHeader('password'));
-        } else if (data.getResponseHeader('needspasswordreset') == "true") {
+            $('#user-pw-modal-body').text("User password reset. Here is the new one time password: " + resultSet.password);
+        } else {
             // show modal
             $('#otpModalCenter').modal('show');
-            $('#user-pw-modal-body').text("User has not changed his temporary password. Current password: " + data.getResponseHeader('password'));
+            $('#user-pw-modal-body').text("User has not changed his temporary password. Current password: " + resultSet.password);
         }
+
     }
 }
 

@@ -92,7 +92,7 @@ function serverConfigStatus(data) {
         if (getAdminStatus() && (!current_uri.includes('search.html')) && (!current_uri.includes('user.html')) && (!current_uri.includes('config.html'))) {
             window.location.replace("search.html");
         }
-        else if (!getAdminStatus() && getUser() && (!current_uri.includes('user.html'))) {
+        else if (!getAdminStatus() && getUser() && JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1])).oneTimePassword == false && (!current_uri.includes('user.html'))) {
             window.location.replace("user.html?username=" + getUser());
         }
         else if (!getAdminStatus() && !getUser() && (!current_uri.includes('signup.html'))) {

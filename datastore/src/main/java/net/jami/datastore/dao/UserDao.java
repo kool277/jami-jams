@@ -88,10 +88,11 @@ public class UserDao extends AbstractDao<User> {
     public boolean updateObject(StatementList update, StatementList constraints) {
 
         String pw = update.getStatements().get(0).getValue();
-        String user = update.getStatements().get(1).getValue();
-        String needsPasswordReset = "";
-        if (update.getStatements().size() >= 3 && update.getStatements().get(2) != null)
-            needsPasswordReset = update.getStatements().get(2).getValue();
+        String user = constraints.getStatements().get(0).getValue();
+        String pwReset = "false";
+
+        if (update.getStatements().size() > 1)
+            pwReset = update.getStatements().get(1).getValue();
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
@@ -102,10 +103,7 @@ public class UserDao extends AbstractDao<User> {
             ps.executeUpdate();
 
             ps = connection.getConnection().prepareStatement("UPDATE users SET needsPasswordReset = ? WHERE username = ?");
-            if (!needsPasswordReset.isEmpty())
-                ps.setString(1, needsPasswordReset);
-            else
-                ps.setString(1, "false");
+            ps.setString(1, pwReset);
 
             ps.setString(2, user);
             return ps.executeUpdate() != 0;

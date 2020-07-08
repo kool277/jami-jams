@@ -61,6 +61,21 @@ public class UserServlet extends HttpServlet {
             user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
         }
         else user.setRevoked(false);
+
+        if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
+            String password = PasswordGenerator.generatePassword();
+            StatementList update = new StatementList();
+            StatementElement st0 = new StatementElement("password","=",password,"");
+            update.addStatement(st0);
+            StatementList constraint = new StatementList();
+            StatementElement st = new StatementElement("username","=",req.getParameter("username"),"");
+            constraint.addStatement(st);
+            StatementElement st2 = new StatementElement("needsPasswordReset","=","true","");
+            update.addStatement(st2);
+            // refresh variable
+            dataStore.getUserDao().updateObject(update,constraint);
+            user = dataStore.getUserDao().getObjects(statementList).get(0);
+        }
         resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
     }
 
@@ -99,7 +114,7 @@ public class UserServlet extends HttpServlet {
         update.addStatement(st0);
         StatementList constraint = new StatementList();
         StatementElement st1 = new StatementElement("username","=",username,"");
-        update.addStatement(st1);
+        constraint.addStatement(st1);
         if(dataStore.getUserDao().updateObject(update,constraint)) resp.setStatus(200);
         else resp.sendError(500,"could not update the users's data field!");
     }

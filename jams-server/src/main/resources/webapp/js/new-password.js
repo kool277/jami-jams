@@ -60,6 +60,8 @@ document.getElementById("changePasswordButton").addEventListener('click', functi
 
 function updateLocalAccountPasswordCallBackHandler(data) {
     // now we can login normally
-    if (data.status != 500)
+    if (data.status != 500) {
+        window.localStorage.removeItem('access_token');
         ajaxApiCall(api_path_post_auth_login, "POST", jsonData, null, signinCallBackHandler);
+    }
 }

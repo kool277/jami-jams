@@ -93,20 +93,16 @@ function createAdminCallBackHandler(data, statusCode, jqXHR) {
 
 function signinCallBackHandler(data, statusCode, jqXHR) {
 
-    var tokenJSON = '';
-    if (data.access_token) {
+    if (data.status == 401 || data.status == 405)
+        invalidLogin();
+    else if (data.access_token && jqXHR.status == 200) {
         setJWT(data);
-        tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
+        var tokenJSON = JSON.parse(atob(window.localStorage.getItem('access_token').split('.')[1]));
+
+        if (tokenJSON.oneTimePassword == false)
+            getServerConfigStatus();
+        else {
+            window.location.replace("new-password.html?username=" + getUser());
+        }
     }
-
-    if (jqXHR.status == 200 && tokenJSON != '' && tokenJSON.oneTimePassword == false) {
-
-    // check server configuration status
-    getServerConfigStatus();
-  }  else if (jqXHR.status == 200 && tokenJSON != '' && tokenJSON.oneTimePassword == true) {
-      window.location.replace("new-password.html?username=" + getUser());
-  }
-  else {
-    invalidLogin();
-  }
 }

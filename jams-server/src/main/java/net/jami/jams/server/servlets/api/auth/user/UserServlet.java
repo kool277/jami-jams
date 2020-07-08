@@ -97,7 +97,7 @@ public class UserServlet extends HttpServlet {
      */
     @Override
     @ScopedServletMethod(securityGroups = AccessLevel.USER)
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String username = req.getAttribute("username").toString();
         //Check if he is AD/LDAP - then return a 403, because we can't set such password.
         StatementList select = new StatementList();
