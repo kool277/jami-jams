@@ -72,7 +72,7 @@ public class TokenController{
             signedJWT.sign(new RSASSASigner(signingKey));
             UserAuthenticationModule.datastore.getJwtDao().storeObject(signedJWT);
             authTokenResponse.setAccess_token(signedJWT.serialize());
-            authTokenResponse.setExpires_in(30*60*1000L);
+            authTokenResponse.setExpires_in(30*60L);
             authTokenResponse.setToken_type("Bearer");
             return authTokenResponse;
         }
