@@ -58,7 +58,7 @@ public class RegisterDeviceFlow {
             Device device = new Device();
             device.setCertificationRequest(registrationRequest.getCsr());
             device.setOwner(username);
-            device.setDisplayName(userProfile.getFirstName()+" "+userProfile.getLastName());
+            device.setDisplayName(registrationRequest.getDeviceName());
             device = certificateAuthority.getSignedCertificate(user, device);
             if(device == null){
                 log.error("Could not succesfully create a device certificate!");
@@ -72,7 +72,7 @@ public class RegisterDeviceFlow {
                     device.getCertificate().getPublicKey(), user.getEthAddress());
             response.setDeviceReceipt(devReceipt[0]);
             response.setReceiptSignature(devReceipt[1]);
-            response.setDisplayName(device.getDisplayName());
+            response.setDisplayName(userProfile.getFirstName()+" "+userProfile.getLastName());
             //We need to set
             response.setNameServer(nameServer.getURI());
             if(userProfile.getProfilePicture() != null) response.setUserPhoto(userProfile.getProfilePicture());
