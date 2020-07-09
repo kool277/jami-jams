@@ -53,13 +53,10 @@ public class UserProfileService {
     public UserProfile[] getUserProfile(String queryString, String field) {
         Endpoint endpoint = ADConnector.getConnection();
         UserProfile[] profiles = null;
-        if (!queryString.startsWith("*")) {
-            queryString = queryString.concat("*");
-        }
         try {
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;
-            if (queryString.contains("*")) {
+            if (queryString.equals("*")) {
                 sentence = new QueryAssembler().addPhrase(FieldType.OBJECT_CLASS, PhraseOperator.EQUAL, ObjectType.USER.toString()).closeSentence();
             } else {
                 if (field.equals("LOGON_NAME")) {
@@ -86,6 +83,7 @@ public class UserProfileService {
             for (int i = 0; i < profiles.length; i++) {
                 profiles[i] = profileFromResponse(results.get(i));
             }
+            profiles = removeNull(profiles);
             return profiles;
         } catch (Exception e) {
             log.error("Could not find entity with specified parameters.");
@@ -93,6 +91,14 @@ public class UserProfileService {
         } finally {
             ADConnector.returnConnection(endpoint);
         }
+    }
+
+    public UserProfile[] removeNull(UserProfile[] a) {
+        ArrayList<UserProfile> removedNull = new ArrayList<UserProfile>();
+        for (UserProfile p : a)
+            if (p != null)
+                removedNull.add(p);
+        return removedNull.toArray(new UserProfile[0]);
     }
 
     public static QueryRequest buildRequest(Endpoint endpoint) {

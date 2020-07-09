@@ -132,10 +132,11 @@ function listAllUsers(data, statusCode, jqXHR)
                 '<tr class="user-data bubble"><td data-href="aa" class="mobile">Username</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + resultSet[i].username +
                 '</td><td class="mobile">First Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + firstName + '' +
                 '</td><td class="mobile">Last Name</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '">' + lastName +
-                '</td><td class="mobile">Devices</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) +'"><i class="fa fa-mobile"></i></td><td class="spacer--table">spacer</td>' +
+                '</td><td class="mobile">Devices</td><td style="cursor:pointer;" data-href="user.html?username=' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-mobile"></i></td><td class="spacer--table">spacer</td>' +
                 '<td class="mobile">Actions</td><td class="user-information-search"><button class="edit-user" title="Edit User" style="display: none;" user-id="' + encodeURIComponent(resultSet[i].username) + '"><i class="fa fa-edit"></i></button>' +
                 '<button type="button" id="de-authorize-user" class="btn-danger de-authorize-user" title="Revoke User" user-id="' + encodeURIComponent(resultSet[i].username) + '"' + '><i class="fa fa-trash"></i></button>' +
                 '</td><td class="spacer--table">spacer</td></tr>'
+
         }
 
         $('.empty-results').remove();

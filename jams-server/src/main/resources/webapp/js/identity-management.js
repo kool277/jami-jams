@@ -62,7 +62,7 @@ function setLDAPParametersData(form) {
           settings[field.name] = field.value;
   });
   settings['fieldMappings'] = {};
-  settings['fieldMappings']['uid'] = "Username"
+  settings['fieldMappings']['uid'] = "Username";
   settings['fieldMappings']['givenName'] = "FirstName";
   settings['fieldMappings']['sn'] = "LastName";
   settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
@@ -72,13 +72,11 @@ function setLDAPParametersData(form) {
   settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
   settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
   settings['fieldMappings']['o'] = "Organization";
-  settings['fieldMappings']['uid'] = "Username";
 
   authSource['type'] = 'LDAP';
   authSource['ldapSettings'] = settings;
-  var data = authSource;
   // post request
-    postParameters(data);
+  ajaxApiCall(api_path_post_install_auth,'POST',authSource,null, handleAuthInstall);
 }
 
 function setADParametersData(form) {
@@ -94,31 +92,30 @@ function setADParametersData(form) {
     });
 
     settings['fieldMappings'] = {};
-    settings['fieldMappings']['sAMAccountName'] = "Username"
-    settings['fieldMappings']['givenName'] = "FirstName";
+    settings['fieldMappings']['samaccountname'] = "Username";
+    settings['fieldMappings']['givenname'] = "FirstName";
     settings['fieldMappings']['sn'] = "LastName";
-    settings['fieldMappings']['jpegPhoto'] = "ProfilePicture";
+    settings['fieldMappings']['thumbnailphoto'] = "ProfilePicture";
     settings['fieldMappings']['mail'] = "Email";
-    settings['fieldMappings']['telephoneNumber'] = "PhoneNumber";
+    settings['fieldMappings']['telephonenumber'] = "PhoneNumber";
     settings['fieldMappings']['mobile'] = "MobileNumber";
-    settings['fieldMappings']['facsimileTelephoneNumber'] = "FaxNumber";
-    settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
+    settings['fieldMappings']['facsimiletelephonenumber'] = "FaxNumber";
+    settings['fieldMappings']['extensionname'] = "PhoneNumberExtension";
     settings['fieldMappings']['o'] = "Organization";
-    settings['fieldMappings']['uid'] = "Username";
 
     authSource['type'] = 'AD';
     authSource['activeDirectorySettings'] = settings;
-    var data = authSource;
     // post request
-    postParameters(data);
+    ajaxApiCall(api_path_post_install_auth,'POST',authSource,null, handleAuthInstall);
 }
 
-// send post request
-function postParameters(data) {
-  usePublicNS = $('#publicNS')[0].checked;
-  var callback = set_installation_response("server-parameters.html" + "?usePublicNS=" + usePublicNS);
-
-  ajaxApiCall(api_path_post_install_auth,'POST',data,null,callback);
+function handleAuthInstall(data) {
+    if (data.status == 500 || data.status == 405)
+        $('#badAuthModalCenter').modal('show');
+    else {
+        usePublicNS = $('#publicNS')[0].checked;
+        window.location.replace("server-parameters.html" + "?usePublicNS=" + usePublicNS);
+    }
 }
 
 // show tooltip

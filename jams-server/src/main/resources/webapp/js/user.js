@@ -187,7 +187,7 @@ function setUserInfoDataSource(data, statusCode, jqXHR) {
         var disabled = '';
         if (resultSet.length > 0) {
             // build table row for User item
-            for (i = 0; i < resultSet.length; i++) {
+            for (i = 0; i < 1; i++) {
 
                 // determine User status
                 if (userStatus == "Revoked") {
