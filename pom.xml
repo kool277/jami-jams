@@ -19,7 +19,6 @@
         <module>jami-dht</module>
         <module>authentication-module</module>
         <module>jami-nameserver</module>
-        <module>updater</module>
         <module>jams-launcher</module>
     </modules>
 
@@ -58,6 +57,7 @@
         <maven.resources.version>3.1.0</maven.resources.version>
         <embedded.ldap.unit>0.8.1</embedded.ldap.unit>
         <maven.exec.version>1.1.1</maven.exec.version>
+        <zmq.version>0.5.2</zmq.version>
     </properties>
 
     <dependencies>

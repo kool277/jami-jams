@@ -20,7 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package net.jami.jams.updater;
+package net.jami.jams.server.update;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.VersioningUtils;
+import net.jami.jams.server.Server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,12 +100,8 @@ public class JAMSUpdater implements AppUpdater {
         //Some logic here about replacing the existing files.
         boolean res = updateDownloader.downloadFiles(getRemoteVersions());
         //Notify back up-stream to the launcher that we want the update to happen.
-        if(res) {
-            doUpdate.set(true);
-            synchronized (doUpdate) {
-                doUpdate.notify();
-            }
-        }
+        if(res)
+            Server.updateInterface.approveUpdate();
         else
             log.error("Could not perform update - the downloaded files may have been invalid!");
     }

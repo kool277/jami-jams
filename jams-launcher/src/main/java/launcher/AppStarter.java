@@ -20,17 +20,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package launcher;
 
-import launcher.loaders.ServerLoader;
-import launcher.loaders.UpdaterLoader;
+import launcher.zmq.MessageReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.updater.AppUpdater;
-import net.jami.jams.common.utils.LibraryLoader;
-import net.jami.jams.server.Server;
+import org.zeromq.SocketType;
+import org.zeromq.ZMQ;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -39,64 +41,113 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AppStarter extends Thread {
 
     private final AtomicBoolean doUpdate = new AtomicBoolean(false);
-    private Server server;
-    private AppUpdater appUpdater;
-    private static Integer port = 8080;
-    private static String serverCertificate = null;
-    private static String serverPrivateKey = null;
-
+    public static ZMQ.Context context = ZMQ.context(1);
+    private static ZMQ.Socket publisher;
+    private static ZMQ.Socket receiver;
+    private MessageReceiver messageReceiver;
+    private static String[] parentArgs;
+    private long jamsProcessId = -1L;
 
     /**
-     *  The launcher is essentially responsible of firing up the main application JAR.
-     *  The problematic here is whenever we will fire up a JAR (but then we need to be able to
-     *  kill and restart his PID, or whenever we fork via a main).
+     * The launcher is essentially responsible of firing up the main application JAR.
+     * The problematic here is whenever we will fire up a JAR (but then we need to be able to
+     * kill and restart his PID, or whenever we fork via a main).
      */
-    public static void main(String[] args) {
-        //We also need to fork the updater, which is a bit trickier, basically we just need a signaling
-        //system between both systems.
-        AppStarter appStarter = new AppStarter();
-        appStarter.start();
+    private void setupZmqBridge(){
+        publisher = context.socket(SocketType.PUB);
+        publisher.bind("tcp://*:4572");
+        //Use this to updater.
+        receiver = context.socket(SocketType.REP);
+        receiver.bind("tcp://*:4573");
+        messageReceiver = new MessageReceiver(receiver, doUpdate);
+        messageReceiver.start();
+    }
 
-        switch (args.length) {
-            case 1:
-                port = (Integer.parseInt(args[0]));
-                break;
-            case 3:
-                port = (Integer.parseInt(args[0]));
-                serverCertificate = (args[1]);
-                serverPrivateKey = (args[2]);
-                break;
-            default:
-                log.error("An unknown error occurred when parsing command line arguments!");
-                break;
+    private void unpackUpdate(){
+        for (File f : Objects.requireNonNull(new File(System.getProperty("user.dir") + "/tmp/").listFiles())) {
+            if (f.getName().contains("jams-server")) {
+                if (!f.renameTo(new File(System.getProperty("user.dir") + "/" + f.getName()))) {
+                    log.info("An error occurred while attempting to move the file!");
+                } else {
+                    f.delete();
+                }
+            } else {
+                if (!f.renameTo(new File(System.getProperty("user.dir") + "/libs/" + f.getName()))) {
+                    log.info("An error occurred while attempting to move the file!");
+                } else {
+                    f.delete();
+                }
+            }
         }
+        // delete tmp folder
+        new File(System.getProperty("user.dir") + "/tmp/").delete();
+    }
+
+
+    public AppStarter(String[] args) {
+        parentArgs = args;
+        try {
+            jamsProcessId = startAccountManagementServer(args);
+            setupZmqBridge();
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                log.info("Shutting down...");
+                ProcessHandle.of(jamsProcessId).get().destroyForcibly();
+            }));
+        } catch (Exception e) {
+            log.warn("Could not create and bind publisher and/or receiver! Please contact software developer");
+            System.exit(-1);
+        }
+    }
+
+    public static void main(String[] args) {
+        AppStarter appStarter = new AppStarter(args);
+        appStarter.start();
     }
 
     //How this works - once the JAMSUpdater has notified back upstream to do an update, we lockdown
     //and run the good old routine
     @Override
     public void run() {
-        //TODO: Hack this a bit to get it to work better - passing arguments damnit.
-        LibraryLoader.loadlibs(System.getProperty("user.dir"),AppStarter.class);
-        appUpdater = UpdaterLoader.loadUpdater(doUpdate);
-        server = ServerLoader.loadServer(appUpdater, Integer.toString(port), serverCertificate, serverPrivateKey);
-        while(true) {
+        while (true) {
             try {
-                synchronized (doUpdate){
+                if (doUpdate.get()) {
+                    // Stop current process
+                    ProcessHandle.of(jamsProcessId).get().destroyForcibly();
+                    // transfer newly downloaded files to the right folder.
+                    doUpdate.set(false);
+                    //Unpack the update.
+                    unpackUpdate();
+                    // Restart the main JAR and set the processId to it.
+                    jamsProcessId = startAccountManagementServer(parentArgs);
+                    log.info("Update complete. Now running newest version");
+                }
+                synchronized (doUpdate) {
                     doUpdate.wait();
                 }
-                if(doUpdate.get()){
-                    Server.tomcatLauncher.stopTomcat();
-                    //This will trigger a force reload of the lib.
-                    LibraryLoader.loadlibs(System.getProperty("user.dir"), AppStarter.class);
-                    server = ServerLoader.loadServer(appUpdater, Integer.toString(port), serverCertificate, serverPrivateKey);
-                    this.doUpdate.set(false);
-                }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("An error occurred. Either while attempting to verify if an update was available, or" +
-                          "when attempting to reload a library: {}", e.getMessage());
+                    "when attempting to reload a library: {}", e.getMessage());
             }
         }
+    }
+
+    public static long startAccountManagementServer(String[] parentArgs) throws IOException {
+        ProcessBuilder pb = null;
+        switch (parentArgs.length) {
+            case 1:
+                pb = new ProcessBuilder("java", "-jar", "jams-server.jar", parentArgs[0]);
+                break;
+            case 3:
+                pb = new ProcessBuilder("java", "-jar", "jams-server.jar",
+                    parentArgs[0], parentArgs[1], parentArgs[2]);
+                break;
+            default:
+                break;
+        }
+        assert pb != null;
+        pb.directory(new File(System.getProperty("user.dir")));
+        pb.inheritIO();
+        Process p = pb.start();
+        return p.pid();
     }
 }

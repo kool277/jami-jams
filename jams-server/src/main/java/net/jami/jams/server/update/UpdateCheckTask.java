@@ -20,7 +20,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package net.jami.jams.updater;
+package net.jami.jams.server.update;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;

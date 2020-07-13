@@ -33,7 +33,6 @@ import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.common.server.ServerSettings;
-import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.nameserver.LocalNameServer;
 import net.jami.jams.nameserver.PublicNameServer;
@@ -41,6 +40,8 @@ import net.jami.jams.server.core.TomcatLauncher;
 import net.jami.jams.server.licensing.LicenseService;
 import net.jami.jams.server.startup.AuthModuleLoader;
 import net.jami.jams.server.startup.CryptoEngineLoader;
+import net.jami.jams.server.update.JAMSUpdater;
+import net.jami.jams.server.update.UpdateInterface;
 
 import java.awt.*;
 import java.io.File;
@@ -63,15 +64,8 @@ public class Server {
     public static NameServer nameServer;
     public static TomcatLauncher tomcatLauncher = null;
     public static LicenseService licenseService = new LicenseService();
-    public static AppUpdater appUpdater;
-
-    public Server(AppUpdater appUpdater, String port, String serverCertificate, String serverPrivateKey) {
-        ClassPool.getDefault().clearImportedPackages();
-        JsoniterRegistry.initCodecs();
-        Server.appUpdater = appUpdater;
-        String[] args = {port, serverCertificate, serverPrivateKey};
-        main(args);
-    }
+    public static final UpdateInterface updateInterface = new UpdateInterface();
+    public static JAMSUpdater appUpdater = new JAMSUpdater(new AtomicBoolean(false));
 
 
     public static void main(String[] args) {
@@ -89,8 +83,6 @@ public class Server {
                 System.exit(-1);
                 break;
         }
-
-        //Look for the config.json file locally.
 
         //Pre-load the libraries we should pre-load.
         LibraryLoader.loadlibs("libs", Server.class);

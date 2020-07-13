@@ -175,69 +175,6 @@ function setADblocks(ad_list) {
   });
 }
 
-/*======== HSQL =============*/
-
-// display add HSQL template form
-// $('#addAuthenticationHSQL').on('click', function () {
-//     $('#HSQL-form-submit').text('Create HSQL authentication service');
-//     $('#HSQLModalCenter').modal('show');
-//     $("#HSQL-form")[0].reset();
-// });
-//
-// // submit create/edit AD authentication
-// $(document).on("submit","#HSQL-form",function (e) {
-//     e.preventDefault();
-//     setHSQLparametersData($(this));
-// });
-//
-// function setHSQLparametersData(form) {
-//     event.preventDefault();
-//     var checked = "";
-//
-//     if ($('#publicNS')[0].checked)
-//         checked = "http://ns.jami.net";
-//     else
-//         checked = window.location.origin;
-//
-//     var data = {
-//         "CN": checked
-//     };
-//     // edit post request
-//     if (data) {
-//         ajaxApiCall(api_path_get_post_configuration_auth_service,'POST', data, null, callbackAuthentication);
-//     }
-//     // create post request
-//     else {
-//         delete data['configId'];
-//         auth_type = "HSQL";
-//         auth_action = "CREATE";
-//         ajaxApiCall(api_path_get_post_configuration_auth_service,'POST', data, null, callbackAuthentication);
-//     }
-// }
-//
-// // set HSQL configuration blocks
-// function setHSQLblocks(hsql_list) {
-//     $.each(hsql_list, function (index, hsql) {
-//         // set the display values
-//         var hsql_template = $($('#hsqlTemplate').html());
-//         var $new_hsql = hsql_template.clone();
-//         var usePublicNS = '';
-//
-//         if (hsql_list[0].cN == "http://ns.jami.net")
-//             usePublicNS = "Yes";
-//         else
-//             usePublicNS = "No";
-//
-//         $new_hsql.find('.mr-2').html("HSQL Authentication");
-//         $new_hsql.find('.mr-3').html("Using public nameserver: " + usePublicNS);
-//         var edit_button = $new_hsql.find('.edit-auth').attr('data-id', "HSQL");
-//         var delete_button = $new_hsql.find('.delete-auth').attr('data-id', "HSQL");
-//         $(edit_button).on( 'click', editAuthorizationHSQL);
-//         $(delete_button).on( 'click', deleteAuthorization);
-//         $new_hsql.insertAfter('#authDataWrapper');
-//     });
-// }
-
 /*======== SERVER PARAMETERS =============*/
 
 // submit edit serverParameters
@@ -357,10 +294,7 @@ $("#form-register-license").submit(function (event) {
     setTimeout(function() {
         $('.loading').hide();
         if (base64License != "") {
-            jsonData = {
-                "base64License": base64License
-            }
-            ajaxApiCall(api_path_post_configuration_register_license, 'POST', jsonData, null, registerLicenseHandler, null);
+            ajaxApiCall(api_path_post_subscription_load, 'POST', base64License, null, registerLicenseHandler, null);
         }
         else {
             $('.configMessage').remove();

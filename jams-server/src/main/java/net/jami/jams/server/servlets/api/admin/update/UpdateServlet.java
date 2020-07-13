@@ -31,6 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.updater.FullSystemStatusResponse;
+import net.jami.jams.server.Server;
 
 import java.io.IOException;
 
@@ -54,8 +55,8 @@ public class UpdateServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        if(appUpdater.getUpdateAvailable()){
+        if(appUpdater.getUpdateAvailable())
             appUpdater.doUpdate();
-        }
+
     }
 }

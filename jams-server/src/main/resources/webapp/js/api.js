@@ -44,8 +44,8 @@ var api_path_get_server_status = '/api/info';
 var api_path_get_post_configuration_auth_service = '/api/configuration/authservice';
 var api_path_get_post_configuration_global_settings = '/api/configuration/globalsettings';
 var api_path_post_configuration_change_password = '/api/admin/user';
-var api_path_post_configuration_register_license = '/api/subscription';
 var api_path_get_subscription_status = '/api/admin/subscription';
+var api_path_post_subscription_load = '/api/admin/subscription';
 var api_path_get_directories = '/api/auth/directories';
 var api_path_get_needs_update = '/api/admin/update';
 var api_path_get_start_update = '/api/admin/update';
@@ -99,8 +99,9 @@ function ajaxApiCall(api_path, request_type, data, credentials, callBackFunction
         // pass data in the header
         if (data) {
             if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search || api_path == api_path_get_user_search ||
-                (api_path == api_path_post_create_user && request_type == 'POST') || api_path == api_path_post_update_user
-                || api_path == api_path_get_auth_devices || api_path == api_path_post_configuration_change_password || api_path == api_path_get_admin_devices)
+               (api_path == api_path_post_create_user && request_type == 'POST') || api_path == api_path_post_update_user ||
+                api_path == api_path_get_auth_devices || api_path == api_path_post_configuration_change_password || api_path == api_path_get_admin_devices ||
+                api_path == api_path_post_subscription_load)
                 isSearch = true;
 
             // search dataType

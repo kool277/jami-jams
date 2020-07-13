@@ -22,6 +22,8 @@
 */
 package net.jami.jams.server.servlets.api.admin.update;
 
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,10 +32,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.common.annotations.ScopedServletMethod;
+import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.objects.responses.SubscriptionStatusResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
+import net.jami.jams.server.licensing.LicenseService;
 
+import java.io.FileWriter;
 import java.io.IOException;
 
 @WebServlet("/api/admin/subscription")
@@ -55,8 +60,23 @@ public class SubscriptionServlet extends HttpServlet {
     // on disk..
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getInputStream().readAllBytes();
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
+        String license = new String(req.getInputStream().readAllBytes());
+        if(license != null || !license.isBlank()) {
+            // create .dat file to be used later
+            FileWriter fw = new FileWriter("license.dat");
+            fw.write(license);
+            fw.close();
+            LicenseService licenseService = new LicenseService();
+            licenseService.loadLicense();
+            if (Server.activated.get()) {
+                resp.setStatus(200);
+                return;
+            }
+        }
+
+        resp.setStatus(500);
 
     }
 }
