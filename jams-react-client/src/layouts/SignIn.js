@@ -60,7 +60,8 @@ export default function SignIn(props) {
     const history = useHistory();
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [errorMessage, setErrorMessage] = React.useState(false);
+    const [error, setError] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState("");
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -68,8 +69,15 @@ export default function SignIn(props) {
             "username": username,
             "password": password
         }
-        auth.login(jsonData, () => { 
-            props.history.push('/admin'); 
+        auth.login(jsonData, () => {
+            if(auth.authenticated && auth.access_token != ""){
+                auth.checkLastKnowStep(()=>{
+                    history.push('/');
+                })
+            }else{
+                setError(true)
+                setErrorMessage("Login failed check your credentials")
+            }
         })
     }
 
@@ -80,7 +88,8 @@ export default function SignIn(props) {
                 <img src={logo} style={{ width: "25em", paddingBottom: "20px" }} />
                 <Typography component="h1" variant="h5">
                     Sign in
-        </Typography>
+                </Typography>
+                {error && <Alert severity="error">{errorMessage}</Alert>}
                 <form className={classes.form} noValidate onSubmit={handleSubmit}>
                     <TextField
                         variant="outlined"
@@ -136,7 +145,6 @@ export default function SignIn(props) {
             <Box mt={8}>
                 <Copyright />
             </Box>
-            {errorMessage && <Alert severity="error">Error login wrong credentials!</Alert>}
         </Container>
     );
 }

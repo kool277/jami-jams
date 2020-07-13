@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
@@ -17,11 +17,6 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo-jams.svg";
-
-import configApiCall from "api.js";
-import axios from 'axios';
-
-import { api_path_post_install_admin } from "globalUrls";
 
 let ps;
 

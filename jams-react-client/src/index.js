@@ -31,17 +31,21 @@ import SignIn from "layouts/SignIn.js";
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
 const hist = createBrowserHistory();
-auth.checkAdminAccountStatus(() => {
-  ReactDOM.render(
-    <Router history={hist}>
-      <Switch>
-        <ConfiguredRoute path="/signin" component={SignIn} />
-        <ProtectedRoute path="/admin" component={Admin} />
-        {/*<Route path="/rtl" component={RTL} />*/}
-        <Redirect from="/" to="/signin" />
-      </Switch>
-    </Router>,
-    document.getElementById("root")
-  );
-})
+auth.isServerInstalled(() => {
+  auth.checkAdminAccountStatus(() => {
+    auth.checkLastKnowStep(() => {
+      ReactDOM.render(
+        <Router history={hist}>
+          <Switch>
+            <ConfiguredRoute path="/signin" component={SignIn} />
+            <ProtectedRoute path="/admin" component={Admin} />
+            {/*<Route path="/rtl" component={RTL} />*/}
+            <Redirect from="/" to="/signin" />
+          </Switch>
+        </Router>,
+        document.getElementById("root")
+      ); 
+    });
+  });
+});
 

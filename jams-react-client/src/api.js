@@ -62,7 +62,7 @@ export default function configApiCall(api_path, request_type, data, credentials)
         url: url_path + ":" + url_port + api_path,
         method: request_type,
         crossDomain: true,
-        dataType: "json"
+        dataType: "json",
     };
 
     // pass credentials in the header
@@ -102,7 +102,6 @@ export default function configApiCall(api_path, request_type, data, credentials)
             } else {
                 config['headers'] = {
                     "Content-type": "application/json"
-
                 }
             }
 
@@ -113,9 +112,3 @@ export default function configApiCall(api_path, request_type, data, credentials)
     isSearch = false;
     return config;
 }
-
-// function setJWT(value) {
-//     window.localStorage.removeItem('access_token');
-//     window.localStorage.setItem('access_token', value.access_token);
-// }
-
