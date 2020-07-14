@@ -143,7 +143,10 @@ $(document).ready(function() {
             deviceId = $('input[name="deviceId"]').val();
             deviceName = $('input[name="deviceName"]').val();
             $('.loading').show();
-            ajaxApiCall(api_path_rename_device + "?deviceId=" + deviceId + "&deviceName=" +  deviceName, 'PUT', null, null, renameDeviceHandler);
+            if (getAdminStatus())
+                ajaxApiCall(api_path_admin_rename_device + "?username=" + username + "&deviceId=" + deviceId + "&deviceName=" +  deviceName, 'PUT', null, null, renameDeviceHandler);
+            else
+                ajaxApiCall(api_path_auth_rename_device + "?deviceId=" + deviceId + "&deviceName=" +  deviceName, 'PUT', null, null, renameDeviceHandler);
         });
 
         // revoke user device
@@ -398,20 +401,20 @@ function revokeDeviceHandler(data, statusCode, jqXHR) {
 }
 
 // callback for renaming a device
-function renameDeviceHandler(data, statusCode, jqXHR) {
-    var button = $("button[data-device-id='" + deviceId + "']");
+function renameDeviceHandler(data) {
+
     var deviceName = $("input[name='deviceName']").val();
-    if (jqXHR.status == 200) {
+    if (data.status == 200) {
         setTimeout(function () {
             $('.loading').hide();
             $("tr[data-device-id='" + deviceId + "']").find(".device-name").text(deviceName);
-        }, 1000); // in milliseconds
+        }, 100); // in milliseconds
     }
     else {
         setTimeout(function () {
             $('.loading').hide();
             $('.loading').before('<div class="configMessage" id="configMessageError"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>An error has occured, please try again...</div>');
-        }, 1000);
+        }, 100);
     }
 }
 

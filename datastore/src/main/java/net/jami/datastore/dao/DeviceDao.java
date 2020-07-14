@@ -79,6 +79,25 @@ public class DeviceDao extends AbstractDao<Device> {
 
     @Override
     public boolean updateObject(StatementList update, StatementList constraints) {
-        return false;
+        String deviceName = update.getStatements().get(0).getValue();
+        String user = update.getStatements().get(1).getValue();
+        String deviceId = update.getStatements().get(2).getValue();
+
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+
+        try{
+            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE devices SET displayName = ? WHERE owner = ? AND deviceId = ?");
+            ps.setString(1, deviceName);
+            ps.setString(2, user);
+            ps.setString(3, deviceId);
+            return ps.executeUpdate() != 0;
+        }
+        catch (Exception e){
+            log.error("An error has occurred while trying to update a user: " + e.toString());
+            return false;
+        }
+        finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
     }
 }
