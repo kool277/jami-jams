@@ -115,7 +115,7 @@ public class Server {
                             serverSettings.getActiveDirectoryConfiguration());
                 }
                 if (serverSettings.getLocalDirectoryConfiguration() != null) {
-                    LocalAuthSettings settings = JsonIterator.deserialize(serverSettings.getActiveDirectoryConfiguration(), LocalAuthSettings.class);
+                    LocalAuthSettings settings = JsonIterator.deserialize(serverSettings.getLocalDirectoryConfiguration(), LocalAuthSettings.class);
                     if(settings.getPublicNames()) nameServer = new PublicNameServer(settings.getPublicNameServer());
                     else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
                 }
