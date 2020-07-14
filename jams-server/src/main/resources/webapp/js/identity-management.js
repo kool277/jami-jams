@@ -35,9 +35,8 @@ $("#HSQL-form").submit(function (event) {
 
     authSource['type'] = 'LOCAL';
     authSource['localAuthSettings'] = settings;
-    var data = authSource;
     // post request
-    postParameters(data);
+    ajaxApiCall(api_path_post_install_auth,'POST',authSource,null, handleAuthInstall);
 });
 
 // LDAP

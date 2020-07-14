@@ -74,11 +74,6 @@ function setParametersData(form) {
     data['signingAlgorithm'] = "SHA512WITHRSA";
 
     // send parameters via POST request
-    postParameters(data)
-}
-
-// send AJAX request
-function postParameters(data) {
     ajaxApiCall(api_path_post_install_server,'POST',data,null,callback);
 }
 
