@@ -72,7 +72,13 @@ export default function SignIn(props) {
         auth.login(jsonData, () => {
             if(auth.authenticated && auth.access_token != ""){
                 auth.checkLastKnowStep(()=>{
-                    history.push('/');
+                    if(auth.isInstalled){
+                        history.push('/admin');
+                    }
+                    else{
+                        history.push('/');
+                    }
+
                 })
             }else{
                 setError(true)

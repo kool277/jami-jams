@@ -12,7 +12,7 @@ import axios from 'axios';
 import configApiCall from '../../api'
 import { api_path_post_install_ca } from '../../globalUrls'
 import Select from "@material-ui/core/Select";
-import buildSelectMenuItems from "../../tools";
+import * as tool from "../../tools";
 import Input from "@material-ui/core/Input";
 import Typography from "@material-ui/core/Typography";
 
@@ -51,8 +51,8 @@ export default function CaSetup(props) {
         {value: 315569260000, label: "10 years"},
     ];
 
-    const certificateOptionsItems = buildSelectMenuItems(getCertificateOptions);
-    const validityPeriodsItems = buildSelectMenuItems(validityPeriods);
+    const certificateOptionsItems = tool.buildSelectMenuItems(getCertificateOptions);
+    const validityPeriodsItems = tool.buildSelectMenuItems(validityPeriods);
     const classes = useStyles();
 
     const [commonname, setCommonName] = React.useState("");
@@ -76,7 +76,7 @@ export default function CaSetup(props) {
             props.setError(true)
             props.setErrorMessage("An unknown error occurred while installing the CA. Please try again.");
         }
-        else if (data.status == 200){
+         else if (data.status == 200){
             auth.uri = '/api/install/auth';
             history.push('/');
         }
@@ -113,13 +113,15 @@ export default function CaSetup(props) {
         let jsonData = {};
         if(certificateOpt.value == 0){
             jsonData = {
-                'commonName': commonname,
-                'organizationalUnit': organizationUnit,
-                'organization': organization,
-                'city': city,
-                'state': state,
-                'country': country,
-                'lifetime': validityPeriod.value
+                'fields': {
+                    'commonName': commonname,
+                    'organizationalUnit': organizationUnit,
+                    'organization': organization,
+                    'city': city,
+                    'state': state,
+                    'country': country,
+                    'lifetime': validityPeriod.value
+                }
             }
         }
         else if(certificateOpt.value == 1){
@@ -136,7 +138,7 @@ export default function CaSetup(props) {
             console.log(response);
         }).catch((error)=>{
             props.setError(error);
-            console.log('Error creating admin account: ' + error );
+            console.log('Error installing CA Setup: ' + error );
         })
     }
     if(certificateOpt.value == 0){

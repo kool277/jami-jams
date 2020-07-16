@@ -13,8 +13,7 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import avatar1 from "assets/img/faces/cyrille_beraud.jpeg";
-import avatar2 from "assets/img/faces/christophe_villemaire.jpeg";
+import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 const styles = {
     cardCategoryWhite: {
@@ -46,7 +45,7 @@ export default function Blueprints() {
                     <Card profile>
                         <CardAvatar profile>
                             <a href="#pablo" onClick={e => e.preventDefault()}>
-                                <img src={avatar1} alt="..." />
+                                <img src={noProfilePicture} alt="..." />
                             </a>
                         </CardAvatar>
                         <CardBody profile>
@@ -65,7 +64,7 @@ export default function Blueprints() {
                     <Card profile>
                         <CardAvatar profile>
                             <a href="#pablo" onClick={e => e.preventDefault()}>
-                                <img src={avatar2} alt="..." />
+                                <img src={noProfilePicture} alt="..." />
                             </a>
                         </CardAvatar>
                         <CardBody profile>

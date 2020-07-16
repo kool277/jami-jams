@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 import Select from '@material-ui/core/Select';
 
-import buildSelectMenuItems from '../../tools'
+import {buildSelectMenuItems} from '../../tools'
 
 import axios from 'axios';
 import configApiCall from '../../api'
@@ -51,7 +51,7 @@ export default function IdentityManagement(props) {
         {value: 1, label: "LDAP Server"},
         {value: 2, label: "Active Directory"},
     ];
-    
+
     const directoryTypesItems = buildSelectMenuItems(directoryTypes);
 
     const classes = useStyles();
@@ -76,7 +76,7 @@ export default function IdentityManagement(props) {
 
     /**
      * LDAP storage Config
-     * 
+     *
      */
     const ldapFiltersTypes = [
         {value: 0, label: "UID"},
@@ -93,7 +93,7 @@ export default function IdentityManagement(props) {
     const handleUseStartTLSChange = (event) => {
         setUseStartTLS(event.target.value)
     }
-    
+
     const handleNameServerChange = (event) => {
         setNameServerChecked(event.target.checked)
     }
@@ -122,7 +122,7 @@ export default function IdentityManagement(props) {
             "publicNameServer": "http://ns.jami.net",
             "publicNames": nameServerChecked
         };
-    
+
         authSource['type'] = 'LOCAL';
         authSource['localAuthSettings'] = settings;
         return authSource;
@@ -150,7 +150,7 @@ export default function IdentityManagement(props) {
         settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
         settings['fieldMappings']['o'] = "Organization";
         settings['fieldMappings']['uid'] = "Username";
-      
+
         authSource['type'] = 'LDAP';
         authSource['ldapSettings'] = settings;
         return authSource;
@@ -166,7 +166,7 @@ export default function IdentityManagement(props) {
         settings['realm'] = domainName
         settings['username'] = adminUsername
         settings['password'] = password
-    
+
         settings['fieldMappings'] = {};
         settings['fieldMappings']['sAMAccountName'] = "Username"
         settings['fieldMappings']['givenName'] = "FirstName";
@@ -179,7 +179,7 @@ export default function IdentityManagement(props) {
         settings['fieldMappings']['extensionName'] = "PhoneNumberExtension";
         settings['fieldMappings']['o'] = "Organization";
         settings['fieldMappings']['uid'] = "Username";
-    
+
         authSource['type'] = 'AD';
         authSource['activeDirectorySettings'] = settings;
         return authSource;
@@ -249,7 +249,7 @@ export default function IdentityManagement(props) {
     }
 
     return (
-            
+
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
                 <Typography variant="h5" gutterBottom color="primary">Identity Management</Typography>
                 <Grid container spacing={3}>
@@ -263,7 +263,7 @@ export default function IdentityManagement(props) {
                         variant="outlined"
                         children={directoryTypesItems}
                         />
-                    </Grid>                    
+                    </Grid>
                 </Grid>
                 {returnForm()}
                 <Button

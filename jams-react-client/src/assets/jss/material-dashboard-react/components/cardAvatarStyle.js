@@ -8,14 +8,14 @@ const cardAvatarStyle = {
     }
   },
   cardAvatarProfile: {
-    maxWidth: "130px",
-    maxHeight: "130px",
-    margin: "-50px auto 0",
+    maxWidth: "80px",
+    maxHeight: "80px",
+    margin: "-50px 10px 0",
     borderRadius: "50%",
     overflow: "hidden",
     padding: "0",
     boxShadow:
-      "0 16px 38px -12px rgba(" +
+      "0 6px 8px -12px rgba(" +
       hexToRgb(blackColor) +
       ", 0.56), 0 4px 25px 0px rgba(" +
       hexToRgb(blackColor) +

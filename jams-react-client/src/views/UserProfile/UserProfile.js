@@ -22,10 +22,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import avatar from "assets/img/faces/cyrille_beraud.jpeg";
-
-import avatar1 from "assets/img/faces/larbi_gharib.jpeg";
-import avatar2 from "assets/img/faces/christophe_villemaire.jpeg";
+import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 import {
   infoColor
@@ -229,7 +226,7 @@ export default function UserProfile() {
             <Card profile>
               <CardAvatar profile>
                 <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={avatar} alt="..." />
+                  <img src={noProfilePicture} alt="..." />
                 </a>
               </CardAvatar>
               <CardBody profile>
@@ -274,7 +271,7 @@ export default function UserProfile() {
             <Card profile>
               <CardAvatar profile>
                 <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={avatar1} alt="..." />
+                  <img src={noProfilePicture} alt="..." />
                 </a>
               </CardAvatar>
               <CardBody profile>
@@ -293,7 +290,7 @@ export default function UserProfile() {
             <Card profile>
               <CardAvatar profile>
                 <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={avatar2} alt="..." />
+                  <img src={noProfilePicture} alt="..." />
                 </a>
               </CardAvatar>
               <CardBody profile>

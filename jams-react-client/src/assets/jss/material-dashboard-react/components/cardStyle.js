@@ -3,6 +3,7 @@ import {
   whiteColor,
   hexToRgb
 } from "assets/jss/material-dashboard-react.js";
+import { grayColor } from "assets/jss/material-dashboard-react";
 
 const cardStyle = {
   card: {
@@ -19,7 +20,24 @@ const cardStyle = {
     flexDirection: "column",
     minWidth: "0",
     wordWrap: "break-word",
-    fontSize: ".875rem"
+    fontSize: ".875rem",
+    "& ul": {
+      "list-style": "none",
+      padding: 0,
+      "& li" :{
+        display: 'flex',
+        alignItems: 'center',
+        "& svg": {
+          marginRight: "10px"
+        },
+        "& img": {
+          marginRight: "10px"
+        }
+      }
+    },
+    "&:hover": {
+      boxShadow: "0 1px 4px 0 rgba(" + hexToRgb(blackColor) + ", 0.54)",
+    }
   },
   cardPlain: {
     background: "transparent",
@@ -27,7 +45,7 @@ const cardStyle = {
   },
   cardProfile: {
     marginTop: "30px",
-    textAlign: "center"
+    textAlign: "left"
   },
   cardChart: {
     "& p": {

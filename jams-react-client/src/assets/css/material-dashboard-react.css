@@ -95,18 +95,18 @@ h3 {
 }
 
 h4 {
-  font-size: 1.3em;
+  font-size: 1em;
   line-height: 1.4em;
 }
 
 h5 {
-  font-size: 1.25em;
+  font-size: 0.9em;
   line-height: 1.4em;
   margin-bottom: 15px;
 }
 
 h6 {
-  font-size: 1em;
+  font-size: 0.5em;
   text-transform: uppercase;
   font-weight: 500;
 }

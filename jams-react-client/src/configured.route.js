@@ -4,6 +4,7 @@ import { Route, Redirect } from 'react-router-dom'
 import auth from './auth'
 import SignUp from "layouts/SignUp";
 import SignIn from "layouts/SignIn";
+import Admin from 'layouts/Admin';
 
 export const ConfiguredRoute = ({ component: Component, ...rest }) => {
     return (
@@ -26,7 +27,13 @@ export const ConfiguredRoute = ({ component: Component, ...rest }) => {
                         }
                         
                     } else{
-                        return <SignIn />
+                        if(auth.isAuthenticated()){
+                            return <Admin />
+                        }
+                        else {
+                            return <SignIn />
+                        }
+
                     }
                 } else {
                     return <SignUp step={0}/>

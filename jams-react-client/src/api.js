@@ -89,7 +89,13 @@ export default function configApiCall(api_path, request_type, data, credentials)
 
         // search dataType
         if (isSearch) {
-            config['data'] = data;
+            if(request_type == 'post'){
+                config['data'] = data;
+            }
+            else {
+                config['params'] = data
+            }
+
         }
         else {
 

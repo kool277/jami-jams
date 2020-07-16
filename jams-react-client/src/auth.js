@@ -34,9 +34,7 @@ class Auth {
             }
             cb()
         }).catch((error) => {
-            //setErrorMessage(true);
-            console.log("Error: " + error);
-            cb()
+            cb(error)
         });
     }
 
@@ -57,7 +55,13 @@ class Auth {
             }
             cb()
         }).catch((error) => {
-            console.log("Error during API request on checkAdminAccountStatus: " + error)
+            if(error.response.status == 404){
+                this.admin = true
+            }
+            else{
+                console.log("Error during API request on checkAdminAccountStatus: " + error)
+            }
+            cb()
         });
     }
 
@@ -77,15 +81,20 @@ class Auth {
     }
 
     checkLastKnowStep(cb) {
-        axios(configApiCall(api_path_get_install_lastKnownStep, 'GET', null, null)).then((response) => {
-            this.uri = response.data['uri']
+        if(this.installed){
             this.authenticated = true
+            console.log("Auth: Server is already installed")
             cb()
-        }).catch((error) => {
-            console.log("Error during API request on checkLastKnowStep: " + error);
-            this.authenticated = false
-            cb()
-        })
+        }else{
+            axios(configApiCall(api_path_get_install_lastKnownStep, 'GET', null, null)).then((response) => {
+                this.uri = response.data['uri']
+                this.authenticated = true
+                cb()
+            }).catch((error) => {
+                console.log("Error during API request on checkLastKnowStep: " + error);
+                cb()
+            })
+        }
     }
 
     hasAdmin() {

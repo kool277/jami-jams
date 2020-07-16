@@ -7,10 +7,7 @@ import Grid from "@material-ui/core/Grid";
 
 const styles = {
   grid: {
-    padding: "0 15px !important",
-    "&:hover": {
-      backgroundColor: "hsla(0,0%,78%,.2)",
-    }
+    padding: "0 5px !important",
   }
 };
 

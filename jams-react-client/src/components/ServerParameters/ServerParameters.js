@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -17,11 +18,12 @@ import CustomPopupState from '../CustomPopupState/CustomPopupState';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
 
-import buildSelectMenuItems from "../../tools";
+import * as tool from "../../tools";
 
 import axios from 'axios';
 import configApiCall from '../../api'
 import {api_path_post_install_server} from '../../globalUrls'
+import auth from 'auth';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -67,12 +69,12 @@ export default function ServerParameters(props) {
         {value: 315569520000, label: "10 Years"},
     ]
 
-    const certificateRevocationTypesItems = buildSelectMenuItems(certificateRevocationTypes);
-    const deviceLifetimeTypesItems = buildSelectMenuItems(deviceLifetimeTypes);
-    const userAccountLifetimeTypesItems = buildSelectMenuItems(userAccountLifetimeTypes);
+    const certificateRevocationTypesItems = tool.buildSelectMenuItems(certificateRevocationTypes);
+    const deviceLifetimeTypesItems = tool.buildSelectMenuItems(deviceLifetimeTypes);
+    const userAccountLifetimeTypesItems = tool.buildSelectMenuItems(userAccountLifetimeTypes);
 
     const classes = useStyles();
-    //const history = useHistory();
+    const history = useHistory();
     const [error, setError] = React.useState(props.error);
     const [domain, setDomain] = React.useState("");
     const [certificateRevocation, setCertificateRevocation] = React.useState(certificateRevocationTypes[0])
@@ -81,6 +83,22 @@ export default function ServerParameters(props) {
     const [sipConfigurationTemplate, setSIPCertificateTemplate] = React.useState(null);
     const [userlifeDisabled, setUserlifeDisabled] = React.useState(false);
 
+    React.useEffect(() => {
+        if(deviceLifetime.value <= userAccountLifetime.value){
+            setUserlifeDisabled(false);
+        }
+        else{
+            setUserlifeDisabled(true);
+        }
+    }, [deviceLifetime, userAccountLifetime]);
+
+    function callBackServerParameters(){
+        auth.installed = true
+        auth.authenticated = true
+        auth.admin = true
+        history.push('/admin');
+    }
+
     function handleSubmit(e) {
         e.preventDefault();
         let jsonData = {};
@@ -88,17 +106,17 @@ export default function ServerParameters(props) {
         if(domain.match(re)){
             jsonData = {
                 'serverDomain': domain,
-                'crlLifetime': certificateRevocation,
-                'deviceLifetime': deviceLifetime,
-                'userLifetime': userAccountLifetime,
+                'crlLifetime': certificateRevocation.value,
+                'deviceLifetime': deviceLifetime.value,
+                'userLifetime': userAccountLifetime.value,
                 'sipConfig': sipConfigurationTemplate,
                 'signingAlgorithm': "SHA512WITHRSA"
             }
             axios(configApiCall(api_path_post_install_server, "POST", jsonData, null)).then((response)=>{
-                console.log(response);
+                callBackServerParameters()
             }).catch((error)=>{
                 setError(error);
-                console.log('Error creating admin account: ' + error );
+                console.log('Error installin server parameters: ' + error );
             })
         }
         else{
@@ -109,34 +127,21 @@ export default function ServerParameters(props) {
     }
 
     const handleCertificateRevocationChange = (event) => {
-        setCertificateRevocation(event.target.value)
+        setCertificateRevocation(tool.retrieveArrayElement(event.target.value,certificateRevocationTypes))
     }
 
     const handleDeviceLifetimeChange = (event) => {
-        setDeviceLifetime(event.target.value)
-        if(parseInt(deviceLifetime) <= parseInt(userAccountLifetime)){
-            setUserlifeDisabled(false);
-        }
-        else{
-            setUserlifeDisabled(true);
-        }
+        setDeviceLifetime(tool.retrieveArrayElement(event.target.value, deviceLifetimeTypes));
     }
 
     const handleUserAccountLifetimeChange = (event) => {
-        setUserAccountLifetime(event.target.value)
-        if(parseInt(deviceLifetime) <= parseInt(userAccountLifetime)){
-            setUserlifeDisabled(false);
-        }
-        else{
-            setUserlifeDisabled(true);
-        }
-
+        setUserAccountLifetime(tool.retrieveArrayElement(event.target.value, userAccountLifetimeTypes));
     }
+
 
     const handleSipConfigurationTemplateChange = (event) => {
         setSIPCertificateTemplate(event.target.files[0])
     }
-
 
     return (
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
@@ -160,7 +165,7 @@ export default function ServerParameters(props) {
             <Select
             labelId="certificate-revocation-select-label"
             fullWidth
-            value={certificateRevocation.id}
+            value={certificateRevocation.value}
             onChange={handleCertificateRevocationChange}
             variant="outlined"
             children={certificateRevocationTypesItems}
@@ -169,7 +174,7 @@ export default function ServerParameters(props) {
             <Select
             labelId="device-lifetime-select-label"
             fullWidth
-            value={deviceLifetime.id}
+            value={deviceLifetime.value}
             onChange={handleDeviceLifetimeChange}
             variant="outlined"
             children={deviceLifetimeTypesItems}
@@ -178,9 +183,9 @@ export default function ServerParameters(props) {
             <Select
             labelId="user-account-lifetime-select-label"
             fullWidth
-            value={userAccountLifetime.id}
+            value={userAccountLifetime.value}
             onChange={handleUserAccountLifetimeChange}
-            disabled={userlifeDisabled}
+            isDisabled={userlifeDisabled}
             variant="outlined"
             children={userAccountLifetimeTypesItems}
             />
