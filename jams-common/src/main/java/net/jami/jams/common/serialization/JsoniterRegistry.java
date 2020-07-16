@@ -27,11 +27,13 @@ import com.jsoniter.output.EncodingMode;
 import com.jsoniter.output.JsonStream;
 import com.jsoniter.spi.DecodingMode;
 import com.jsoniter.spi.JsoniterSpi;
+import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.serialization.decoders.CSRDecoder;
 import net.jami.jams.common.serialization.decoders.PrivateKeyDecoder;
 import net.jami.jams.common.serialization.decoders.X509CertificateDecoder;
 import net.jami.jams.common.serialization.encoders.PrivateKeyEncoder;
 import net.jami.jams.common.serialization.encoders.X509CertificateEncoder;
+import net.jami.jams.common.serialization.serializers.ContactCodec;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
 import java.security.PrivateKey;
@@ -47,6 +49,8 @@ public class JsoniterRegistry {
         JsoniterSpi.registerTypeEncoder(X509Certificate.class,new X509CertificateEncoder());
         JsoniterSpi.registerTypeEncoder(PrivateKey.class,new PrivateKeyEncoder());
         JsoniterSpi.registerTypeDecoder(PKCS10CertificationRequest.class,new CSRDecoder());
+        JsoniterSpi.registerTypeEncoder(Contact.class,new ContactCodec());
+        JsoniterSpi.registerTypeDecoder(Contact.class,new ContactCodec());
     }
 
 

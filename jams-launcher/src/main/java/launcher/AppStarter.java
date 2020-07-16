@@ -87,7 +87,7 @@ public class AppStarter extends Thread {
     public AppStarter(String[] args) {
         parentArgs = args;
         try {
-            jamsProcessId = startAccountManagementServer(args);
+            startAccountManagementServer(args);
             setupZmqBridge();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 log.info("Shutting down...");
@@ -108,6 +108,7 @@ public class AppStarter extends Thread {
     //and run the good old routine
     @Override
     public void run() {
+        //TODO: Hack this a bit to get it to work better - passing arguments damnit.
         while (true) {
             try {
                 if (doUpdate.get()) {
@@ -115,7 +116,7 @@ public class AppStarter extends Thread {
                     ProcessHandle.of(jamsProcessId).get().destroyForcibly();
                     // transfer newly downloaded files to the right folder.
                     doUpdate.set(false);
-                    //Unpack the update.
+                    //Upack the update.
                     unpackUpdate();
                     // Restart the main JAR and set the processId to it.
                     jamsProcessId = startAccountManagementServer(parentArgs);
@@ -133,6 +134,7 @@ public class AppStarter extends Thread {
 
     public static long startAccountManagementServer(String[] parentArgs) throws IOException {
         ProcessBuilder pb = null;
+        Process p;
         switch (parentArgs.length) {
             case 1:
                 pb = new ProcessBuilder("java", "-jar", "jams-server.jar", parentArgs[0]);
@@ -147,7 +149,7 @@ public class AppStarter extends Thread {
         assert pb != null;
         pb.directory(new File(System.getProperty("user.dir")));
         pb.inheritIO();
-        Process p = pb.start();
+        p = pb.start();
         return p.pid();
     }
 }

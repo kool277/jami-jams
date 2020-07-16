@@ -51,7 +51,7 @@ public class UserProfileService {
         UserProfile[] profiles = null;
         Connection connection = null;
         try {
-            queryString = URLEncoder.encode(queryString,StandardCharsets.UTF_8).replace("%","\\");
+            queryString = queryString.replaceAll("[^\\x00-\\x7F]","*");
             connection = connectionFactory.getConnection();
             try {
                 connection.open();
@@ -84,7 +84,7 @@ public class UserProfileService {
     public static SearchRequest buildRequest(String queryString, String field) {
 
         if (!queryString.startsWith("*"))
-            queryString = queryString.concat("*");
+            queryString = "*".concat(queryString).concat("*");
 
         if(field.equals("LOGON_NAME")) {
             return SearchRequest.builder()

@@ -1,25 +1,26 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import net.jami.jams.common.objects.contacts.Contact;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 public class ContactDao extends AbstractDao<Contact> {
@@ -41,35 +43,57 @@ public class ContactDao extends AbstractDao<Contact> {
             String createTable = "CREATE TABLE contacts (" +
                 "owner varchar(255), " +
                 "uri varchar(255)," +
-                "displayName varchar(255),"+
+                "displayName varchar(255)," +
+                "`timestamp` bigint," +
+                "status int," +
                 "PRIMARY KEY (owner,uri))";
             PreparedStatement ps = connection.getConnection().prepareStatement(createTable);
             ps.execute();
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             log.error("Could not create the contacts table with error " + e.getMessage());
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
 
+    //Not used because the strategy here is different.
     @Override
     public boolean storeObject(Contact object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try{
-            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO contacts " +
-                "(owner, uri, displayName) " +
-                "VALUES " +
-                "(?, ?, ?)");
-            ps = object.getInsert(ps);
-            return ps.executeUpdate() != 0;
-        }
-        catch (Exception e){
-            log.error("An error has occurred while trying to store a user: " + e.toString());
+        try {
+            String insert = "INSERT INTO contacts (owner, uri, displayName, `timestamp`, status) VALUES " +
+                "(?, ?, ?, ?, ?)";
+            PreparedStatement ps = connection.getConnection().prepareStatement(insert);
+            object.getInsert(ps);
+            ps.executeQuery();
+            return true;
+        } catch (Exception e) {
+            log.error("Could not update contacts!");
             return false;
+        } finally {
+            DataStore.connectionPool.returnConnection(connection);
         }
-        finally {
+    }
+
+    public boolean storeContactList(List<Contact> contactList) {
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try {
+            String delete = "DELETE FROM contacts WHERE owner = ?";
+            PreparedStatement ps = connection.getConnection().prepareStatement(delete);
+            ps.setString(1, contactList.get(0).getOwner());
+            ps.executeQuery();
+            String insert = "INSERT INTO contacts (owner, uri, displayName, `timestamp`, status) VALUES " +
+                "(?, ?, ?, ?, ?)";
+            for (Contact contact : contactList) {
+                ps = connection.getConnection().prepareStatement(insert);
+                contact.getInsert(ps);
+                ps.executeQuery();
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("Could not update contacts!");
+            return false;
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
