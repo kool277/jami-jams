@@ -33,6 +33,7 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.annotations.JsonContent;
+import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
@@ -84,6 +85,28 @@ public class SearchDirectoryServlet extends HttpServlet {
                 userProfiles.add(profile);
             });
         });
+
+        // update user group mappings table
+        userProfiles.forEach(profile -> {
+            List<UserGroupMapping> mappings = dataStore.getUserGroupMappingsDao().getObjects(null);
+
+
+            for(UserGroupMapping mapping: mappings) {
+                List<String> list = new ArrayList<>();
+                if (mapping.getUsername().equals(profile.getUsername())) {
+                    String[] splits = mapping.getGroups().split(",");
+
+                    for (int i = 0; i < splits.length; i++) {
+                       list.add(splits[i]);
+                    }
+                }
+
+                if (!list.isEmpty())
+                    profile.setGroupMemberships(list);
+            }
+            dataStore.updateUserProfile(profile);
+        });
+
         resp.getOutputStream().write(JsonStream.serialize(userProfiles).getBytes());
     }
 }

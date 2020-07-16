@@ -30,7 +30,6 @@ import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.User;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @Slf4j
 public class UserDao extends AbstractDao<User> {
@@ -45,10 +44,8 @@ public class UserDao extends AbstractDao<User> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO users " +
-                "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel," +
-                "needsPasswordReset) " +
-                "VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?,?, ?,?, ?)");
+                "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel, needsPasswordReset) " +
+                " VALUES " + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {

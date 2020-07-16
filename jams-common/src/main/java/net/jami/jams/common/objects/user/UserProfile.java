@@ -22,7 +22,9 @@
 */
 package net.jami.jams.common.objects.user;
 
+import com.jsoniter.JsonIterator;
 import com.jsoniter.annotation.JsonIgnore;
+import com.jsoniter.output.JsonStream;
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -43,7 +45,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -71,6 +76,7 @@ public class UserProfile implements DatabaseObject {
     private String faxNumber;
     private String mobileNumber;
     private String jamiId;
+    private List<String> groupMemberships;
 
     public UserProfile(ResultSet rs) throws Exception {
         this.username = rs.getString("username");
@@ -83,6 +89,7 @@ public class UserProfile implements DatabaseObject {
         this.phoneNumberExtension = rs.getString("phoneNumberExtension");
         this.faxNumber = rs.getString("faxNumber");
         this.mobileNumber = rs.getString("mobileNumber");
+        this.groupMemberships = Arrays.asList(JsonIterator.deserialize(rs.getString("groupMemberships"),String[].class));
     }
 
     @JsonIgnore
@@ -124,6 +131,9 @@ public class UserProfile implements DatabaseObject {
         ps.setString(8, phoneNumberExtension);
         ps.setString(9, faxNumber);
         ps.setString(10, mobileNumber);
+        if (groupMemberships == null)
+            groupMemberships = new ArrayList<>();
+        ps.setString(11, JsonStream.serialize(groupMemberships));
         return ps;
     }
 

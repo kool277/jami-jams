@@ -48,8 +48,8 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO local_directory " +
-                "(username, firstName, lastName, email, profilePicture, organization, phoneNumber, phoneNumberExtension, faxNumber, mobileNumber)" +
-                " VALUES " + "(?,?,?,?,?,?,?,?,?,?)");
+                "(username, firstName, lastName, email, profilePicture, organization, phoneNumber, phoneNumberExtension, faxNumber, mobileNumber, groupMemberships)" +
+                " VALUES " + "(?,?,?,?,?,?,?,?,?,?,?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE local_directory SET firstname = ?, lastName = ?, email = ?, profilePicture = ?, organization = ?, phoneNumber = ?, phoneNumberExtension = ?, faxNumber = ?, mobileNumber = ? WHERE username = ?");
+            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE local_directory SET firstname = ?, lastName = ?, email = ?, profilePicture = ?, organization = ?, phoneNumber = ?, phoneNumberExtension = ?, faxNumber = ?, mobileNumber = ?, groupMemberships = ? WHERE username = ?");
             for (int i = 1; i < update.getStatements().size(); i++) {
                 ps.setString(i, update.getStatements().get(i).getValue());
             }

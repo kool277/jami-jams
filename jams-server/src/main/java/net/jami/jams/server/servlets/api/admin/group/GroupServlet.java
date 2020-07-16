@@ -1,0 +1,123 @@
+package net.jami.jams.server.servlets.api.admin.group;
+
+import com.jsoniter.output.JsonStream;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.ScopedServletMethod;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.objects.user.Group;
+import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
+import net.jami.jams.server.core.workflows.AddUserToGroupFlow;
+import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static net.jami.jams.server.Server.dataStore;
+
+@WebServlet("/api/admin/group")
+public class GroupServlet extends HttpServlet {
+
+    @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        List<Group> groups = new ArrayList<>();
+        Group singleGroup = null;
+
+        if (!req.getParameter("groupName").equals("*")) {
+            StatementList statementList = new StatementList();
+            StatementElement st = new StatementElement("name", "=", req.getParameter("groupName"), "");
+
+            statementList.addStatement(st);
+            singleGroup = dataStore.getGroupDao().getObjects(statementList).get(0);
+        } else {
+            groups = dataStore.getGroupDao().getObjects(null);
+        }
+
+        if (singleGroup != null) {
+            Group finalSingleGroup = singleGroup;
+            List<UserProfile> profiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
+                    profile.getGroupMemberships().contains(finalSingleGroup.getName())).collect(Collectors.toList());
+
+            profiles.forEach(profile ->
+                    finalSingleGroup.getGroupMembers().add(profile.getUsername()));
+
+            resp.getOutputStream().write(JsonStream.serialize(finalSingleGroup).getBytes());
+            resp.setStatus(200);
+        } else if (!groups.isEmpty()) {
+            List<UserProfile> profiles = dataStore.getUserProfileDao().getObjects(null);
+            for (Group group: groups) {
+                for (UserProfile p: profiles) {
+                    if (p.getGroupMemberships().contains(group.getName()))
+                        group.getGroupMembers().add(p.getUsername());
+                }
+            }
+
+            resp.getOutputStream().write(JsonStream.serialize(groups).getBytes());
+            resp.setStatus(200);
+        } else {
+            resp.sendError(500, "An error occurred while attempting to obtain a group!");
+        }
+    }
+
+    @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String name = req.getParameter("newName");
+        StatementList update = new StatementList();
+        StatementElement st0 = new StatementElement("name", "=", name, "");
+        update.addStatement(st0);
+        StatementList constraint = new StatementList();
+        StatementElement st1 = new StatementElement("name", "=", name, "");
+        constraint.addStatement(st1);
+
+        AddUserToGroupFlow.addUserToGroup(name, req.getParameter("groupMembers"));
+
+        if (dataStore.getGroupDao().updateObject(update, constraint)) resp.setStatus(200);
+        else resp.sendError(500, "could not update the group's name!");
+    }
+
+    @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Group group = new Group();
+        group.setName(req.getParameter("name"));
+        group.setGroupMembers(new ArrayList<String>());
+        if (dataStore.getGroupDao().storeObject(group))
+            resp.setStatus(200);
+        else
+            resp.sendError(500, "Could not create a group successfully!");
+    }
+
+    @Override
+    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        StatementElement statementElement = new StatementElement("groupName", "=", req.getParameter("groupName"), "");
+        StatementList constraint = new StatementList();
+        constraint.addStatement(statementElement);
+        if (dataStore.getGroupDao().deleteObject(constraint)) {
+            // if deletion was successful, cascade the deletion onto the users
+            List<UserProfile> validProfiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
+                    profile.getGroupMemberships().remove(Long.parseLong(req.getParameter("groupName")))).collect(Collectors.toList());
+
+            validProfiles.forEach(profile ->
+                    dataStore.updateUserProfile(profile));
+
+            resp.setStatus(200);
+        }
+
+        resp.sendError(500, "Could not delete the group successfully!");
+    }
+}

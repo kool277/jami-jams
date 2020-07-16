@@ -24,12 +24,7 @@ package net.jami.datastore.main;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.jami.datastore.dao.ContactDao;
-import net.jami.datastore.dao.DeviceDao;
-import net.jami.datastore.dao.JwtDao;
-import net.jami.datastore.dao.SystemDao;
-import net.jami.datastore.dao.UserDao;
-import net.jami.datastore.dao.UserProfileDao;
+import net.jami.datastore.dao.*;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -40,6 +35,7 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import org.flywaydb.core.Flyway;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -48,11 +44,14 @@ public class DataStore implements AuthenticationSource {
 
     public static ConnectionPool connectionPool;
     private UserDao userDao;
+    private GroupDao groupDao;
+    private PolicyDao policyDao;
     private DeviceDao deviceDao;
     private SystemDao systemDao;
     private ContactDao contactDao;
     private JwtDao jwtDao;
     private UserProfileDao userProfileDao;
+    private UserGroupMappingsDao userGroupMappingsDao;
 
     //Implicitly connect to derby.
     public DataStore(String connectionString) {
@@ -60,11 +59,14 @@ public class DataStore implements AuthenticationSource {
         flyway.migrate();
         connectionPool = new ConnectionPool(connectionString);
         userDao = new UserDao();
+        groupDao = new GroupDao();
+        policyDao = new PolicyDao();
         deviceDao = new DeviceDao();
         systemDao = new SystemDao();
         contactDao = new ContactDao();
         jwtDao = new JwtDao();
         userProfileDao = new UserProfileDao();
+        userGroupMappingsDao = new UserGroupMappingsDao();
     }
 
     public boolean userExists(String username){
@@ -127,7 +129,16 @@ public class DataStore implements AuthenticationSource {
         update.addStatement(new StatementElement("phoneNumberExtension","=",userProfile.getPhoneNumberExtension(),""));
         update.addStatement(new StatementElement("faxNumber","=",userProfile.getFaxNumber(),""));
         update.addStatement(new StatementElement("mobileNumber","=",userProfile.getMobileNumber(),""));
-
+        if (userProfile.getGroupMemberships() != null) {
+            String groups = "";
+            for (String s: userProfile.getGroupMemberships()) {
+                if (groups.equals(""))
+                    groups = s;
+                else
+                    groups = groups.concat("," + s);
+            }
+            update.addStatement(new StatementElement("groupMemberships","=", groups ,""));
+        }
         return userProfileDao.updateObject(update, null);
     }
 

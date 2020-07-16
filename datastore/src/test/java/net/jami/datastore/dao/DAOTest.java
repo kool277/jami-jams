@@ -22,6 +22,7 @@
 */
 package net.jami.datastore.dao;
 
+import com.jsoniter.JsonIterator;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 class DAOTest {
 
@@ -58,7 +60,7 @@ class DAOTest {
     }
 
     @Test
-    void storeUser(){
+    void storeUser() throws Exception {
         User user = new User();
         user.setUsername("fsidokhine");
         user.setUserType(AuthenticationSourceType.LOCAL);
@@ -93,7 +95,7 @@ class DAOTest {
     }
 
     @Test
-    void storeAdminUser(){
+    void storeAdminUser() throws Exception{
         User user = new User();
         user.setUsername("admin");
         user.setUserType(AuthenticationSourceType.LOCAL);
@@ -108,9 +110,4 @@ class DAOTest {
         Assertions.assertNotNull(user1);
         Assertions.assertEquals(user1.getAccessLevel(),AccessLevel.ADMIN);
     }
-
-
-
-
-
 }

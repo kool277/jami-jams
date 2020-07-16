@@ -31,7 +31,6 @@ import net.jami.jams.common.objects.roots.BlockchainEntity;
 import net.jami.jams.common.objects.roots.X509Entity;
 import net.jami.jams.common.serialization.database.DatabaseObject;
 import net.jami.jams.common.utils.X509Utils;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 

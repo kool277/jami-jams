@@ -4,4 +4,5 @@ email varchar(255),profilePicture CLOB,
 organization varchar(255),phoneNumber varchar(255),
 phoneNumberExtension varchar(255),
 faxNumber varchar(255),mobileNumber varchar(255),
+groupMemberships varchar(5000),
 PRIMARY KEY (username));
