@@ -87,7 +87,7 @@ public class AppStarter extends Thread {
     public AppStarter(String[] args) {
         parentArgs = args;
         try {
-            startAccountManagementServer(args);
+            jamsProcessId = startAccountManagementServer(args);
             setupZmqBridge();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 log.info("Shutting down...");
@@ -144,6 +144,7 @@ public class AppStarter extends Thread {
                     parentArgs[0], parentArgs[1], parentArgs[2]);
                 break;
             default:
+                pb = new ProcessBuilder("java", "-jar", "jams-server.jar", "8080");
                 break;
         }
         assert pb != null;
