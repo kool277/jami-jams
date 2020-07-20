@@ -36,24 +36,8 @@ import java.util.List;
 public class ContactDao extends AbstractDao<Contact> {
 
     public ContactDao() {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            this.setTableName("contacts");
-            this.setTClass(Contact.class);
-            String createTable = "CREATE TABLE contacts (" +
-                "owner varchar(255), " +
-                "uri varchar(255)," +
-                "displayName varchar(255)," +
-                "`timestamp` bigint," +
-                "status int," +
-                "PRIMARY KEY (owner,uri))";
-            PreparedStatement ps = connection.getConnection().prepareStatement(createTable);
-            ps.execute();
-        } catch (SQLException e) {
-            log.error("Could not create the contacts table with error " + e.getMessage());
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+        this.setTableName("contacts");
+        this.setTClass(Contact.class);
     }
 
     //Not used because the strategy here is different.

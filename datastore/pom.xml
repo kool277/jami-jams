@@ -23,10 +23,9 @@
             <version>${debry.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.jami</groupId>
-            <artifactId>jams-common</artifactId>
-            <version>${revision}</version>
-            <scope>compile</scope>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
     </dependencies>
 

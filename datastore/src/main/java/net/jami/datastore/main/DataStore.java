@@ -38,6 +38,7 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.ConnectionPool;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
+import org.flywaydb.core.Flyway;
 
 import java.util.List;
 
@@ -55,6 +56,8 @@ public class DataStore implements AuthenticationSource {
 
     //Implicitly connect to derby.
     public DataStore(String connectionString) {
+        Flyway flyway = Flyway.configure().dataSource(connectionString,"", "").load();
+        flyway.migrate();
         connectionPool = new ConnectionPool(connectionString);
         userDao = new UserDao();
         deviceDao = new DeviceDao();

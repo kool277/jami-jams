@@ -1,25 +1,26 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,51 +36,25 @@ import java.sql.SQLException;
 public class UserDao extends AbstractDao<User> {
 
     public UserDao() {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            this.setTableName("users");
-            this.setTClass(User.class);
-            String createTable = "CREATE TABLE users (" +
-                    "username varchar(255), " +
-                    "password varchar(255)," +
-                    "userType varchar(10)," +
-                    "realm varchar(255)," +
-                    "ethAddress varchar(255)," +
-                    "ethKey varchar(255)," +
-                    "jamiId varchar(255)," +
-                    "certificate varchar(5000), "+
-                    "privatekey varchar(5000)," +
-                    "accessLevel varchar(10),"+
-                    "needsPasswordReset varchar(10),"+
-                    "PRIMARY KEY (username))";
-            PreparedStatement ps = connection.getConnection().prepareStatement(createTable);
-            ps.execute();
-        }
-        catch (SQLException e){
-            log.error("Could not create the device table with error " + e.getMessage());
-        }
-        finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+        this.setTableName("users");
+        this.setTClass(User.class);
     }
 
     @Override
     public boolean storeObject(User object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try{
+        try {
             PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO users " +
-                    "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel," +
-                    "needsPasswordReset) " +
-                    "VALUES " +
-                    "(?, ?, ?, ?, ?, ?, ?,?, ?,?, ?)");
+                "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel," +
+                "needsPasswordReset) " +
+                "VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?,?, ?,?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("An error has occurred while trying to store a user: " + e.toString());
             return false;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
@@ -91,12 +66,13 @@ public class UserDao extends AbstractDao<User> {
         String user = constraints.getStatements().get(0).getValue();
         String pwReset = "false";
 
-        if (update.getStatements().size() > 1)
+        if (update.getStatements().size() > 1) {
             pwReset = update.getStatements().get(1).getValue();
+        }
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
-        try{
+        try {
             PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE users SET password = ? WHERE username = ?");
             ps.setString(1, pw);
             ps.setString(2, user);
@@ -107,12 +83,10 @@ public class UserDao extends AbstractDao<User> {
 
             ps.setString(2, user);
             return ps.executeUpdate() != 0;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.error("An error has occurred while trying to update a user: " + e.toString());
             return false;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
