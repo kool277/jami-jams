@@ -43,11 +43,6 @@
         </dependency>
         <dependency>
             <groupId>net.jami</groupId>
-            <artifactId>jami-nameserver</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.jami</groupId>
             <artifactId>jami-dht</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -83,11 +78,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.4.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.10</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

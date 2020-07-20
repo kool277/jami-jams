@@ -17,12 +17,6 @@
             <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>net.jami</groupId>
-            <artifactId>jams-common</artifactId>
-            <version>${revision}</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
