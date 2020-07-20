@@ -25,10 +25,12 @@ package net.jami.jams.common.authentication;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 
+import java.util.List;
+
 public interface AuthenticationSource {
 
     boolean createUser(User user);
-    UserProfile[] getUserProfile(String queryString, String field);
+    List<UserProfile> getUserProfile(String queryString, String field);
     boolean setUserProfile(UserProfile userProfile);
     boolean authenticate(String username, String password);
     AuthenticationSourceInfo getInfo();

@@ -34,8 +34,11 @@ import org.ldaptive.SearchResponse;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class UserProfileService {
@@ -47,8 +50,7 @@ public class UserProfileService {
         this.connectionFactory = connectionFactory;
     }
 
-    public UserProfile[] getUserProfile(String queryString, String field){
-        UserProfile[] profiles = null;
+    public List<UserProfile> getUserProfile(String queryString, String field){
         Connection connection = null;
         try {
             queryString = queryString.replaceAll("[^\\x00-\\x7F]","*");
@@ -57,15 +59,8 @@ public class UserProfileService {
                 connection.open();
                 SearchOperation search = new SearchOperation(connectionFactory);
                 SearchResponse res = search.execute(buildRequest(queryString,field));
-                if (res.getEntries().size() > 0) profiles = new UserProfile[res.getEntries().size()];
-                else return null;
-                Iterator<LdapEntry> iterator = res.getEntries().iterator();
-                int i = 0;
-                while(iterator.hasNext()){
-                    profiles[i] = profileFromResponse(iterator.next());
-                    i++;
-                }
-                return profiles;
+                if (res.getEntries().size() == 0) return null;
+                return res.getEntries().stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
             } catch (Exception e) {
                 log.error("Could not search LDAP directory with error " + e.toString());
                 return null;

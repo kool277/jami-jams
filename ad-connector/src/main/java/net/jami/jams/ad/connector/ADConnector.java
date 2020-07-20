@@ -36,6 +36,7 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
@@ -92,7 +93,7 @@ public class ADConnector implements AuthenticationSource {
     }
 
     @Override
-    public UserProfile[] getUserProfile(String queryString, String field) {
+    public List<UserProfile> getUserProfile(String queryString, String field) {
         return userProfileService.getUserProfile(queryString, field);
     }
 

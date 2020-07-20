@@ -193,19 +193,18 @@ public class DirectoryEntryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getParameter("directory") != null && req.getParameter("directoryType") != null) {
-            UserProfile[] profiles = userAuthenticationModule.getAuthSources()
+            List<UserProfile> profiles = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(req.getParameter("directory"), AuthenticationSourceType.fromString(req.getParameter("directoryType"))))
                     .getUserProfile(req.getParameter("username"), "LOGON_NAME");
             if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
-                resp.getOutputStream().write(profiles[0].getAsVCard().getBytes());
+                resp.getOutputStream().write(profiles.get(0).getAsVCard().getBytes());
             }
-            else resp.getOutputStream().write(JsonStream.serialize(profiles[0]).getBytes());
+            else resp.getOutputStream().write(JsonStream.serialize(profiles.get(0)).getBytes());
             return;
         }
         List<UserProfile> userProfiles = new ArrayList<>();
         userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-            UserProfile[] profiles = v.getUserProfile(req.getParameter("username"), "LOGON_NAME");
-            if (profiles != null && profiles.length != 0) userProfiles.addAll(Arrays.asList(profiles));
+            userProfiles.addAll(v.getUserProfile(req.getParameter("username"), "LOGON_NAME"));
         });
         if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
             resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());

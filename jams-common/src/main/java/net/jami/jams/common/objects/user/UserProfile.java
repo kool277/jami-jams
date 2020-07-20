@@ -70,6 +70,7 @@ public class UserProfile implements DatabaseObject {
     private String phoneNumberExtension;
     private String faxNumber;
     private String mobileNumber;
+    private String jamiId;
 
     public UserProfile(ResultSet rs) throws Exception {
         this.username = rs.getString("username");
@@ -82,6 +83,14 @@ public class UserProfile implements DatabaseObject {
         this.phoneNumberExtension = rs.getString("phoneNumberExtension");
         this.faxNumber = rs.getString("faxNumber");
         this.mobileNumber = rs.getString("mobileNumber");
+    }
+
+    public String getJamiId(){
+        return jamiId;
+    }
+
+    public void setJamiId(User user){
+        jamiId = user.getJamiId();
     }
 
     @JsonIgnore
@@ -100,6 +109,7 @@ public class UserProfile implements DatabaseObject {
         if(this.getFaxNumber() != null) vCard.addTelephoneNumber(this.getFaxNumber(), TelephoneType.FAX);
         if(this.getEmail() != null) vCard.addEmail(this.getEmail(), EmailType.WORK);
         if(this.getOrganization() != null) vCard.setOrganization(this.getOrganization());
+        if(this.getJamiId() != null) vCard.setExtendedProperty("JamiID",this.jamiId);
 
         /*I think this is how Base64 will work in this case*/
         if(this.getProfilePicture() != null) {

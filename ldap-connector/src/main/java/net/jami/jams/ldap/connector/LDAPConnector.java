@@ -38,6 +38,8 @@ import org.ldaptive.ConnectionConfig;
 import org.ldaptive.Credential;
 import org.ldaptive.DefaultConnectionFactory;
 
+import java.util.List;
+
 @Slf4j
 public class LDAPConnector implements AuthenticationSource {
 
@@ -67,7 +69,7 @@ public class LDAPConnector implements AuthenticationSource {
     }
 
     @Override
-    public UserProfile[] getUserProfile(String queryString, String field) {
+    public List<UserProfile> getUserProfile(String queryString, String field) {
         return userProfileService.getUserProfile(queryString,field);
     }
 
@@ -89,7 +91,7 @@ public class LDAPConnector implements AuthenticationSource {
 
     @Override
     public boolean test() {
-        return (getUserProfile("*","LOGON_NAME").length != 0);
+        return (getUserProfile("*","LOGON_NAME").size() != 0);
     }
 
 

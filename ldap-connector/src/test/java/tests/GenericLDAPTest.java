@@ -10,6 +10,7 @@ import org.zapodot.junit.ldap.EmbeddedLdapRule;
 import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
 
 import java.io.InputStream;
+import java.util.List;
 
 public class GenericLDAPTest {
 
@@ -33,10 +34,10 @@ public class GenericLDAPTest {
     @Test
     public void testLookUp() throws Exception{
         initLdapConnector();
-        UserProfile[] profiles = ldapConnector.getUserProfile("*","FULL_TEXT_NAME");
-        Assertions.assertEquals(2,profiles.length);
-        Assertions.assertNotNull(profiles[0].getFirstName());
-        Assertions.assertNotNull(profiles[1].getFirstName());
+        List<UserProfile> profiles = ldapConnector.getUserProfile("*","FULL_TEXT_NAME");
+        Assertions.assertEquals(2,profiles.size());
+        Assertions.assertNotNull(profiles.get(0).getFirstName());
+        Assertions.assertNotNull(profiles.get(1).getFirstName());
     }
 
     @Test
@@ -52,10 +53,10 @@ public class GenericLDAPTest {
     @Test
     public void getVcard() throws Exception{
         initLdapConnector();
-        UserProfile[] profiles = ldapConnector.getUserProfile("Felix","FULL_TEXT_NAME");
-        Assert.assertEquals(1,profiles.length);
-        Assert.assertNotNull(profiles[0].getUsername());
-        String vcard = profiles[0].getAsVCard();
+        List<UserProfile> profiles = ldapConnector.getUserProfile("Felix","FULL_TEXT_NAME");
+        Assert.assertEquals(1,profiles.size());
+        Assert.assertNotNull(profiles.get(0).getUsername());
+        String vcard = profiles.get(0).getAsVCard();
         Assert.assertNotNull(vcard);
     }
 

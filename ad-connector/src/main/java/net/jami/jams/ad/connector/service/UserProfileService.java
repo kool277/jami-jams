@@ -43,6 +43,7 @@ import net.jami.jams.common.objects.user.UserProfile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,7 +51,7 @@ public class UserProfileService {
 
     private static final HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
 
-    public UserProfile[] getUserProfile(String queryString, String field) {
+    public List<UserProfile> getUserProfile(String queryString, String field) {
         Endpoint endpoint = ADConnector.getConnection();
         UserProfile[] profiles = null;
         try {
@@ -75,30 +76,14 @@ public class UserProfileService {
                 queryResponse = connector.execute();
             }
             List<List<Field>> results = queryResponse.getAll().stream().map(EntityResponse::getValue).collect(Collectors.toList());
-            if (results.size() > 0) {
-                profiles = new UserProfile[results.size()];
-            } else {
-                return null;
-            }
-            for (int i = 0; i < profiles.length; i++) {
-                profiles[i] = profileFromResponse(results.get(i));
-            }
-            profiles = removeNull(profiles);
-            return profiles;
+            return results.stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList())
+                .stream().filter(Objects::nonNull).collect(Collectors.toList());
         } catch (Exception e) {
             log.error("Could not find entity with specified parameters.");
             return null;
         } finally {
             ADConnector.returnConnection(endpoint);
         }
-    }
-
-    public UserProfile[] removeNull(UserProfile[] a) {
-        ArrayList<UserProfile> removedNull = new ArrayList<UserProfile>();
-        for (UserProfile p : a)
-            if (p != null)
-                removedNull.add(p);
-        return removedNull.toArray(new UserProfile[0]);
     }
 
     public static QueryRequest buildRequest(Endpoint endpoint) {

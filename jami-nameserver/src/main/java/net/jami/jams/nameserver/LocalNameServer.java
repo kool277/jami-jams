@@ -69,8 +69,8 @@ public class LocalNameServer implements NameServer {
             //Reattempt resolution via directory lookups.
             final User user = new User();
             for(AuthModuleKey key : authenticationModule.getAuthSources().keySet()){
-                UserProfile[] profiles = authenticationModule.getAuthSources().get(key).getUserProfile(username,"LOGON_NAME");
-                if(profiles != null && profiles.length == 1){
+                List<UserProfile> profiles = authenticationModule.getAuthSources().get(key).getUserProfile(username,"LOGON_NAME");
+                if(profiles != null && profiles.size() == 1){
                     user.setUsername(username);
                     user.setRealm(key.getRealm());
                     user.setUserType(key.getType());
