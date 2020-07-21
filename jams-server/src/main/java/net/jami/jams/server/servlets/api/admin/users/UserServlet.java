@@ -28,6 +28,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
@@ -52,6 +53,7 @@ public class UserServlet extends HttpServlet {
     //Get the user profile.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         StatementList statementList = new StatementList();
         StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");

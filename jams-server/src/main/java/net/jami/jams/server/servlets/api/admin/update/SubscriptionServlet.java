@@ -22,17 +22,14 @@
 */
 package net.jami.jams.server.servlets.api.admin.update;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.jami.jams.ca.JamsCA;
+import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
-import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.objects.responses.SubscriptionStatusResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
@@ -47,9 +44,8 @@ public class SubscriptionServlet extends HttpServlet {
     //Get the subscription status (see: SubscriptionStatusResponse.class)
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
-        resp.setContentType("application/json");
         SubscriptionStatusResponse subscriptionStatusResponse = new SubscriptionStatusResponse();
         subscriptionStatusResponse.setLicenseInformation(Server.licenseService.getLicenseInformation());
         subscriptionStatusResponse.setActivated(Server.activated.get());
@@ -61,7 +57,6 @@ public class SubscriptionServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
         String license = new String(req.getInputStream().readAllBytes());
         if(license != null || !license.isBlank()) {
             // create .dat file to be used later

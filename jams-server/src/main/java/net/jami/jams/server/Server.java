@@ -26,6 +26,7 @@ import com.jsoniter.JsonIterator;
 import javassist.ClassPool;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.annotations.ScopedServletAnnotationScanner;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authentication.local.LocalAuthSettings;
 import net.jami.jams.common.authmodule.AuthenticationModule;
@@ -71,6 +72,8 @@ public class Server {
     public static void main(String[] args) {
         //This is a fix to drop old cached stuff from the tomcat classloader.
         ClassPool.getDefault().clearImportedPackages();
+        ScopedServletAnnotationScanner scanner = new ScopedServletAnnotationScanner();
+        scanner.processClasses(new java.io.File(Server.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName());
         switch (args.length) {
             case 1:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]));

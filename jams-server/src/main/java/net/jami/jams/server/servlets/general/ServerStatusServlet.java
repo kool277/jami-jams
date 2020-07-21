@@ -28,6 +28,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.ca.JamsCA;
+import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
@@ -37,8 +38,8 @@ import java.util.HashMap;
 public class ServerStatusServlet extends HttpServlet {
 
     @Override
+    @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setHeader("Access-Control-Allow-Origin", JamsCA.serverDomain);
         HashMap<String,String> statusInfo = new HashMap<>();
         statusInfo.put("installed",String.valueOf(Server.isInstalled.get()));
         resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());

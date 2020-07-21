@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.requests.CredentialsRequest;
@@ -49,6 +50,7 @@ This is not scoped because it is called once.
 public class StartInstallServlet extends HttpServlet {
 
     @Override
+    @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //Here we must decide which page to show - login or sign-up
         if(dataStore != null && dataStore.getUserDao() != null && !dataStore.getUserDao().getObjects(null).isEmpty())
@@ -58,7 +60,8 @@ public class StartInstallServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @JsonContent
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         CredentialsRequest credentialsRequest = JsonIterator.deserialize(req.getInputStream().readAllBytes(),CredentialsRequest.class);
         AuthTokenResponse res = null;
         if(credentialsRequest.getUsername() != null && credentialsRequest.getPassword() != null){
@@ -71,6 +74,7 @@ public class StartInstallServlet extends HttpServlet {
 
     //This is the ONLY case where we write directy to the DB
     @Override
+    @JsonContent
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(dataStore.getUserDao().getObjects(null).size() != 0){
             resp.sendError(500,"We have tried to create an administrative account where one already exists!");

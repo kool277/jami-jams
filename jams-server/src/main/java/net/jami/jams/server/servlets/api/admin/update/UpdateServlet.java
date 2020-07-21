@@ -28,6 +28,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.ca.JamsCA;
+import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.updater.FullSystemStatusResponse;
@@ -43,6 +45,7 @@ public class UpdateServlet extends HttpServlet {
     //Return the current version number and the available version number.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         FullSystemStatusResponse response = new FullSystemStatusResponse();
         response.setLocalVersions(appUpdater.getLocalVersions());

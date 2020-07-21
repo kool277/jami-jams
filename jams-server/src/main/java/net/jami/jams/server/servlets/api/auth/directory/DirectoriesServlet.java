@@ -28,6 +28,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.JsonContent;
 
 import java.io.IOException;
 
@@ -61,6 +62,7 @@ public class DirectoriesServlet extends HttpServlet {
      * @apiError (500) {null} null could not return any authentication sources
      */
     @Override
+    @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.getOutputStream().write(JsonStream.serialize(userAuthenticationModule.getAuthSources().keySet()).getBytes());
     }

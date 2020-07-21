@@ -20,19 +20,20 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-package net.jami.jams.server.startup;
+package net.jami.jams.common.annotations;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class PackageScanner {
 
-    public static HashSet<String> getClasses() throws Exception {
-        HashSet<String> classNames = new HashSet<>();
-        ZipInputStream zip = new ZipInputStream(new FileInputStream(System.getProperty("user.dir") + File.separator + "jams-server.jar"));
+    public static ArrayList<String> getClasses(String jarFile) throws Exception {
+        ArrayList<String> classNames = new ArrayList<>();
+        ZipInputStream zip = new ZipInputStream(new FileInputStream(System.getProperty("user.dir") + File.separator + jarFile));
         for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {
             if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
                 // This ZipEntry represents a class. Now, what class does it represent?
