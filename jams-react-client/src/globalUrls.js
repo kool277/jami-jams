@@ -10,8 +10,11 @@ const api_path_post_install_auth = '/api/install/auth';
 const api_path_post_install_server = '/api/install/settings';
 const api_path_get_install_lastKnownStep = '/api/install/lastStep';
 const api_path_get_auth_user_search = '/api/auth/users';
+const api_path_get_admin_devices = '/api/admin/devices';
 const api_path_get_auth_devices = '/api/auth/devices';
+const api_path_delete_admin_user_revoke = '/api/admin/user';
 const api_path_delete_auth_user_revoke = '/api/auth/user';
+const api_path_delete_admin_device_revoke = '/api/admin/device';
 const api_path_delete_auth_device_revoke = '/api/auth/device';
 const api_path_rename_device = '/api/auth/device';
 const api_path_get_server_status = '/api/info';
@@ -24,10 +27,11 @@ const api_path_get_directories = '/api/auth/directories';
 const api_path_get_needs_update = '/api/admin/update';
 const api_path_get_start_update = '/api/admin/update';
 const api_path_post_create_user = '/api/admin/user';
-const api_path_get_user = '/api/auth/user';
+const api_path_get_auth_user = '/api/auth/user';
+const api_path_get_admin_user = '/api/admin/user';
 const api_path_post_update_user = '/api/auth/user';
 const api_path_get_exists_user = '/api/admin/user';
-const api_path_get_user_directory_search = '/api/auth/directory/search';
+const api_path_get_user_directory_search ='/api/auth/directory/search';
 const api_path_post_create_user_profile = '/api/admin/directory/entry';
 const api_path_put_update_user_profile = '/api/admin/directory/entry';
 const api_path_get_user_search = '/api/admin/users';
@@ -45,8 +49,11 @@ module.exports = {
     api_path_post_install_server,
     api_path_get_install_lastKnownStep,
     api_path_get_auth_user_search,
+    api_path_get_admin_devices,
     api_path_get_auth_devices,
+    api_path_delete_admin_user_revoke,
     api_path_delete_auth_user_revoke,
+    api_path_delete_admin_device_revoke,
     api_path_delete_auth_device_revoke,
     api_path_rename_device,
     api_path_get_server_status,
@@ -59,7 +66,8 @@ module.exports = {
     api_path_get_needs_update,
     api_path_get_start_update,
     api_path_post_create_user,
-    api_path_get_user,
+    api_path_get_auth_user,
+    api_path_get_admin_user,
     api_path_post_update_user,
     api_path_get_exists_user,
     api_path_get_user_directory_search,

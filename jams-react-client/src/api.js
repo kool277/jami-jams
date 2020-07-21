@@ -32,6 +32,7 @@ import {
     api_path_get_install_lastKnownStep,
     api_path_get_auth_user_search,
     api_path_get_auth_devices,
+    api_path_delete_admin_user_revoke,
     api_path_delete_auth_user_revoke,
     api_path_delete_auth_device_revoke,
     api_path_rename_device,
@@ -89,11 +90,11 @@ export default function configApiCall(api_path, request_type, data, credentials)
 
         // search dataType
         if (isSearch) {
-            if(request_type == 'post'){
-                config['data'] = data;
+            if(request_type == 'GET' || request_type == 'DELETE'){
+                config['params'] = data                
             }
             else {
-                config['params'] = data
+                config['data'] = data;
             }
 
         }

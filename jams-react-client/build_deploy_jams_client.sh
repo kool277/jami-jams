@@ -19,7 +19,7 @@ sed -i 's/material-dashboard-react\///g' $WEBAPP"index.html"
 #rm config.json
 
 cd ..
-mvn clean package -DskipTests
+#mvn clean package -DskipTests
 mvn package -DskipTests
 
 cd $JAMS

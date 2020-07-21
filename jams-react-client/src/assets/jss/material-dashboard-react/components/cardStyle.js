@@ -37,6 +37,9 @@ const cardStyle = {
     },
     "&:hover": {
       boxShadow: "0 1px 4px 0 rgba(" + hexToRgb(blackColor) + ", 0.54)",
+    },
+    "& a": {
+      color: blackColor
     }
   },
   cardPlain: {
