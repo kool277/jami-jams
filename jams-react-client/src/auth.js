@@ -6,6 +6,7 @@ import {
     api_path_post_auth_login,
     api_path_get_server_status,
     api_path_get_install_lastKnownStep,
+    api_path_get_directories,
 } from "globalUrls";
 
 class Auth {
@@ -53,6 +54,28 @@ class Auth {
 
     isAuthenticated() {
         return this.authenticated;
+    }
+
+    isLocalDirectory() {
+        return this.localDirectory
+    }
+
+    checkDirectoryType(cb){
+        axios(configApiCall(api_path_get_directories, "GET", null, null)).then((response) => {
+            console.log(response)
+            if (response.data.length == 1) {
+                this.localDirectory = true
+            }
+            else if (response.data.length == 2){
+                this.localDirectory = false
+            }else{
+                console.log("Error getting on checkDirectoryType: Size of directory types is " + response.data.length)    
+            }
+            cb()
+        }).catch((error) => {
+            console.log("Error getting on checkDirectoryType: " + error)
+            cb()
+        });
     }
 
     checkAdminAccountStatus(cb) {

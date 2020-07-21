@@ -151,11 +151,13 @@ export default function Users() {
                     </DialogActions>
                 </Dialog>
                 <GridContainer>
+                    {auth.isLocalDirectory() &&
                     <GridItem xs={12} sm={12} md={12}>
                         <Button variant="contained" color="primary" href="#contained-buttons">
                         <AddCircleOutlineIcon /> Create user
                         </Button>
                     </GridItem>
+                    }
                     {
                     users.map(user => 
                     <GridItem xs={12} sm={12} md={2} key={user.username}>
