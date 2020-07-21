@@ -90,7 +90,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function UserProfile() {
+export default function UserProfile(props) {
   const classes = useStyles();
 
   const [value, setValue] = React.useState(0);

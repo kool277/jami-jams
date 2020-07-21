@@ -14,6 +14,8 @@ class Auth {
         this.admin = false
         this.installed = false
         this.uri = ''
+        this.adminScope = true
+        this.username = ''
     }
 
     setJWT(access_token) {
@@ -30,6 +32,9 @@ class Auth {
         axios(configApiCall(api_path_post_auth_login, "POST", jsonData, null)).then((response) => {
             if(response.status == 200){
                 this.setJWT(response.data['access_token'])
+                this.adminScope = JSON.parse(atob(response.data['access_token'].split('.')[1])).scope == "ADMIN" ? true : false;
+                if(!this.adminScope)
+                    this.username= jsonData.username
                 this.authenticated = true
             }
             cb()
@@ -41,6 +46,8 @@ class Auth {
     logout(cb) {
         this.deleteJWT()
         this.authenticated = false
+        this.username=''
+        this.adminScope = true
         cb()
     }
 
@@ -99,6 +106,14 @@ class Auth {
 
     hasAdmin() {
         return this.admin
+    }
+
+    hasAdminScope(){
+        return this.adminScope
+    }
+
+    getUsername(){
+        return this.username
     }
 
     isInstalled() {

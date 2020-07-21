@@ -22,6 +22,7 @@ import BusinessOutlinedIcon from '@material-ui/icons/BusinessOutlined';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import axios from "axios";
 import configApiCall from "api.js";
+import auth from "auth.js"
 import { api_path_get_user_directory_search } from "globalUrls";
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -84,13 +85,13 @@ export default function Users() {
         return new File([u8arr], filename, {type:mime});
     }
 
-    if (selectedProfile) {
+    if (selectedProfile || !auth.hasAdminScope()) {
         return (
             <div>
-                <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToUsers}>
+                {auth.hasAdminScope() && <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToUsers}>
                     <KeyboardReturnIcon />
-                </Button>
-                <UserProfile />
+                </Button>}
+                <UserProfile username={auth.getUsername()}/>
             </div>
         )
     } else {
