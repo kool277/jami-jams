@@ -135,6 +135,14 @@
                 <configuration>
                     <filesets>
                         <fileset>
+                            <directory>.</directory>
+                            <includes>
+                                <include>**/*.tmp</include>
+                                <include>**/*.log</include>
+                                <include>**/versions.json</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
                             <directory>jams/</directory>
                             <includes>
                                 <include>**</include>

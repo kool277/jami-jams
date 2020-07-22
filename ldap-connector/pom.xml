@@ -85,6 +85,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <version>${maven.exec.version}</version>
+                <executions>
+                    <execution>
+                        <id>Generate Version File</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>python</executable>
+                            <arguments>
+                                <argument>../generate-versions.py</argument>
+                                <argument>net.jami.jams.ldap.connector.LDAPConnector</argument>
+                                <argument>${revision}</argument>
+                                <argument>libs/${project.artifactId}.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

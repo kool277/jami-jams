@@ -1,0 +1,27 @@
+{
+    "net.jami.jams.ad.connector.ADConnector": {
+        "version": "2.0", 
+        "filename": "ad-connector.jar", 
+        "md5": "bd362666285da485a316e93f934b66a7"
+    }, 
+    "net.jami.jams.authmodule.UserAuthenticationModule": {
+        "version": "2.0", 
+        "filename": "authentication-module.jar", 
+        "md5": "da9f724c4162593cf80f6c6e7260c1b2"
+    }, 
+    "net.jami.jams.server.Server": {
+        "version": "2.0", 
+        "md5": "ae811d245d4e10b45f4530a08fce3c8e", 
+        "filename": "jams-server.jar"
+    }, 
+    "net.jami.jams.ca.JamsCA": {
+        "version": "2.0", 
+        "md5": "fbcb88fbe485c2803cc388b4a33da752", 
+        "filename": "cryptoengine.jar"
+    }, 
+    "net.jami.jams.ldap.connector.LDAPConnector": {
+        "version": "2.0", 
+        "md5": "366361cb125966f86ea7b2192ee9c10c", 
+        "filename": "ldap-connector.jar"
+    }
+}

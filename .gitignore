@@ -92,3 +92,4 @@ testdb/
 tomcat.*/
 /jams
 userguide/site
+versions.json
