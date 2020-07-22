@@ -36,7 +36,6 @@ import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static net.jami.jams.server.Server.dataStore;
@@ -57,10 +56,10 @@ public class SearchDirectoryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         List<UserProfile> userProfiles = new ArrayList<>();
         userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-            List<UserProfile> profiles = v.getUserProfile(req.getParameter("queryString"), "FULL_TEXT_NAME");
+            List<UserProfile> profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
             if(profiles == null || profiles.size() == 0){
                 // check logon names if nothing was found
-                profiles = v.getUserProfile(req.getParameter("queryString"), "LOGON_NAME");
+                profiles = v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME");
             }
             profiles.parallelStream().forEach(profile -> {
                 StatementList statementList = new StatementList();

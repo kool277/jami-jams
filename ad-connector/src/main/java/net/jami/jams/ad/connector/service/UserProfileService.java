@@ -51,9 +51,8 @@ public class UserProfileService {
 
     private static final HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
 
-    public List<UserProfile> getUserProfile(String queryString, String field) {
+    public List<UserProfile> getUserProfile(String queryString, String field,boolean exactMatch) {
         Endpoint endpoint = ADConnector.getConnection();
-        UserProfile[] profiles = null;
         try {
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;
@@ -61,8 +60,14 @@ public class UserProfileService {
                 sentence = new QueryAssembler().addPhrase(FieldType.OBJECT_CLASS, PhraseOperator.EQUAL, ObjectType.USER.toString()).closeSentence();
             } else {
                 if (field.equals("LOGON_NAME")) {
-                    sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.CONTAINS, queryString)
-                        .closeSentence();
+                    if(exactMatch){
+                        sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.EQUAL, queryString)
+                            .closeSentence();
+                    }
+                    else {
+                        sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.CONTAINS, queryString)
+                            .closeSentence();
+                    }
                 }
                 if (field.equals("FULL_TEXT_NAME")) {
                     sentence = new QueryAssembler().addPhrase(FieldType.FIRST_NAME, PhraseOperator.CONTAINS, queryString)

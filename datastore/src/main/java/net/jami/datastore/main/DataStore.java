@@ -80,7 +80,7 @@ public class DataStore implements AuthenticationSource {
         return userDao.storeObject(user);
     }
     @Override
-    public List<UserProfile> getUserProfile(String queryString, String field) {
+    public List<UserProfile> searchUserProfiles(String queryString, String field) {
         List<UserProfile> userList;
 
         if (!queryString.equals("*")) {
@@ -98,6 +98,15 @@ public class DataStore implements AuthenticationSource {
             userList = userProfileDao.getObjects(null);
 
         return userList;
+    }
+
+    @Override
+    public UserProfile getUserProfile(String username) {
+        StatementList statementList = new StatementList();
+        statementList.addStatement(new StatementElement("username","=", username,""));
+        List<UserProfile> userList = userProfileDao.getObjects(statementList);
+        if(userList.size() != 1) return null;
+        else return userList.get(0);
     }
 
     @Override

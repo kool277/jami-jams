@@ -50,7 +50,7 @@ public class UserProfileService {
         this.connectionFactory = connectionFactory;
     }
 
-    public List<UserProfile> getUserProfile(String queryString, String field){
+    public List<UserProfile> getUserProfile(String queryString, String field, boolean exactMatch){
         Connection connection = null;
         try {
             queryString = queryString.replaceAll("[^\\x00-\\x7F]","*");
@@ -58,7 +58,7 @@ public class UserProfileService {
             try {
                 connection.open();
                 SearchOperation search = new SearchOperation(connectionFactory);
-                SearchResponse res = search.execute(buildRequest(queryString,field));
+                SearchResponse res = search.execute(buildRequest(queryString,field, exactMatch));
                 if (res.getEntries().size() == 0) return null;
                 return res.getEntries().stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
             } catch (Exception e) {
@@ -76,10 +76,12 @@ public class UserProfileService {
     }
 
 
-    public static SearchRequest buildRequest(String queryString, String field) {
+    public static SearchRequest buildRequest(String queryString, String field, boolean exactMatch) {
 
-        if (!queryString.startsWith("*"))
-            queryString = "*".concat(queryString).concat("*");
+        if(!exactMatch) {
+            if (!queryString.startsWith("*"))
+                queryString = "*".concat(queryString).concat("*");
+        }
 
         if(field.equals("LOGON_NAME")) {
             return SearchRequest.builder()

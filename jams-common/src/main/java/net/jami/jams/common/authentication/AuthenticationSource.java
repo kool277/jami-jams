@@ -30,7 +30,8 @@ import java.util.List;
 public interface AuthenticationSource {
 
     boolean createUser(User user);
-    List<UserProfile> getUserProfile(String queryString, String field);
+    List<UserProfile> searchUserProfiles(String queryString, String field);
+    UserProfile getUserProfile(String username);
     boolean setUserProfile(UserProfile userProfile);
     boolean authenticate(String username, String password);
     AuthenticationSourceInfo getInfo();

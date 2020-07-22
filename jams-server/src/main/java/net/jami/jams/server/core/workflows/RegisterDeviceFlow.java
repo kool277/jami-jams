@@ -50,7 +50,7 @@ public class RegisterDeviceFlow {
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
             UserProfile userProfile = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(user.getRealm(),user.getUserType()))
-                    .getUserProfile(username,"LOGON_NAME").get(0);
+                    .searchUserProfiles(username,"LOGON_NAME").get(0);
 
             if (user == null) {
                 log.error("Tried to enroll a device, but could not find a user, this is impossible!");

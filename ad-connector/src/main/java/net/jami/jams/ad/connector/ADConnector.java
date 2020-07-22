@@ -93,8 +93,15 @@ public class ADConnector implements AuthenticationSource {
     }
 
     @Override
-    public List<UserProfile> getUserProfile(String queryString, String field) {
-        return userProfileService.getUserProfile(queryString, field);
+    public List<UserProfile> searchUserProfiles(String queryString, String field) {
+        return userProfileService.getUserProfile(queryString, field,false);
+    }
+
+    @Override
+    public UserProfile getUserProfile(String username) {
+        List<UserProfile> result = userProfileService.getUserProfile(username, "LOGON_NAME",true);
+        if(result == null || result.size() != 1) return null;
+        return result.get(0);
     }
 
     @Override
