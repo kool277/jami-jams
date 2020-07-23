@@ -30,13 +30,6 @@ import {
   infoColor
 } from "assets/jss/material-dashboard-react.js";
 
-var devices = [
-  "Samsung Galaxy S10",
-  "iPad 3",
-  "Lenovo T460s Ubuntu 18.04",
-  "Lenovo T460s Windows 10"
-];
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -116,11 +109,7 @@ export default function UserProfile(props) {
         <EditCreateUserProfile username={username} createUser={false}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Devices
-          checkedIndexes={[0, 3]}
-          devicesIndexes={[0, 1, 2, 3]}
-          devices={devices}
-        />
+        <Devices username={props.username}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
         <div className={classes.searchWrapper}>

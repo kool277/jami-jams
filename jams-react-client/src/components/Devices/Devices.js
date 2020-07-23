@@ -1,12 +1,12 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import Checkbox from "@material-ui/core/Checkbox";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
 import Table from "@material-ui/core/Table";
+import TableHead from '@material-ui/core/TableHead';
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -16,91 +16,111 @@ import Close from "@material-ui/icons/Close";
 import Check from "@material-ui/icons/Check";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/devicesStyle.js";
+import auth from "auth.js"
+import configApiCall from "api.js";
+import {api_path_get_admin_devices, api_path_get_auth_devices} from "../../globalUrls";
+import axios from "axios";
 
 const useStyles = makeStyles(styles);
 
 export default function Devices(props) {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState([...props.checkedIndexes]);
-  const handleToggle = value => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-    setChecked(newChecked);
+  const [devices, setDevices] = React.useState([])
+  const  userData = {
+     "username":props.username
   };
-  const { devicesIndexes, devices, rtlActive } = props;
-  const tableCellClasses = classnames(classes.tableCell, {
-    [classes.tableCellRTL]: rtlActive
-  });
+
+    useEffect(() => {
+        auth.checkDirectoryType(() => {
+            if(auth.hasAdminScope()){
+                axios(configApiCall(api_path_get_admin_devices, 'GET', userData, null)).then((response)=>{
+                    var resultSet = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
+                    setDevices(resultSet)
+                    }
+                ).catch((error) =>{
+                    console.log(error);
+                });
+            }
+            else{
+                axios(configApiCall(api_path_get_auth_devices, 'GET', null, null)).then((response)=>{
+                        setDevices(response.data)
+                    }
+                ).catch((error) =>{
+                    console.log(error);
+                });
+            }
+        })
+    }, []);
+
+  function getDeviceStatus(device) {
+      if (!(device.revoked)) {
+          return 'Active';
+      }
+      else {
+          return 'Revoked';
+
+      }
+  }
+  const tableCellClasses = classnames(classes.tableCell);
   return (
     <Table className={classes.table}>
-      <TableBody>
-        {devicesIndexes.map(value => (
-          <TableRow key={value} className={classes.tableRow}>
-            <TableCell className={tableCellClasses}>
-              <Checkbox
-                checked={checked.indexOf(value) !== -1}
-                tabIndex={-1}
-                onClick={() => handleToggle(value)}
-                checkedIcon={<Check className={classes.checkedIcon} />}
-                icon={<Check className={classes.uncheckedIcon} />}
-                classes={{
-                  checked: classes.checked,
-                  root: classes.root
-                }}
-              />
-            </TableCell>
-            <TableCell className={tableCellClasses}>{devices[value]}</TableCell>
-            <TableCell className={classes.tableActions}>
-              <Tooltip
-                id="tooltip-top"
-                title="Edit Device"
-                placement="top"
-                classes={{ tooltip: classes.tooltip }}
-              >
-                <IconButton
-                  aria-label="Edit"
-                  className={classes.tableActionButton}
-                >
-                  <Edit
-                    className={
-                      classes.tableActionButtonIcon + " " + classes.edit
-                    }
-                  />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                id="tooltip-top-start"
-                title="Remove"
-                placement="top"
-                classes={{ tooltip: classes.tooltip }}
-              >
-                <IconButton
-                  aria-label="Close"
-                  className={classes.tableActionButton}
-                >
-                  <Close
-                    className={
-                      classes.tableActionButtonIcon + " " + classes.close
-                    }
-                  />
-                </IconButton>
-              </Tooltip>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+        <TableHead>
+            <TableRow>
+                <TableCell>Device Name</TableCell>
+                <TableCell align="right">Status</TableCell>
+                <TableCell align="right">Actions</TableCell>
+            </TableRow>
+        </TableHead>
+        {devices != null &&
+          <TableBody>
+            {devices.map(device =>
+              <TableRow key={device.displayName} className={classes.tableRow}>
+                <TableCell className={tableCellClasses}>
+                    {device.displayName}
+                </TableCell>
+                <TableCell align="right" className={tableCellClasses}>{getDeviceStatus(device)}</TableCell>
+                {!(device.revoked) &&
+                    <TableCell align="right" className={classes.tableActions}>
+                      <Tooltip
+                        id="tooltip-top"
+                        title="Edit Device"
+                        placement="top"
+                        classes={{ tooltip: classes.tooltip }}
+                      >
+                        <IconButton
+                          aria-label="Edit"
+                          className={classes.tableActionButton}
+                        >
+                          <Edit
+                            className={
+                              classes.tableActionButtonIcon + " " + classes.edit
+                            }
+                          />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip
+                        id="tooltip-top-start"
+                        title="Desactivate Device"
+                        placement="top"
+                        classes={{ tooltip: classes.tooltip }}
+                      >
+                        <IconButton
+                          aria-label="Close"
+                          className={classes.tableActionButton}
+                        >
+                          <Close
+                            className={
+                              classes.tableActionButtonIcon + " " + classes.close
+                            }
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                }
+              </TableRow>
+            )}
+          </TableBody>}
     </Table>
   );
 }
 
-Devices.propTypes = {
-  devicesIndexes: PropTypes.arrayOf(PropTypes.number),
-  devices: PropTypes.arrayOf(PropTypes.node),
-  rtlActive: PropTypes.bool,
-  checkedIndexes: PropTypes.array
-};

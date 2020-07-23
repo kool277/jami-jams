@@ -32,6 +32,7 @@ import {
     api_path_get_install_lastKnownStep,
     api_path_get_auth_user_search,
     api_path_get_auth_devices,
+    api_path_get_admin_devices,
     api_path_delete_admin_user_revoke,
     api_path_delete_auth_user_revoke,
     api_path_delete_auth_device_revoke,
@@ -85,7 +86,7 @@ export default function configApiCall(api_path, request_type, data, credentials)
     if (data) {
         if (api_path == api_path_get_user_directory_search || api_path == api_path_get_auth_user_search ||
             (api_path == api_path_post_create_user && request_type == 'POST') || api_path == api_path_post_update_user
-            || api_path == api_path_get_auth_devices || api_path == api_path_post_configuration_change_password)
+            || api_path == api_path_get_auth_devices || api_path == api_path_get_admin_devices || api_path == api_path_post_configuration_change_password)
             isSearch = true;
 
         // search dataType
