@@ -11,12 +11,27 @@ import java.io.IOException;
 
 public class ContactCodec implements Encoder, Decoder {
 
+    /**
+     * {
+     *         "added" : 1595523510,
+     *         "banned" : false,
+     *         "uri" : "520290d7f45e5811fe5af637d328e7fbf5e8cab9",
+     *         "removed" : 0
+     *     }
+     */
     @Override
     public Object decode(JsonIterator jsonIterator) throws IOException {
         Any input = jsonIterator.readAny();
         Contact contact = new Contact();
         contact.setUri(input.get("uri").toString());
-        if(!input.get("added").toString().isBlank()){
+        long timeAdded = 0L;
+        long timeRemoved = 0L;
+        if(!input.get("added").toString().isBlank())
+            timeAdded = input.get("added").toLong();
+        if(!input.get("removed").toString().isBlank()){
+            timeRemoved = input.get("removed").toLong();
+        }
+        if(timeAdded >= timeRemoved){
             contact.setStatus('A');
             contact.setTimestamp(input.get("added").toLong());
         }
@@ -24,6 +39,8 @@ public class ContactCodec implements Encoder, Decoder {
             contact.setStatus('D');
             contact.setTimestamp(input.get("removed").toLong());
         }
+        if(!input.get("banned").toString().isBlank()) contact.setBanned(input.get("banned").as(Boolean.class));
+        if(!input.get("confirmed").toString().isBlank()) contact.setConfirmed(input.get("confirmed").as(Boolean.class));
         return contact;
     }
 
@@ -36,6 +53,8 @@ public class ContactCodec implements Encoder, Decoder {
             case 'A': sb.append("\"added\":").append(ct.getTimestamp()); break;
             case 'D': sb.append("\"removed\":").append(ct.getTimestamp()); break;
         }
+        sb.append("\"banned\":").append(ct.getBanned()).append(",");
+        sb.append("\"confirmed\":").append(ct.getConfirmed());
         sb.append("}");
         jsonStream.write(sb.toString().getBytes());
     }

@@ -24,7 +24,8 @@ class ContactTest {
 
     @Test
     public void deserialize(){
-        String str = "[{\"uri\":\"tcp://def@local\",\"added\":1594742298377},{\"uri\":\"tcp://abc@19293.com\",\"removed\":1594742298377}]";
+        String str = "[{\"uri\":\"tcp://def@local\",\"added\":1594742298377,\"banned\":false,\"confirmed\":true}," +
+            "{\"uri\":\"tcp://abc@19293.com\",\"removed\":1594742298377,\"banned\":true,\"confirmed\":true}]";
         Contact[] contacts = JsonIterator.deserialize(str,Contact[].class);
         Assertions.assertEquals(2,contacts.length);
     }
@@ -36,11 +37,15 @@ class ContactTest {
         contact1.setStatus('A');
         contact1.setTimestamp(System.currentTimeMillis());
         contact1.setUri("tcp://def@local");
+        contact1.setBanned(false);
+        contact1.setConfirmed(false);
         Contact contact2 = new Contact();
         contact2.setOwner("fsidokhine");
         contact2.setStatus('D');
         contact2.setTimestamp(System.currentTimeMillis());
         contact2.setUri("tcp://abc@19293.com");
+        contact2.setBanned(true);
+        contact2.setConfirmed(true);
         ArrayList<Contact> lst = new ArrayList<>();
         lst.add(contact1);
         lst.add(contact2);
