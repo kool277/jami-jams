@@ -32,6 +32,7 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
 import org.apache.catalina.webresources.StandardRoot;
+import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.tomcat.util.descriptor.web.ErrorPage;
 
 import java.io.File;
@@ -52,6 +53,19 @@ public class TomcatLauncher {
     public TomcatLauncher(int port) {
         tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
         this.startServer();
+    }
+
+    //Swap connectors fix.
+    public void swapConnectors(){
+        if(getTomcat().getConnector().findSslHostConfigs() == null || getTomcat().getConnector().findSslHostConfigs().length < 1){
+            getTomcat().getConnector().findSslHostConfigs()[0].setTruststoreFile(System.getProperty("user.dir") + File.separator + "keystore.jks");
+            getTomcat().getConnector().findSslHostConfigs()[0].setTruststorePassword("changeit");
+            getTomcat().getConnector().findSslHostConfigs()[0].setCertificateVerification("optional");
+            ((Http11NioProtocol) getTomcat().getConnector().getProtocolHandler()).reloadSslHostConfigs();
+        }
+        else{
+            log.error("Could not reload SSL configuration because the server is not running over SSL!");
+        }
     }
 
     public TomcatLauncher(int port, String certificateFile, String keyFile) {

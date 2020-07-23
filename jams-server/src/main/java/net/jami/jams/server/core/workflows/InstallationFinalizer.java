@@ -43,6 +43,7 @@ import java.security.KeyStore;
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
+import static net.jami.jams.server.Server.tomcatLauncher;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @Slf4j
@@ -118,6 +119,8 @@ public class InstallationFinalizer {
             fos.close();
             log.info("Successfully built keystore for for tomcat!");
             Server.isInstalled.set(true);
+            //fix to swap connectors - this assumes you are running with an SSL certificate
+            tomcatLauncher.swapConnectors();
             log.info("The installation has completed successfully, you can now use JAMS!");
         } catch (Exception e) {
             log.error("Could not save settings to disk with error: " + e.toString());
