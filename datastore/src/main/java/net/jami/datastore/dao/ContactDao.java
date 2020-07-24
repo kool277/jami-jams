@@ -65,17 +65,17 @@ public class ContactDao extends AbstractDao<Contact> {
             String delete = "DELETE FROM contacts WHERE owner = ?";
             PreparedStatement ps = connection.getConnection().prepareStatement(delete);
             ps.setString(1, contactList.get(0).getOwner());
-            ps.executeQuery();
-            String insert = "INSERT INTO contacts (owner, uri, displayName, `timestamp`, status) VALUES " +
-                "(?, ?, ?, ?, ?)";
+            ps.executeUpdate();
+            String insert = "INSERT INTO contacts (owner, uri, displayName, timestamp, status,banned,confirmed) VALUES " +
+                "(?, ?, ?, ?, ?,?,?)";
             for (Contact contact : contactList) {
                 ps = connection.getConnection().prepareStatement(insert);
                 contact.getInsert(ps);
-                ps.executeQuery();
+                ps.executeUpdate();
             }
             return true;
         } catch (Exception e) {
-            log.error("Could not update contacts!");
+            log.error("Could not update contacts: {}",e.getMessage());
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

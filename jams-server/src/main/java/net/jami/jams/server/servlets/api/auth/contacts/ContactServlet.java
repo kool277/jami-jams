@@ -155,8 +155,9 @@ public class ContactServlet extends HttpServlet {
         statementList.addStatement(new StatementElement("owner","=",req.getAttribute("username").toString(),""));
         List<Contact> localList = dataStore.getContactDao().getObjects(statementList);
         List<Contact> remoteList = Arrays.asList(JsonIterator.deserialize(req.getInputStream().readAllBytes(),Contact[].class));
+        remoteList.forEach(contact -> contact.setOwner(req.getAttribute("username").toString()));
         List<Contact> result = ContactMerger.mergeContacts(localList,remoteList);
         if(!dataStore.getContactDao().storeContactList(result)) TomcatCustomErrorHandler.sendCustomError(resp,500,"Could not store contacts!");
-        resp.getOutputStream().write(JsonStream.serialize(result).getBytes());
+        else resp.getOutputStream().write(JsonStream.serialize(result).getBytes());
     }
 }
