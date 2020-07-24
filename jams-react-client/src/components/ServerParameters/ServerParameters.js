@@ -96,7 +96,9 @@ export default function ServerParameters(props) {
         auth.installed = true
         auth.authenticated = true
         auth.admin = true
-        history.push('/admin');
+        auth.checkDirectoryType(() => {
+            history.push('/admin');
+        })
     }
 
     function handleSubmit(e) {

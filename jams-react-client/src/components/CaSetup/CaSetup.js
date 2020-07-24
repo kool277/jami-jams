@@ -84,7 +84,7 @@ export default function CaSetup(props) {
     }
 
     function onCountryChange(values) {
-        setCountry(values['country'].label);
+        setCountry(values['country'].code);
     }
 
     const handleCertifOptionChange = (event) => {

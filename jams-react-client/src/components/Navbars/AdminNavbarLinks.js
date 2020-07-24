@@ -50,9 +50,14 @@ export default function AdminNavbarLinks(props) {
     setOpenProfile(null);
     auth.logout(() => { history.push("/") })
   };
+
+  const handleOtherAction = () => {
+    // Do nothing
+  }
+
   return (
     <div>
-      <div className={classes.searchWrapper}>
+      {/* <div className={classes.searchWrapper}>
         <CustomInput
           formControlProps={{
             className: classes.margin + " " + classes.search
@@ -157,7 +162,7 @@ export default function AdminNavbarLinks(props) {
             </Grow>
           )}
         </Poppers>
-      </div>
+      </div> */}
       <div className={classes.manager}>
         <Button
           color={window.innerWidth > 959 ? "transparent" : "white"}
@@ -194,16 +199,16 @@ export default function AdminNavbarLinks(props) {
               }}
             >
               <Paper>
-                <ClickAwayListener onClickAway={handleCloseProfile}>
+                <ClickAwayListener onClickAway={handleOtherAction}>
                   <MenuList role="menu">
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={handleOtherAction}
                       className={classes.dropdownItem}
                     >
                       Profile
                     </MenuItem>
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={handleOtherAction}
                       className={classes.dropdownItem}
                     >
                       Settings

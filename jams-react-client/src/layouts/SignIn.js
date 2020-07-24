@@ -63,6 +63,12 @@ export default function SignIn(props) {
     const [error, setError] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
 
+    React.useEffect(() => {
+        if(auth.isAuthenticated() && auth.isInstalled()) {
+            history.push('/admin');
+        }
+    })
+
     function handleSubmit(e) {
         e.preventDefault();
         const jsonData = {

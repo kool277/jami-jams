@@ -62,7 +62,6 @@ class Auth {
 
     checkDirectoryType(cb){
         axios(configApiCall(api_path_get_directories, "GET", null, null)).then((response) => {
-            console.log(response)
             if (response.data.length == 1) {
                 this.localDirectory = true
             }

@@ -26,6 +26,7 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import PhoneOutlinedIcon from '@material-ui/icons/PhoneOutlined';
 import BusinessOutlinedIcon from '@material-ui/icons/BusinessOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Search from "@material-ui/icons/Search";
 import IconButton from '@material-ui/core/IconButton';
 
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
@@ -42,8 +43,13 @@ import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
+import EditCreateUserProfile from "views/UserProfile/EditCreateUserProfile";
+
+
+import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
 const styles = {
+    ...headerLinksStyle,
     cardCategoryWhite: {
         color: "rgba(255,255,255,.62)",
         margin: "0",
@@ -71,7 +77,9 @@ export default function Users() {
     const classes = useStyles();
     const [users, setUsers] = React.useState([])
     const [open, setOpen] = React.useState(false);
-    const [revokedUser, setRevokedUser] = React.useState('');
+    const [revokedUser, setRevokedUser] = React.useState("");
+    const [selectedUsername, setSelectedUsername] = React.useState("")
+    const [createUser, setCreateUser] = React.useState(false)
 
     useEffect(() => {
         setRevokedUser('')
@@ -85,9 +93,10 @@ export default function Users() {
 
     const [selectedProfile, setSelectedProfile] = useState(false);
 
-    function redirectToUserProfile(e) {
+    function redirectToUserProfile(e, username) {
         e.preventDefault()
         setSelectedProfile(true);
+        setSelectedUsername(username)
     }
     function redirectToUsers(e) {
         e.preventDefault()
@@ -117,16 +126,27 @@ export default function Users() {
         setOpen(false);
     };
 
-    if (selectedProfile || !auth.hasAdminScope()) {
+    if (selectedProfile && !auth.hasAdminScope()) {
         return (
             <div>
-                {auth.hasAdminScope() && <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToUsers}>
-                    <KeyboardReturnIcon />
-                </Button>}
                 <UserProfile username={auth.getUsername()}/>
             </div>
         )
-    } else {
+    } else if(selectedProfile && auth.hasAdminScope()){
+        return (
+            <div>
+                <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToUsers}>
+                    <KeyboardReturnIcon />
+                </Button>
+                <UserProfile username={selectedUsername}/>
+            </div>
+        )
+    } else if (createUser) {
+        return(
+            <EditCreateUserProfile createUser={createUser} setCreateUser={setCreateUser}/>
+        )
+    }
+    else {
         return (
             <div>
                 <Dialog
@@ -151,20 +171,34 @@ export default function Users() {
                     </DialogActions>
                 </Dialog>
                 <GridContainer>
-                    {auth.isLocalDirectory() &&
                     <GridItem xs={12} sm={12} md={12}>
-                        <Button variant="contained" color="primary" href="#contained-buttons">
-                        <AddCircleOutlineIcon /> Create user
-                        </Button>
+                        {auth.isLocalDirectory() &&
+                            <Button variant="contained" color="primary" href="#contained-buttons" onClick={e => setCreateUser(true)}>
+                                <AddCircleOutlineIcon /> Create user
+                            </Button>
+                        }
+                        <div className={classes.searchWrapper}>
+                            <CustomInput
+                            formControlProps={{
+                                className: classes.margin + " " + classes.search
+                            }}
+                            inputProps={{
+                                placeholder: "Search users",
+                                inputProps: {
+                                "aria-label": "Search users"
+                                }
+                            }}
+                            />
+                            <Search />
+                        </div>
                     </GridItem>
-                    }
                     {
                     users.map(user => 
                     <GridItem xs={12} sm={12} md={2} key={user.username}>
                             
                                 <Card profile>
                                     <CardBody profile>
-                                        <a href="#" onClick={redirectToUserProfile}>
+                                        <a href="#" onClick={(e) => redirectToUserProfile(e, user.username)}>
                                         <CardAvatar profile>
                                             <img src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} alt="..." />
                                         </CardAvatar>
