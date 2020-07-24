@@ -50,11 +50,15 @@ public class ContactCodec implements Encoder, Decoder {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"uri\":\"").append(ct.getUri()).append("\",");
         switch (ct.getStatus()){
-            case 'A': sb.append("\"added\":").append(ct.getTimestamp()); break;
-            case 'D': sb.append("\"removed\":").append(ct.getTimestamp()); break;
+            case 'A':
+                sb.append("\"added\":").append(ct.getTimestamp());
+                sb.append(",");
+                sb.append("\"confirmed\":").append(ct.getConfirmed());
+                break;
+            case 'D': sb.append("\"removed\":").append(ct.getTimestamp());
+                if(ct.getBanned()) sb.append(",").append("\"banned\":").append(ct.getBanned());
+                break;
         }
-        sb.append("\"banned\":").append(ct.getBanned()).append(",");
-        sb.append("\"confirmed\":").append(ct.getConfirmed());
         sb.append("}");
         jsonStream.write(sb.toString().getBytes());
     }
