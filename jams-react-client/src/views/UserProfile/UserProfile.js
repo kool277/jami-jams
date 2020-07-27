@@ -29,6 +29,7 @@ import EditCreateUserProfile from "./EditCreateUserProfile"
 import {
   infoColor
 } from "assets/jss/material-dashboard-react.js";
+import DisplayUserProfile from "./DisplayUserProfile";
 
 
 function TabPanel(props) {
@@ -90,6 +91,7 @@ export default function UserProfile(props) {
 
   const [value, setValue] = React.useState(0);
   const [username, setUsername] = React.useState(props.username);
+  const [displayUser, setDisplayUser] = React.useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -106,7 +108,9 @@ export default function UserProfile(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <EditCreateUserProfile username={username} createUser={false}/>
+          {displayUser? <DisplayUserProfile username={username} setDisplayUser={setDisplayUser}/>: <EditCreateUserProfile username={username} createUser={false} setDisplayUser={setDisplayUser}/>
+          }
+
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Devices username={props.username}/>

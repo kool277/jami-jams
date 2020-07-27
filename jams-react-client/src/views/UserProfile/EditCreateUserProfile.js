@@ -211,8 +211,11 @@ export default function EditCreateUserProfile(props) {
     }
 
     const handleCancel = () => {
-        setProfilePicturePreview(originalUploadedImage)
         history.push('/admin');
+    }
+
+    const handleCancelUpdate = () => {
+        props.setDisplayUser(true)
     }
 
     const handleUserProfileCreation = (data) => {
@@ -249,7 +252,7 @@ export default function EditCreateUserProfile(props) {
     }
 
     const handleUserUpdate = () => {
-        history.push('/admin');
+        props.setDisplayUser(true)
     }
 
     const handleUpdateUser = () => {
@@ -293,6 +296,7 @@ export default function EditCreateUserProfile(props) {
     }
 
     const handleClose = () => {
+        setProfilePicturePreview(originalUploadedImage)
         setOpen(false);
     };
 
@@ -542,7 +546,7 @@ export default function EditCreateUserProfile(props) {
                     </div>
                 </CardBody>
                 <CardFooter>
-                    {createUser ? <Button color="danger" onClick={handleCancel}>Cancel</Button> : <Button color="danger" onClick={handleCancel}>Cancel Update</Button>}
+                    {createUser ? <Button color="danger" onClick={handleCancel}>Cancel</Button> : <Button color="danger" onClick={handleCancelUpdate}>Cancel Update</Button>}
                     {createUser ? <Button color="info" onClick={handleCreateUser}>Create Profile</Button> : <Button color="info" onClick={handleUpdateUser}>Update Profile</Button>}
                 </CardFooter>
             </Card>
