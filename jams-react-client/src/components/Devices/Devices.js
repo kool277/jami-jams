@@ -32,18 +32,17 @@ export default function Devices(props) {
         auth.checkDirectoryType(() => {
             if(auth.hasAdminScope()){
                 axios(configApiCall(api_path_get_admin_devices, 'GET', userData, null)).then((response)=>{
-                    var resultSet = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
-                    setDevices(resultSet)
-                    }
-                ).catch((error) =>{
+                      var resultSet = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
+                      setDevices(resultSet)
+                }).catch((error) =>{
                     console.log(error);
                 });
             }
             else{
                 axios(configApiCall(api_path_get_auth_devices, 'GET', null, null)).then((response)=>{
-                        setDevices(response.data)
-                    }
-                ).catch((error) =>{
+                      var resultSet = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
+                      setDevices(resultSet)
+                }).catch((error) =>{
                     console.log(error);
                 });
             }

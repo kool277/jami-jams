@@ -135,7 +135,6 @@ export default function CaSetup(props) {
 
         axios(configApiCall(api_path_post_install_ca, "POST", jsonData, null)).then((response)=>{
             handleInstallCA(response);
-            console.log(response);
         }).catch((error)=>{
             props.setError(error);
             console.log('Error installing CA Setup: ' + error );

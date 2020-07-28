@@ -203,7 +203,6 @@ export default function IdentityManagement(props) {
         }
 
         axios(configApiCall(api_path_post_install_auth,'POST',data,null)).then((response)=>{
-            console.log(response)
             callbackIdentityManagement()
         }).catch(()=>{
             props.setErrorMessage('The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again.')

@@ -47,7 +47,7 @@ import {
     api_path_get_needs_update,
     api_path_get_start_update,
     api_path_post_create_user,
-    api_path_get_user,
+    api_path_get_auth_user,
     api_path_post_update_user,
     api_path_get_exists_user,
     api_path_get_user_directory_search,

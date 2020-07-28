@@ -56,7 +56,8 @@ import {
     api_path_put_update_user_profile,
     api_path_post_create_user,
     api_path_post_create_user_profile,
-    api_path_get_user_directory_search
+    api_path_get_user_directory_search,
+    api_path_get_exists_user
 } from "../../globalUrls"
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
@@ -157,6 +158,7 @@ export default function EditCreateUserProfile(props) {
     const classes = useStyles();
     const history = useHistory();
     const [createUser, setCreateUser] = React.useState(props.createUser);
+    const [userExists, setUserExists] = React.useState(false)
 
     const [firstName, setFirstName] = React.useState("")
     const [lastName, setLastName] = React.useState("")
@@ -170,6 +172,8 @@ export default function EditCreateUserProfile(props) {
     const [phoneNumber, setPhoneNumber] = React.useState("")
     const [extension, setExtension] = React.useState("")
     const [mobileNumber, setMobileNumber] = React.useState("")
+    const [openPassword, setOpenPassword] = React.useState(false)
+    const [temporaryPassword, setTemporaryPassword] = React.useState("")
 
     const [open, setOpen] = React.useState(false);
     const [crop, setCrop] = React.useState({ x: 0, y: 0 })
@@ -219,13 +223,10 @@ export default function EditCreateUserProfile(props) {
     }
 
     const handleUserProfileCreation = (data) => {
-        axios(configApiCall(api_path_post_create_user + "?username="+ data.username, 'POST', null, null)).then((response) => {
-            console.log("New user successfully created. Here is the one time password: " + response.data["password"])
-            history.push('/admin');
+        axios(configApiCall(api_path_post_create_user_profile, 'POST', data, null)).then(() => {
+            setOpenPassword(true)
         }).catch((error) => {
-            console.log("Failed to create new user. This is either because the username is already in use" +
-                    " on the public nameserver, or another unknown error has occurred. " +
-                    "Please choose another one.");
+            console.log("Error creating user profile: " + error)
         })
     }
 
@@ -243,12 +244,27 @@ export default function EditCreateUserProfile(props) {
             'mobileNumber': mobileNumber
         }
 
-        axios(configApiCall(api_path_post_create_user_profile, 'POST', data, null)).then(() => {
+        axios(configApiCall(api_path_post_create_user + "?username="+ data.username, 'POST', null, null)).then((response) => {
+            setTemporaryPassword(response.data["password"])
             handleUserProfileCreation(data)
-
         }).catch((error) => {
-            console.log("Error updating user: " + error)
+            console.log("Failed to create new user. This is either because the username is already in use" +
+            " on the public nameserver, or another unknown error has occurred. " +
+            "Please choose another one.");
         }) 
+    }
+
+    const handleUserExists = (input) => {
+        const data = {
+            "username": input
+        }
+        axios(configApiCall(api_path_get_exists_user, 'GET', data, null)).then((response) =>{
+            if(response.data == "[]"){
+                setUserExists(true)
+            }
+        }).catch((error) => {
+            console.log("Error checking for existing users: " + error)
+        })
     }
 
     const handleUserUpdate = () => {
@@ -287,7 +303,6 @@ export default function EditCreateUserProfile(props) {
             rotation
         ).then((value) => {
             setProfilePicturePreview(value)
-            console.log(value)
         })
     }
      
@@ -304,10 +319,31 @@ export default function EditCreateUserProfile(props) {
         setProfilePicture(profilePicturePreview.replace("data:image/jpeg;base64,", ""))
         setOpen(false)
     }
-     
+    
+    const handleClosePassword = () => {
+        setOpenPassword(false);
+        history.push('/admin');
+    }
 
     return(
         <div>
+        <Dialog
+            open={openPassword}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">{"Temporary password"}</DialogTitle>
+            <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            New user successfully created. Here is the one time password: <strong>{temporaryPassword}</strong> ?
+            </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={handleClosePassword} color="primary">
+                Ok
+            </Button>
+            </DialogActions>
+        </Dialog>
         <Dialog
             open={open}
             onClose={handleClose}
@@ -385,7 +421,7 @@ export default function EditCreateUserProfile(props) {
                 <CardBody profile>
                     <div className={classes.root}>
                     <Grid container spacing={5}>
-                        <Grid item xs={12} sm={12} md={6}>
+                        <Grid item xs={12} sm={12} md={12}>
                             <Grid container spacing={5} >
                                 <Grid item align="center" xs={12} sm={12} md={12} >
                                     <img src={profilePicturePreview} alt="..." className={classes.editProfilePicture} />
@@ -398,14 +434,10 @@ export default function EditCreateUserProfile(props) {
                                         </IconButton> Update profile image
                                     </label>
                                 </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <Grid container spacing={5}>
-                                <Grid item xs={12} sm={12} md={12}>
                                 {createUser && 
-                                    <FormControl className={classes.margin} fullWidth>
-                                        <InputLabel htmlFor="username">Username</InputLabel>
+                                <Grid item align="center" xs={12} sm={12} md={12}>                                
+                                    <FormControl className={classes.margin} size="medium" error={userExists}>
+                                        <InputLabel htmlFor="username">{userExists ? "Error username exists" : "Username"}</InputLabel>
                                         <Input
                                         id="username"
                                         placeholder={userName}
@@ -414,27 +446,32 @@ export default function EditCreateUserProfile(props) {
                                             <AccountCircleIcon />
                                             </InputAdornment>
                                         }
-                                        onChange={e => setUserName(e.target.value)}
+                                        onChange={e => {
+                                            setUserName(e.target.value);
+                                            handleUserExists(e.target.value)
+                                        }}
                                         />
                                     </FormControl>
+                                </Grid>
                                 }
-                                </Grid>
-                                <Grid item xs={12} sm={12} md={12}>
-                                                        <FormControl className={classes.margin} fullWidth>
-                                    <InputLabel htmlFor="firstname">First Name</InputLabel>
-                                    <Input
-                                    id="firstname"
-                                    placeholder={firstName}
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                        <PersonIcon />
-                                        </InputAdornment>
-                                    }
-                                    onChange={e => setFirstName(e.target.value)}
-                                    />
-                                </FormControl>
-                                </Grid>
-                            <Grid item xs={12} sm={12} md={12}>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <FormControl className={classes.margin} fullWidth>
+                                <InputLabel htmlFor="firstname">First Name</InputLabel>
+                                <Input
+                                id="firstname"
+                                placeholder={firstName}
+                                startAdornment={
+                                    <InputAdornment position="start">
+                                    <PersonIcon />
+                                    </InputAdornment>
+                                }
+                                onChange={e => setFirstName(e.target.value)}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
                             <FormControl className={classes.margin} fullWidth>
                                 <InputLabel htmlFor="lastname">Last Name</InputLabel>
                                 <Input
@@ -448,10 +485,7 @@ export default function EditCreateUserProfile(props) {
                                 onChange={e => setLastName(e.target.value)}
                                 />
                             </FormControl>
-                            </Grid>
                         </Grid>
-                        </Grid>
-
                         <Grid item xs={12} sm={12} md={6}>
                             <FormControl className={classes.margin} fullWidth>
                                 <InputLabel htmlFor="email">Email</InputLabel>

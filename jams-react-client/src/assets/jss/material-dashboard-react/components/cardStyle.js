@@ -27,12 +27,6 @@ const cardStyle = {
       "& li" :{
         display: 'flex',
         alignItems: 'center',
-        "& svg": {
-          marginRight: "10px"
-        },
-        "& img": {
-          marginRight: "10px"
-        }
       }
     },
     "&:hover": {

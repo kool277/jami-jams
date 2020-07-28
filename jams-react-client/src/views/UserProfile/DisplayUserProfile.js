@@ -12,6 +12,14 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import Grid from '@material-ui/core/Grid';
 import BusinessCenterOutlinedIcon from '@material-ui/icons/BusinessCenterOutlined';
@@ -21,13 +29,22 @@ import SmartphoneOutlinedIcon from '@material-ui/icons/SmartphoneOutlined';
 import LocalPrintshopOutlinedIcon from '@material-ui/icons/LocalPrintshopOutlined';
 import PhoneForwardedOutlinedIcon from '@material-ui/icons/PhoneForwardedOutlined';
 import PersonOutlinedIcon from '@material-ui/icons/PersonOutlined';
-import AccountBoxOutlinedIcon from '@material-ui/icons/AccountBoxOutlined';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import PermIdentityOutlinedIcon from '@material-ui/icons/PermIdentityOutlined';
 
+import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
+import DoneIcon from '@material-ui/icons/Done';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import auth from "auth.js"
 import configApiCall from "api.js";
-import { api_path_get_admin_user, api_path_get_user, api_path_get_user_directory_search} from "globalUrls";
+import { api_path_get_admin_user, api_path_get_auth_user, api_path_get_user_directory_search, api_path_delete_admin_user_revoke} from "globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
@@ -92,7 +109,8 @@ const styles = (theme)=> ( {
         maxHeight: '60vh',
         minWidth: '80vh',
         maxWidth: '80vh'
-    },
+    }
+
     // controls: {
     //     padding: 16,
     //     display: 'flex',
@@ -130,7 +148,10 @@ export default function DisplayUserProfile(props) {
     const classes = useStyles();
 
     const [users, setUsers] = React.useState([])
-    const [userStatus, setUserStatus] = React.useState('')
+    const [userStatus, setUserStatus] = React.useState(false)
+    const [open, setOpen] = React.useState(false);
+    const [revokedUser, setRevokedUser] = React.useState("");
+
     const  searchData = {
         "queryString":props.username
     };
@@ -138,20 +159,22 @@ export default function DisplayUserProfile(props) {
     const  userData = {
         "username":props.username
     };
-    const [value, setValue] = React.useState(0);
+
     useEffect(() => {
         auth.checkDirectoryType(() => {
             if(auth.hasAdminScope()){
                 axios(configApiCall(api_path_get_admin_user, 'GET', userData, null)).then((response)=>{
-                        setStatus(response.data)
+                        const result = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
+                        setUserStatus(result.revoked)
                     }
                 ).catch((error) =>{
                     console.log(error);
                 });
             }
             else{
-                axios(configApiCall(api_path_get_user, 'GET', null, null)).then((response)=>{
-                        setStatus(response.data)
+                axios(configApiCall(api_path_get_auth_user, 'GET', null, null)).then((response)=>{
+                    const result = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
+                    setUserStatus(result.revoked)
                     }
                 ).catch((error) =>{
                     console.log(error);
@@ -166,92 +189,179 @@ export default function DisplayUserProfile(props) {
         });
     }, []);
 
-    function setStatus(data) {
-        if (data.revoked)
-            setUserStatus("Revoked");
-        else
-            setUserStatus("Active");
+    const getUserStatus = (user) => {
+        if(userStatus == false) {
+            return <Chip label="Active" avatar={<Avatar alt={user.username} src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} />} color="primary" deleteIcon={<DoneIcon />}/>
+        }else{
+            return <Chip label="Revoked" avatar={<Avatar alt={user.username} src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} />} deleteIcon={<DoneIcon />}/>            
+        }
     }
-    console.log(userStatus)
+
+    function revokeUser(){
+
+        const data = {
+            'username': revokedUser
+        }
+
+        axios(configApiCall(api_path_delete_admin_user_revoke, 'DELETE', data, null)).then(()=>{
+            setUserStatus(true)
+        }).catch((error)=> {
+            console.log("Error revoking user: " + revokedUser + ' with error: ' + error);
+        });
+        setOpen(false);
+    }
+
+    const handleClickOpen = (username) => {
+        setRevokedUser(username)
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <div>
+        <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">{"Revoke user account"}</DialogTitle>
+            <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+                Are you sure you want to revoke <strong>{revokedUser}</strong> ?
+            </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={handleClose} color="primary">
+                Cancel
+            </Button>
+            <Button onClick={revokeUser} color="danger" autoFocus>
+                Revoke
+            </Button>
+            </DialogActions>
+        </Dialog>
         {users.map(user =>
             <GridContainer>
                 <Grid item xs={12} sm={12} md={8}>
                     <Card profile>
                         <CardHeader color="info" stats icon>
                             <CardIcon color="info">
-                                <AccountBoxOutlinedIcon />
+                                <PermIdentityOutlinedIcon />
                             </CardIcon>
                             <p className={classes.cardCategory}>{"Profile information"}</p>
                             <h3 className={classes.cardTitle}>{user.username}</h3>
+                            {getUserStatus(user)}
                         </CardHeader>
                         <CardBody profile>
                             <div className={classes.root}>
-                                <GridContainer spacing={5}>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <Grid container spacing={5} >
-                                            <Grid item align="center" xs={12} sm={12} md={12} >
-                                                <img src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} className={classes.editProfilePicture} alt="..." />
-                                            </Grid>
-                                        </Grid>
+                                <Grid container spacing={2}>
+                                    <Grid item align="center" xs={12} sm={12} md={12}>
+                                        <img src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} className={classes.editProfilePicture} alt="..." />
+                                        <h4>{user.username ? user.username : 'no username'}</h4>
                                     </Grid>
-                                    <GridItem xs={12} sm={12} md={6}>
-                                        <Grid container spacing={5}>
-                                            <Grid item xs={12} sm={12} md={12}>
-                                                <FormControl className={classes.margin} fullWidth>
-                                                    <span><AccountCircleIcon /> {user.username ? user.username : 'no username'}, {userStatus ? userStatus: "no user status"}</span>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={12} sm={12} md={12}>
-                                                <FormControl className={classes.margin} fullWidth>
-                                                    <span> <PersonIcon /> {user.firstName ? user.firstName : 'no firstname'}</span>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={12} sm={12} md={12}>
-                                                <FormControl className={classes.margin} fullWidth>
-                                                    <span><PersonOutlinedIcon/> {user.lastName ? user.lastName : 'no lastname'}</span>
-                                                </FormControl>
-                                            </Grid>
-                                        </Grid>
-                                    </GridItem>
+                                    <Grid item xs={12} sm={12} md={6}>
+                                        <List dense={false}>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <PersonIcon />
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.firstName ? user.firstName : 'no firstname'}
+                                                    />
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <PersonOutlinedIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.lastName ? user.lastName : 'no lastname'}
+                                                    />
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <AlternateEmailOutlinedIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.email ? user.email : 'no email'}
+                                                    />
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <BusinessCenterOutlinedIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.organization ? user.organization : 'no organization'}
+                                                    />
+                                                </ListItem>
+                                        </List>
+                                    </Grid>
 
                                     <Grid item xs={12} sm={12} md={6}>
-                                        <FormControl className={classes.margin} fullWidth>
-                                            <span> <AlternateEmailOutlinedIcon/> {user.email ? user.email : 'no email'}  </span>
-                                        </FormControl>
+                                        <List dense={false}>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <PhoneInTalkOutlinedIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.phoneNumber ? user.phoneNumber : 'no phone number'}
+                                                    />
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <PhoneForwardedOutlinedIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.phoneNumberExtension ? user.phoneNumberExtension : 'no Extension'}
+                                                    />
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <SmartphoneOutlinedIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.mobileNumber ? user.mobileNumber : 'no mobile number'}
+                                                    />
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <LocalPrintshopOutlinedIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={user.faxNumber ? user.faxNumber : 'no fax number'}
+                                                    />
+                                                </ListItem>
+                                        </List>
                                     </Grid>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <FormControl className={classes.margin} fullWidth>
-                                            <span> <BusinessCenterOutlinedIcon/> {user.organization ? user.organization : 'no organization'}  </span>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <FormControl className={classes.margin} fullWidth>
-                                            <span> <PhoneInTalkOutlinedIcon/> {user.phoneNumber ? user.phoneNumber : 'no phone number'}  </span>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <FormControl className={classes.margin} fullWidth>
-                                            <span> <PhoneForwardedOutlinedIcon/> {user.phoneNumberExtension ? user.phoneNumberExtension : 'no Extension'}  </span>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <FormControl className={classes.margin} fullWidth>
-                                            <span> <SmartphoneOutlinedIcon/> {user.mobileNumber ? user.mobileNumber : 'no mobile number'}  </span>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <FormControl className={classes.margin} fullWidth>
-                                            <span> <LocalPrintshopOutlinedIcon/> {user.faxNumber ? user.faxNumber : 'no fax number'}  </span>
-                                        </FormControl>
-                                    </Grid>
-                                </GridContainer>
+                                </Grid>
                             </div>
                         </CardBody>
                         <CardFooter>
-                            <Button color="info" onClick={() => props.setDisplayUser(false)}>Edit Profile</Button>
-                            {auth.hasAdminScope() && (userStatus == "Active" || userStatus == '') && <Button color="danger">Revoke Profile</Button>}
+                            {auth.isLocalDirectory() && <Button color="info" onClick={() => props.setDisplayUser(false)}>
+                                <EditIcon /> Edit Profile
+                            </Button>}
+                            {auth.hasAdminScope() && (userStatus == "Active" || userStatus == '') &&                             
+                            <Button color="danger" onClick={() => handleClickOpen(user.username)} >
+                                <DeleteIcon fontSize="small"/> Revoke user
+                            </Button>}
                         </CardFooter>
                     </Card>
                 </Grid>
