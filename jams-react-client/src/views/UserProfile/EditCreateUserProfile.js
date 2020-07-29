@@ -259,8 +259,8 @@ export default function EditCreateUserProfile(props) {
             "username": input
         }
         axios(configApiCall(api_path_get_exists_user, 'GET', data, null)).then((response) =>{
-            if(response.data == "[]"){
-                setUserExists(true)
+            if(response.status == 200){
+                setUserExists(false)
             }
         }).catch((error) => {
             console.log("Error checking for existing users: " + error)

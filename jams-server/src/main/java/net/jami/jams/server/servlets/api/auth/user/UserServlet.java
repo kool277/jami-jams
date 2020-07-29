@@ -75,12 +75,16 @@ public class UserServlet extends HttpServlet {
         StatementList statementList = new StatementList();
         StatementElement st = new StatementElement("username","=",req.getAttribute("username").toString(),"");
         statementList.addStatement(st);
-        User user = dataStore.getUserDao().getObjects(statementList).get(0);
-        if(certificateAuthority.getLatestCRL().get() != null) {
-            user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
+        if (!dataStore.getUserDao().getObjects(statementList).isEmpty()) {
+            User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            if(certificateAuthority.getLatestCRL().get() != null) {
+                user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
+            }
+            else user.setRevoked(false);
+            resp.setStatus(200);
+            resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
         }
-        else user.setRevoked(false);
-        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+        resp.sendError(404, "User was not found!");
     }
 
     //The user can update 3 fields: password,privatekey,publickey

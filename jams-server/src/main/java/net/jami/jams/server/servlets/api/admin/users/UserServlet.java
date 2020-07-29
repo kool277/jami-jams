@@ -50,7 +50,7 @@ import static net.jami.jams.server.Server.userAuthenticationModule;
 @WebServlet("/api/admin/user")
 public class UserServlet extends HttpServlet {
 
-    //Get the user profile.
+    //Get the user
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
@@ -58,27 +58,32 @@ public class UserServlet extends HttpServlet {
         StatementList statementList = new StatementList();
         StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");
         statementList.addStatement(st1);
-        User user = dataStore.getUserDao().getObjects(statementList).get(0);
-        if(certificateAuthority.getLatestCRL().get() != null) {
-            user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
-        }
-        else user.setRevoked(false);
 
-        if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
-            String password = PasswordGenerator.generatePassword();
-            StatementList update = new StatementList();
-            StatementElement st0 = new StatementElement("password","=",password,"");
-            update.addStatement(st0);
-            StatementList constraint = new StatementList();
-            StatementElement st = new StatementElement("username","=",req.getParameter("username"),"");
-            constraint.addStatement(st);
-            StatementElement st2 = new StatementElement("needsPasswordReset","=","true","");
-            update.addStatement(st2);
-            // refresh variable
-            dataStore.getUserDao().updateObject(update,constraint);
-            user = dataStore.getUserDao().getObjects(statementList).get(0);
+        if (!dataStore.getUserDao().getObjects(statementList).isEmpty()) {
+            User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            if (certificateAuthority.getLatestCRL().get() != null)
+                user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
+            else user.setRevoked(false);
+
+            if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
+                String password = PasswordGenerator.generatePassword();
+                StatementList update = new StatementList();
+                StatementElement st0 = new StatementElement("password", "=", password, "");
+                update.addStatement(st0);
+                StatementList constraint = new StatementList();
+                StatementElement st = new StatementElement("username", "=", req.getParameter("username"), "");
+                constraint.addStatement(st);
+                StatementElement st2 = new StatementElement("needsPasswordReset", "=", "true", "");
+                update.addStatement(st2);
+                // refresh variable
+                dataStore.getUserDao().updateObject(update, constraint);
+                user = dataStore.getUserDao().getObjects(statementList).get(0);
+            }
+            resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+            resp.setStatus(200);
+        } else {
+            resp.sendError(404, "Could not obtain user!");
         }
-        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
     }
 
     //Create an internal user - this is always technically available, because internal users have the right to exist.
