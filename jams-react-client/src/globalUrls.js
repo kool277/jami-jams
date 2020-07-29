@@ -1,0 +1,77 @@
+const uri = '';
+const current_uri = window.location.href;
+const backend_address = new URL(window.location.href);
+const url_path = backend_address.protocol + "//" + backend_address.hostname;
+const url_port = backend_address.port;
+const api_path_post_install_admin = '/api/install/start';
+const api_path_post_auth_login = '/api/login';
+const api_path_post_install_ca = '/api/install/ca';
+const api_path_post_install_auth = '/api/install/auth';
+const api_path_post_install_server = '/api/install/settings';
+const api_path_get_install_lastKnownStep = '/api/install/lastStep';
+const api_path_get_auth_user_search = '/api/auth/users';
+const api_path_get_admin_devices = '/api/admin/devices';
+const api_path_get_auth_devices = '/api/auth/devices';
+const api_path_delete_admin_user_revoke = '/api/admin/user';
+const api_path_delete_auth_user_revoke = '/api/auth/user';
+const api_path_delete_admin_device_revoke = '/api/admin/device';
+const api_path_delete_auth_device_revoke = '/api/auth/device';
+const api_path_rename_device = '/api/auth/device';
+const api_path_get_server_status = '/api/info';
+const api_path_get_post_configuration_auth_service = '/api/configuration/authservice';
+const api_path_get_post_configuration_global_settings = '/api/configuration/globalsettings';
+const api_path_post_configuration_change_password = '/api/admin/user';
+const api_path_post_configuration_register_license = '/api/subscription';
+const api_path_get_subscription_status = '/api/admin/subscription';
+const api_path_get_directories = '/api/auth/directories';
+const api_path_get_needs_update = '/api/admin/update';
+const api_path_get_start_update = '/api/admin/update';
+const api_path_post_create_user = '/api/admin/user';
+const api_path_get_auth_user = '/api/auth/user';
+const api_path_get_admin_user = '/api/admin/user';
+const api_path_post_update_user = '/api/auth/user';
+const api_path_get_exists_user = '/api/admin/user';
+const api_path_get_user_directory_search ='/api/auth/directory/search';
+const api_path_post_create_user_profile = '/api/admin/directory/entry';
+const api_path_put_update_user_profile = '/api/admin/directory/entry';
+const api_path_get_user_search = '/api/admin/users';
+
+module.exports = {
+    uri,
+    current_uri,
+    backend_address,
+    url_path,
+    url_port,
+    api_path_post_install_admin,
+    api_path_post_auth_login,
+    api_path_post_install_ca,
+    api_path_post_install_auth,
+    api_path_post_install_server,
+    api_path_get_install_lastKnownStep,
+    api_path_get_auth_user_search,
+    api_path_get_admin_devices,
+    api_path_get_auth_devices,
+    api_path_delete_admin_user_revoke,
+    api_path_delete_auth_user_revoke,
+    api_path_delete_admin_device_revoke,
+    api_path_delete_auth_device_revoke,
+    api_path_rename_device,
+    api_path_get_server_status,
+    api_path_get_post_configuration_auth_service,
+    api_path_get_post_configuration_global_settings,
+    api_path_post_configuration_change_password,
+    api_path_post_configuration_register_license,
+    api_path_get_subscription_status,
+    api_path_get_directories,
+    api_path_get_needs_update,
+    api_path_get_start_update,
+    api_path_post_create_user,
+    api_path_get_auth_user,
+    api_path_get_admin_user,
+    api_path_post_update_user,
+    api_path_get_exists_user,
+    api_path_get_user_directory_search,
+    api_path_post_create_user_profile,
+    api_path_put_update_user_profile,
+    api_path_get_user_search,
+}

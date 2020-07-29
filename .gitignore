@@ -93,3 +93,8 @@ tomcat.*/
 /jams
 userguide/site
 versions.json
+
+# React client
+jams-react-client/node_modules/
+jams-react-client/build/
+jams-server/src/main/resources/webapp/

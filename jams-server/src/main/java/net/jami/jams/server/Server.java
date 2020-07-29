@@ -143,7 +143,7 @@ public class Server {
             }
         }
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop.getDesktop().browse(new URI(tomcatLauncher.getTomcat().getConnector().getScheme() + "://localhost:" + tomcatLauncher.getTomcat().getService().findConnectors()[0].getPort() +"/templates/signup.html"));
+            Desktop.getDesktop().browse(new URI(tomcatLauncher.getTomcat().getConnector().getScheme() + "://localhost:" + tomcatLauncher.getTomcat().getService().findConnectors()[0].getPort()));
         } else {
             log.info("There is no graphical interface on this system - please connect remotely!");
         }
