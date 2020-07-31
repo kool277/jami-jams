@@ -1,19 +1,55 @@
-import React from "react";
+import React, {useEffect, useState, useCallback} from "react";
+import { useHistory } from 'react-router-dom';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 // core components
+import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import Divider from '@material-ui/core/Divider';
+import CustomInput from "components/CustomInput/CustomInput.js";
 
-import noProfilePicture from "assets/img/faces/no-profile-picture.png";
+import IconButton from '@material-ui/core/IconButton';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import Search from "@material-ui/icons/Search";
+import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import PersonIcon from '@material-ui/icons/Person';
+
+import Select from "@material-ui/core/Select";
+
+import * as tool from "../../tools";
+import axios from "axios";
+import configApiCall from "api.js";
+import auth from 'auth.js'
+import { api_path_post_create_group, api_path_get_list_group, api_path_delete_group, api_path_blueprints } from "globalUrls";
+
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import EditGroup from "views/Groups/EditGroup";
+
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+import { debounce } from "lodash";
+
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = {
     cardCategoryWhite: {
@@ -38,48 +74,289 @@ const useStyles = makeStyles(styles);
 
 export default function Groups() {
     const classes = useStyles();
-    return (
-        <div>
-            <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                    <Card profile>
-                        <CardAvatar profile>
-                            <a href="#pablo" onClick={e => e.preventDefault()}>
-                                <img src={noProfilePicture} alt="..." />
-                            </a>
-                        </CardAvatar>
-                        <CardBody profile>
-                            <h6 className={classes.cardCategory}>CEO</h6>
-                            <h4 className={classes.cardTitle}>Cyrille Béraud</h4>
-                            <p className={classes.description}>
-                                13 devices
-                            </p>
-                            <Button color="primary" round>
-                                Edit
-              </Button>
-                        </CardBody>
-                    </Card>
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                    <Card profile>
-                        <CardAvatar profile>
-                            <a href="#pablo" onClick={e => e.preventDefault()}>
-                                <img src={noProfilePicture} alt="..." />
-                            </a>
-                        </CardAvatar>
-                        <CardBody profile>
-                            <h6 className={classes.cardCategory}>CEO</h6>
-                            <h4 className={classes.cardTitle}>Christophe Villemaire</h4>
-                            <p className={classes.description}>
-                                10 devices
-                            </p>
-                            <Button color="primary" round>
-                                Edit
-              </Button>
-                        </CardBody>
-                    </Card>
-                </GridItem>
-            </GridContainer>
-        </div>
-    );
+    const history = useHistory();
+    const [groups, setGroups] = React.useState([])
+    const [selectedGroupName, setSelectedGroupName] = React.useState("")
+    const [loading, setLoading] = React.useState(false)
+    const [progress, setProgress] = React.useState(0);
+    const [searchValue, setSearchValue] = React.useState(null)
+
+    const [blueprints, setBlueprints] = React.useState([])
+
+    const [openCreate, setOpenCreate] = React.useState(false)
+    const [groupName, setGroupName] = React.useState('')
+    const [groupNameExits, setGroupNameExits] = React.useState(false)
+
+    const [removedGroup, setRemovedGroup] = React.useState()
+    const [openRemoveDialog, setOpenRemoveDialog] = React.useState()
+
+    const handleRemoveGroup = (groupRemovedName) => {
+        setRemovedGroup(groupRemovedName)
+        setOpenRemoveDialog(true)
+    }
+
+    const removeGroup = () => {
+        axios(configApiCall(api_path_delete_group, 'DELETE', {"queryString": removedGroup}, null)).then((response)=>{
+            console.log("Successfully deleted "  + removedGroup)
+        }).catch((error) =>{
+            console.log("Could not delete "  + removedGroup + " " + error)
+        });
+        setOpenRemoveDialog(false);
+        history.push('/admin/groups')
+    }
+
+    useEffect(() => {
+        setLoading(true)
+        const timer = setInterval(() => {
+            setProgress((oldProgress) => {
+                if (oldProgress === 100) {
+                    return 0;
+                }
+                const diff = Math.random() * 10;
+                return Math.min(oldProgress + diff, 100);
+            });
+        }, 500);
+        // axios(configApiCall(api_path_get_list_group, 'GET', {"groupName":"*"}, null)).then((response)=>{
+        axios('../groups.json').then((response) => {
+            let allGroups = response.data
+            allGroups.map((group) => {
+                group.display = ""
+            })
+            setGroups(allGroups)
+            setLoading(false)
+        }).catch((error) =>{
+            console.log(error);
+            if(error.response.status == 401){
+                auth.authenticated = false
+                history.push('/')
+            }
+        });
+        // axios(configApiCall(api_path_blueprints, 'GET', {"groupName":"*"}, null)).then((response)=>{
+        axios('../blueprints.json').then((response) => {
+            setBlueprints(response.data)
+        }).catch((error) =>{
+            console.log(error);
+            if(error.response.status == 401){
+                auth.authenticated = false
+                history.push('/')
+            }
+        });
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+
+    const [selectedGroup, setSelectedGroup] = useState(false);
+
+    const redirectToGroup = (e, name) => {
+        e.preventDefault()
+        setSelectedGroup(true);
+        setSelectedGroupName(name)
+    }
+
+    const redirectToGroupList = (e) => {
+        e.preventDefault()
+        setSelectedGroup(false);
+        history.push('/admin/groups')
+    }
+
+    const handleCheckGroupNameExists = (searchGroupNameValue) => {
+        axios(configApiCall(api_path_get_list_group, 'GET', {"groupName": searchGroupNameValue}, null)).then((response)=>{
+            if(response.data == "[]"){
+                setGroupNameExits(true)
+            }
+        }).catch((error) => {
+            console.log("Error checking for existing groups: " + error)
+        })
+    }
+
+    const initCheckGroupNameExists = useCallback(debounce((searchGroupNameValue) => handleCheckGroupNameExists(searchGroupNameValue), 500), [])
+
+    const handleCloseCreate = () => {
+        setOpenCreate(false);
+    };
+
+    const handleCreateGroup = () => {
+
+        const data = {
+            "groupname": groupName,
+            "groupMembers": {},
+            "blueprint": "default"
+        }
+
+        axios(configApiCall(api_path_post_create_group, 'POST', data, null)).then(() => {
+            console.log("Successfully  create "  + groupName)
+        }).catch((error) => {
+            console.log("Error creating group: " + error)
+        })
+        setOpenCreate(false);
+        history.push('/admin/groups')
+    }
+
+
+    const getGroupsOptions = () => {
+        let blueprintsOptions = []
+        let index = 0
+        blueprints.map((blueprint) => {
+            blueprintsOptions.push({ value: index, label: blueprint.blueprintName})
+            index += 1
+        })
+        return blueprintsOptions
+    }
+
+    const blueprintsOptionsItems = tool.buildSelectMenuItems(getGroupsOptions());
+
+    const [selectedBlueprint, setSelectedBlueprint] = useState({ value: 0, label: ""})
+
+    const handleBlueprintsChange = (e) => {
+        setSelectedBlueprint(getGroupsOptions()[e.target.value])
+    }
+
+    if(selectedGroup && auth.hasAdminScope()){
+        return(
+            <div>
+                <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToGroupList}>
+                    <KeyboardReturnIcon />
+                </Button>
+                <EditGroup 
+                    groupName={selectedGroupName} 
+                    initCheckGroupNameExists={initCheckGroupNameExists} 
+                    groupNameExits={groupNameExits}
+                    blueprintsOptionsItems={blueprintsOptionsItems}
+                    selectedBlueprint={selectedBlueprint}
+                    handleBlueprintsChange={handleBlueprintsChange}
+                />
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                <Dialog               
+                    open={openCreate}
+                    onClose={handleCloseCreate}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Create group"}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={12} md={12}>
+                                <FormControl className={classes.margin} size="medium" error={groupNameExits}>
+                                        <InputLabel htmlFor="groupName">Group name</InputLabel>
+                                        <Input
+                                        id="groupName"
+                                        placeholder={groupName}
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                            <PeopleOutlineIcon />
+                                            </InputAdornment>   
+                                        }
+                                        onChange={e => {
+                                            const searchGroupNameValue = e.target.value;
+                                            setGroupName(searchGroupNameValue);
+                                            initCheckGroupNameExists(groupName);
+                                        }}
+                                        />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={12}>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    fullWidth
+                                    value={selectedBlueprint.value}
+                                    onChange={handleBlueprintsChange}
+                                    variant="outlined"
+                                    children={blueprintsOptionsItems}
+                                />
+                            </Grid>
+                        </Grid>
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleCloseCreate} color="danger">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleCreateGroup} color="primary" autoFocus>
+                        Create
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    open={openRemoveDialog}
+                    onClose={() => setOpenRemoveDialog(false)}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Remove group"}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete <strong>{removedGroup}</strong> ?
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={removeGroup} color="danger" autoFocus>
+                        Remove
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+                <GridContainer>
+                    <GridItem xs={12} sm={12} md={12}>
+                        {
+                            <Button variant="contained" color="primary" href="#contained-buttons" onClick={e => setOpenCreate(true)}>
+                                <AddCircleOutlineIcon /> Create group
+                            </Button>
+                        }
+                        <div className={classes.searchWrapper}>
+                            <CustomInput 
+                            formControlProps={{
+                                className: classes.margin + " " + classes.search
+                            }}
+                            inputProps={{
+                                placeholder: "Search groups ...",
+                                inputProps: {
+                                "aria-label": "Search groups"
+                                },
+                                onKeyUp: (e) => setSearchValue(e.target.value),
+                            }}
+                            />
+                            <Search />
+                            <div className={classes.loading}>
+                                {loading && <LinearProgress variant="determinate" value={progress} />}
+                            </div>  
+                        </div>
+                    </GridItem>
+                    {
+                        groups.filter((data)=>{
+                            if(searchValue == null)
+                                return data
+                            else if((data.name != null ) && data.name.toLowerCase().includes(searchValue.toLowerCase())
+                            ){
+                                return data
+                            }
+                        }).map(group =>
+                            <GridItem xs={12} sm={12} md={2} key={group.username} style={{display: group.display}}>
+                                <Card profile>
+                                    <CardBody profile>
+                                            <h3 className={classes.cardTitle}>{group.name}</h3>
+                                            <ul>
+                                                <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
+                                                <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{group.blueprint}</li>
+                                            </ul>
+                                    </CardBody>
+                                    <CardFooter>
+                                        <IconButton color="primary" onClick={ (e) => redirectToGroup(e, group.name)}><EditOutlinedIcon /></IconButton>
+                                        <IconButton color="secondary" onClick={ () => {handleRemoveGroup(group.name)}}><DeleteOutlineIcon /></IconButton>
+                                    </CardFooter>
+                                </Card>
+
+                            </GridItem>)
+                    }
+                </GridContainer>
+            </div>
+        );
+    }
 }

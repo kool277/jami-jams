@@ -20,7 +20,7 @@ sed -i 's/material-dashboard-react\///g' $WEBAPP"index.html"
 
 cd ..
 #mvn clean package -DskipTests
-mvn package -DskipTests
+mvn package
 
 cd $JAMS
-java -jar jams-launcher.jar
+java -jar jams-launcher.jar 8080 server.pem server.key

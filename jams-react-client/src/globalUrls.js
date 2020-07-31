@@ -17,6 +17,9 @@ const api_path_delete_auth_user_revoke = '/api/auth/user';
 const api_path_delete_admin_device_revoke = '/api/admin/device';
 const api_path_delete_auth_device_revoke = '/api/auth/device';
 const api_path_rename_device = '/api/auth/device';
+const api_path_get_list_group = '/api/admin/group';
+const api_path_delete_group = '/api/admin/group';
+const api_path_put_update_group = '/api/admin/group';
 const api_path_get_server_status = '/api/info';
 const api_path_get_post_configuration_auth_service = '/api/configuration/authservice';
 const api_path_get_post_configuration_global_settings = '/api/configuration/globalsettings';
@@ -26,6 +29,7 @@ const api_path_get_subscription_status = '/api/admin/subscription';
 const api_path_get_directories = '/api/auth/directories';
 const api_path_get_needs_update = '/api/admin/update';
 const api_path_get_start_update = '/api/admin/update';
+const api_path_post_create_group = '/api/admin/group';
 const api_path_post_create_user = '/api/admin/user';
 const api_path_get_auth_user = '/api/auth/user';
 const api_path_get_admin_user = '/api/admin/user';
@@ -37,6 +41,7 @@ const api_path_put_update_user_profile = '/api/admin/directory/entry';
 const api_path_get_user_search = '/api/admin/users';
 const api_path_get_auth_contacts = '/api/auth/contacts';
 const api_path_delete_auth_contacts = '/api/auth/contacts';
+const api_path_blueprints = '/api/admin/policy';
 
 module.exports = {
     uri,
@@ -77,5 +82,10 @@ module.exports = {
     api_path_put_update_user_profile,
     api_path_get_user_search,
     api_path_get_auth_contacts,
-    api_path_delete_auth_contacts
+    api_path_delete_auth_contacts,
+    api_path_delete_group,
+    api_path_get_list_group,
+    api_path_post_create_group,
+    api_path_put_update_group,
+    api_path_blueprints
 }
