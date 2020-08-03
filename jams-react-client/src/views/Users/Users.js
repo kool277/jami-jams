@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useHistory } from 'react-router-dom';
 import { Switch, Route, Redirect } from "react-router-dom";
 // @material-ui/core components
@@ -40,6 +40,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
+import { debounce } from "lodash";
+
 const styles = {
     ...headerLinksStyle,
     cardCategoryWhite: {
@@ -77,7 +79,6 @@ export default function Users() {
     const [users, setUsers] = React.useState([])
     const [selectedUsername, setSelectedUsername] = React.useState("")
     const [createUser, setCreateUser] = React.useState(false)
-    const [searchValue, setSearchValue] = React.useState(null)
     const [loading, setLoading] = React.useState(false)
     const [progress, setProgress] = React.useState(0);
 
@@ -93,11 +94,7 @@ export default function Users() {
             });
           }, 500);
         axios(configApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null)).then((response)=>{
-            let orginalUsers = response.data
-            orginalUsers.map((user) => {
-                user.display = ""
-            })
-            setUsers(orginalUsers)
+            setUsers(response.data)
             setLoading(false)
         }).catch((error) =>{
             console.log(error);
@@ -113,15 +110,36 @@ export default function Users() {
 
     const [selectedProfile, setSelectedProfile] = useState(false);
 
-    function redirectToUserProfile(e, username) {
+    const redirectToUserProfile = (e, username) => {
         e.preventDefault()
         setSelectedProfile(true);
         setSelectedUsername(username)
     }
-    function redirectToUsers(e) {
+    const redirectToUsers = (e) => {
         e.preventDefault()
         setSelectedProfile(false);
         history.push('/admin')
+    }
+
+    const searchUsers = (value) => {
+        axios(configApiCall(api_path_get_user_directory_search, 'GET', {"queryString": value ? value : "*"}, null)).then((response)=>{
+            setUsers(response.data)
+        }).catch((error) =>{
+            console.log(error);
+            setUsers([])
+            if(error.response.status == 401){
+                auth.authenticated = false
+                history.push('/')
+            }
+        });
+    
+    }
+    
+    const initSearchUsers = useCallback(debounce((searchValue) => searchUsers(searchValue), 500), [])
+
+    const handleSearchUsers = (e) => {
+      const searchValue = e.target.value;
+      initSearchUsers(searchValue)
     }
 
     if (!auth.hasAdminScope()) {
@@ -164,7 +182,7 @@ export default function Users() {
                                 inputProps: {
                                 "aria-label": "Search users"
                                 },
-                                onKeyUp: (e) => setSearchValue(e.target.value),
+                                onKeyUp: handleSearchUsers,
                             }}
                             />
                             <Search />
@@ -174,23 +192,12 @@ export default function Users() {
                         </div>
                     </GridItem>
                     {
-                    users.filter((data)=>{
-                        if(searchValue == null)
-                            return data
-                        else if((data.username != null ) && data.username.toLowerCase().includes(searchValue.toLowerCase()) || 
-                                (data.firstName != null ) &&  data.firstName.toLowerCase().includes(searchValue.toLowerCase()) || 
-                                (data.lastName != null ) &&  data.lastName.toLowerCase().includes(searchValue.toLowerCase()) || 
-                                (data.organization != null ) &&  data.organization.toLowerCase().includes(searchValue.toLowerCase()) ||
-                                (data.email != null ) &&  data.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-                                (data.phoneNumber != null ) &&  data.phoneNumber.toLowerCase().includes(searchValue.toLowerCase()) ||
-                                (data.phoneNumberExtension != null ) &&  data.phoneNumberExtension.toLowerCase().includes(searchValue.toLowerCase()) ||
-                                (data.mobileNumber != null ) &&  data.mobileNumber.toLowerCase().includes(searchValue.toLowerCase()) ||
-                                (data.faxNumber != null ) &&  data.faxNumber.toLowerCase().includes(searchValue.toLowerCase())
-                                ){
-                            return data
-                        }
+                    users.sort(function(a, b){
+                        if(a.username < b.username) { return -1; }
+                        if(a.username > b.username) { return 1; }
+                        return 0;
                     }).map(user =>
-                    <GridItem xs={12} sm={12} md={2} key={user.username} style={{display: user.display}}>
+                    <GridItem xs={12} sm={12} md={2} key={user.username}>
                             
                                 <Card profile>
                                     <CardBody profile>

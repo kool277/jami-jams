@@ -99,3 +99,7 @@ jams-react-client/node_modules/
 jams-react-client/build/
 jams-react-client/package-lock.json
 jams-server/src/main/resources/webapp/
+
+# VScode
+.vscode/
+*.factorypath

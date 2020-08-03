@@ -26,6 +26,8 @@ import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 import EditCreateUserProfile from "./EditCreateUserProfile"
 
+import Contacts from "views/Contacts/Contacts"
+
 import {
   infoColor
 } from "assets/jss/material-dashboard-react.js";
@@ -103,82 +105,18 @@ export default function UserProfile(props) {
           <Tab label="Profile" {...a11yProps(0)} />
           <Tab label="Devices" {...a11yProps(1)} />
           <Tab label="Contacts" {...a11yProps(2)} />
-          <Tab label="Permissions" {...a11yProps(3)} />
-          <Tab label="Configuration" {...a11yProps(4)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-          {displayUser? <DisplayUserProfile username={username} setDisplayUser={setDisplayUser}/>: <EditCreateUserProfile username={username} createUser={false} setDisplayUser={setDisplayUser}/>
+          {
+            displayUser ? <DisplayUserProfile username={username} setDisplayUser={setDisplayUser}/>: <EditCreateUserProfile username={username} createUser={false} setDisplayUser={setDisplayUser}/>
           }
-
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Devices username={props.username}/>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <div className={classes.searchWrapper}>
-          <CustomInput
-            formControlProps={{
-              className: classes.margin + " " + classes.search
-            }}
-            inputProps={{
-              placeholder: "Search",
-              inputProps: {
-                "aria-label": "Search"
-              }
-            }}
-          />
-          <Button color="white" aria-label="edit" justIcon round>
-            <Search />
-          </Button>
-        </div>
-        <br></br>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={4}>
-            <Card profile>
-              <CardAvatar profile>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={noProfilePicture} alt="..." />
-                </a>
-              </CardAvatar>
-              <CardBody profile>
-                <h6 className={classes.cardCategory}>CEO</h6>
-                <h4 className={classes.cardTitle}>Larbi Gharib</h4>
-                <p className={classes.description}>
-                  13 devices
-                            </p>
-                <Button color="success" round>
-                  Add
-              </Button>
-              </CardBody>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={4}>
-            <Card profile>
-              <CardAvatar profile>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={noProfilePicture} alt="..." />
-                </a>
-              </CardAvatar>
-              <CardBody profile>
-                <h6 className={classes.cardCategory}>CEO</h6>
-                <h4 className={classes.cardTitle}>Christophe Villemer</h4>
-                <p className={classes.description}>
-                  10 devices
-                            </p>
-                <Button color="danger" round>
-                  Remove
-              </Button>
-              </CardBody>
-            </Card>
-          </GridItem>
-        </GridContainer>
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={4}>
-        Item Three
+        <Contacts username={props.username} />
       </TabPanel>
     </div>
   );

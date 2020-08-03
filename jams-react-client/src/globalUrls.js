@@ -35,6 +35,8 @@ const api_path_get_user_directory_search ='/api/auth/directory/search';
 const api_path_post_create_user_profile = '/api/admin/directory/entry';
 const api_path_put_update_user_profile = '/api/admin/directory/entry';
 const api_path_get_user_search = '/api/admin/users';
+const api_path_get_auth_contacts = '/api/auth/contacts';
+const api_path_delete_auth_contacts = '/api/auth/contacts';
 
 module.exports = {
     uri,
@@ -74,4 +76,6 @@ module.exports = {
     api_path_post_create_user_profile,
     api_path_put_update_user_profile,
     api_path_get_user_search,
+    api_path_get_auth_contacts,
+    api_path_delete_auth_contacts
 }
