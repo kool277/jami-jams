@@ -57,7 +57,7 @@ public class TomcatLauncher {
 
     //Swap connectors fix.
     public void swapConnectors(){
-        if(getTomcat().getConnector().findSslHostConfigs() == null || getTomcat().getConnector().findSslHostConfigs().length < 1){
+        if(getTomcat().getConnector().findSslHostConfigs() != null && getTomcat().getConnector().findSslHostConfigs().length > 0){
             getTomcat().getConnector().findSslHostConfigs()[0].setTruststoreFile(System.getProperty("user.dir") + File.separator + "keystore.jks");
             getTomcat().getConnector().findSslHostConfigs()[0].setTruststorePassword("changeit");
             getTomcat().getConnector().findSslHostConfigs()[0].setCertificateVerification("optional");
