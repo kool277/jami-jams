@@ -241,7 +241,8 @@ export default function EditCreateUserProfile(props) {
             'faxNumber': faxNumber,
             'phoneNumber': phoneNumber,
             'phoneNumberExtension': extension,
-            'mobileNumber': mobileNumber
+            'mobileNumber': mobileNumber,
+            'jamiId': ""
         }
 
         axios(configApiCall(api_path_post_create_user + "?username="+ data.username, 'POST', null, null)).then((response) => {
@@ -335,7 +336,7 @@ export default function EditCreateUserProfile(props) {
             <DialogTitle id="alert-dialog-title">{"Temporary password"}</DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            New user successfully created. Here is the one time password: <strong>{temporaryPassword}</strong> ?
+            New user successfully created. Here is the one time password: <strong>{temporaryPassword}</strong>
             </DialogContentText>
             </DialogContent>
             <DialogActions>

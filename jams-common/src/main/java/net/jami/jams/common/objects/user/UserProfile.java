@@ -85,14 +85,6 @@ public class UserProfile implements DatabaseObject {
         this.mobileNumber = rs.getString("mobileNumber");
     }
 
-    public String getJamiId(){
-        return jamiId;
-    }
-
-    public void setJamiId(User user){
-        jamiId = user.getJamiId();
-    }
-
     @JsonIgnore
     //Ignore this if we pass through JSON iterator.
     public String getAsVCard(){
