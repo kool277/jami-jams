@@ -129,7 +129,7 @@ public class DataStore implements AuthenticationSource {
         update.addStatement(new StatementElement("phoneNumberExtension","=",userProfile.getPhoneNumberExtension(),""));
         update.addStatement(new StatementElement("faxNumber","=",userProfile.getFaxNumber(),""));
         update.addStatement(new StatementElement("mobileNumber","=",userProfile.getMobileNumber(),""));
-        if (userProfile.getGroupMemberships() != null) {
+        if (userProfile.getGroupMemberships() != null && !userProfile.getGroupMemberships().isEmpty()) {
             String groups = "";
             for (String s: userProfile.getGroupMemberships()) {
                 if (groups.equals(""))
@@ -138,7 +138,10 @@ public class DataStore implements AuthenticationSource {
                     groups = groups.concat("," + s);
             }
             update.addStatement(new StatementElement("groupMemberships","=", groups ,""));
-        }
+        } else
+            update.addStatement(new StatementElement("groupMemberships","=", "" ,""));
+
+
         return userProfileDao.updateObject(update, null);
     }
 

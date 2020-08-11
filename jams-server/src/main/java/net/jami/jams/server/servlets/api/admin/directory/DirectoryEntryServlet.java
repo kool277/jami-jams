@@ -30,6 +30,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
@@ -40,13 +41,14 @@ import net.jami.jams.common.objects.user.UserProfile;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 import static net.jami.jams.server.Server.dataStore;
 
-
+@Slf4j
 @WebServlet("/api/admin/directory/entry")
 public class DirectoryEntryServlet extends HttpServlet {
 
@@ -71,6 +73,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         userProfile.setFaxNumber(obj.get("faxNumber").toString());
         userProfile.setMobileNumber(obj.get("mobileNumber").toString());
         userProfile.setJamiId(obj.get("jamiId").toString());
+        userProfile.setGroupMemberships(new ArrayList<>());
 
         userAuthenticationModule.getAuthSources().get(new AuthModuleKey(realm, AuthenticationSourceType.LOCAL))
             .setUserProfile(userProfile);
@@ -97,7 +100,9 @@ public class DirectoryEntryServlet extends HttpServlet {
                 resp.setStatus(200);
             else resp.sendError(500,"could not update the users's profile information");
         }
-        catch(Exception e){}
+        catch(Exception e){
+            System.out.println(e);
+        }
 
     }
 

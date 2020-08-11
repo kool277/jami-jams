@@ -89,7 +89,9 @@ public class UserProfile implements DatabaseObject {
         this.phoneNumberExtension = rs.getString("phoneNumberExtension");
         this.faxNumber = rs.getString("faxNumber");
         this.mobileNumber = rs.getString("mobileNumber");
-        this.groupMemberships = Arrays.asList(JsonIterator.deserialize(rs.getString("groupMemberships"),String[].class));
+        String groupMemberships = rs.getString("groupMemberships");
+        String[] groups = groupMemberships.split(",");
+        this.groupMemberships = Arrays.asList(groups);
     }
 
     @JsonIgnore
@@ -131,9 +133,10 @@ public class UserProfile implements DatabaseObject {
         ps.setString(8, phoneNumberExtension);
         ps.setString(9, faxNumber);
         ps.setString(10, mobileNumber);
-        if (groupMemberships == null)
-            groupMemberships = new ArrayList<>();
-        ps.setString(11, JsonStream.serialize(groupMemberships));
+        if (!groupMemberships.isEmpty())
+            ps.setString(11, JsonStream.serialize(groupMemberships));
+        else
+            ps.setString(11, "");
         return ps;
     }
 
