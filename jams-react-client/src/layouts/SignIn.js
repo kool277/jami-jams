@@ -1,7 +1,6 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
-import Avatar from '@material-ui/core/Avatar';
+import {Formik} from 'formik';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -10,7 +9,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -18,6 +16,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import auth from '../auth.js'
 
 import logo from "assets/img/logo-jams-blue.svg";
+import * as Yup from "yup";
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -28,7 +27,7 @@ function Copyright() {
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
                 Your Website
-      </Link>{' '}
+            </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
@@ -56,10 +55,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn(props) {
+
+    /**
+     * Formik Validation Fields
+     */
+
+    const initialValues = {username: "", password:""};
+
+    const validationSchema = Yup.object().shape({
+        username: Yup.string()
+            .required("Username is required."),
+        password: Yup.mixed()
+            .required("Password is required."),
+    });
+
+
     const classes = useStyles();
     const history = useHistory();
-    const [username, setUsername] = React.useState("");
-    const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
 
@@ -69,14 +81,13 @@ export default function SignIn(props) {
         }
     })
 
-    function handleSubmit(e) {
-        e.preventDefault();
+    function handleSubmit(values) {
         const jsonData = {
-            "username": username,
-            "password": password
+            "username": values.username,
+            "password": values.password
         }
         auth.login(jsonData, () => {
-            if(auth.authenticated && auth.access_token != ""){
+            if(auth.authenticated && auth.access_token !== ""){
                 auth.checkLastKnowStep(() => {
                     auth.checkDirectoryType(() => {
                         if(auth.isInstalled){
@@ -98,62 +109,88 @@ export default function SignIn(props) {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <img src={logo} style={{ width: "25em", paddingBottom: "20px" }} />
+                <img src={logo} style={{ width: "25em", paddingBottom: "20px" }} alt="logo"/>
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
                 {error && <Alert severity="error">{errorMessage}</Alert>}
-                <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="username"
-                        label="Username"
-                        name="username"
-                        autoComplete="email"
-                        autoFocus
-                        onChange={e => setUsername(e.target.value)}
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Sign In
-          </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="#" variant="body2">
-                                Forgot password?
-              </Link>
-                        </Grid>
-                        <Grid item>
-                            <Link href="#" variant="body2">
-                                {"Don't have an account? Sign Up"}
-                            </Link>
-                        </Grid>
-                    </Grid>
-                </form>
+                <Formik validationSchema={validationSchema}
+                        initialValues={initialValues}
+                        onSubmit={values => {
+                            handleSubmit(values);
+                        }}
+                >
+                    {(props) => {
+                        const {
+                            values,
+                            touched,
+                            errors,
+                            handleSubmit,
+                            handleChange,
+                            handleBlur,
+                        } = props;
+                        return (
+                            <form className={classes.form} noValidate onSubmit={handleSubmit}>
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="username"
+                                    label="Username"
+                                    name="username"
+                                    autoComplete="username"
+                                    autoFocus
+                                    value={values.username}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    helperText={(errors.username && touched.username) && errors.username}
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    helperText={(errors.password && touched.password) && errors.password}
+                                />
+                                <FormControlLabel
+                                    control={<Checkbox value="remember" color="primary"/>}
+                                    label="Remember me"
+                                />
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                >
+                                    Sign In
+                                </Button>
+                                <Grid container>
+                                    <Grid item xs>
+                                        <Link href="#" variant="body2">
+                                            Forgot password?
+                                        </Link>
+                                    </Grid>
+                                    <Grid item>
+                                        <Link href="#" variant="body2">
+                                            {"Don't have an account? Sign Up"}
+                                        </Link>
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        );
+                    }
+                    }
+                </Formik>
             </div>
             <Box mt={8}>
                 <Copyright />

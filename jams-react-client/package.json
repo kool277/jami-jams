@@ -11,6 +11,7 @@
     "axios": "^0.19.2",
     "chartist": "0.10.1",
     "classnames": "2.2.6",
+    "formik": "^2.1.5",
     "fuctbase64": "^1.4.0",
     "history": "4.10.1",
     "image-to-base64": "^2.1.1",
@@ -28,7 +29,8 @@
     "react-intl": "5.0.2",
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.1",
-    "react-swipeable-views": "0.13.9"
+    "react-swipeable-views": "0.13.9",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "NODE_PATH=./src react-scripts start",

@@ -1,11 +1,12 @@
 import React from 'react';
 import {useHistory} from "react-router-dom";
+import { Formik, Field } from "formik";
+import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
 import CountrySelect from "components/CountrySelect/CountrySelect.js";
-import CustomizedSteppers from '../CustomizedSteppers/CustomizedSteppers'
 
 import auth from '../../auth'
 import axios from 'axios';
@@ -38,8 +39,37 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CaSetup(props) {
     const history = useHistory();
-    const [error, setError] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState("");
+
+    /**
+     * Formik Validation Fields
+     */
+
+    const initialValuesform1 = {commonname: "", state:"", city:"", organization:"", organizationunit:"", country:""};
+
+    const initialValuesform2 = {certificatefile: "", privkeyfile:""};
+
+    const validationSchemaform1 = Yup.object().shape({
+        commonname: Yup.string()
+            .required("Common name is required."),
+        state: Yup.string()
+            .required("State is required."),
+        city: Yup.string()
+            .required("City is required."),
+        organization: Yup.string()
+            .required("Organization is required."),
+        organizationunit: Yup.string()
+            .required("Organization unit is required."),
+        country: Yup.string()
+            .required("Country is required."),
+    });
+
+    const validationSchemaform2 = Yup.object().shape({
+        certificatefile: Yup.mixed()
+            .required("Certificate file is required."),
+        privkeyfile: Yup.mixed()
+            .required("Private key file is required."),
+    });
+
 
     const getCertificateOptions = [
         {value: 0, label: "Create a self-signed Certificate Authority"},
@@ -55,36 +85,20 @@ export default function CaSetup(props) {
     const validityPeriodsItems = tool.buildSelectMenuItems(validityPeriods);
     const classes = useStyles();
 
-    const [commonname, setCommonName] = React.useState("");
-    const [state, setState] = React.useState("");
-    const [city, setCity] = React.useState("");
-    const [organization, setOrganization] = React.useState("");
-    const [organizationUnit, setOrganizationUnit] = React.useState("");
-    const [country, setCountry] = React.useState("");
-    const [certificateFile, setCertificateFile] = React.useState("");
-    const [privKeyFile, setPrivKeyFile] = React.useState("");
-
-
-
-
     const [certificateOpt, setCertificateOpt] = React.useState(getCertificateOptions[0]);
     const [validityPeriod, setValidityPeriod] = React.useState(validityPeriods[0]);
 
 
     function handleInstallCA(data) {
-        if(data.status == 500 || data.status == 512 || data.status == 513) {
+        if(data.status === 500 || data.status === 512 || data.status === 513) {
             props.setError(true)
             props.setErrorMessage("An unknown error occurred while installing the CA. Please try again.");
         }
-         else if (data.status == 200){
+        else if (data.status === 200){
             auth.uri = '/api/install/auth';
             history.push('/');
         }
 
-    }
-
-    function onCountryChange(values) {
-        setCountry(values['country'].code);
     }
 
     const handleCertifOptionChange = (event) => {
@@ -97,40 +111,26 @@ export default function CaSetup(props) {
         setValidityPeriod(validityPeriods[event.target.value]);
     };
 
-    const handleCertificateFileChange = (event) => {
-        console.log(certificateFile);
-        setCertificateFile(event.target.files[0])
-        console.log(certificateFile);
-
-    }
-
-    const handlePrivKeyFileChange = (event) => {
-        setPrivKeyFile(event.target.files[0])
-    }
-
-    function handleSubmit(e) {
-        e.preventDefault();
+    const handleSubmit = (values) => {
         let jsonData = {};
-        if(certificateOpt.value == 0){
+        if(certificateOpt.value === 0){
             jsonData = {
                 'fields': {
-                    'commonName': commonname,
-                    'organizationalUnit': organizationUnit,
-                    'organization': organization,
-                    'city': city,
-                    'state': state,
-                    'country': country,
+                    'commonName': values.commonname,
+                    'organizationalUnit': values.organizationUnit,
+                    'organization': values.organization,
+                    'city': values.city,
+                    'state': values.state,
+                    'country': values.country,
                     'lifetime': validityPeriod.value
                 }
             }
         }
-        else if(certificateOpt.value == 1){
+        else if(certificateOpt.value === 1){
             jsonData = {
-                'caCertificate': certificateFile,
-                'caKey': privKeyFile
+                'caCertificate': values.certificatefile,
+                'caKey': values.privkeyfile
             }
-            console.log(certificateFile);
-            console.log(privKeyFile);
         }
 
         axios(configApiCall(api_path_post_install_ca, "POST", jsonData, null)).then((response)=>{
@@ -140,143 +140,222 @@ export default function CaSetup(props) {
             console.log('Error installing CA Setup: ' + error );
         })
     }
-    if(certificateOpt.value == 0){
+    if(certificateOpt.value === 0){
         return (
-            <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                <h4>
-                    Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance.
-                </h4>
-                <Select
-                    labelId="demo-simple-select-label"
-                    fullWidth
-                    value={certificateOpt.value}
-                    onChange={handleCertifOptionChange}
-                    variant="outlined"
-                    children={certificateOptionsItems}
-                />
+            <Formik
+                validationSchema={validationSchemaform1}
+                initialValues={initialValuesform1}
+                onSubmit={values => {
+                    handleSubmit(values);
+                }}
+            >
+                {(props) => {
+                    const {
+                        values,
+                        touched,
+                        errors,
+                        handleSubmit,
+                        handleChange,
+                        handleBlur,
+                    } = props;
+                    return (
+                        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+                            <h4>
+                                Select an option for setting-up the certificate authority that will be used to sign all Jami
+                                accounts generated on this JAMS instance.
+                            </h4>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                fullWidth
+                                value={certificateOpt.value}
+                                onChange={handleCertifOptionChange}
+                                variant="outlined"
+                                children={certificateOptionsItems}
+                            />
 
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="commonname"
-                    label="Common Name"
-                    name="commonname"
-                    autoComplete="commonname"
-                    autoFocus
-                    onChange={e => setCommonName(e.target.value)}
-                />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="commonname"
+                                label="Common Name"
+                                name="commonname"
+                                autoComplete="commonname"
+                                autoFocus
+                                value={values.commonname}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                helperText={(errors.commonname && touched.commonname) && errors.commonname}
+                            />
 
-                <CountrySelect onCountryChange={onCountryChange} />
+                            <CountrySelect defaultValue={values.country} {...props}/>
+                            {touched.country && errors.country ? (<span class="spanError">{errors.country}</span>) : null}
 
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="state"
-                    label="State"
-                    id="state"
-                    autoComplete="state"
-                    onChange={e => setState(e.target.value)}
-                />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="city"
-                    label="City"
-                    id="city"
-                    autoComplete="city"
-                    onChange={e => setCity(e.target.value)}
-                />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="organization"
-                    label="Organization"
-                    id="organization"
-                    autoComplete="organization"
-                    onChange={e => setOrganization(e.target.value)}
-                />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="organizationunit"
-                    label="Organization Unit"
-                    id="organizationunit"
-                    autoComplete="organizationunit"
-                    onChange={e => setOrganizationUnit(e.target.value)}
-                />
-                <Select
-                    labelId="demo-simple-select-label"
-                    margin="normal"
-                    fullWidth
-                    variant="outlined"
-                    value={validityPeriod.value}
-                    onChange={handleValidPeriodChange}
-                    variant="outlined"
-                    children={validityPeriodsItems}
-                />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="state"
+                                label="State"
+                                id="state"
+                                autoComplete="state"
+                                value={values.state}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                helperText={(errors.state && touched.state) && errors.state}
+                            />
 
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    Generate Self-Signed Certificate Authority
-                </Button>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="city"
+                                label="City"
+                                id="city"
+                                autoComplete="city"
+                                value={values.city}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                helperText={(errors.city && touched.city) && errors.city}
+                            />
 
-            </form>
+
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="organization"
+                                label="Organization"
+                                id="organization"
+                                autoComplete="organization"
+                                value={values.organization}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                helperText={(errors.organization && touched.organization) && errors.organization}
+                            />
+
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="organizationunit"
+                                label="Organization Unit"
+                                id="organizationunit"
+                                autoComplete="organizationunit"
+                                value={values.organizationunit}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                helperText={(errors.organizationunit && touched.organizationunit) && errors.organizationunit}
+                            />
+
+                            <Select
+                                labelId="demo-simple-select-label"
+                                margin="normal"
+                                fullWidth
+                                variant="outlined"
+                                value={validityPeriod.value}
+                                onChange={handleValidPeriodChange}
+                                children={validityPeriodsItems}
+                            />
+
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}
+                            >
+                                Generate Self-Signed Certificate Authority
+                            </Button>
+
+                        </form>
+                    );
+                }
+                }
+            </Formik>
         );
     }
-    else if(certificateOpt.value == 1){
+    else if(certificateOpt.value === 1){
         return (
-            <form className={classes.form} noValidate onSubmit={handleSubmit}>
-                <h4>
-                    Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance.
-                </h4>
+            <Formik
+                validationSchema={validationSchemaform2}
+                initialValues={initialValuesform2}
+                onSubmit={values => {
+                    handleSubmit(values);
+                }}
+            >{(props) => {
+                const {
+                    handleSubmit,
+                    handleChange,
+                } = props;
+                return (
+                    <form className={classes.form} noValidate onSubmit={handleSubmit}>
+                        <h4>
+                            Select an option for setting-up the certificate authority that will be used to sign all Jami
+                            accounts generated on this JAMS instance.
+                        </h4>
 
-                <Select
-                    labelId="demo-simple-select-label"
-                    fullWidth
-                    value={certificateOpt.value}
-                    onChange={handleCertifOptionChange}
-                    variant="outlined"
-                    children={certificateOptionsItems}
-                />
-                <Typography variant="subtitle1" gutterBottom >CA file (PEM-encoded)</Typography>
-                <Input
-                    fullWidth
-                    type="file"
-                    onChange={handleCertificateFileChange}
-                />
-                <Typography variant="subtitle1" gutterBottom >Key File (PEM-encoded)</Typography>
-                <Input
-                    fullWidth
-                    type="file"
-                    onChange={handlePrivKeyFileChange}
-                />
+                        <Select
+                            labelId="demo-simple-select-label"
+                            fullWidth
+                            value={certificateOpt.value}
+                            onChange={handleCertifOptionChange}
+                            variant="outlined"
+                            children={certificateOptionsItems}
+                        />
+                        <Typography variant="subtitle1" gutterBottom>CA file (PEM-encoded)</Typography>
+                        <Field name="certificatefile">
+                            {({field, form}) => (
+                                <div>
+                                    <Input
+                                        fullWidth
+                                        type="file"
+                                        onChange={handleChange}
+                                        {...field}
+                                    />
+                                    {form.errors.certificatefile && form.touched.certificatefile? <span class="spanError">{form.errors.certificatefile}</span> : null}
+                                </div>
+                            )
+                            }
+                        </Field>
+                        <Typography variant="subtitle1" gutterBottom>Key File (PEM-encoded)</Typography>
+                        <Field name="privkeyfile">
+                            {({
+                                  field,
+                                  form,
+                                  meta,
+                              }) => (
+                                <div>
+                                    <Input
+                                        fullWidth
+                                        type="file"
+                                        {...field}
+                                    />
+                                    {meta.touched && meta.error && (<span class="spanError">{meta.error}</span>)}
+                                </div>
+                            )
+                            }
+                        </Field>
 
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    Import Certificate Authority
-                </Button>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Import Certificate Authority
+                        </Button>
 
-            </form>
+                    </form>
+                );
+            }}
+            </Formik>
         );
     }
 }

@@ -2,7 +2,6 @@ import React, {useEffect} from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
@@ -17,7 +16,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -38,8 +36,6 @@ import DoneIcon from '@material-ui/icons/Done';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import auth from "auth.js"
@@ -48,12 +44,8 @@ import { api_path_get_admin_user, api_path_get_auth_user, api_path_get_user_dire
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
-import {
-    infoColor
-} from "assets/jss/material-dashboard-react.js";
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 import axios from "axios";
-import FormControl from "@material-ui/core/FormControl";
 import PersonIcon from "../../../node_modules/@material-ui/icons/Person";
 
 
@@ -190,7 +182,7 @@ export default function DisplayUserProfile(props) {
     }, []);
 
     const getUserStatus = (user) => {
-        if(userStatus == false) {
+        if(userStatus === false) {
             return <Chip label="Active" avatar={<Avatar alt={user.username} src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} />} color="primary" deleteIcon={<DoneIcon />}/>
         }else{
             return <Chip label="Revoked" avatar={<Avatar alt={user.username} src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} />} deleteIcon={<DoneIcon />}/>            
@@ -358,7 +350,7 @@ export default function DisplayUserProfile(props) {
                             {auth.isLocalDirectory() && <Button color="info" onClick={() => props.setDisplayUser(false)}>
                                 <EditIcon /> Edit Profile
                             </Button>}
-                            {auth.hasAdminScope() && (userStatus == "Active" || userStatus == '') &&                             
+                            {auth.hasAdminScope() && (userStatus === "Active" || userStatus === '') &&
                             <Button color="danger" onClick={() => handleClickOpen(user.username)} >
                                 <DeleteIcon fontSize="small"/> Revoke user
                             </Button>}

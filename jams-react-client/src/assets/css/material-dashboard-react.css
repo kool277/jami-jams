@@ -214,6 +214,13 @@ footer ul li a {
   display: block;
 }
 
+.spanError {
+  line-height: 1.66;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.54);
+  margin-left: 14px;
+}
+
 footer ul li a:hover {
   text-decoration: none;
 }

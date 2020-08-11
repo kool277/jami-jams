@@ -1,19 +1,11 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import MuiAlert from '@material-ui/lab/Alert';
+import {Formik, Field} from 'formik';
+
 import CustomPopupState from '../CustomPopupState/CustomPopupState';
 import Select from '@material-ui/core/Select';
 import Input from '@material-ui/core/Input';
@@ -24,6 +16,7 @@ import axios from 'axios';
 import configApiCall from '../../api'
 import {api_path_post_install_server} from '../../globalUrls'
 import auth from 'auth';
+import * as Yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -46,6 +39,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ServerParameters(props) {
+
+    // Formik validation fields
+    const initialValues = {domain: "", sipconfig:""};
+    const validationSchema = Yup.object().shape({
+        domain: Yup.string()
+            .required("Domain is required."),
+        sipconfig: Yup.mixed()
+            .required("Sip configuration file is required."),
+    });
 
     const certificateRevocationTypes = [
         {value: 300000, label: "5 minutes"},
@@ -75,12 +77,9 @@ export default function ServerParameters(props) {
 
     const classes = useStyles();
     const history = useHistory();
-    const [error, setError] = React.useState(props.error);
-    const [domain, setDomain] = React.useState("");
     const [certificateRevocation, setCertificateRevocation] = React.useState(certificateRevocationTypes[0])
     const [deviceLifetime, setDeviceLifetime] = React.useState(deviceLifetimeTypes[0])
     const [userAccountLifetime, setUserAccountLifetime] = React.useState(userAccountLifetimeTypes[0])
-    const [sipConfigurationTemplate, setSIPCertificateTemplate] = React.useState(null);
     const [userlifeDisabled, setUserlifeDisabled] = React.useState(false);
 
     React.useEffect(() => {
@@ -101,24 +100,22 @@ export default function ServerParameters(props) {
         })
     }
 
-    function handleSubmit(e) {
-        e.preventDefault();
+    function handleSubmit(values) {
         let jsonData = {};
         let re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
-        if(domain.match(re)){
+        if(values.domain.match(re)){
             jsonData = {
-                'serverDomain': domain,
+                'serverDomain': values.domain,
                 'crlLifetime': certificateRevocation.value,
                 'deviceLifetime': deviceLifetime.value,
                 'userLifetime': userAccountLifetime.value,
-                'sipConfig': sipConfigurationTemplate,
+                'sipConfig': values.sipconfig,
                 'signingAlgorithm': "SHA512WITHRSA"
             }
             axios(configApiCall(api_path_post_install_server, "POST", jsonData, null)).then((response)=>{
                 callBackServerParameters()
             }).catch((error)=>{
-                setError(error);
-                console.log('Error installin server parameters: ' + error );
+                console.log('Error installing server parameters: ' + error );
             })
         }
         else{
@@ -141,73 +138,107 @@ export default function ServerParameters(props) {
     }
 
 
-    const handleSipConfigurationTemplateChange = (event) => {
-        setSIPCertificateTemplate(event.target.files[0])
-    }
-
     return (
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            <Typography variant="h5" gutterBottom color="primary">Server Parameters</Typography>
-            <Typography variant="body1" gutterBottom >The global parameters cover the general configuration of the server's engine.</Typography>
-            <Typography variant="subtitle1" gutterBottom >CORS Domain Name<CustomPopupState message="Set the domain of the web client server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates."/></Typography>
-            <Typography variant="body1" gutterBottom >The domain name of your web client server. Requires http:// or https://</Typography>
-            <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="domain"
-                label="Domain"
-                name="domain"
-                autoComplete="domain"
-                autoFocus
-                onChange={e => setDomain(e.target.value)}
-            />
-            <Typography variant="subtitle1" gutterBottom >Certificate Revocation List Lifetime<CustomPopupState message="Set the domain of the web client server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates."/></Typography>
-            <Select
-            labelId="certificate-revocation-select-label"
-            fullWidth
-            value={certificateRevocation.value}
-            onChange={handleCertificateRevocationChange}
-            variant="outlined"
-            children={certificateRevocationTypesItems}
-            />
-            <Typography variant="subtitle1" gutterBottom >Device Lifetime</Typography>
-            <Select
-            labelId="device-lifetime-select-label"
-            fullWidth
-            value={deviceLifetime.value}
-            onChange={handleDeviceLifetimeChange}
-            variant="outlined"
-            children={deviceLifetimeTypesItems}
-            />
-            <Typography variant="subtitle1" gutterBottom >User Account Lifetime</Typography>
-            <Select
-            labelId="user-account-lifetime-select-label"
-            fullWidth
-            value={userAccountLifetime.value}
-            onChange={handleUserAccountLifetimeChange}
-            isDisabled={userlifeDisabled}
-            variant="outlined"
-            children={userAccountLifetimeTypesItems}
-            />
-            <Typography variant="subtitle1" gutterBottom >SIP Configuration Template</Typography>
-            <Input
-            fullWidth
-            type="file"
-            onChange={handleSipConfigurationTemplateChange}
-            />
+        <Formik validationSchema={validationSchema}
+                initialValues={initialValues}
+                onSubmit={values => {
+                    handleSubmit(values);
+                }}
+        >
+            {(props) => {
+                const {
+                    values,
+                    touched,
+                    errors,
+                    handleSubmit,
+                    handleChange,
+                    handleBlur,
+                } = props;
+                return (
+                    <form className={classes.form} noValidate onSubmit={handleSubmit}>
+                        <Typography variant="h5" gutterBottom color="primary">Server Parameters</Typography>
+                        <Typography variant="body1" gutterBottom>The global parameters cover the general configuration
+                            of the server's engine.</Typography>
+                        <Typography variant="subtitle1" gutterBottom>CORS Domain Name<CustomPopupState
+                            message="Set the domain of the web client server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates."/></Typography>
+                        <Typography variant="body1" gutterBottom>The domain name of your web client server. Requires
+                            http:// or https://</Typography>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="domain"
+                            label="Domain"
+                            name="domain"
+                            autoComplete="domain"
+                            autoFocus
+                            value={values.domain}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            helperText={(errors.domain && touched.domain) && errors.domain}
+                        />
+                        <Typography variant="subtitle1" gutterBottom>Certificate Revocation List
+                            Lifetime<CustomPopupState
+                                message="Set the domain of the web client server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates."/></Typography>
+                        <Select
+                            labelId="certificate-revocation-select-label"
+                            fullWidth
+                            value={certificateRevocation.value}
+                            onChange={handleCertificateRevocationChange}
+                            variant="outlined"
+                            children={certificateRevocationTypesItems}
+                        />
+                        <Typography variant="subtitle1" gutterBottom>Device Lifetime</Typography>
+                        <Select
+                            labelId="device-lifetime-select-label"
+                            fullWidth
+                            value={deviceLifetime.value}
+                            onChange={handleDeviceLifetimeChange}
+                            variant="outlined"
+                            children={deviceLifetimeTypesItems}
+                        />
+                        <Typography variant="subtitle1" gutterBottom>User Account Lifetime</Typography>
+                        <Select
+                            labelId="user-account-lifetime-select-label"
+                            fullWidth
+                            value={userAccountLifetime.value}
+                            onChange={handleUserAccountLifetimeChange}
+                            isDisabled={userlifeDisabled}
+                            variant="outlined"
+                            children={userAccountLifetimeTypesItems}
+                        />
+                        {userlifeDisabled ? <span class="spanError"> Account lifetime should be > to device lifetime.</span> : null}
+                        <Typography variant="subtitle1" gutterBottom>SIP Configuration Template</Typography>
+                        <Field name="sipconfig">
+                            {({field, form}) => (
+                                <div>
+                                    <Input
+                                        fullWidth
+                                        type="file"
+                                        onChange={handleChange}
+                                        {...field}
+                                    />
+                                    {form.errors.sipconfig && form.touched.sipconfig? <span class="spanError">{form.errors.sipconfig}</span> : null}
+                                </div>
+                            )
+                            }
+                        </Field>
 
-            <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-            >
-                Set Server Parameters
-            </Button>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Set Server Parameters
+                        </Button>
 
-        </form>
+                    </form>
+                );
+            }
+            }
+        </Formik>
     );
 }

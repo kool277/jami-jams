@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import classnames from "classnames";
+import {Formik, Field} from "formik";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -63,7 +64,7 @@ export default function Devices(props) {
                 });
             }
         })
-    }, []);
+    }, [selectedDevice]);
 
     function getDeviceStatus(device) {
         if (!(device.revoked)) {
@@ -77,14 +78,12 @@ export default function Devices(props) {
 
     const handleClickEdit = (e, device) => {
         e.preventDefault();
-        console.log("in here");
         setOpenEdit(true);
         setSelectedDevice(device);
     }
 
     const handleClickRevoke = (e, device) => {
         e.preventDefault();
-        console.log("in there");
         setOpenRevoke(true);
         setSelectedDevice(device);
     }
@@ -107,7 +106,7 @@ export default function Devices(props) {
                 deviceId: selectedDevice.deviceId,
                 deviceName: displayName
             }
-            axios(configApiCall(api_path_delete_admin_device_revoke, 'PUT', data, null)).then((response)=>{
+            axios(configApiCall(api_path_delete_admin_device_revoke+"?username="+ data.username+"&deviceId="+data.deviceId+"&deviceName="+data.deviceName, 'PUT', null, null)).then((response)=>{
                     setSelectedDevice({});
                     setOpenEdit(false);
                 }
@@ -119,7 +118,7 @@ export default function Devices(props) {
             const data = {
                 deviceName: displayName
             }
-            axios(configApiCall(api_path_rename_device+"/"+selectedDevice.deviceId, 'PUT', data, null)).then((response)=>{
+            axios(configApiCall(api_path_rename_device+"/"+selectedDevice.deviceId+ "?deviceName="+ data.deviceName, 'PUT', null, null)).then((response)=>{
                     setSelectedDevice({});
                     setOpenEdit(false);
                 }
@@ -135,7 +134,7 @@ export default function Devices(props) {
                 username: props.username,
                 deviceId: selectedDevice.deviceId,
             }
-            axios(configApiCall(api_path_delete_admin_device_revoke, 'DELETE', data, null)).then((response)=>{
+            axios(configApiCall(api_path_delete_admin_device_revoke+"?username="+ data.username+"&deviceId="+data.deviceId, 'DELETE', null, null)).then((response)=>{
                     setSelectedDevice({});
                     setOpenRevoke(false);
                 }
@@ -153,6 +152,17 @@ export default function Devices(props) {
                 console.log(error);
             });
         }
+    }
+
+    /**
+     * Formik Validation
+     */
+    const validateDisplayName = displaynamevalue => {
+        let error;
+        if (!displaynamevalue) {
+            error = 'Required';
+        }
+        return error;
     }
 
     const tableCellClasses = classnames(classes.tableCell);
@@ -220,24 +230,42 @@ export default function Devices(props) {
             </Table>
             <Dialog open={openEdit} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-edit-dialog-title">Update Device Information</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Device Display Name"
-                        onChange={e => setDisplayName(e.target.value)}
-                        fullWidth
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCancel} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleUpdate} color="primary">
-                        Update
-                    </Button>
-                </DialogActions>
+                <Formik initialValues={{
+                    displayName: '',
+                }}
+                >
+                    {({ errors, touched, validateField}) => (
+                        <form>
+                            <DialogContent>
+                                <Field name="displayName" validate={validateDisplayName} >
+                                    {({field}) => (
+                                        <div>
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="name"
+                                                label="Device Display Name"
+                                                fullWidth
+                                                onChange={setDisplayName(field.value)}
+                                                helperText={(errors.displayName && touched.displayName) && errors.displayName}
+                                                {...field}
+                                            />
+                                        </div>
+                                    )
+                                    }
+                                </Field>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCancel} color="primary">
+                                    Cancel
+                                </Button>
+                                <Button onClick={() => validateField('displayName').then(() =>handleUpdate())} color="primary">
+                                    Update
+                                </Button>
+                            </DialogActions>
+                        </form>
+                    )}
+                </Formik>
             </Dialog>
             <Dialog open={openRevoke} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-revoke-dialog-title">Revoke Device</DialogTitle>

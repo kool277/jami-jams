@@ -26,22 +26,22 @@ const useStyles = makeStyles({
 export default function CountrySelect(props) {
     const classes = useStyles();
 
-    const handleCountryChange = (event, values) => {
-        props.onCountryChange({
-            "country": values
-        });
-    };
 
     return (
         <Autocomplete
             id="country-select-demo"
+            name="country"
             options={countries}
             classes={{
                 option: classes.option,
             }}
-            onChange={handleCountryChange}
+            onChange={(e, value) => {
+                value!=null ? props.setFieldValue("country", value.code): props.setFieldValue("country", "");
+            }}
             autoHighlight
-            getOptionLabel={(option) => countryToFlag(option.code) + " "+ option.label}
+            getOptionLabel={(option) => (
+                countryToFlag(option.code) + " "+ option.label
+            )}
             renderOption={(option) => (
                 <React.Fragment>
                     <span>{countryToFlag(option.code)}</span>
@@ -52,10 +52,12 @@ export default function CountrySelect(props) {
                 <TextField
                     {...params}
                     label="Choose a country"
+                    name="country"
                     variant="outlined"
+                    onBlur={props.handleBlur}
                     inputProps={{
                         ...params.inputProps,
-                        autoComplete: 'new-password', // disable autocomplete and autofill
+                        autoComplete: 'country', // disable autocomplete and autofill
                     }}
                 />
             )}

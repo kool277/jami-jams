@@ -1,14 +1,7 @@
 import React, { useEffect } from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -34,7 +27,7 @@ function Copyright() {
             {'Copyright © '}
             <Link color="inherit" href="https://savoirfairelinux.com/">
                 JAMS by Savoir-faire Linux
-      </Link>{' '}
+            </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
@@ -58,9 +51,9 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(3),
         padding: theme.spacing(2),
         [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
-          marginTop: theme.spacing(6),
-          marginBottom: theme.spacing(6),
-          padding: theme.spacing(3),
+            marginTop: theme.spacing(6),
+            marginBottom: theme.spacing(6),
+            padding: theme.spacing(3),
         },
     },
     logo: {
@@ -82,28 +75,28 @@ export default function SignUp(props) {
     });
 
     function returnStep(){
-        if(step == 0) {
+        if(step === 0) {
             return <CreateAdmin setError={setError} setErrorMessage={setErrorMessage}  />
-        }else if (step == 1) {
+        }else if (step === 1) {
             return <CaSetup setError={setError} setErrorMessage={setErrorMessage} />
-        }else if (step == 2) {
+        }else if (step === 2) {
             return <IdentityManagement setError={setError} setErrorMessage={setErrorMessage} />
-        }else if (step == 3) {
+        }else if (step === 3) {
             return <ServerParameters setError={setError} setErrorMessage={setErrorMessage} />
         }
     }
     return (
         <Container component="main" maxWidth="sm">
             <Paper className={classes.paper}>
-            <CssBaseline />
-                <img src={logo} className={classes.logo} />
-            <CustomizedSteppers step={step}/>
-            {error && errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-            {returnStep()}
-        
-            <Box mt={8}>
-                <Copyright/>
-            </Box>
+                <CssBaseline />
+                <img src={logo} className={classes.logo} alt="Logo Jami"/>
+                <CustomizedSteppers step={step}/>
+                {error && errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {returnStep()}
+
+                <Box mt={8}>
+                    <Copyright/>
+                </Box>
             </Paper>
         </Container>
     );

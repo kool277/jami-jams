@@ -1,5 +1,7 @@
 import React from "react";
 import { useHistory } from 'react-router-dom';
+import {Formik, Field} from "formik";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -7,16 +9,12 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import Devices from "components/Devices/Devices.js";
-import Search from "@material-ui/icons/Search";
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -62,8 +60,6 @@ import {
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
-const CONTAINER_HEIGHT = 200
-
 const fileUpload = require('fuctbase64');
 
 
@@ -74,20 +70,20 @@ const styles = (theme)=> ( {
         flexGrow: 1
     },
     cardCategoryWhite: {
-      color: "rgba(255,255,255,.62)",
-      margin: "0",
-      fontSize: "14px",
-      marginTop: "0",
-      marginBottom: "0"
+        color: "rgba(255,255,255,.62)",
+        margin: "0",
+        fontSize: "14px",
+        marginTop: "0",
+        marginBottom: "0"
     },
     cardTitleWhite: {
-      color: "#FFFFFF",
-      marginTop: "0px",
-      minHeight: "auto",
-      fontWeight: "300",
-      fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-      marginBottom: "3px",
-      textDecoration: "none"
+        color: "#FFFFFF",
+        marginTop: "0px",
+        minHeight: "auto",
+        fontWeight: "300",
+        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+        marginBottom: "3px",
+        textDecoration: "none"
     },
     input: {
         display: 'none',
@@ -104,24 +100,25 @@ const styles = (theme)=> ( {
     },
     editProfilePicture: {
         borderRadius: "50%",
-        width: "200px", 
+        width: "200px",
         height: "200px",
+
         boxShadow:
-        "0 6px 8px -12px rgba(" +
-        hexToRgb(blackColor) +
-        ", 0.56), 0 4px 25px 0px rgba(" +
-        hexToRgb(blackColor) +
-        ", 0.12), 0 8px 10px -5px rgba(" +
-        hexToRgb(blackColor) +
-        ", 0.2)",
+            "0 6px 8px -12px rgba(" +
+            hexToRgb(blackColor) +
+            ", 0.56), 0 4px 25px 0px rgba(" +
+            hexToRgb(blackColor) +
+            ", 0.12), 0 8px 10px -5px rgba(" +
+            hexToRgb(blackColor) +
+            ", 0.2)",
     },
     dialogPaper: {
         minHeight: '60vh',
         maxHeight: '60vh',
         minWidth: '80vh',
         maxWidth: '80vh'
-    }
-  });
+    },
+});
 
 const useStyles = makeStyles(styles);
 
@@ -166,7 +163,7 @@ export default function EditCreateUserProfile(props) {
                     setFaxNumber(user["faxNumber"])
                     setPhoneNumber(user["phoneNumber"])
                     setExtension(user["phoneNumberExtension"])
-                    setMobileNumber(user["mobileNumber"])    
+                    setMobileNumber(user["mobileNumber"])
                 })
             }).catch((error) => {
                 console.log("Error fetching user : " + props.username + " " + error)
@@ -212,8 +209,7 @@ export default function EditCreateUserProfile(props) {
             'faxNumber': faxNumber,
             'phoneNumber': phoneNumber,
             'phoneNumberExtension': extension,
-            'mobileNumber': mobileNumber,
-            'jamiId': ""
+            'mobileNumber': mobileNumber
         }
 
         axios(configApiCall(api_path_post_create_user + "?username="+ data.username, 'POST', null, null)).then((response) => {
@@ -221,9 +217,9 @@ export default function EditCreateUserProfile(props) {
             handleUserProfileCreation(data)
         }).catch((error) => {
             console.log("Failed to create new user. This is either because the username is already in use" +
-            " on the public nameserver, or another unknown error has occurred. " +
-            "Please choose another one.");
-        }) 
+                " on the public nameserver, or another unknown error has occurred. " +
+                "Please choose another one.");
+        })
     }
 
     const handleUserExists = (input) => {
@@ -231,7 +227,7 @@ export default function EditCreateUserProfile(props) {
             "username": input
         }
         axios(configApiCall(api_path_get_exists_user, 'GET', data, null)).then((response) =>{
-            if(response.status == 200){
+            if(response.status === 200){
                 setUserExists(false)
             }
         }).catch((error) => {
@@ -267,7 +263,7 @@ export default function EditCreateUserProfile(props) {
     const onCropChange = (crop) => {
         setCrop(crop)
     }
-     
+
     const onCropComplete = (croppedArea, croppedAreaPixels) => {
         getCroppedImg(
             originalUploadedImage,
@@ -277,7 +273,7 @@ export default function EditCreateUserProfile(props) {
             setProfilePicturePreview(value)
         })
     }
-     
+
     const onZoomChange = (zoom) => {
         setZoom(zoom)
     }
@@ -291,273 +287,387 @@ export default function EditCreateUserProfile(props) {
         setProfilePicture(profilePicturePreview.replace("data:image/jpeg;base64,", ""))
         setOpen(false)
     }
-    
+
     const handleClosePassword = () => {
         setOpenPassword(false);
         history.push('/admin');
     }
 
+    /**
+     * Formik Validation Fields
+     *
+     * */
+
+    const validateFieldInput = fieldinput => {
+        let error;
+        if (!fieldinput) {
+            error = 'Required';
+        }
+        return error;
+    }
+
+    const validateUsername = usernamevalue => {
+        handleUserExists(usernamevalue)
+        let error;
+        if (!usernamevalue) {
+            error = 'Required';
+        }
+        return error;
+    }
+
+    const validateEmail = emailvalue => {
+        let error;
+        if (!emailvalue) {
+            error = 'Required';
+        }
+        else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailvalue)) {
+            error = 'Invalid email address';
+            console.log("blurring email false here")
+        }
+        return error;
+    }
+
+
     return(
         <div>
-        <Dialog
-            open={openPassword}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">{"Temporary password"}</DialogTitle>
-            <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-            New user successfully created. Here is the one time password: <strong>{temporaryPassword}</strong>
-            </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={handleClosePassword} color="primary">
-                Ok
-            </Button>
-            </DialogActions>
-        </Dialog>
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-            classes={{ paper: classes.dialogPaper }}
-        >
-            <DialogTitle id="alert-dialog-title">{"Crop image"}</DialogTitle>
-            <DialogContent>
-                <Cropper
-                    image={originalUploadedImage}
-                    crop={crop}
-                    zoom={zoom}
-                    aspect={aspect}
-                    onCropChange={onCropChange}
-                    onCropComplete={onCropComplete}
-                    onZoomChange={onZoomChange}
-                />
-            </DialogContent>
-            <DialogActions>
-            <div className={classes.controls}>
-                <div className={classes.sliderContainer}>
-                    <Typography
-                        variant="overline"
-                        classes={{ root: classes.sliderLabel }}
-                    >
-                        Zoom
-                    </Typography>
-                    <Slider
-                        value={zoom}
-                        min={1}
-                        max={3}
-                        step={0.1}
-                        aria-labelledby="Zoom"
-                        classes={{ container: classes.slider }}
-                        onChange={(e, zoom) => setZoom(zoom)}
+            <Dialog
+                open={openPassword}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Temporary password"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        New user successfully created. Here is the one time password: <strong>{temporaryPassword}</strong> ?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClosePassword} color="primary">
+                        Ok
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                classes={{ paper: classes.dialogPaper }}
+            >
+                <DialogTitle id="alert-dialog-title">{"Crop image"}</DialogTitle>
+                <DialogContent>
+                    <Cropper
+                        image={originalUploadedImage}
+                        crop={crop}
+                        zoom={zoom}
+                        aspect={aspect}
+                        onCropChange={onCropChange}
+                        onCropComplete={onCropComplete}
+                        onZoomChange={onZoomChange}
                     />
+                </DialogContent>
+                <DialogActions>
+                    <div className={classes.controls}>
+                        <div className={classes.sliderContainer}>
+                            <Typography
+                                variant="overline"
+                                classes={{ root: classes.sliderLabel }}
+                            >
+                                Zoom
+                            </Typography>
+                            <Slider
+                                value={zoom}
+                                min={1}
+                                max={3}
+                                step={0.1}
+                                aria-labelledby="Zoom"
+                                classes={{ container: classes.slider }}
+                                onChange={(e, zoom) => setZoom(zoom)}
+                            />
+                        </div>
+                        <div className={classes.sliderContainer}>
+                            <Typography
+                                variant="overline"
+                                classes={{ root: classes.sliderLabel }}
+                            >
+                                Rotation
+                            </Typography>
+                            <Slider
+                                value={rotation}
+                                min={0}
+                                max={360}
+                                step={1}
+                                aria-labelledby="Rotation"
+                                classes={{ container: classes.slider }}
+                                onChange={(e, rotation) => setRotation(rotation)}
+                            />
+                        </div>
                     </div>
-                    <div className={classes.sliderContainer}>
-                    <Typography
-                        variant="overline"
-                        classes={{ root: classes.sliderLabel }}
+                    <Button onClick={handleClose} color="danger">
+                        Cancel
+                    </Button>
+                    <Button onClick={cropProfilePicture} color="success" autoFocus>
+                        Crop
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <GridContainer>
+                <GridItem xs={12} sm={12} md={8}>
+                    <Formik validateOnBlur
+                        initialValues={{
+                        username: '',
+                        firstname: '',
+                        lastname: '',
+                        email: '',
+                        organization: '',
+                        phonenumber: '',
+                        extension: '',
+                        mobilephonenumber: '',
+                        faxnumber: '',
+
+                    }}
                     >
-                        Rotation
-                    </Typography>
-                    <Slider
-                        value={rotation}
-                        min={0}
-                        max={360}
-                        step={1}
-                        aria-labelledby="Rotation"
-                        classes={{ container: classes.slider }}
-                        onChange={(e, rotation) => setRotation(rotation)}
-                    />
-                    </div>
-                </div>
-            <Button onClick={handleClose} color="danger">
-                Cancel
-            </Button>
-            <Button onClick={cropProfilePicture} color="success" autoFocus>
-                Crop
-            </Button>
-            </DialogActions>
-        </Dialog>
-        <GridContainer>
-            <GridItem xs={12} sm={12} md={8}>
-            <Card profile>
-                <CardHeader color="info" stats icon>
-                    <CardIcon color="info">
-                        {createUser ? <PersonAddOutlinedIcon /> : <EditIcon />}
-                    </CardIcon>
-                    <p className={classes.cardCategory}>{createUser ? "Create new profile" : "Edit profile"}</p>
-                    {createUser ? "" : <h3 className={classes.cardTitle}>{userName}</h3>}
-                </CardHeader>
-                <CardBody profile>
-                    <div className={classes.root}>
-                    <Grid container spacing={5}>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <Grid container spacing={5} >
-                                <Grid item align="center" xs={12} sm={12} md={12} >
-                                    <img src={profilePicturePreview} alt="..." className={classes.editProfilePicture} />
-                                </Grid>
-                                <Grid item align="center" xs={12} sm={12} md={12}>
-                                    <input accept="image/*"  className={classes.input} id="icon-button-file" type="file" onChange={handleProfilePictureChange}/>
-                                    <label htmlFor="icon-button-file" >
-                                        <IconButton color="inherit" aria-label="upload picture" component="span" >
-                                        <PhotoCamera />
-                                        </IconButton> Update profile image
-                                    </label>
-                                </Grid>
-                                {createUser && 
-                                <Grid item align="center" xs={12} sm={12} md={12}>                                
-                                    <FormControl className={classes.margin} size="medium" error={userExists}>
-                                        <InputLabel htmlFor="username">{userExists ? "Error username exists" : "Username"}</InputLabel>
-                                        <Input
-                                        id="username"
-                                        placeholder={userName}
-                                        startAdornment={
-                                            <InputAdornment position="start">
-                                            <AccountCircleIcon />
-                                            </InputAdornment>
-                                        }
-                                        onChange={e => {
-                                            setUserName(e.target.value);
-                                            handleUserExists(e.target.value)
-                                        }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                }
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="firstname">First Name</InputLabel>
-                                <Input
-                                id="firstname"
-                                placeholder={firstName}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <PersonIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setFirstName(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="lastname">Last Name</InputLabel>
-                                <Input
-                                id="lastname"
-                                placeholder={lastName}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <PersonOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setLastName(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="email">Email</InputLabel>
-                                <Input
-                                id="email"
-                                placeholder={email}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <AlternateEmailOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setEmail(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="organization">Organisation</InputLabel>
-                                <Input
-                                id="organization"
-                                placeholder={organization}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <BusinessCenterOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setOrganization(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="phonenumber">Phone Number</InputLabel>
-                                <Input
-                                id="phonenumber"
-                                placeholder={phoneNumber}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <PhoneInTalkOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setPhoneNumber(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="extension">Extension</InputLabel>
-                                <Input
-                                id="extension"
-                                placeholder={extension}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <PhoneForwardedOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setExtension(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="faxnumber">Fax Number</InputLabel>
-                                <Input
-                                id="faxnumber"
-                                placeholder={faxNumber}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <LocalPrintshopOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setFaxNumber(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <FormControl className={classes.margin} fullWidth>
-                                <InputLabel htmlFor="mobilephonenumber">Mobile Phonenumber</InputLabel>
-                                <Input
-                                id="mobilephonenumber"
-                                placeholder={mobileNumber}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <SmartphoneOutlinedIcon />
-                                    </InputAdornment>
-                                }
-                                onChange={e => setMobileNumber(e.target.value)}
-                                />
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    </div>
-                </CardBody>
-                <CardFooter>
-                    {createUser ? <Button color="danger" onClick={handleCancel}>Cancel</Button> : <Button color="danger" onClick={handleCancelUpdate}>Cancel Update</Button>}
-                    {createUser ? <Button color="info" onClick={handleCreateUser}>Create Profile</Button> : <Button color="info" onClick={handleUpdateUser}>Update Profile</Button>}
-                </CardFooter>
-            </Card>
-            </GridItem>
-        </GridContainer>
+                        {({ errors, touched, validateForm, setFieldTouched}) => (
+                            <form>
+                                <Card profile>
+                                    <CardHeader color="info" stats icon>
+                                        <CardIcon color="info">
+                                            {createUser ? <PersonAddOutlinedIcon /> : <EditIcon />}
+                                        </CardIcon>
+                                        <p className={classes.cardCategory}>{createUser ? "Create new profile" : "Edit profile"}</p>
+                                        {createUser ? "" : <h3 className={classes.cardTitle}>{userName}</h3>}
+                                    </CardHeader>
+                                    <CardBody profile>
+                                        <div className={classes.root}>
+                                            <Grid container spacing={5}>
+                                                <Grid item xs={12} sm={12} md={12}>
+                                                    <Grid container spacing={5} >
+                                                        <Grid item align="center" xs={12} sm={12} md={12} >
+                                                            <img src={profilePicturePreview} alt="..." className={classes.editProfilePicture} />
+                                                        </Grid>
+                                                        <Grid item align="center" xs={12} sm={12} md={12}>
+                                                            <input accept="image/*"  className={classes.input} id="icon-button-file" type="file" onChange={handleProfilePictureChange}/>
+                                                            <label htmlFor="icon-button-file" >
+                                                                <IconButton color="inherit" aria-label="upload picture" component="span" >
+                                                                    <PhotoCamera />
+                                                                </IconButton> Update profile image
+                                                            </label>
+                                                        </Grid>
+                                                        {createUser &&
+                                                        <Grid item align="center" xs={12} sm={12} md={12}>
+                                                            <FormControl className={classes.margin} size="medium" error={userExists}>
+                                                                <InputLabel htmlFor="username">{userExists ? "Error username exists" : "Username"}</InputLabel>
+                                                                <Field name="username" validate={validateUsername} >
+                                                                    {({field}) => (
+                                                                        <Input
+                                                                            id="username"
+                                                                            placeholder={userName}
+                                                                            startAdornment={
+                                                                                <InputAdornment position="start">
+                                                                                    <AccountCircleIcon />
+                                                                                </InputAdornment>
+                                                                            }
+                                                                            onChange={setUserName(field.value)}
+                                                                            {...field}
+                                                                        />
+                                                                    )
+                                                                    }
+                                                                </Field>
+                                                                {errors.username && touched.username && <span class="spanError">{errors.username}</span>}
+                                                            </FormControl>
+                                                        </Grid>
+                                                        }
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="firstname">First Name</InputLabel>
+                                                        <Field name="firstname" validate={validateFieldInput} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="firstname"
+                                                                    placeholder={firstName}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <PersonIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setFirstName(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.firstname && touched.firstname && <span class="spanError">{errors.firstname}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="lastname">Last Name</InputLabel>
+                                                        <Field name="lastname" validate={validateFieldInput} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="lastname"
+                                                                    placeholder={lastName}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <PersonOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setLastName(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.lastname && touched.lastname && <span class="spanError">{errors.lastname}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="email">Email</InputLabel>
+                                                        <Field name="email" validate={validateEmail} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="email"
+                                                                    placeholder={email}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <AlternateEmailOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setEmail(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.email && touched.email && <span class="spanError">{errors.email}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="organization">Organisation</InputLabel>
+                                                        <Field name="organization" validate={validateFieldInput} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="organization"
+                                                                    placeholder={organization}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <BusinessCenterOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setOrganization(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.organization && touched.organization && <span class="spanError">{errors.organization}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="phonenumber">Phone Number</InputLabel>
+                                                        <Field name="phonenumber" validate={validateFieldInput} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="phonenumber"
+                                                                    placeholder={phoneNumber}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <PhoneInTalkOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setPhoneNumber(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.phonenumber && touched.phonenumber && <span class="spanError">{errors.phonenumber}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="extension">Extension</InputLabel>
+                                                        <Field name="extension" validate={validateFieldInput} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="extension"
+                                                                    placeholder={extension}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <PhoneForwardedOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setExtension(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.extension && touched.extension && <span class="spanError">{errors.extension}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="faxnumber">Fax Number</InputLabel>
+                                                        <Field name="faxnumber" validate={validateFieldInput} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="faxnumber"
+                                                                    placeholder={faxNumber}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <LocalPrintshopOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setFaxNumber(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.faxnumber && touched.faxnumber && <span class="spanError">{errors.faxnumber}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={6}>
+                                                    <FormControl className={classes.margin} fullWidth>
+                                                        <InputLabel htmlFor="mobilephonenumber">Mobile Phonenumber</InputLabel>
+                                                        <Field name="mobilephonenumber" validate={validateFieldInput} >
+                                                            {({field}) => (
+                                                                <Input
+                                                                    id="mobilephonenumber"
+                                                                    placeholder={mobileNumber}
+                                                                    startAdornment={
+                                                                        <InputAdornment position="start">
+                                                                            <SmartphoneOutlinedIcon />
+                                                                        </InputAdornment>
+                                                                    }
+                                                                    onChange={setMobileNumber(field.value)}
+                                                                    {...field}
+                                                                />
+                                                            )
+                                                            }
+                                                        </Field>
+                                                        {errors.mobilephonenumber && touched.mobilephonenumber && <span class="spanError">{errors.mobilephonenumber}</span>}
+                                                    </FormControl>
+                                                </Grid>
+                                            </Grid>
+                                        </div>
+                                    </CardBody>
+                                    <CardFooter>
+                                        {createUser ? <Button color="danger" onClick={handleCancel}>Cancel</Button> : <Button color="danger" onClick={handleCancelUpdate}>Cancel Update</Button>}
+                                        {createUser ? <Button color="info" onClick={() => validateForm().then(() => handleCreateUser())}>Create Profile</Button> : <Button color="info" onClick={() => validateForm().then(() => handleUpdateUser())}>Update Profile</Button>}
+                                    </CardFooter>
+                                </Card>
+                            </form>
+                        )}
+                    </Formik>
+                </GridItem>
+            </GridContainer>
         </div>
     );
 }

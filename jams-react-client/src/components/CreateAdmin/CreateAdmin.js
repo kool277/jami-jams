@@ -1,19 +1,12 @@
 import React from 'react';
 import { useHistory } from "react-router-dom";
-import Avatar from '@material-ui/core/Avatar';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import axios from 'axios';
 import configApiCall from '../../api'
@@ -44,11 +37,34 @@ const useStyles = makeStyles((theme) => ({
 export default function CreateAdmin(props) {
     const classes = useStyles();
     const history = useHistory();
-    const [username, setUsername] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [confirmPassword, setConfirmPassword] = React.useState("");
-    const [error, setError] = React.useState(props.error);
-    const [errorMessage, setErrorMessage] = React.useState(props.errorMessage);
+
+    /**
+     * Formik Validation Fields
+     */
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            password: '',
+            confirmPassword: '',
+
+        },
+        validationSchema: Yup.object({
+            username: Yup.string()
+                .max(60, 'Must be 60 characters or less')
+                .required('Username is required'),
+            password: Yup.string()
+                .max(50, 'Must be 50 characters or less')
+                .required('Password is required'),
+            confirmPassword: Yup.string()
+                .oneOf([Yup.ref('password'), null], 'Passwords must match')
+                .max(50, 'Must be 50 characters or less')
+                .required('Password confirmation is required'),
+        }),
+
+        onSubmit: values => {
+            handleSubmit(values);
+        },
+    });
 
     function createAdminCallBackHandler(response) {
         auth.setJWT(response.data['access_token'])
@@ -58,14 +74,14 @@ export default function CreateAdmin(props) {
         history.push('/');
     }
 
-    function handleSubmit(e) {
-        e.preventDefault();
+    function handleSubmit(values) {
+        //e.preventDefault();
         const jsonData = {
-            "username": username,
-            "password": password
+            "username": values.username,
+            "password": values.password
         }
 
-        if(password != confirmPassword) {
+        if(values.password !== values.confirmPassword) {
             props.setErrorMessage("Passwords didn't match !");
             props.setError(true)
         }else {
@@ -80,22 +96,23 @@ export default function CreateAdmin(props) {
     }
 
     return (
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+        <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
             <Typography variant="h5" gutterBottom color="primary">Create Administrator</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoComplete="email"
-                            autoFocus
-                            onChange={e => setUsername(e.target.value)}
-                        />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="Username"
+                        name="username"
+                        autoComplete="email"
+                        autoFocus
+                        {...formik.getFieldProps('username')}
+                    />
+                    {formik.touched.username && formik.errors.username ? (<span>{formik.errors.username}</span>) : null}
                 </Grid>
                 <Grid item xs={6}>
                     <TextField
@@ -108,13 +125,15 @@ export default function CreateAdmin(props) {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                        onChange={e => setPassword(e.target.value)}
+                        {...formik.getFieldProps('password')}
                     />
+                    {formik.touched.password && formik.errors.password ? (<span>{formik.errors.password}</span>) : null}
+
                 </Grid>
 
                 <Grid item xs={6}>
 
-                <TextField
+                    <TextField
                         variant="outlined"
                         margin="normal"
                         required
@@ -124,8 +143,9 @@ export default function CreateAdmin(props) {
                         type="password"
                         id="confirmPassword"
                         autoComplete="current-password"
-                        onChange={e => setConfirmPassword(e.target.value)}
+                        {...formik.getFieldProps('confirmPassword')}
                     />
+                    {formik.touched.confirmPassword && formik.errors.confirmPassword ? (<span>{formik.errors.confirmPassword}</span>) : null}
 
                 </Grid>
             </Grid>
