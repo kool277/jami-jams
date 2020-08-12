@@ -4,8 +4,12 @@ cd ../jams-react-client || exit
 npm install
 npm run build
 #Now the UI is built we can exit and copy resource
-mkdir -p ../jams-server/src/main/resources/webapp
-sed -i 's/material-dashboard-react\///g' build/index.html
 rm -rf ../jams-server/src/main/resources/webapp/*
+echo "Removed old webapp contents!"
+mkdir -p ../jams-server/src/main/resources/webapp
+echo "Created webapp folder!"
+sed -i 's/material-dashboard-react\///g' build/index.html
+echo "Created webapp folder!"
 mv build/* ../jams-server/src/main/resources/webapp
+echo "Copied new webapp contents!"
 rm -rf build
