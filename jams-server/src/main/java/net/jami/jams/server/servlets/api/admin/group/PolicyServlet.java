@@ -57,11 +57,9 @@ public class PolicyServlet extends HttpServlet {
         policy.setGroupName(req.getParameter("groupName"));
         policy.setUsername(req.getParameter("username"));
         policy.setPolicyData(req.getParameter("policyData"));
-        dataStore.getPolicyDao().storeObject(policy);
-
-        resp.sendError(500, "Could not create a group successfully!");
+        if (dataStore.getPolicyDao().storeObject(policy)) resp.setStatus(200);
+        else resp.sendError(500, "Could not create a group successfully!");
     }
-
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
