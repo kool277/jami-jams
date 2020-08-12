@@ -79,7 +79,7 @@ public class SearchDirectoryServlet extends HttpServlet {
                         user.setAccessLevel(AccessLevel.USER);
                         userAuthenticationModule.createUser(user.getUserType(), user.getRealm(), nameServer, user);
                     } else {
-                        profile.setJamiId(results.get(0).getJamiId());
+                        profile.setId(results.get(0).getJamiId());
                     }
                 }
                 userProfiles.add(profile);

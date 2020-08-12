@@ -72,7 +72,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         userProfile.setPhoneNumberExtension(obj.get("phoneNumberExtension").toString());
         userProfile.setFaxNumber(obj.get("faxNumber").toString());
         userProfile.setMobileNumber(obj.get("mobileNumber").toString());
-        userProfile.setJamiId(obj.get("jamiId").toString());
+        userProfile.setId(obj.get("jamiId").toString());
         userProfile.setGroupMemberships(new ArrayList<>());
 
         userAuthenticationModule.getAuthSources().get(new AuthModuleKey(realm, AuthenticationSourceType.LOCAL))

@@ -75,7 +75,7 @@ public class UserProfile implements DatabaseObject {
     private String phoneNumberExtension;
     private String faxNumber;
     private String mobileNumber;
-    private String jamiId;
+    private String id;
     private List<String> groupMemberships;
 
     public UserProfile(ResultSet rs) throws Exception {
@@ -110,7 +110,7 @@ public class UserProfile implements DatabaseObject {
         if(this.getFaxNumber() != null) vCard.addTelephoneNumber(this.getFaxNumber(), TelephoneType.FAX);
         if(this.getEmail() != null) vCard.addEmail(this.getEmail(), EmailType.WORK);
         if(this.getOrganization() != null) vCard.setOrganization(this.getOrganization());
-        if(this.getJamiId() != null) vCard.setExtendedProperty("JamiID",this.jamiId);
+        if(this.getId() != null) vCard.setExtendedProperty("id",this.id);
 
         /*I think this is how Base64 will work in this case*/
         if(this.getProfilePicture() != null) {
