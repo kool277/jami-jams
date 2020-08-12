@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/admin/group")
+@Slf4j
 public class GroupServlet extends HttpServlet {
 
     @Override
@@ -67,7 +69,8 @@ public class GroupServlet extends HttpServlet {
             resp.getOutputStream().write(JsonStream.serialize(groups).getBytes());
             resp.setStatus(200);
         } else {
-            resp.sendError(500, "An error occurred while attempting to obtain a group!");
+            log.info("No existing groups were found.");
+            resp.setStatus(200);
         }
     }
 
