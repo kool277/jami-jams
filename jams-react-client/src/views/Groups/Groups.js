@@ -9,10 +9,8 @@ import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import Divider from '@material-ui/core/Divider';
 import CustomInput from "components/CustomInput/CustomInput.js";
 
 import IconButton from '@material-ui/core/IconButton';
@@ -35,8 +33,6 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import EditGroup from "views/Groups/EditGroup";
 
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -78,6 +74,7 @@ export default function Groups() {
     const [groups, setGroups] = React.useState([])
     const [selectedGroupName, setSelectedGroupName] = React.useState("")
     const [loading, setLoading] = React.useState(false)
+    const [zeroGroup, setZeroGroup] = React.useState(false)
     const [progress, setProgress] = React.useState(0);
     const [searchValue, setSearchValue] = React.useState(null)
 
@@ -96,12 +93,14 @@ export default function Groups() {
     }
 
     const removeGroup = () => {
-        axios(configApiCall(api_path_delete_group, 'DELETE', {"queryString": removedGroup}, null)).then((response)=>{
+        axios(configApiCall(api_path_delete_group+"?groupName="+removedGroup, 'DELETE', null, null)).then((response)=>{
             console.log("Successfully deleted "  + removedGroup)
+            setOpenRemoveDialog(false);
         }).catch((error) =>{
             console.log("Could not delete "  + removedGroup + " " + error)
+            setOpenRemoveDialog(false);
         });
-        setOpenRemoveDialog(false);
+
         history.push('/admin/groups')
     }
 
@@ -116,9 +115,12 @@ export default function Groups() {
                 return Math.min(oldProgress + diff, 100);
             });
         }, 500);
-        // axios(configApiCall(api_path_get_list_group, 'GET', {"groupName":"*"}, null)).then((response)=>{
-        axios('../groups.json').then((response) => {
+
+        axios(configApiCall(api_path_get_list_group+"?groupName=*", 'GET', null, null)).then((response) => {
             let allGroups = response.data
+            if(allGroups.length === 0)
+                setZeroGroup(true);
+            else setZeroGroup(false);
             allGroups.map((group) => {
                 group.display = ""
             })
@@ -131,8 +133,7 @@ export default function Groups() {
                 history.push('/')
             }
         });
-        // axios(configApiCall(api_path_blueprints, 'GET', {"groupName":"*"}, null)).then((response)=>{
-        axios('../blueprints.json').then((response) => {
+        /*axios(configApiCall(api_path_blueprints+"?groupName=*", 'GET', null, null)).then((response) => {
             setBlueprints(response.data)
         }).catch((error) =>{
             console.log(error);
@@ -140,11 +141,11 @@ export default function Groups() {
                 auth.authenticated = false
                 history.push('/')
             }
-        });
+        });*/
         return () => {
             clearInterval(timer);
         };
-    }, []);
+    }, [openCreate, openRemoveDialog]);
 
     const [selectedGroup, setSelectedGroup] = useState(false);
 
@@ -161,7 +162,7 @@ export default function Groups() {
     }
 
     const handleCheckGroupNameExists = (searchGroupNameValue) => {
-        axios(configApiCall(api_path_get_list_group, 'GET', {"groupName": searchGroupNameValue}, null)).then((response)=>{
+        axios(configApiCall(api_path_get_list_group+"?groupName="+searchGroupNameValue, 'GET', null, null)).then((response)=>{
             if(response.data == "[]"){
                 setGroupNameExits(true)
             }
@@ -178,18 +179,13 @@ export default function Groups() {
 
     const handleCreateGroup = () => {
 
-        const data = {
-            "groupname": groupName,
-            "groupMembers": {},
-            "blueprint": "default"
-        }
-
-        axios(configApiCall(api_path_post_create_group, 'POST', data, null)).then(() => {
+        axios(configApiCall(api_path_post_create_group+"?name="+groupName, 'POST', null, null)).then(() => {
             console.log("Successfully  create "  + groupName)
+            setOpenCreate(false);
         }).catch((error) => {
             console.log("Error creating group: " + error)
+            setOpenCreate(false);
         })
-        setOpenCreate(false);
         history.push('/admin/groups')
     }
 
@@ -329,10 +325,14 @@ export default function Groups() {
                             </div>  
                         </div>
                     </GridItem>
-                    {
+                    {zeroGroup
+                        ?
+                            <span>No Group Found</span>
+                        :
                         groups.filter((data)=>{
-                            if(searchValue == null)
+                            if(searchValue == null){
                                 return data
+                            }
                             else if((data.name != null ) && data.name.toLowerCase().includes(searchValue.toLowerCase())
                             ){
                                 return data
@@ -341,11 +341,11 @@ export default function Groups() {
                             <GridItem xs={12} sm={12} md={2} key={group.username} style={{display: group.display}}>
                                 <Card profile>
                                     <CardBody profile>
-                                            <h3 className={classes.cardTitle}>{group.name}</h3>
-                                            <ul>
-                                                <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
-                                                <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{group.blueprint}</li>
-                                            </ul>
+                                        <h3 className={classes.cardTitle}>{group.name}</h3>
+                                        <ul>
+                                            <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
+                                            <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{group.blueprint}</li>
+                                        </ul>
                                     </CardBody>
                                     <CardFooter>
                                         <IconButton color="primary" onClick={ (e) => redirectToGroup(e, group.name)}><EditOutlinedIcon /></IconButton>

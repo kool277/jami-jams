@@ -4,19 +4,16 @@ import classnames from "classnames";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
+
 // core components
 import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -107,9 +104,9 @@ export default function EditGroup(props) {
         /*
             TODO: Include the username of the user of witch we want to display contacts
             at the moment the admin sees his contacts in each user profile he visits
-        */ 
-        // axios(configApiCall(api_path_get_list_group, 'GET', {"groupName": props.groupName}, null)).then((response) => {
-        axios('../groups.json').then((response) => {
+        */
+
+        axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
             response.data.map((group) => {
                 if(group.name == props.groupName){
                     setGroupMembers(group["groupMembers"])
@@ -122,8 +119,7 @@ export default function EditGroup(props) {
 
     React.useEffect(()=>{
         setName(props.groupName)
-        // axios(configApiCall(api_path_get_list_group, 'GET', {"groupName": props.groupName}, null)).then((response) => {
-        axios('../groups.json').then((response) => {
+        axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
             response.data.map((group) => {
                 if(group.name == props.groupName){
                     setGroupMembers(group["groupMembers"])
@@ -151,7 +147,7 @@ export default function EditGroup(props) {
         }
         //TODO: Add blueprint to data to update the blueprint using the blueprintName
 
-        axios(configApiCall(api_path_put_update_group, 'PUT', data, null)).then((response) => {
+        axios(configApiCall(api_path_put_update_group+"?groupName="+name, 'PUT', null, null)).then((response) => {
             handleGroupUpdate(data);
         }).catch((error) => {
             console.log("Error updating group: " + error)

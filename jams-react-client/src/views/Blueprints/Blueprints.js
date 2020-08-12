@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
-import { Switch, Route, Redirect } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -11,28 +10,18 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import IconButton from '@material-ui/core/IconButton';
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import UserProfile from "views/UserProfile/UserProfile.js"
-import Divider from '@material-ui/core/Divider';
 
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
-import PersonIcon from '@material-ui/icons/Person';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import PhoneOutlinedIcon from '@material-ui/icons/PhoneOutlined';
 import GroupIcon from '@material-ui/icons/Group';
 import Search from "@material-ui/icons/Search";
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 
 import AllInbox from "@material-ui/icons/AllInbox"
-import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from 'auth.js'
@@ -40,8 +29,6 @@ import { api_path_blueprints } from "globalUrls";
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
-
-import jami from "assets/img/faces/jami.png";
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -116,7 +103,7 @@ export default function Blueprints() {
               return Math.min(oldProgress + diff, 100);
             });
           }, 500);
-        axios(configApiCall(api_path_blueprints, 'GET', {"queryString":"*"}, null)).then((response)=> {
+        axios(configApiCall(api_path_blueprints+"?groupName=*", 'GET', null, null)).then((response)=> {
             setBlueprints(response.data)
             setLoading(false)
         }).catch((error) =>{
@@ -144,7 +131,7 @@ export default function Blueprints() {
     }
 
     const handleCheckBlueprintNameExists = (searchBlueprintNameValue) => {
-        axios(configApiCall(api_path_blueprints, 'GET', {"queryString": searchBlueprintNameValue}, null)).then((response)=>{
+        axios(configApiCall(api_path_blueprints+"?groupName="+searchBlueprintNameValue, 'GET', null, null)).then((response)=>{
             setBlueprintNameExits(false)
         }).catch((error) =>{
             setBlueprintNameExits(true)
@@ -158,7 +145,7 @@ export default function Blueprints() {
     };
 
     const handleCreateUser = () => {
-        axios(configApiCall(api_path_blueprints, 'POST', {"queryString": blueprintName}, null)).then((response)=>{
+        axios(configApiCall(api_path_blueprints+"?groupName="+blueprintName+"&username=admin&policyData="+blueprintName, 'POST', null, null)).then((response)=>{
             console.log("Successfully  create "  + blueprintName)
         }).catch((error) =>{
             console.log("Could not create "  + blueprintName + " " + error)
@@ -173,7 +160,7 @@ export default function Blueprints() {
     }
 
     const removeBlueprint = () => {
-        axios(configApiCall(api_path_blueprints, 'DELETE', {"queryString": removedBlueprint}, null)).then((response)=>{
+        axios(configApiCall(api_path_blueprints+"?groupName="+removedBlueprint, 'DELETE', {"queryString": removedBlueprint}, null)).then((response)=>{
             console.log("Successfully  create "  + removedBlueprint)
         }).catch((error) =>{
             console.log("Could not create "  + removedBlueprint + " " + error)

@@ -3,28 +3,16 @@ import { useHistory } from 'react-router-dom';
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Checkbox from '@material-ui/core/Checkbox';
-import InputLabel from "@material-ui/core/InputLabel";
 // core components
 import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
-import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
-import Devices from "components/Devices/Devices.js";
-import Search from "@material-ui/icons/Search";
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Slider from '@material-ui/core/Slider';
-import Typography from "@material-ui/core/Typography";
 
 import Snackbar from '@material-ui/core/Snackbar';
 
@@ -40,11 +28,6 @@ import { api_path_blueprint_permissions } from "../../globalUrls"
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
 import MuiAlert from '@material-ui/lab/Alert';
-
-const CONTAINER_HEIGHT = 200
-
-const fileUpload = require('fuctbase64');
-
 
 
 const styles = (theme)=> ( {
