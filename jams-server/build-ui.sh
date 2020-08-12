@@ -1,6 +1,7 @@
 #!/bin/bash
 #Build the UI from the react js folder.
 cd ../jams-react-client || exit
+npm install
 npm run build
 #Now the UI is built we can exit and copy resource
 mkdir -p ../jams-server/src/main/resources/webapp
