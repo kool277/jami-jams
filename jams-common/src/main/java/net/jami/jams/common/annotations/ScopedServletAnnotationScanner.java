@@ -22,32 +22,13 @@
 */
 package net.jami.jams.common.annotations;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.AttributeInfo;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.annotation.Annotation;
-import javassist.bytecode.annotation.ArrayMemberValue;
-import javassist.bytecode.annotation.EnumMemberValue;
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.objects.user.AccessLevel;
-import net.jami.jams.common.updater.FileDescription;
-import org.bouncycastle.util.encoders.Hex;
-
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 @Slf4j
 public class ScopedServletAnnotationScanner {
@@ -96,8 +77,6 @@ public class ScopedServletAnnotationScanner {
                 cc.toClass();
             }
 
-        } catch (Exception e) {
-            log.info("an error occurred!");
-        }
+        } catch (Exception e) {}
     }
 }
