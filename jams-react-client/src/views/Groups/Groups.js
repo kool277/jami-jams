@@ -120,7 +120,8 @@ export default function Groups() {
             let allGroups = response.data
             if(allGroups.length === 0)
                 setZeroGroup(true);
-            else setZeroGroup(false);
+            else
+                setZeroGroup(false);
             allGroups.map((group) => {
                 group.display = ""
             })
@@ -128,20 +129,23 @@ export default function Groups() {
             setLoading(false)
         }).catch((error) =>{
             console.log(error);
-            if(error.response.status == 401){
+            if(error.response.status === 401){
                 auth.authenticated = false
                 history.push('/')
             }
         });
-        /*axios(configApiCall(api_path_blueprints+"?groupName=*", 'GET', null, null)).then((response) => {
+        axios(configApiCall(api_path_blueprints+"?groupName=*", 'GET', null, null)).then((response) => {
             setBlueprints(response.data)
         }).catch((error) =>{
             console.log(error);
-            if(error.response.status == 401){
+            if(error.response.status === 401){
                 auth.authenticated = false
                 history.push('/')
             }
-        });*/
+            if(error.response.status === 500){
+                setBlueprints([])
+            }
+        });
         return () => {
             clearInterval(timer);
         };
@@ -163,7 +167,7 @@ export default function Groups() {
 
     const handleCheckGroupNameExists = (searchGroupNameValue) => {
         axios(configApiCall(api_path_get_list_group+"?groupName="+searchGroupNameValue, 'GET', null, null)).then((response)=>{
-            if(response.data == "[]"){
+            if(response.data === "[]"){
                 setGroupNameExits(true)
             }
         }).catch((error) => {
@@ -193,10 +197,14 @@ export default function Groups() {
     const getGroupsOptions = () => {
         let blueprintsOptions = []
         let index = 0
-        blueprints.map((blueprint) => {
-            blueprintsOptions.push({ value: index, label: blueprint.blueprintName})
-            index += 1
-        })
+        if(blueprints.length === 0)
+            blueprintsOptions.push({ value: index, label: "No blueprint found"})
+        else {
+            blueprints.map((blueprint) => {
+                blueprintsOptions.push({value: index, label: blueprint.blueprintName})
+                index += 1
+            })
+        }
         return blueprintsOptions
     }
 
@@ -330,7 +338,7 @@ export default function Groups() {
                             <span>No Group Found</span>
                         :
                         groups.filter((data)=>{
-                            if(searchValue == null){
+                            if(searchValue === null){
                                 return data
                             }
                             else if((data.name != null ) && data.name.toLowerCase().includes(searchValue.toLowerCase())

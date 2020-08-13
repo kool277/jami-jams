@@ -57,7 +57,8 @@ public class GroupServlet extends HttpServlet {
 
             resp.getOutputStream().write(JsonStream.serialize(finalSingleGroup).getBytes());
             resp.setStatus(200);
-        } else if (!groups.isEmpty()) {
+        }
+        if (!groups.isEmpty()) {
             List<UserProfile> profiles = dataStore.getUserProfileDao().getObjects(null);
             for (Group group: groups) {
                 for (UserProfile p: profiles) {
@@ -68,7 +69,8 @@ public class GroupServlet extends HttpServlet {
 
             resp.getOutputStream().write(JsonStream.serialize(groups).getBytes());
             resp.setStatus(200);
-        } else {
+        }
+        else {
             log.info("No existing groups were found.");
             resp.setStatus(200);
         }
@@ -120,7 +122,8 @@ public class GroupServlet extends HttpServlet {
 
             resp.setStatus(200);
         }
-
-        resp.sendError(500, "Could not delete the group successfully!");
+        else {
+            resp.sendError(500, "Could not delete the group successfully!");
+        }
     }
 }

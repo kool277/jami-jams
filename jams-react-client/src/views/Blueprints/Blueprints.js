@@ -82,6 +82,7 @@ export default function Blueprints() {
     const [selectedBlueprint, setSelectedBlueprint] = React.useState(false)
     const [selectedBlueprintName, setSelectedBlueprintName] = React.useState("")
     const [loading, setLoading] = React.useState(false)
+    const [zeroBlueprint, setZeroBlueprint] = React.useState(false)
     const [progress, setProgress] = React.useState(0);
     const [searchValue, setSearchValue] = React.useState(false)
 
@@ -104,12 +105,18 @@ export default function Blueprints() {
             });
           }, 500);
         axios(configApiCall(api_path_blueprints+"?groupName=*", 'GET', null, null)).then((response)=> {
-            setBlueprints(response.data)
+            let allBluePrints = response.data
+            if(allBluePrints.length === 0)
+                setZeroBlueprint(true);
+            else
+                setZeroBlueprint(false);
+            setBlueprints(allBluePrints)
             setLoading(false)
+
         }).catch((error) =>{
             setBlueprints([])
             console.log(error);
-            if(error.response.status == 401){
+            if(error.response.status === 401){
                 auth.authenticated = false
                 history.push('/')
             }
@@ -117,7 +124,7 @@ export default function Blueprints() {
         return () => {
             clearInterval(timer);
           };
-    }, []);
+    }, [open, openRemoveDialog]);
 
     function redirectToBlueprint(e, blueprintNameRedirect) {
         e.preventDefault()
@@ -146,11 +153,12 @@ export default function Blueprints() {
 
     const handleCreateUser = () => {
         axios(configApiCall(api_path_blueprints+"?groupName="+blueprintName+"&username=admin&policyData="+blueprintName, 'POST', null, null)).then((response)=>{
+            setOpen(false);
             console.log("Successfully  create "  + blueprintName)
         }).catch((error) =>{
+            setOpen(false);
             console.log("Could not create "  + blueprintName + " " + error)
         });
-        setOpen(false);
         history.push('/admin/blueprints')
     }
 
@@ -162,10 +170,11 @@ export default function Blueprints() {
     const removeBlueprint = () => {
         axios(configApiCall(api_path_blueprints+"?groupName="+removedBlueprint, 'DELETE', {"queryString": removedBlueprint}, null)).then((response)=>{
             console.log("Successfully  create "  + removedBlueprint)
+            setOpenRemoveDialog(false);
         }).catch((error) =>{
             console.log("Could not create "  + removedBlueprint + " " + error)
+            setOpenRemoveDialog(false);
         });
-        setOpenRemoveDialog(false);
         history.push('/admin/blueprints')
     }
 
@@ -273,27 +282,31 @@ export default function Blueprints() {
                         </div>
                     </GridItem>
                     {
-                    blueprints.map(blueprint =>
-                    <GridItem xs={12} sm={12} md={2} key={blueprint.blueprintName}>
-                            
-                                <Card profile>
-                                    <CardBody profile>
-                                        <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.blueprintName)}>
+                        zeroBlueprint
+                            ?
+                                <span>No blueprint found</span>
+                            :
+                                blueprints.map(blueprint =>
+                                    <GridItem xs={12} sm={12} md={2} key={blueprint.blueprintName}>
 
-                                        <h3 className={classes.cardTitle}>{blueprint.blueprintName ? blueprint.blueprintName : 'No blueprint name'}</h3>
-                                        <strong>Description:</strong>
-                                        <p>{blueprint.description ? blueprint.description : 'No description'}</p>
-                                        <ul>
-                                            <li><GroupIcon fontSize='small' style={{marginRight: "10px"}} /> {blueprint.usersCount ? blueprint.usersCount + ' user(s)' : 'No users count'}</li>
-                                        </ul>
-                                        </a>
-                                    </CardBody>
-                                    <CardFooter>
-                                        <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.blueprintName)}}><DeleteOutlineIcon /></IconButton>
-                                    </CardFooter>
-                                </Card>
+                                        <Card profile>
+                                            <CardBody profile>
+                                                <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.blueprintName)}>
 
-                    </GridItem>)
+                                                    <h3 className={classes.cardTitle}>{blueprint.blueprintName ? blueprint.blueprintName : 'No blueprint name'}</h3>
+                                                    <strong>Description:</strong>
+                                                    <p>{blueprint.description ? blueprint.description : 'No description'}</p>
+                                                    <ul>
+                                                        <li><GroupIcon fontSize='small' style={{marginRight: "10px"}} /> {blueprint.usersCount ? blueprint.usersCount + ' user(s)' : 'No users count'}</li>
+                                                    </ul>
+                                                </a>
+                                            </CardBody>
+                                            <CardFooter>
+                                                <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.blueprintName)}}><DeleteOutlineIcon /></IconButton>
+                                            </CardFooter>
+                                        </Card>
+
+                                    </GridItem>)
                     }
                 </GridContainer>
             </div>
