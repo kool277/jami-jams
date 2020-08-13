@@ -322,7 +322,6 @@ export default function EditCreateUserProfile(props) {
         }
         else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailvalue)) {
             error = 'Invalid email address';
-            console.log("blurring email false here")
         }
         return error;
     }

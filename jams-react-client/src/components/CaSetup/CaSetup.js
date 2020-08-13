@@ -108,7 +108,7 @@ export default function CaSetup(props) {
 
     const handleValidPeriodChange = (event) => {
         props.setError(false);
-        setValidityPeriod(validityPeriods[event.target.value]);
+        setValidityPeriod(tool.retrieveArrayElement(event.target.value, validityPeriods));
     };
 
     const handleSubmit = (values) => {
@@ -165,7 +165,7 @@ export default function CaSetup(props) {
                                 accounts generated on this JAMS instance.
                             </h4>
                             <Select
-                                labelId="demo-simple-select-label"
+                                labelId="certificate-option-select-label"
                                 fullWidth
                                 value={certificateOpt.value}
                                 onChange={handleCertifOptionChange}
@@ -254,7 +254,7 @@ export default function CaSetup(props) {
                             />
 
                             <Select
-                                labelId="demo-simple-select-label"
+                                labelId="validity-period-select-label"
                                 margin="normal"
                                 fullWidth
                                 variant="outlined"

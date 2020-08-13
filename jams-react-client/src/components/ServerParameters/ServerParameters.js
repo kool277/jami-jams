@@ -41,12 +41,10 @@ const useStyles = makeStyles((theme) => ({
 export default function ServerParameters(props) {
 
     // Formik validation fields
-    const initialValues = {domain: "", sipconfig:""};
+    const initialValues = {domain: ""};
     const validationSchema = Yup.object().shape({
         domain: Yup.string()
             .required("Domain is required."),
-        sipconfig: Yup.mixed()
-            .required("Sip configuration file is required."),
     });
 
     const certificateRevocationTypes = [
@@ -80,6 +78,7 @@ export default function ServerParameters(props) {
     const [certificateRevocation, setCertificateRevocation] = React.useState(certificateRevocationTypes[0])
     const [deviceLifetime, setDeviceLifetime] = React.useState(deviceLifetimeTypes[0])
     const [userAccountLifetime, setUserAccountLifetime] = React.useState(userAccountLifetimeTypes[0])
+    const [sipConfigurationTemplate, setSIPCertificateTemplate] = React.useState(null);
     const [userlifeDisabled, setUserlifeDisabled] = React.useState(false);
 
     React.useEffect(() => {
@@ -109,7 +108,7 @@ export default function ServerParameters(props) {
                 'crlLifetime': certificateRevocation.value,
                 'deviceLifetime': deviceLifetime.value,
                 'userLifetime': userAccountLifetime.value,
-                'sipConfig': values.sipconfig,
+                'sipConfig': sipConfigurationTemplate,
                 'signingAlgorithm': "SHA512WITHRSA"
             }
             axios(configApiCall(api_path_post_install_server, "POST", jsonData, null)).then((response)=>{
@@ -135,6 +134,10 @@ export default function ServerParameters(props) {
 
     const handleUserAccountLifetimeChange = (event) => {
         setUserAccountLifetime(tool.retrieveArrayElement(event.target.value, userAccountLifetimeTypes));
+    }
+
+    const handleSipConfigurationTemplateChange = (event) => {
+        setSIPCertificateTemplate(event.target.files[0])
     }
 
 
@@ -210,20 +213,11 @@ export default function ServerParameters(props) {
                         />
                         {userlifeDisabled ? <span class="spanError"> Account lifetime should be > to device lifetime.</span> : null}
                         <Typography variant="subtitle1" gutterBottom>SIP Configuration Template</Typography>
-                        <Field name="sipconfig">
-                            {({field, form}) => (
-                                <div>
-                                    <Input
-                                        fullWidth
-                                        type="file"
-                                        onChange={handleChange}
-                                        {...field}
-                                    />
-                                    {form.errors.sipconfig && form.touched.sipconfig? <span class="spanError">{form.errors.sipconfig}</span> : null}
-                                </div>
-                            )
-                            }
-                        </Field>
+                        <Input
+                            fullWidth
+                            type="file"
+                            onChange={handleSipConfigurationTemplateChange}
+                        />
 
                         <Button
                             type="submit"
