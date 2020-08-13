@@ -184,7 +184,7 @@ export default function Groups() {
     const handleCreateGroup = () => {
 
         axios(configApiCall(api_path_post_create_group+"?name="+groupName, 'POST', null, null)).then(() => {
-            console.log("Successfully  create "  + groupName)
+            console.log("Successfully  created "  + groupName)
             setOpenCreate(false);
         }).catch((error) => {
             console.log("Error creating group: " + error)

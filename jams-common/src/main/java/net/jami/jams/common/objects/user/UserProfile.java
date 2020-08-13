@@ -89,9 +89,7 @@ public class UserProfile implements DatabaseObject {
         this.phoneNumberExtension = rs.getString("phoneNumberExtension");
         this.faxNumber = rs.getString("faxNumber");
         this.mobileNumber = rs.getString("mobileNumber");
-        String groupMemberships = rs.getString("groupMemberships");
-        String[] groups = groupMemberships.split(",");
-        this.groupMemberships = Arrays.asList(groups);
+        this.groupMemberships = new ArrayList<>(Arrays.asList(rs.getString("groupMemberships").split(",")));
     }
 
     @JsonIgnore
