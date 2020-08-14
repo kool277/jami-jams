@@ -287,11 +287,11 @@ export default function Blueprints() {
                                 <span>No blueprint found</span>
                             :
                                 blueprints.map(blueprint =>
-                                    <GridItem xs={12} sm={12} md={2} key={blueprint.blueprintName}>
+                                    <GridItem xs={12} sm={12} md={2} key={blueprint.groupName}>
 
                                         <Card profile>
                                             <CardBody profile>
-                                                <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.blueprintName)}>
+                                                <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.groupName)}>
 
                                                     <h3 className={classes.cardTitle}>{blueprint.groupName ? blueprint.groupName : 'No blueprint name'}</h3>
                                                     <strong>Description:</strong>

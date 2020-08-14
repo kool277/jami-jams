@@ -27,7 +27,7 @@ public class PolicyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 
-        List<Group> policies;
+        List<Policy> policies;
         Policy singlePolicy;
 
         if (!req.getParameter("groupName").equals("*")) {
@@ -37,7 +37,7 @@ public class PolicyServlet extends HttpServlet {
             resp.getOutputStream().write(JsonStream.serialize(dataStore.getPolicyDao().getObjects(statementList).get(0)).getBytes());
             resp.setStatus(200);
         } else {
-            policies = dataStore.getGroupDao().getObjects(null);
+            policies = dataStore.getPolicyDao().getObjects(null);
             resp.getOutputStream().write(JsonStream.serialize(policies).getBytes());
             resp.setStatus(200);
         }
