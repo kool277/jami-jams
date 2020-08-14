@@ -25,14 +25,22 @@ public class PolicyServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        StatementList statementList = new StatementList();
-        StatementElement st1 = new StatementElement("groupName","=",req.getParameter("groupName"),"");
-        statementList.addStatement(st1);
-        List<Policy> policies = dataStore.getPolicyDao().getObjects(statementList);
-        if(!policies.isEmpty())
-            resp.getOutputStream().write(JsonStream.serialize(policies.get(0)).getBytes());
-        else
+
+
+        List<Group> policies;
+        Policy singlePolicy;
+
+        if (!req.getParameter("groupName").equals("*")) {
+            StatementList statementList = new StatementList();
+            StatementElement st = new StatementElement("groupName", "=", req.getParameter("groupName"), "");
+            statementList.addStatement(st);
+            resp.getOutputStream().write(JsonStream.serialize(dataStore.getPolicyDao().getObjects(statementList).get(0)).getBytes());
+            resp.setStatus(200);
+        } else {
+            policies = dataStore.getGroupDao().getObjects(null);
             resp.getOutputStream().write(JsonStream.serialize(policies).getBytes());
+            resp.setStatus(200);
+        }
     }
 
     @Override
