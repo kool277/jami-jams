@@ -1,3 +1,2 @@
-CREATE TABLE policies (groupName bigint,
-userid bigint,
-PRIMARY KEY (groupName,userid));
+CREATE TABLE policies (name varchar(255), policyData varchar(5000),
+PRIMARY KEY (name));

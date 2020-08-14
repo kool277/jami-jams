@@ -23,7 +23,7 @@ import PriorityHighOutlinedIcon from '@material-ui/icons/PriorityHighOutlined';
 
 import axios from "axios"
 import configApiCall from "../../api"
-import { api_path_blueprint_permissions } from "../../globalUrls"
+import { api_path_blueprints } from "../../globalUrls"
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
@@ -95,51 +95,80 @@ export default function EditBlueprintPermissions(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const [blueprintName, setBlueprintName] = React.useState("")
-    const [acceptIncomingCalls, setAcceptIncomingCalls] = React.useState(false)
-    const [acceptOutgoingCalls, setAcceptOutgoingCalls] = React.useState(false)
-    const [autoAnswer, setAutoAnswer] = React.useState(false)
-    const [activateChat, setActivateChat] = React.useState(false)
-    const [manageContacts, setManageContacts] = React.useState(false)
-    const [restrictAccesParameters, setRestrictAccesParameters] = React.useState(false)
-    const [allowNewAccount, setAllowNewAccount] = React.useState(false)
-    const [allowConnection, setAllowConnection] = React.useState(false)
+    const [videoEnabled, setVideoEnabled] = React.useState(false);
+    const [allowPeersFromContact, setAllowPeersFromContact] = React.useState(false);
+    const [autoAnswer, setAutoAnswer] = React.useState(false);
+    const [accountPeerDiscovery, setAccountPeerDiscovery] = React.useState(false);
+
+    const [upnpEnabled, setUpnpEnabled] = React.useState(false)
+    const [turnEnabled, setTurnEnabled] = React.useState(false)
+    const [turnServer, setTurnServer] = React.useState("")
+    const [turnServerUserName, setTurnServerUserName] = React.useState("")
+    const [turnServerPassword, setTurnServerPassword] = React.useState("")
+    const [proxyEnabled, setProxyEnabled] = React.useState("")
+    const [proxyServer, setProxyServer] = React.useState("")
+    const [accountDhtProxyListUrl, setAccountDhtProxyListUrl] = React.useState("")
 
     const [open, setOpen] = React.useState(false)
     const [message, setMessage] = React.useState(false)
     const [severity, setSeverity] = React.useState("success")
 
     React.useEffect(()=>{
-        setBlueprintName(props.blueprintName)
-        axios(configApiCall(api_path_blueprint_permissions, 'GET', {"queryString": props.blueprintName}, null)).then((response) => {
-            response.data.map((blueprint) => {
-                setAcceptIncomingCalls(blueprint["acceptIncomingCalls"])
-                setAcceptOutgoingCalls(blueprint["acceptOutgoingCalls"])
-                setAutoAnswer(blueprint["autoAnswer"])
-                setActivateChat(blueprint["activateChat"])
-                setManageContacts(blueprint['manageContacts'])
-                setRestrictAccesParameters(blueprint["restrictAccesParameters"])
-                setAllowNewAccount(blueprint["allowNewAccount"])
-                setAllowConnection(blueprint["allowConnection"])
-            })
+        axios(configApiCall(api_path_blueprints+"?name="+props.blueprintName, 'GET', null, null)).then((response) => {
+            let policyData = JSON.parse(response.data.policyData);
+            setVideoEnabled(policyData["videoEnabled"]);
+            setAllowPeersFromContact(policyData["allowPeersFromContact"]);
+            setAutoAnswer(policyData["autoAnswer"]);
+            setAccountPeerDiscovery(policyData["Account.peerDiscovery"]);
+
+            setUpnpEnabled(policyData["upnpEnabled"]);
+            setTurnEnabled(policyData["turnEnabled"])
+            setTurnServer(policyData["turnServer"]);
+            setTurnServerUserName(policyData["turnServerUserName"]);
+            setTurnServerPassword(policyData['turnServerPassword']);
+            setProxyEnabled(policyData["proxyEnabled"]);
+            setProxyServer(policyData["proxyServer"]);
+            setAccountDhtProxyListUrl(policyData["Account.dhtProxyListUrl"]);   
         }).catch((error) => {
             console.log("Error fetching blueprint permissions : " + props.blueprintName + " " + error)
         })
     }, [])
 
-    const handleUpdatePermissions = () => {
-        const data = {
-            'acceptIncomingCalls': acceptIncomingCalls,
-            'acceptOutgoingCalls': acceptOutgoingCalls,
-            'autoAnswer': autoAnswer,
-            'activateChat': activateChat,
-            'manageContacts': manageContacts,
-            'restrictAccesParameters': restrictAccesParameters,
-            'allowNewAccount': allowNewAccount,
-            'allowConnection': allowConnection
+    const handleUpdatePermissions = (field, value) => {
+        let data = {
+            "videoEnabled": videoEnabled,
+            "allowPeersFromContact": allowPeersFromContact,
+            "allowPeersFromHistory": allowPeersFromContact,
+            "allowPeersFromTrusted": allowPeersFromContact,
+            "autoAnswer": autoAnswer,
+            "Account.peerDiscovery": accountPeerDiscovery,
+            "Account.accountDiscovery": accountPeerDiscovery,
+            "Account.accountPublish": accountPeerDiscovery,
+            "upnpEnabled": upnpEnabled,
+            "turnEnabled": turnEnabled,
+            "turnServer": turnServer,
+            "turnServerUserName": turnServerUserName,
+            "turnServerPassword": turnServerPassword,
+            "proxyEnabled": proxyEnabled,
+            "proxyServer": proxyServer,
+            "Account.dhtProxyListUrl": accountDhtProxyListUrl
         }
 
-        axios(configApiCall(api_path_blueprint_permissions, 'PUT', data, null)).then((response) => {
+        if(field === "allowPeersFromContact"){
+            data["allowPeersFromContact"] = value;
+            data["allowPeersFromHistory"] = value;
+            data["allowPeersFromTrusted"] = value;
+        }
+        else if (field === "accountPeerDiscovery"){
+            data["Account.peerDiscovery"] = value;
+            data["Account.accountDiscovery"] = value;
+            data["Account.accountPublish"] = value;
+        }
+        else {
+            data[field] = value;
+        }
+
+        axios(configApiCall(api_path_blueprints+"?name="+props.blueprintName, 'PUT', data, null)).then((response) => {
             setOpen(false)
             setSeverity("success")
             setOpen(true)
@@ -185,74 +214,38 @@ export default function EditBlueprintPermissions(props) {
                             <Grid item xs={12} sm={12} md={6}>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={acceptIncomingCalls} color="primary" onChange={e => {
-                                            setAcceptIncomingCalls(e.target.checked);
-                                            handleUpdatePermissions();
-                                        }} name="acceptIncomingCalls" />}
-                                        label="Accept incoming calls"
+                                        control={<Checkbox checked={videoEnabled} color="primary" onChange={e => {
+                                            setVideoEnabled(e.target.checked);
+                                            handleUpdatePermissions("videoEnabled", e.target.checked);
+                                        }} name="videoEnabled" />}
+                                        label="Allow videos calls"
                                     />
                                 </FormGroup>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={acceptOutgoingCalls} color="primary" onChange={e => {
-                                            setAcceptOutgoingCalls(e.target.checked);
-                                            handleUpdatePermissions();
-                                        }} name="acceptOutgoingCalls" />}
-                                        label="Accept outgoing calls"
+                                        control={<Checkbox checked={allowPeersFromContact} color="primary" onChange={e => {
+                                            setAllowPeersFromContact(e.target.checked);
+                                            handleUpdatePermissions("allowPeersFromContact", e.target.checked);
+                                        }} name="allowPeersFromContact" />}
+                                        label="Allow incomming calls from unknown contacts"
                                     />
                                 </FormGroup>
                                 <FormGroup row>
                                     <FormControlLabel
                                         control={<Checkbox checked={autoAnswer} color="primary" onChange={e => {
                                             setAutoAnswer(e.target.checked);
-                                            handleUpdatePermissions();
+                                            handleUpdatePermissions("autoAnswer", e.target.checked);
                                         }} name="autoAnswer" />}
-                                        label="Auto-answer"
+                                        label="Auto answer calls"
                                     />
                                 </FormGroup>
                                 <FormGroup row>
                                     <FormControlLabel
-                                        control={<Checkbox checked={activateChat} color="primary" onChange={e => {
-                                            setActivateChat(e.target.checked);
-                                            handleUpdatePermissions();
-                                        }} name="activateChat" />}
-                                        label="Activate chat"
-                                    />
-                                </FormGroup>
-                                <FormGroup row>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={manageContacts} color="primary" onChange={e => {
-                                            setManageContacts(e.target.checked);
-                                            handleUpdatePermissions();
-                                            }} name="manageContacts" />}
-                                        label="Manage contacts"
-                                    />
-                                </FormGroup>
-                                <FormGroup row>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={restrictAccesParameters} color="primary" onChange={e => {
-                                            setRestrictAccesParameters(e.target.checked);
-                                            handleUpdatePermissions();
-                                        }} name="restrictAccesParameters" />}
-                                        label="Restrict acces to parameters with password"
-                                    />
-                                </FormGroup>
-                                <FormGroup row>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={allowNewAccount} color="primary" onChange={e => {
-                                            setAllowNewAccount(e.target.checked);
-                                            handleUpdatePermissions();
-                                        }} name="allowNewAccount" />}
-                                        label="Allow new account creation"
-                                    />
-                                </FormGroup>
-                                <FormGroup row>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={allowConnection} color="primary" onChange={e => {
-                                            setAllowConnection(e.target.checked);
-                                            handleUpdatePermissions();
-                                        }} name="allowConnection" />}
-                                        label="Allow connection with other account"
+                                        control={<Checkbox checked={accountPeerDiscovery} color="primary" onChange={e => {
+                                            setAccountPeerDiscovery(e.target.checked);
+                                            handleUpdatePermissions("accountPeerDiscovery", e.target.checked);
+                                        }} name="accountPeerDiscovery" />}
+                                        label="Allow use of Jami in a local lan"
                                     />
                                 </FormGroup>
                             </Grid>

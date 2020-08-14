@@ -104,7 +104,7 @@ export default function Blueprints() {
               return Math.min(oldProgress + diff, 100);
             });
           }, 500);
-        axios(configApiCall(api_path_blueprints+"?groupName=*", 'GET', null, null)).then((response)=> {
+        axios(configApiCall(api_path_blueprints+"?name=*", 'GET', null, null)).then((response)=> {
             let allBluePrints = response.data
             if(allBluePrints.length === 0)
                 setZeroBlueprint(true);
@@ -138,7 +138,7 @@ export default function Blueprints() {
     }
 
     const handleCheckBlueprintNameExists = (searchBlueprintNameValue) => {
-        axios(configApiCall(api_path_blueprints+"?groupName="+searchBlueprintNameValue, 'GET', null, null)).then((response)=>{
+        axios(configApiCall(api_path_blueprints+"?name="+searchBlueprintNameValue, 'GET', null, null)).then((response)=>{
             setBlueprintNameExits(false)
         }).catch((error) =>{
             setBlueprintNameExits(true)
@@ -152,9 +152,10 @@ export default function Blueprints() {
     };
 
     const handleCreateBlueprint = () => {
-        axios(configApiCall(api_path_blueprints+"?groupName="+blueprintName+"&username=admin&policyData="+blueprintName, 'POST', null, null)).then((response)=>{
+
+        axios(configApiCall(api_path_blueprints+"?name="+blueprintName+"&policyData=", 'POST', null, null)).then((response)=>{
             setOpen(false);
-            console.log("Successfully  create "  + blueprintName)
+            console.log("Successfully created"  + blueprintName)
         }).catch((error) =>{
             setOpen(false);
             console.log("Could not create "  + blueprintName + " " + error)
@@ -168,7 +169,7 @@ export default function Blueprints() {
     }
 
     const removeBlueprint = () => {
-        axios(configApiCall(api_path_blueprints+"?groupName="+removedBlueprint, 'DELETE', {"queryString": removedBlueprint}, null)).then((response)=>{
+        axios(configApiCall(api_path_blueprints+"?name="+removedBlueprint, 'DELETE', {"queryString": removedBlueprint}, null)).then((response)=>{
             console.log("Successfully  create "  + removedBlueprint)
             setOpenRemoveDialog(false);
         }).catch((error) =>{
@@ -190,6 +191,7 @@ export default function Blueprints() {
                 <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToBlueprints} style={{color: "white"}}>
                     <KeyboardReturnIcon /> return to blueprints
                 </Button>
+                <h3>{selectedBlueprintName}</h3>
                 <Blueprint blueprintName={selectedBlueprintName}/>
             </div>
         )
@@ -287,22 +289,21 @@ export default function Blueprints() {
                                 <span>No blueprint found</span>
                             :
                                 blueprints.map(blueprint =>
-                                    <GridItem xs={12} sm={12} md={2} key={blueprint.groupName}>
+                                    <GridItem xs={12} sm={12} md={2} key={blueprint.name}>
 
                                         <Card profile>
                                             <CardBody profile>
-                                                <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.groupName)}>
-
-                                                    <h3 className={classes.cardTitle}>{blueprint.groupName ? blueprint.groupName : 'No blueprint name'}</h3>
+                                                <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.name)}>
+                                                    <h3 className={classes.cardTitle}>{blueprint.name ? blueprint.name : 'No blueprint name'}</h3>
                                                     <strong>Description:</strong>
-                                                    <p>{blueprint.policyData ? blueprint.policyData : 'No description'}</p>
+                                                    <p>{'No description'}</p>
                                                     <ul>
                                                         <li><GroupIcon fontSize='small' style={{marginRight: "10px"}} /> {blueprint.usersCount ? blueprint.usersCount + ' user(s)' : 'No users count'}</li>
                                                     </ul>
                                                 </a>
                                             </CardBody>
                                             <CardFooter>
-                                                <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.groupName)}}><DeleteOutlineIcon /></IconButton>
+                                                <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.name)}}><DeleteOutlineIcon /></IconButton>
                                             </CardFooter>
                                         </Card>
 

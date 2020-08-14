@@ -30,7 +30,7 @@ import BuildOutlinedIcon from '@material-ui/icons/BuildOutlined';
 
 import axios from "axios"
 import configApiCall from "../../api"
-import { api_path_blueprint_configuration } from "../../globalUrls"
+import { api_path_blueprints } from "../../globalUrls"
 
 import Snackbar from '@material-ui/core/Snackbar';
 
@@ -106,57 +106,72 @@ export default function EditBlueprintConfiguration(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const [blueprintName, setBlueprintName] = React.useState("")
-    const [uPnP, setUPnP] = React.useState(true)
-    const [turn, setTurn] = React.useState(true)
-    const [turnServerAddress, setTurnServerAddress] = React.useState("")
-    const [turnUsername, setTurnUsername] = React.useState("")
-    const [turnPassword, setTurnPassword] = React.useState("")
-    const [bootstrap, setBootstrap] = React.useState(true)
-    const [bootstrapName, setBootstrapName] = React.useState("")
-    const [dhtProxy, setDhtProxy] = React.useState("")
-    const [dhtProxyName, setDhtProxyName] = React.useState("")
-    const [pushNotifications, setPushNotifications] = React.useState(false)
+    const [videoEnabled, setVideoEnabled] = React.useState(false);
+    const [allowPeersFromContact, setAllowPeersFromContact] = React.useState(false);
+    const [autoAnswer, setAutoAnswer] = React.useState(false);
+    const [accountPeerDiscovery, setAccountPeerDiscovery] = React.useState(false);
+
+    const [upnpEnabled, setUpnpEnabled] = React.useState(false)
+    const [turnEnabled, setTurnEnabled] = React.useState(false)
+    const [turnServer, setTurnServer] = React.useState("")
+    const [turnServerUserName, setTurnServerUserName] = React.useState("")
+    const [turnServerPassword, setTurnServerPassword] = React.useState("")
+    const [proxyEnabled, setProxyEnabled] = React.useState("")
+    const [proxyServer, setProxyServer] = React.useState("")
+    const [accountDhtProxyListUrl, setAccountDhtProxyListUrl] = React.useState("")
 
     const [open, setOpen] = React.useState(false)
     const [message, setMessage] = React.useState(false)
     const [severity, setSeverity] = React.useState("success")
 
     React.useEffect(()=>{
-        setBlueprintName(props.blueprintName)
-        
-        axios(configApiCall(api_path_blueprint_configuration, 'GET', {"queryString": props.blueprintName}, null)).then((response) => {
-            response.data.map((blueprint) => {
-                setUPnP(blueprint["uPnP"])
-                setTurn(blueprint["turn"])
-                setTurnServerAddress(blueprint["turnServerAddress"])
-                setTurnUsername(blueprint["turnUsername"])
-                setTurnPassword(blueprint['turnPassword'])
-                setBootstrap(blueprint["bootstrap"])
-                setBootstrapName(blueprint["bootstrapName"])
-                setDhtProxy(blueprint["dhtProxy"])
-                setDhtProxyName(blueprint["dhtProxyName"])
-                setPushNotifications(blueprint["pushNotifications"])
-            })
+        axios(configApiCall(api_path_blueprints+"?name="+props.blueprintName, 'GET', null, null)).then((response) => {
+            let policyData = JSON.parse(response.data.policyData);
+            setVideoEnabled(policyData["videoEnabled"]);
+            setAllowPeersFromContact(policyData["allowPeersFromContact"]);
+            setAutoAnswer(policyData["autoAnswer"]);
+            setAccountPeerDiscovery(policyData["Account.peerDiscovery"]);
+
+            setUpnpEnabled(policyData["upnpEnabled"])
+            setTurnEnabled(policyData["turnEnabled"])
+            setTurnServer(policyData["turnServer"])
+            setTurnServerUserName(policyData["turnServerUserName"])
+            setTurnServerPassword(policyData['turnServerPassword'])
+            setProxyEnabled(policyData["proxyEnabled"])
+            setProxyServer(policyData["proxyServer"])
+            setAccountDhtProxyListUrl(policyData["Account.dhtProxyListUrl"])
         }).catch((error) => {
             console.log("Error fetching blueprint permissions : " + props.username + " " + error)
         })
     }, [])
 
-    const handleUpdateConfiguration = () => {
-        const data = {
-            'uPnP': uPnP,
-            'turn': turn,
-            'turnServerAddress': turnServerAddress,
-            'turnUsername': turnUsername,
-            'turnPassword': turnPassword,
-            'bootstrap': bootstrap,
-            'dhtProxy': dhtProxy,
-            'dhtProxyName': dhtProxyName,
-            'pushNotifications': pushNotifications
+    const handleUpdateConfiguration = (field, value) => {
+        let data = {
+            "videoEnabled": videoEnabled,
+            "allowPeersFromContact": allowPeersFromContact,
+            "allowPeersFromHistory": allowPeersFromContact,
+            "allowPeersFromTrusted": allowPeersFromContact,
+            "autoAnswer": autoAnswer,
+            "Account.peerDiscovery": accountPeerDiscovery,
+            "Account.accountDiscovery": accountPeerDiscovery,
+            "Account.accountPublish": accountPeerDiscovery,
+            "upnpEnabled": upnpEnabled,
+            "turnEnabled": turnEnabled,
+            "turnServer": turnServer,
+            "turnServerUserName": turnServerUserName,
+            "turnServerPassword": turnServerPassword,
+            "proxyEnabled": proxyEnabled,
+            "proxyServer": proxyServer,
+            "Account.dhtProxyListUrl": accountDhtProxyListUrl
         }
 
-        axios(configApiCall(api_path_blueprint_configuration, 'PUT', data, null)).then((response) => {
+        if(field === "accountDhtProxyListUrl"){
+            data["Account.dhtProxyListUrl"] = value;
+        }else{
+            data[field] = value;
+        }
+
+        axios(configApiCall(api_path_blueprints+"?name="+props.blueprintName, 'PUT', data, null)).then((response) => {
             setOpen(false)
             setSeverity("success")
             setOpen(true)
@@ -169,7 +184,7 @@ export default function EditBlueprintConfiguration(props) {
         })
     }
 
-    const initUpdateConfiguration = useCallback(debounce((searchValue) => handleUpdateConfiguration(), 500), [])
+    //const initUpdateConfiguration = useCallback(debounce((field, value) => handleUpdateConfiguration(fields), 500), [])
 
     const handleClose = () => {
         setOpen(false)
@@ -204,10 +219,10 @@ export default function EditBlueprintConfiguration(props) {
                         <Grid item xs={12} sm={12} md={12}>
                             <FormGroup row>
                                 <FormControlLabel
-                                    control={<Checkbox checked={uPnP} color="primary" onChange={e => {
-                                        setUPnP(e.target.checked);
-                                        handleUpdateConfiguration();
-                                    }} name="uPnP" />}
+                                    control={<Checkbox checked={upnpEnabled} color="primary" onChange={e => {
+                                        setUpnpEnabled(e.target.checked);
+                                        handleUpdateConfiguration("upnpEnabled", e.target.checked);
+                                    }} name="upnpEnabled" />}
                                     label="UPnP"
                                 />
                             </FormGroup>
@@ -215,10 +230,10 @@ export default function EditBlueprintConfiguration(props) {
                         <Grid item xs={12} sm={12} md={12}>
                             <FormGroup row>
                                 <FormControlLabel
-                                    control={<Checkbox checked={turn} color="primary" onChange={e => {
-                                        setTurn(e.target.checked);
-                                        handleUpdateConfiguration();
-                                    }} name="turn" />}
+                                    control={<Checkbox checked={turnEnabled} color="primary" onChange={e => {
+                                        setTurnEnabled(e.target.checked);
+                                        handleUpdateConfiguration("turnEnabled", e.target.checked);
+                                    }} name="turnEnabled" />}
                                     label="TURN"
                                 />
                             </FormGroup>
@@ -228,57 +243,57 @@ export default function EditBlueprintConfiguration(props) {
                         <Grid item xs={12} sm={12} md={8}>
                             <FormGroup row>
                                 <FormControl className={classes.margin} size="large">
-                                        <InputLabel htmlFor="turnServerAddress">TURN Server address</InputLabel>
+                                        <InputLabel htmlFor="turnServer">TURN Server address</InputLabel>
                                         <Input
-                                        disabled={!turn}
-                                        id="turnServerAddress"
-                                        placeholder={turnServerAddress}
+                                        disabled={!turnEnabled}
+                                        id="turnServer"
+                                        placeholder={turnServer}
                                         startAdornment={
                                             <InputAdornment position="start">
                                             <DnsOutlinedIcon />
                                             </InputAdornment>   
                                         }
                                         onChange={e => {
-                                            setTurnServerAddress(e.target.value);
-                                            initUpdateConfiguration();
+                                            setTurnServer(e.target.value);
+                                            handleUpdateConfiguration("turnServer", e.target.value);
                                         }}
                                         />
                                 </FormControl>
                             </FormGroup>
                             <FormGroup row>
                                 <FormControl className={classes.margin} size="large">
-                                        <InputLabel htmlFor="turnUsername">TURN username</InputLabel>
+                                        <InputLabel htmlFor="turnServerUserName">TURN server username</InputLabel>
                                         <Input
-                                        disabled={!turn}
-                                        id="turnUsername"
-                                        placeholder={turnUsername}
+                                        disabled={!turnEnabled}
+                                        id="turnServerUserName"
+                                        placeholder={turnServerUserName}
                                         startAdornment={
                                             <InputAdornment position="start">
                                             <AccountCircleIcon />
                                             </InputAdornment>
                                         }
                                         onChange={e => {
-                                            setTurnUsername(e.target.value);
-                                            initUpdateConfiguration();
+                                            setTurnServerUserName(e.target.value);
+                                            handleUpdateConfiguration("turnServerUserName", e.target.value);
                                         }}
                                         />
                                 </FormControl>
                             </FormGroup>
                             <FormGroup row>
                                 <FormControl className={classes.margin} size="large">
-                                        <InputLabel htmlFor="turnPassword">TURN password</InputLabel>
+                                        <InputLabel htmlFor="turnServerPassword">TURN server password</InputLabel>
                                         <Input
-                                        disabled={!turn}
-                                        id="turnPassword"
-                                        placeholder={turnPassword}
+                                        disabled={!turnEnabled}
+                                        id="turnServerPassword"
+                                        placeholder={turnServerPassword}
                                         startAdornment={
                                             <InputAdornment position="start">
                                             <VpnKeyOutlinedIcon />
                                             </InputAdornment>
                                         }
                                         onChange={e => {
-                                            setTurnPassword(e.target.value);
-                                            initUpdateConfiguration();
+                                            setTurnServerPassword(e.target.value);
+                                            handleUpdateConfiguration("turnServerPassword", e.target.value);
                                         }}
                                         />
                                 </FormControl>
@@ -287,44 +302,10 @@ export default function EditBlueprintConfiguration(props) {
                         <Grid item xs={12} sm={12} md={12}>
                             <FormGroup row>
                                 <FormControlLabel
-                                    control={<Checkbox checked={bootstrap} color="primary" onChange={e => {
-                                        setBootstrap(e.target.checked);
-                                        handleUpdateConfiguration();
-                                    }} name="bootstrap" />}
-                                    label="Bootstrap"
-                                />
-                            </FormGroup>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={4}>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={8}>
-                            <FormGroup row>
-                                <FormControl className={classes.margin} size="large">
-                                        <InputLabel htmlFor="bootstrapName">Bootstrap servername name</InputLabel>
-                                        <Input
-                                        disabled={!bootstrap}
-                                        id="bootstrapName"
-                                        placeholder={bootstrapName}
-                                        startAdornment={
-                                            <InputAdornment position="start">
-                                            <StorageOutlinedIcon />
-                                            </InputAdornment>
-                                        }
-                                        onChange={e => {
-                                            setBootstrapName(e.target.value);
-                                            initUpdateConfiguration();
-                                        }}
-                                        />
-                                </FormControl>
-                            </FormGroup>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <FormGroup row>
-                                <FormControlLabel
-                                    control={<Checkbox checked={dhtProxy} color="primary" onChange={e => {
-                                        setDhtProxy(e.target.checked);
-                                        handleUpdateConfiguration();
-                                    }} name="dhtProxy" />}
+                                    control={<Checkbox checked={proxyEnabled} color="primary" onChange={e => {
+                                        setProxyEnabled(e.target.checked);
+                                        handleUpdateConfiguration("proxyEnabled", e.target.checked);
+                                    }} name="proxyEnabled" />}
                                     label="Dht proxy"
                                 />
                             </FormGroup>
@@ -334,33 +315,41 @@ export default function EditBlueprintConfiguration(props) {
                         <Grid item xs={12} sm={12} md={8}>
                             <FormGroup row>
                                 <FormControl className={classes.margin} size="large">
-                                        <InputLabel htmlFor="dhtProxyName">DHT proxy name</InputLabel>
+                                        <InputLabel htmlFor="proxyServer">DHT proxy server name</InputLabel>
                                         <Input
-                                        disabled={!dhtProxy}
-                                        id="dhtProxyName"
-                                        placeholder={dhtProxyName}
+                                        disabled={!proxyEnabled}
+                                        id="proxyServer"
+                                        placeholder={proxyServer}
                                         startAdornment={
                                             <InputAdornment position="start">
                                             <LanguageOutlinedIcon />
                                             </InputAdornment>
                                         }
                                         onChange={e => {
-                                            setDhtProxyName(e.target.value);
-                                            initUpdateConfiguration();
+                                            setProxyServer(e.target.value);
+                                            handleUpdateConfiguration("proxyServer", e.target.value);
                                         }}
                                         />
                                 </FormControl>
                             </FormGroup>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12}>
                             <FormGroup row>
-                                <FormControlLabel
-                                    control={<Checkbox checked={pushNotifications} color="primary" onChange={e => {
-                                        setPushNotifications(e.target.checked);
-                                        handleUpdateConfiguration();
-                                    }} name="pushNotifications" />}
-                                    label="Push notifications"
-                                />
+                                <FormControl className={classes.margin} size="large">
+                                        <InputLabel htmlFor="accountDhtProxyListUrl">DHT proxy List URL</InputLabel>
+                                        <Input
+                                        disabled={!proxyEnabled}
+                                        id="proxyServer"
+                                        placeholder={accountDhtProxyListUrl}
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                            <LanguageOutlinedIcon />
+                                            </InputAdornment>
+                                        }
+                                        onChange={e => {
+                                            setAccountDhtProxyListUrl(e.target.value);
+                                            handleUpdateConfiguration("accountDhtProxyListUrl", e.target.value);
+                                        }}
+                                        />
+                                </FormControl>
                             </FormGroup>
                         </Grid>
                     </Grid>

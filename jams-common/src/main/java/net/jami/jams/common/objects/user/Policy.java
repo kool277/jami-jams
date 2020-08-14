@@ -17,23 +17,20 @@ import java.sql.ResultSet;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Policy extends X509Entity implements DatabaseObject {
+public class Policy implements DatabaseObject {
 
-    private String groupName;
-    private String username;
+    private String name;
     private String policyData;
 
     public Policy(ResultSet rs) throws Exception {
-        this.groupName = rs.getString("groupName");
-        this.username = rs.getString("username");
+        this.name = rs.getString("name");
         this.policyData = rs.getString("policyData");
     }
 
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
-        ps.setString(1, groupName);
-        ps.setString(2, username);
-        ps.setString(3, policyData);
+        ps.setString(1, name);
+        ps.setString(2, policyData);
         return ps;
     }
 
