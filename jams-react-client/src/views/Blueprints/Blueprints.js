@@ -151,7 +151,7 @@ export default function Blueprints() {
         setOpen(false);
     };
 
-    const handleCreateUser = () => {
+    const handleCreateBlueprint = () => {
         axios(configApiCall(api_path_blueprints+"?groupName="+blueprintName+"&username=admin&policyData="+blueprintName, 'POST', null, null)).then((response)=>{
             setOpen(false);
             console.log("Successfully  create "  + blueprintName)
@@ -229,7 +229,7 @@ export default function Blueprints() {
                     <Button onClick={handleClose} color="danger">
                         Cancel
                     </Button>
-                    <Button onClick={handleCreateUser} color="primary" autoFocus>
+                    <Button onClick={handleCreateBlueprint} color="primary" autoFocus>
                         Create
                     </Button>
                     </DialogActions>
@@ -293,16 +293,16 @@ export default function Blueprints() {
                                             <CardBody profile>
                                                 <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.blueprintName)}>
 
-                                                    <h3 className={classes.cardTitle}>{blueprint.blueprintName ? blueprint.blueprintName : 'No blueprint name'}</h3>
+                                                    <h3 className={classes.cardTitle}>{blueprint.groupName ? blueprint.groupName : 'No blueprint name'}</h3>
                                                     <strong>Description:</strong>
-                                                    <p>{blueprint.description ? blueprint.description : 'No description'}</p>
+                                                    <p>{blueprint.policyData ? blueprint.policyData : 'No description'}</p>
                                                     <ul>
                                                         <li><GroupIcon fontSize='small' style={{marginRight: "10px"}} /> {blueprint.usersCount ? blueprint.usersCount + ' user(s)' : 'No users count'}</li>
                                                     </ul>
                                                 </a>
                                             </CardBody>
                                             <CardFooter>
-                                                <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.blueprintName)}}><DeleteOutlineIcon /></IconButton>
+                                                <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.groupName)}}><DeleteOutlineIcon /></IconButton>
                                             </CardFooter>
                                         </Card>
 

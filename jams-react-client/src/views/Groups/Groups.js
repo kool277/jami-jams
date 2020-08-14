@@ -120,11 +120,12 @@ export default function Groups() {
             let allGroups = response.data
             if(allGroups.length === 0)
                 setZeroGroup(true);
-            else
+            else{
                 setZeroGroup(false);
-            allGroups.map((group) => {
-                group.display = ""
-            })
+                allGroups.map((group) => {
+                    group.display = ""
+                })
+            }
             setGroups(allGroups)
             setLoading(false)
         }).catch((error) =>{
@@ -201,7 +202,7 @@ export default function Groups() {
             blueprintsOptions.push({ value: index, label: "No blueprint found"})
         else {
             blueprints.map((blueprint) => {
-                blueprintsOptions.push({value: index, label: blueprint.blueprintName})
+                blueprintsOptions.push({value: index, label: blueprint.groupName})
                 index += 1
             })
         }

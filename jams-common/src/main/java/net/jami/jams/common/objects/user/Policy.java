@@ -25,14 +25,14 @@ public class Policy extends X509Entity implements DatabaseObject {
 
     public Policy(ResultSet rs) throws Exception {
         this.groupName = rs.getString("groupName");
-        this.username = rs.getString("userId");
+        this.username = rs.getString("username");
         this.policyData = rs.getString("policyData");
     }
 
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
-        ps.setString(1, username);
-        ps.setString(2, groupName);
+        ps.setString(1, groupName);
+        ps.setString(2, username);
         ps.setString(3, policyData);
         return ps;
     }
