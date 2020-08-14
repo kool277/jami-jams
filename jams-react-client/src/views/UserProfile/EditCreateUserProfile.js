@@ -299,14 +299,6 @@ export default function EditCreateUserProfile(props) {
      *
      * */
 
-    const validateFieldInput = fieldinput => {
-        let error;
-        if (!fieldinput) {
-            error = 'Required';
-        }
-        return error;
-    }
-
     const validateUsername = usernamevalue => {
         handleUserExists(usernamevalue)
         let error;
@@ -318,10 +310,7 @@ export default function EditCreateUserProfile(props) {
 
     const validateEmail = emailvalue => {
         let error;
-        if (!emailvalue) {
-            error = 'Required';
-        }
-        else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailvalue)) {
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailvalue)) {
             error = 'Invalid email address';
         }
         return error;
@@ -482,7 +471,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={6}>
                                                     <FormControl className={classes.margin} fullWidth>
                                                         <InputLabel htmlFor="firstname">First Name</InputLabel>
-                                                        <Field name="firstname" validate={validateFieldInput} >
+                                                        <Field name="firstname"  >
                                                             {({field}) => (
                                                                 <Input
                                                                     id="firstname"
@@ -504,7 +493,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={6}>
                                                     <FormControl className={classes.margin} fullWidth>
                                                         <InputLabel htmlFor="lastname">Last Name</InputLabel>
-                                                        <Field name="lastname" validate={validateFieldInput} >
+                                                        <Field name="lastname"  >
                                                             {({field}) => (
                                                                 <Input
                                                                     id="lastname"
@@ -548,7 +537,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={6}>
                                                     <FormControl className={classes.margin} fullWidth>
                                                         <InputLabel htmlFor="organization">Organisation</InputLabel>
-                                                        <Field name="organization" validate={validateFieldInput} >
+                                                        <Field name="organization"  >
                                                             {({field}) => (
                                                                 <Input
                                                                     id="organization"
@@ -570,7 +559,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={6}>
                                                     <FormControl className={classes.margin} fullWidth>
                                                         <InputLabel htmlFor="phonenumber">Phone Number</InputLabel>
-                                                        <Field name="phonenumber" validate={validateFieldInput} >
+                                                        <Field name="phonenumber" >
                                                             {({field}) => (
                                                                 <Input
                                                                     id="phonenumber"
@@ -592,7 +581,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={6}>
                                                     <FormControl className={classes.margin} fullWidth>
                                                         <InputLabel htmlFor="extension">Extension</InputLabel>
-                                                        <Field name="extension" validate={validateFieldInput} >
+                                                        <Field name="extension"  >
                                                             {({field}) => (
                                                                 <Input
                                                                     id="extension"
@@ -614,7 +603,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={6}>
                                                     <FormControl className={classes.margin} fullWidth>
                                                         <InputLabel htmlFor="faxnumber">Fax Number</InputLabel>
-                                                        <Field name="faxnumber" validate={validateFieldInput} >
+                                                        <Field name="faxnumber"  >
                                                             {({field}) => (
                                                                 <Input
                                                                     id="faxnumber"
@@ -636,7 +625,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={6}>
                                                     <FormControl className={classes.margin} fullWidth>
                                                         <InputLabel htmlFor="mobilephonenumber">Mobile Phonenumber</InputLabel>
-                                                        <Field name="mobilephonenumber" validate={validateFieldInput} >
+                                                        <Field name="mobilephonenumber"  >
                                                             {({field}) => (
                                                                 <Input
                                                                     id="mobilephonenumber"
