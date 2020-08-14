@@ -107,11 +107,19 @@ export default function EditGroup(props) {
         */
 
         axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
-            response.data.map((group) => {
-                if(group.name == props.groupName){
-                    setGroupMembers(group["groupMembers"])
+            let groups=response.data;
+            if(groups.length > 1){
+                groups.map((group) => {
+                    if(group.name == props.groupName){
+                        setGroupMembers(group["groupMembers"]);
+                    }
+                })
+            }
+            else{
+                if(groups.name == props.groupName){
+                    setGroupMembers(groups["groupMembers"]);
                 }
-            })
+            }
         }).catch((error) => {
             console.log("Error fetching group members of: " + props.groupName + " " + error)
         })
@@ -120,24 +128,28 @@ export default function EditGroup(props) {
     React.useEffect(()=>{
         setName(props.groupName)
         axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
-            response.data.map((group) => {
-                if(group.name == props.groupName){
-                    setGroupMembers(group["groupMembers"])
+            let groups=response.data;
+            if(groups.length > 1){
+                groups.map((group) => {
+                    if(group.name == props.groupName){
+                        setGroupMembers(group["groupMembers"]);
+                    }
+                })
+            }
+            else{
+                if(groups.name == props.groupName){
+                    setGroupMembers(groups["groupMembers"])
                 }
-            })
+            }
+
         }).catch((error) => {
             console.log("Error fetching group members of: " + props.groupName + " " + error)
         })
-    }, [])
-
-
-    // const getUserDetails = () => {
-    //     axio
-    // }
+    }, [openDrawer])
 
     const handleGroupUpdate = (data) => {
-        props.setName(data.name)
-        props.setGroupMembers(data.groupMembers)
+        setName(data.name)
+        setGroupMembers(data.groupMembers)
     }
 
     const handleUpdateGroup = () => {
@@ -147,7 +159,7 @@ export default function EditGroup(props) {
         }
         //TODO: Add blueprint to data to update the blueprint using the blueprintName
 
-        axios(configApiCall(api_path_put_update_group+"?groupName="+name, 'PUT', null, null)).then((response) => {
+        axios(configApiCall(api_path_put_update_group+"?groupName="+name+"&groupMembers="+groupMembers, 'PUT', null, null)).then((response) => {
             handleGroupUpdate(data);
         }).catch((error) => {
             console.log("Error updating group: " + error)
@@ -158,7 +170,7 @@ export default function EditGroup(props) {
 
     return(
         <div>
-            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} getAllContacts={getAllGroupMembers} direction="right"/>
+            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} getAllUsers={getAllGroupMembers} direction="right" addingToGroup={true} groupName={name === ''?props.groupName:name} />
             <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                     <Card profile>
@@ -220,15 +232,15 @@ export default function EditGroup(props) {
                         </TableHead>
                         <TableBody>
                             {groupMembers.map(user =>
-                            <TableRow key={user} className={classes.tableRow}>
-                            <TableCell className={tableCellClasses}>
-                                {user}
-                            </TableCell>
-                            <TableCell align="right" className={classes.tableActions}>
-                                <Button color="primary">Remove user</Button>
-                            </TableCell>
-                            </TableRow>
-                             ) }
+                                <TableRow key={user} className={classes.tableRow}>
+                                    <TableCell className={tableCellClasses}>
+                                        {user}
+                                    </TableCell>
+                                    <TableCell align="right" className={classes.tableActions}>
+                                        <Button color="primary">Remove user</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ) }
                         </TableBody>
                     </Table>
                 </GridItem>
