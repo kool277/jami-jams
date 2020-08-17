@@ -113,7 +113,7 @@ public class TomcatLauncher {
         //Register error pages.
         ErrorPage notFound = new ErrorPage();
         notFound.setErrorCode(404);
-        notFound.setLocation("/404");
+        notFound.setLocation("/index.html");
         ErrorPage genericError = new ErrorPage();
         genericError.setErrorCode(500);
         genericError.setLocation("/500");
