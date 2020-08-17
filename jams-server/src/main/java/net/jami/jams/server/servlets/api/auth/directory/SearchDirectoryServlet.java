@@ -37,8 +37,8 @@ import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
@@ -59,11 +59,25 @@ public class SearchDirectoryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         List<UserProfile> userProfiles = new ArrayList<>();
         userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-            List<UserProfile> profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
-            if(profiles == null || profiles.size() == 0){
-                // check logon names if nothing was found
-                profiles = v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME");
+
+            List<UserProfile> profiles;
+            if (req.getParameter("queryString").equals("*"))
+                profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
+            else {
+                profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
+                List<UserProfile> profiles2 = v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME");
+                for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext();) {
+                    UserProfile p = it.next();
+                    for (UserProfile p2: profiles2) {
+                        if (p2.equals(p))
+                            it.remove();
+                    }
+                }
+
+
+                profiles.addAll(profiles2);
             }
+
             profiles.parallelStream().forEach(profile -> {
                 StatementList statementList = new StatementList();
                 StatementElement statementElement = new StatementElement("username", "=", profile.getUsername(), "");
@@ -89,16 +103,14 @@ public class SearchDirectoryServlet extends HttpServlet {
         // update user group mappings table
         userProfiles.forEach(profile -> {
             List<UserGroupMapping> mappings = dataStore.getUserGroupMappingsDao().getObjects(null);
-
-
             for(UserGroupMapping mapping: mappings) {
                 List<String> list = new ArrayList<>();
                 if (mapping.getUsername().equals(profile.getUsername())) {
                     String[] splits = mapping.getGroups().split(",");
 
-                    for (int i = 0; i < splits.length; i++) {
+                    for (int i = 0; i < splits.length; i++)
                        list.add(splits[i]);
-                    }
+
                 }
 
                 if (!list.isEmpty())

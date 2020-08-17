@@ -148,4 +148,14 @@ public class UserProfile implements DatabaseObject {
         return null;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+
+        UserProfile profile = (UserProfile) obj;
+
+        return (profile.getUsername().equals(this.username) &&
+                profile.getFirstName().equals(this.firstName) &&
+                profile.getLastName().equals(this.lastName));
+    }
+
 }
