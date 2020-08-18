@@ -74,7 +74,7 @@ export default function Groups() {
     const [groups, setGroups] = React.useState([])
     const [selectedGroupName, setSelectedGroupName] = React.useState("")
     const [loading, setLoading] = React.useState(false)
-    const [zeroGroup, setZeroGroup] = React.useState(false)
+    const [zeroGroup, setZeroGroup] = React.useState(true)
     const [progress, setProgress] = React.useState(0);
     const [searchValue, setSearchValue] = React.useState(null)
 
@@ -211,7 +211,7 @@ export default function Groups() {
 
     const blueprintsOptionsItems = tool.buildSelectMenuItems(getGroupsOptions());
 
-    const [selectedBlueprint, setSelectedBlueprint] = useState({ value: 0, label: ""})
+    const [selectedBlueprint, setSelectedBlueprint] = useState({ value: 0, label: "No blueprint"})
 
     const handleBlueprintsChange = (e) => {
         setSelectedBlueprint(getGroupsOptions()[e.target.value])
@@ -223,9 +223,9 @@ export default function Groups() {
                 <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToGroupList}>
                     <KeyboardReturnIcon />
                 </Button>
-                <EditGroup 
-                    groupName={selectedGroupName} 
-                    initCheckGroupNameExists={initCheckGroupNameExists} 
+                <EditGroup
+                    groupName={selectedGroupName}
+                    initCheckGroupNameExists={initCheckGroupNameExists}
                     groupNameExits={groupNameExits}
                     blueprintsOptionsItems={blueprintsOptionsItems}
                     selectedBlueprint={selectedBlueprint}
@@ -236,7 +236,7 @@ export default function Groups() {
     } else {
         return (
             <div>
-                <Dialog               
+                <Dialog
                     open={openCreate}
                     onClose={handleCloseCreate}
                     aria-labelledby="alert-dialog-title"
@@ -244,47 +244,47 @@ export default function Groups() {
                 >
                     <DialogTitle id="alert-dialog-title">{"Create group"}</DialogTitle>
                     <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={12} md={12}>
-                                <FormControl className={classes.margin} size="medium" error={groupNameExits}>
+                        <DialogContentText id="alert-dialog-description">
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={12} md={12}>
+                                    <FormControl className={classes.margin} size="medium" error={groupNameExits}>
                                         <InputLabel htmlFor="groupName">Group name</InputLabel>
                                         <Input
-                                        id="groupName"
-                                        placeholder={groupName}
-                                        startAdornment={
-                                            <InputAdornment position="start">
-                                            <PeopleOutlineIcon />
-                                            </InputAdornment>   
-                                        }
-                                        onChange={e => {
-                                            const searchGroupNameValue = e.target.value;
-                                            setGroupName(searchGroupNameValue);
-                                            initCheckGroupNameExists(groupName);
-                                        }}
+                                            id="groupName"
+                                            placeholder={groupName}
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                    <PeopleOutlineIcon />
+                                                </InputAdornment>
+                                            }
+                                            onChange={e => {
+                                                const searchGroupNameValue = e.target.value;
+                                                setGroupName(searchGroupNameValue);
+                                                initCheckGroupNameExists(groupName);
+                                            }}
                                         />
-                                </FormControl>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={12}>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        fullWidth
+                                        value={selectedBlueprint.value}
+                                        onChange={handleBlueprintsChange}
+                                        variant="outlined"
+                                        children={blueprintsOptionsItems}
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12}>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    fullWidth
-                                    value={selectedBlueprint.value}
-                                    onChange={handleBlueprintsChange}
-                                    variant="outlined"
-                                    children={blueprintsOptionsItems}
-                                />
-                            </Grid>
-                        </Grid>
-                    </DialogContentText>
+                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={handleCloseCreate} color="danger">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleCreateGroup} color="primary" autoFocus>
-                        Create
-                    </Button>
+                        <Button onClick={handleCloseCreate} color="danger">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleCreateGroup} color="primary" autoFocus>
+                            Create
+                        </Button>
                     </DialogActions>
                 </Dialog>
                 <Dialog
@@ -295,17 +295,17 @@ export default function Groups() {
                 >
                     <DialogTitle id="alert-dialog-title">{"Remove group"}</DialogTitle>
                     <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete <strong>{removedGroup}</strong> ?
-                    </DialogContentText>
+                        <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete <strong>{removedGroup}</strong> ?
+                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={removeGroup} color="danger" autoFocus>
-                        Remove
-                    </Button>
+                        <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={removeGroup} color="danger" autoFocus>
+                            Remove
+                        </Button>
                     </DialogActions>
                 </Dialog>
                 <GridContainer>
@@ -316,53 +316,70 @@ export default function Groups() {
                             </Button>
                         }
                         <div className={classes.searchWrapper}>
-                            <CustomInput 
-                            formControlProps={{
-                                className: classes.margin + " " + classes.search
-                            }}
-                            inputProps={{
-                                placeholder: "Search groups ...",
-                                inputProps: {
-                                "aria-label": "Search groups"
-                                },
-                                onKeyUp: (e) => setSearchValue(e.target.value),
-                            }}
+                            <CustomInput
+                                formControlProps={{
+                                    className: classes.margin + " " + classes.search
+                                }}
+                                inputProps={{
+                                    placeholder: "Search groups ...",
+                                    inputProps: {
+                                        "aria-label": "Search groups"
+                                    },
+                                    onKeyUp: (e) => setSearchValue(e.target.value),
+                                }}
                             />
                             <Search />
                             <div className={classes.loading}>
                                 {loading && <LinearProgress variant="determinate" value={progress} />}
-                            </div>  
+                            </div>
                         </div>
                     </GridItem>
                     {zeroGroup
                         ?
-                            <span>No Group Found</span>
+                        <span>No Group Found</span>
                         :
-                        groups.filter((data)=>{
-                            if(searchValue === null){
-                                return data
-                            }
-                            else if((data.name != null ) && data.name.toLowerCase().includes(searchValue.toLowerCase())
-                            ){
-                                return data
-                            }
-                        }).map(group =>
-                            <GridItem xs={12} sm={12} md={2} key={group.username} style={{display: group.display}}>
+                        groups.length >= 1
+                            ?
+                            groups.filter((data)=>{
+                                if(searchValue === null){
+                                    return data
+                                }
+                                else if((data.name != null ) && data.name.toLowerCase().includes(searchValue.toLowerCase())
+                                ){
+                                    return data
+                                }
+                            }).map(group =>
+                                <GridItem xs={12} sm={12} md={2} key={group.name} style={{display: group.display}}>
+                                    <Card profile>
+                                        <CardBody profile>
+                                            <h3 className={classes.cardTitle}>{group.name}</h3>
+                                            <ul>
+                                                <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
+                                                <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{selectedBlueprint.label}</li>
+                                            </ul>
+                                        </CardBody>
+                                        <CardFooter>
+                                            <IconButton color="primary" onClick={ (e) => redirectToGroup(e, group.name)}><EditOutlinedIcon /></IconButton>
+                                            <IconButton color="secondary" onClick={ () => {handleRemoveGroup(group.name)}}><DeleteOutlineIcon /></IconButton>
+                                        </CardFooter>
+                                    </Card>
+                                </GridItem>)
+                            :
+                            <GridItem xs={12} sm={12} md={2} key={groups.name} style={{display: groups.display}}>
                                 <Card profile>
                                     <CardBody profile>
-                                        <h3 className={classes.cardTitle}>{group.name}</h3>
+                                        <h3 className={classes.cardTitle}>{groups.name}</h3>
                                         <ul>
-                                            <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
-                                            <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{group.blueprint}</li>
+                                            <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{typeof groups.groupMembers !== 'undefined' ? groups.groupMembers : 0 }</strong>users</li>
+                                            <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{selectedBlueprint.label}</li>
                                         </ul>
                                     </CardBody>
                                     <CardFooter>
-                                        <IconButton color="primary" onClick={ (e) => redirectToGroup(e, group.name)}><EditOutlinedIcon /></IconButton>
-                                        <IconButton color="secondary" onClick={ () => {handleRemoveGroup(group.name)}}><DeleteOutlineIcon /></IconButton>
+                                        <IconButton color="primary" onClick={ (e) => redirectToGroup(e, groups.name)}><EditOutlinedIcon /></IconButton>
+                                        <IconButton color="secondary" onClick={ () => {handleRemoveGroup(groups.name)}}><DeleteOutlineIcon /></IconButton>
                                     </CardFooter>
                                 </Card>
-
-                            </GridItem>)
+                            </GridItem>
                     }
                 </GridContainer>
             </div>
