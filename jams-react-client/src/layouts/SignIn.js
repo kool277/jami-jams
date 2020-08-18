@@ -88,7 +88,7 @@ export default function SignIn(props) {
         }
         auth.login(jsonData, () => {
             if(auth.authenticated && auth.access_token !== ""){
-                auth.checkLastKnowStep(() => {
+                auth.checkLastKnownStep(() => {
                     auth.checkDirectoryType(() => {
                         if(auth.isInstalled){
                             history.push('/admin/users');

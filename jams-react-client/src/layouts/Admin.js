@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "components/Navbars/Navbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
+import Snackbar from '@material-ui/core/Snackbar';
 
 import routes from "routes.js";
 
@@ -17,6 +17,12 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo-jams.svg";
+
+import auth from 'auth'
+import ReactDOM from "react-dom";
+import {ConfiguredRoute} from "../configured.route";
+import SignIn from "./SignIn";
+import {ProtectedRoute} from "../protected.route";
 
 let ps;
 
@@ -55,10 +61,13 @@ export default function Admin({ ...rest }) {
   const [color, setColor] = React.useState("blue");
   const [fixedClasses, setFixedClasses] = React.useState("dropdown");
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = React.useState(false)
 
   const [signedUp, setSignedUp] = React.useState(false);
   const [signedIn, setSignedIn] = React.useState(false);
   const [token, setToken] = React.useState(false);
+  const [severity, setSeverity] = React.useState("success")
 
 
 
@@ -89,6 +98,15 @@ export default function Admin({ ...rest }) {
   // initialize and destroy the PerfectScrollbar plugin
   React.useEffect(() => {
 
+    auth.checkForUpdates(() => {
+        auth.getUpdates(() => {
+            if(auth.isUpdateAvailable()) {
+                setOpen(true)
+                setMessage("An update is available for JAMS.")
+            }
+        });
+    });
+
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
@@ -118,6 +136,7 @@ export default function Admin({ ...rest }) {
         color={color}
         {...rest}
       />
+
       <div className={classes.mainPanel} ref={mainPanel}>
         <Navbar
           routes={routes}

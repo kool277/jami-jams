@@ -7,15 +7,22 @@ import {
     api_path_get_server_status,
     api_path_get_install_lastKnownStep,
     api_path_get_directories,
+    api_path_get_subscription_status,
+    api_path_get_needs_update,
+    api_path_get_start_update
 } from "globalUrls";
 
 class Auth {
     constructor() {
-        this.authenticated = false;
-        this.admin = false;
-        this.installed = false;
-        this.uri = '';
-        this.username = '';
+        this.authenticated = false
+        this.admin = false
+        this.installed = false
+        this.uri = ''
+        this.username = ''
+        this.localVersion = ''
+        this.remoteVersion = ''
+        this.activated = false
+        this.updateAvailable = false
     }
 
     setJWT(access_token) {
@@ -113,11 +120,11 @@ class Auth {
     isServerInstalled(cb) {
         axios(configApiCall(api_path_get_server_status, "GET", null, null)).then((response) => {                       
             if (response.data['installed'] == 'true') {
-                this.installed = true;
-                console.log("Server is insalled");
+                this.installed = true
+                console.log("Server is installed")
             } else {
-                this.installed = false;
-                console.log("Server is not insalled");
+                this.installed = false
+                console.log("Server is not installed")
             }
             cb()
         }).catch((error) => {
@@ -125,7 +132,7 @@ class Auth {
         });
     }
 
-    checkLastKnowStep(cb) {
+    checkLastKnownStep(cb) {
         if(this.installed){
             this.authenticated = true
             console.log("Auth: Server is already installed")
@@ -136,10 +143,64 @@ class Auth {
                 this.authenticated = true;
                 cb()
             }).catch((error) => {
-                console.log("Error during API request on checkLastKnowStep: " + error);
+                console.log("Error during API request on checkLastKnownStep: " + error);
                 cb()
             })
         }
+    }
+
+    checkForUpdates(cb) {
+        if (this.installed && this.authenticated) {
+            axios(configApiCall(api_path_get_subscription_status, 'GET', null, null)).then((response) => {
+                this.localVersion = response.data['versions']['jams-server.jar']['version'];
+                this.activated = response.data['activated'];
+                cb()
+            })
+        } else {
+            axios(configApiCall(api_path_get_install_lastKnownStep, 'GET', null, null)).then((response) => {
+                this.uri = response.data['uri']
+                this.authenticated = true
+                cb()
+            }).catch((error) => {
+                console.log("Error during API request on checkLastKnownStep: " + error);
+                cb()
+            })
+        }
+    }
+
+    getUpdates(cb) {
+        if (this.installed && this.authenticated) {
+            axios(configApiCall(api_path_get_needs_update, 'GET', null, null)).then((response) => {
+                this.remoteVersion = response.data['remoteVersions']['jams-server.jar']['version'];
+                this.updateAvailable = response.data['updateAvailable'];
+                cb()
+            })
+        } else {
+            axios(configApiCall(api_path_get_install_lastKnownStep, 'GET', null, null)).then((response) => {
+                this.uri = response.data['uri']
+                this.authenticated = true
+                cb()
+            }).catch((error) => {
+                console.log("Error during API request on checkLastKnownStep: " + error);
+                cb()
+            })
+        }
+    }
+
+    isActivated() {
+        return this.activated;
+    }
+
+    isUpdateAvailable() {
+        return this.updateAvailable;
+    }
+
+    getLocalVersion() {
+        return this.localVersion;
+    }
+
+    getRemoteVersion() {
+        return this.remoteVersion;
     }
 
     hasAdmin() {

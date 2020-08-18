@@ -17,15 +17,24 @@ import Button from '@material-ui/core/Button';
 import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.js";
 import RTLNavbarLinks from "components/Navbars/RTLNavbarLinks.js";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import UpdateIcon from '@material-ui/icons/Update';
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js";
 
+import configApiCall from "api.js";
 import auth from "auth";
+import { api_path_get_start_update } from "globalUrls";
+import axios from "axios";
+import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
 const useStyles = makeStyles(styles);
 
 export default function Sidebar(props) {
   const classes = useStyles();
+  const mainPanel = React.createRef();
+  const [open, setOpen] = React.useState(false);
+  const [updating, setUpdating] = React.useState(false);
+  const [message, setMessage] = React.useState(false)
   const history = useHistory();
 
   const handleCloseProfile = () => {
@@ -36,6 +45,22 @@ export default function Sidebar(props) {
     e.preventDefault();
     history.push(layout+path.substring(0, 2))
   };
+
+  const handleUpdate = () => {
+      setMessage("Updating JAMS, shutting down shortly...")
+      axios(configApiCall(api_path_get_start_update, 'POST', null, null)).then(()=>{
+          setUpdating(true)
+      }).catch((error) => {
+          setMessage("Error while attempting to update JAMS: " + error)
+      })
+  }
+
+    React.useEffect(() => {
+
+        if(auth.isUpdateAvailable())
+            setOpen(true)
+
+    }, [mainPanel]);
   
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
@@ -61,46 +86,78 @@ export default function Sidebar(props) {
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
         });
         return (
-          <NavLink
-            to={prop.layout + prop.path}
-            className={activePro + classes.item}
-            activeClassName="active"
-            key={key}
-          >
-            <ListItem button className={classes.itemLink + listItemClasses} onClick={e => handleListItemClick(e, prop.layout, prop.path)}>
-              {typeof prop.icon === "string" ? (
-                <Icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
-                >
-                  {prop.icon}
-                </Icon>
-              ) : (
-                  <prop.icon
-                    className={classNames(classes.itemIcon, whiteFontClasses, {
-                      [classes.itemIconRTL]: props.rtlActive
+            <div className={classes.wrapper}>
+              {updating &&<Snackbar
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  open={open}
+                  message={message}
+                  key={'bottomright'}
+              >
+              </Snackbar>}
+
+
+              <NavLink
+                to={prop.layout + prop.path}
+                className={activePro + classes.item}
+                activeClassName="active"
+                key={key}
+              >
+                <ListItem button className={classes.itemLink + listItemClasses} onClick={e => handleListItemClick(e, prop.layout, prop.path)}>
+                  {typeof prop.icon === "string" ? (
+                    <Icon
+                      className={classNames(classes.itemIcon, whiteFontClasses, {
+                        [classes.itemIconRTL]: props.rtlActive
+                      })}
+                    >
+                      {prop.icon}
+                    </Icon>
+                  ) : (
+                      <prop.icon
+                        className={classNames(classes.itemIcon, whiteFontClasses, {
+                          [classes.itemIconRTL]: props.rtlActive
+                        })}
+                      />
+                    )}
+                  <ListItemText
+                    primary={props.rtlActive ? prop.rtlName : prop.name}
+                    className={classNames(classes.itemText, whiteFontClasses, {
+                      [classes.itemTextRTL]: props.rtlActive
                     })}
+                    disableTypography={true}
                   />
-                )}
-              <ListItemText
-                primary={props.rtlActive ? prop.rtlName : prop.name}
-                className={classNames(classes.itemText, whiteFontClasses, {
-                  [classes.itemTextRTL]: props.rtlActive
-                })}
-                disableTypography={true}
-              />
-            </ListItem>
-          </NavLink>
+                </ListItem>
+              </NavLink>
+            </div>
         );
       })}
-      <ListItem button className={classes.itemLink} onClick={handleCloseProfile}>
+
+      {open &&
+        <ListItem button className={classes.itemLink} onClick={handleUpdate}>
+            <Icon
+            className={classNames(classes.itemIcon, {
+                [classes.itemIconRTL]: false
+            })}
+            >
+          <UpdateIcon />
+            </Icon>
+          <ListItemText
+            primary="Update now"
+            className={classNames(classes.itemText, {
+                [classes.itemTextRTL]: false
+            })}
+            disableTypography={true}
+          />
+        </ListItem>
+      }
+
+
+<ListItem button className={classes.itemLink} onClick={handleCloseProfile}>
         <Icon
           className={classNames(classes.itemIcon, {
             [classes.itemIconRTL]: false
           })}
         >
-          <ExitToAppIcon />
+        <ExitToAppIcon />
         </Icon>
         <ListItemText
           primary="Logout"
