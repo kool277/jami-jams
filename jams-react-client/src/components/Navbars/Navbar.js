@@ -40,12 +40,12 @@ export default function Header(props) {
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
           <Button color="transparent" href="#" className={classes.title}>
-            {makeBrand()}
-          </Button>
+            {/* {makeBrand()} */}
+          </Button> 
         </div>
-        <Hidden smDown implementation="css">
+        {/* <Hidden smDown implementation="css">
           {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
-        </Hidden>
+        </Hidden> */}
         <Hidden mdUp implementation="css">
           <IconButton
             color="inherit"

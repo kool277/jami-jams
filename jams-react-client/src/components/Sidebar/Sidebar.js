@@ -1,5 +1,6 @@
 /*eslint-disable*/
 import React from "react";
+import { useHistory } from 'react-router-dom'
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
@@ -11,16 +12,26 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
+import Button from '@material-ui/core/Button';
 // core components
 import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.js";
 import RTLNavbarLinks from "components/Navbars/RTLNavbarLinks.js";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js";
+
+import auth from "auth";
 
 const useStyles = makeStyles(styles);
 
 export default function Sidebar(props) {
   const classes = useStyles();
+  const history = useHistory();
+
+  const handleCloseProfile = () => {
+    auth.logout(() => { history.push("/") })
+  };
+  
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
@@ -78,6 +89,22 @@ export default function Sidebar(props) {
           </NavLink>
         );
       })}
+      <ListItem button className={classes.itemLink} onClick={handleCloseProfile}>
+        <Icon
+          className={classNames(classes.itemIcon, {
+            [classes.itemIconRTL]: false
+          })}
+        >
+          <ExitToAppIcon />
+        </Icon>
+        <ListItemText
+          primary="Logout"
+          className={classNames(classes.itemText, {
+            [classes.itemTextRTL]: false
+          })}
+          disableTypography={true}
+        />
+      </ListItem>
     </List>
   );
   var brand = (

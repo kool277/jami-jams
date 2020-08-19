@@ -46,10 +46,6 @@ export default function AdminNavbarLinks(props) {
       setOpenProfile(event.currentTarget);
     }
   };
-  const handleCloseProfile = () => {
-    setOpenProfile(null);
-    auth.logout(() => { history.push("/") })
-  };
 
   const handleOtherAction = () => {
     // Do nothing
@@ -214,12 +210,6 @@ export default function AdminNavbarLinks(props) {
                       Settings
                     </MenuItem>
                     <Divider light />
-                    <MenuItem
-                      onClick={handleCloseProfile}
-                      className={classes.dropdownItem}
-                    >
-                      Logout
-                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
