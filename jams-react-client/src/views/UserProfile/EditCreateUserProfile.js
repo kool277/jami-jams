@@ -183,7 +183,7 @@ export default function EditCreateUserProfile(props) {
     }
 
     const handleCancel = () => {
-        history.push('/admin');
+        history.push('/admin/users');
     }
 
     const handleCancelUpdate = () => {
@@ -291,7 +291,7 @@ export default function EditCreateUserProfile(props) {
 
     const handleClosePassword = () => {
         setOpenPassword(false);
-        history.push('/admin');
+        history.push('/admin/users');
     }
 
     /**

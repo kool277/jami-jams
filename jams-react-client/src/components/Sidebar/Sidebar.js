@@ -31,6 +31,11 @@ export default function Sidebar(props) {
   const handleCloseProfile = () => {
     auth.logout(() => { history.push("/") })
   };
+
+  const handleListItemClick = (e, layout, path) => {
+    e.preventDefault();
+    history.push(layout+path.substring(0, 2))
+  };
   
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
@@ -62,7 +67,7 @@ export default function Sidebar(props) {
             activeClassName="active"
             key={key}
           >
-            <ListItem button className={classes.itemLink + listItemClasses}>
+            <ListItem button className={classes.itemLink + listItemClasses} onClick={e => handleListItemClick(e, prop.layout, prop.path)}>
               {typeof prop.icon === "string" ? (
                 <Icon
                   className={classNames(classes.itemIcon, whiteFontClasses, {
@@ -179,12 +184,12 @@ export default function Sidebar(props) {
 }
 
 Sidebar.propTypes = {
-  rtlActive: PropTypes.bool,
-  handleDrawerToggle: PropTypes.func,
-  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
-  logo: PropTypes.string,
-  image: PropTypes.string,
-  logoText: PropTypes.string,
-  routes: PropTypes.arrayOf(PropTypes.object),
-  open: PropTypes.bool
+    rtlActive: PropTypes.bool,
+    handleDrawerToggle: PropTypes.func,
+    bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
+    logo: PropTypes.string,
+    image: PropTypes.string,
+    logoText: PropTypes.string,
+    routes: PropTypes.arrayOf(PropTypes.object),
+    open: PropTypes.bool
 };

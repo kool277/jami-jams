@@ -77,7 +77,7 @@ export default function SignIn(props) {
 
     React.useEffect(() => {
         if(auth.isAuthenticated() && auth.isInstalled()) {
-            history.push('/admin');
+            history.push('/admin/users');
         }
     })
 
@@ -91,7 +91,7 @@ export default function SignIn(props) {
                 auth.checkLastKnowStep(() => {
                     auth.checkDirectoryType(() => {
                         if(auth.isInstalled){
-                            history.push('/admin');
+                            history.push('/admin/users');
                         }
                         else{
                             history.push('/');

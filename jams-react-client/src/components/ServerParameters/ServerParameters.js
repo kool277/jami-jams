@@ -95,7 +95,7 @@ export default function ServerParameters(props) {
         auth.authenticated = true
         auth.admin = true
         auth.checkDirectoryType(() => {
-            history.push('/admin');
+            history.push('/admin/users');
         })
     }
 

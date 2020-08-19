@@ -131,11 +131,6 @@ export default function Blueprints() {
         setSelectedBlueprint(true)
         setSelectedBlueprintName(blueprintNameRedirect)
     }
-    function redirectToBlueprints(e) {
-        e.preventDefault()
-        setSelectedBlueprint(false);
-        history.push('/admin/blueprints')
-    }
 
     const handleCheckBlueprintNameExists = (searchBlueprintNameValue) => {
         axios(configApiCall(api_path_blueprints+"?name="+searchBlueprintNameValue, 'GET', null, null)).then((response)=>{
@@ -183,16 +178,6 @@ export default function Blueprints() {
         return (
             <div>
                 <h4>You are not allowed to access this section. Please contact your administrator to get administrator privileges.</h4>
-            </div>
-        )
-    } else if(selectedBlueprint && auth.hasAdminScope()){
-        return (
-            <div>
-                <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToBlueprints} style={{color: "white"}}>
-                    <KeyboardReturnIcon /> return to blueprints
-                </Button>
-                <h3>{selectedBlueprintName}</h3>
-                <Blueprint blueprintName={selectedBlueprintName}/>
             </div>
         )
     }

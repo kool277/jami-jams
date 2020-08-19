@@ -115,11 +115,6 @@ export default function Users() {
         setSelectedProfile(true);
         setSelectedUsername(username)
     }
-    const redirectToUsers = (e) => {
-        e.preventDefault()
-        setSelectedProfile(false);
-        history.push('/admin')
-    }
 
     const searchUsers = (value) => {
         axios(configApiCall(api_path_get_user_directory_search, 'GET', {"queryString": value ? value : "*"}, null)).then((response)=>{
@@ -151,9 +146,6 @@ export default function Users() {
     } else if(selectedProfile && auth.hasAdminScope()){
         return (
             <div>
-                <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToUsers}>
-                    <KeyboardReturnIcon />
-                </Button>
                 <UserProfile username={selectedUsername}/>
             </div>
         )

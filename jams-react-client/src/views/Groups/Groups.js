@@ -160,12 +160,6 @@ export default function Groups() {
         setSelectedGroupName(name)
     }
 
-    const redirectToGroupList = (e) => {
-        e.preventDefault()
-        setSelectedGroup(false);
-        history.push('/admin/groups')
-    }
-
     const handleCheckGroupNameExists = (searchGroupNameValue) => {
         axios(configApiCall(api_path_get_list_group+"?groupName="+searchGroupNameValue, 'GET', null, null)).then((response)=>{
             if(response.data === "[]"){
@@ -220,12 +214,9 @@ export default function Groups() {
     if(selectedGroup && auth.hasAdminScope()){
         return(
             <div>
-                <Button variant="contained" color="info" href="#contained-buttons" onClick={redirectToGroupList}>
-                    <KeyboardReturnIcon />
-                </Button>
                 <EditGroup
-                    groupName={selectedGroupName}
-                    initCheckGroupNameExists={initCheckGroupNameExists}
+                    groupName={selectedGroupName} 
+                    initCheckGroupNameExists={initCheckGroupNameExists} 
                     groupNameExits={groupNameExits}
                     blueprintsOptionsItems={blueprintsOptionsItems}
                     selectedBlueprint={selectedBlueprint}
