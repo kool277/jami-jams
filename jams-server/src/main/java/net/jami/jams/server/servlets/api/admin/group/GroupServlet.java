@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.user.AccessLevel;
-import net.jami.jams.common.objects.user.Group;
-import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.objects.user.*;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.AddUserToGroupFlow;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
@@ -80,15 +77,52 @@ public class GroupServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("newName");
+        StatementList statementList = new StatementList();
+        StatementElement st = new StatementElement("name", "=", name, "");
+
+        statementList.addStatement(st);
+        Group targetGroup = dataStore.getGroupDao().getObjects(statementList).get(0);
+        List<UserProfile> profiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
+                profile.getGroupMemberships().contains(targetGroup.getName())).collect(Collectors.toList());
+
+        profiles.forEach(profile ->
+                targetGroup.getGroupMembers().add(profile.getUsername()));
+
+        // if the username sent isn't already part of the group members, then we add it
+        if (!targetGroup.getGroupMembers().contains(req.getParameter("groupMembers")))
+            AddUserToGroupFlow.addUserToGroup(name, req.getParameter("groupMembers"));
+        // otherwise remove the group from the user's memberships.
+        else {
+            statementList = new StatementList();
+            st = new StatementElement("username", "=", req.getParameter("groupMembers"), "");
+            statementList.addStatement(st);
+
+            UserProfile targetProfile = dataStore.getUserProfileDao().getObjects(statementList).get(0);
+            UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
+            mapping.removeGroup(name);
+
+            StatementList update = new StatementList();
+            StatementElement st0 = new StatementElement("groups", "=", mapping.getGroups(), "");
+            update.addStatement(st0);
+            StatementList constraint = new StatementList();
+            StatementElement st1 = new StatementElement("username", "=", mapping.getUsername(), "");
+            constraint.addStatement(st1);
+
+            // update user mappings
+            dataStore.getUserGroupMappingsDao().updateObject(update, constraint);
+
+            List<String> groups = targetProfile.getGroupMemberships();
+            groups.remove(name);
+            // TODO: LDAP/AD handling
+            dataStore.updateUserProfile(targetProfile);
+        }
+
         StatementList update = new StatementList();
         StatementElement st0 = new StatementElement("name", "=", name, "");
         update.addStatement(st0);
         StatementList constraint = new StatementList();
         StatementElement st1 = new StatementElement("name", "=", name, "");
         constraint.addStatement(st1);
-
-        AddUserToGroupFlow.addUserToGroup(name, req.getParameter("groupMembers"));
-
         if (dataStore.getGroupDao().updateObject(update, constraint)) resp.setStatus(200);
         else resp.sendError(500, "could not update the group's name!");
     }

@@ -36,6 +36,15 @@ public class UserGroupMapping implements DatabaseObject {
             this.groups = this.groups.concat("," + s);
     }
 
+    public void removeGroup(String s) {
+        if (this.groups.contains(s) ) {
+            if (this.groups.contains(","))
+                this.groups = this.groups.replace(s + ",", "");
+            else
+                this.groups = "";
+        }
+    }
+
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
         ps.setString(1, username);
