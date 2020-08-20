@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ['Create admin', 'CA Setup', 'Identity Management', 'Server parameters'];
+  return ['Create Administrator User', 'Certificate Authority Setup', 'Identity Management', 'Server Parameters'];
 }
 
 export default function CustomizedSteppers(props) {

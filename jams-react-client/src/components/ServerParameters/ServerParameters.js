@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ServerParameters(props) {
 
     // Formik validation fields
-    const initialValues = {domain: ""};
+    const initialValues = {domain: window.location.origin };
     const validationSchema = Yup.object().shape({
         domain: Yup.string()
             .required("Domain is required."),
