@@ -135,7 +135,7 @@ export default function Groups() {
                 history.push('/')
             }
         });
-        axios(configApiCall(api_path_blueprints+"?groupName=*", 'GET', null, null)).then((response) => {
+        axios(configApiCall(api_path_blueprints+"?name=*", 'GET', null, null)).then((response) => {
             setBlueprints(response.data)
         }).catch((error) =>{
             console.log(error);
