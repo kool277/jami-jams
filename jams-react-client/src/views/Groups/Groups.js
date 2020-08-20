@@ -137,6 +137,7 @@ export default function Groups() {
         });
         axios(configApiCall(api_path_blueprints+"?name=*", 'GET', null, null)).then((response) => {
             setBlueprints(response.data)
+            setSelectedBlueprint(getBlueprintsOptions()[0])
         }).catch((error) =>{
             console.log(error);
             if(error.response.status === 401){
@@ -160,6 +161,12 @@ export default function Groups() {
         setSelectedGroupName(name)
     }
 
+    const redirectToGroupList = (e) => {
+        e.preventDefault()
+        setSelectedGroup(false);
+        history.push('/admin/groups')
+    }
+
     const handleCheckGroupNameExists = (searchGroupNameValue) => {
         axios(configApiCall(api_path_get_list_group+"?groupName="+searchGroupNameValue, 'GET', null, null)).then((response)=>{
             if(response.data === "[]"){
@@ -178,7 +185,11 @@ export default function Groups() {
 
     const handleCreateGroup = () => {
 
-        axios(configApiCall(api_path_post_create_group+"?name="+groupName, 'POST', null, null)).then(() => {
+        let blueprintName = '';
+        if (selectedBlueprint.label !== "No blueprint")
+            blueprintName = selectedBlueprint.label;
+
+        axios(configApiCall(api_path_post_create_group+"?name="+groupName+"&blueprintName="+blueprintName, 'POST', null, null)).then(() => {
             console.log("Successfully  created "  + groupName)
             setOpenCreate(false);
         }).catch((error) => {
@@ -189,38 +200,39 @@ export default function Groups() {
     }
 
 
-    const getGroupsOptions = () => {
+    const getBlueprintsOptions = () => {
         let blueprintsOptions = []
         let index = 0
         if(blueprints.length === 0)
             blueprintsOptions.push({ value: index, label: "No blueprint found"})
         else {
             blueprints.map((blueprint) => {
-                blueprintsOptions.push({value: index, label: blueprint.groupName})
+                blueprintsOptions.push({value: index, label: blueprint.name})
                 index += 1
             })
         }
         return blueprintsOptions
     }
 
-    const blueprintsOptionsItems = tool.buildSelectMenuItems(getGroupsOptions());
+    const blueprintsOptionsItems = tool.buildSelectMenuItems(getBlueprintsOptions());
 
     const [selectedBlueprint, setSelectedBlueprint] = useState({ value: 0, label: "No blueprint"})
 
     const handleBlueprintsChange = (e) => {
-        setSelectedBlueprint(getGroupsOptions()[e.target.value])
+        setSelectedBlueprint(getBlueprintsOptions()[e.target.value])
     }
 
     if(selectedGroup && auth.hasAdminScope()){
         return(
             <div>
                 <EditGroup
-                    groupName={selectedGroupName} 
-                    initCheckGroupNameExists={initCheckGroupNameExists} 
+                    groupName={selectedGroupName}
+                    initCheckGroupNameExists={initCheckGroupNameExists}
                     groupNameExits={groupNameExits}
                     blueprintsOptionsItems={blueprintsOptionsItems}
                     selectedBlueprint={selectedBlueprint}
                     handleBlueprintsChange={handleBlueprintsChange}
+                    getBlueprintsOptions={getBlueprintsOptions}
                 />
             </div>
         )
@@ -346,7 +358,7 @@ export default function Groups() {
                                             <h3 className={classes.cardTitle}>{group.name}</h3>
                                             <ul>
                                                 <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
-                                                <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{selectedBlueprint.label}</li>
+                                                <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{group.blueprint}</li>
                                             </ul>
                                         </CardBody>
                                         <CardFooter>

@@ -21,16 +21,19 @@ import java.util.List;
 @Setter
 public class Group implements DatabaseObject {
     private String name;
+    private String blueprint;
     private List<String> groupMembers;
 
     public Group(ResultSet rs) throws SQLException {
         this.name = rs.getString("name");
+        this.blueprint = rs.getString("blueprint");
         this.groupMembers = new ArrayList<>();
     }
 
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws SQLException {
         ps.setString(1, name);
+        ps.setString(2, blueprint);
         return ps;
     }
 

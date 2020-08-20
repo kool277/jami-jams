@@ -14,6 +14,7 @@ import net.jami.jams.common.objects.user.*;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.AddUserToGroupFlow;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
+import net.jami.jams.common.annotations.JsonContent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class GroupServlet extends HttpServlet {
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         List<Group> groups = new ArrayList<>();
@@ -75,8 +77,11 @@ public class GroupServlet extends HttpServlet {
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String name = req.getParameter("newName");
+        String name = req.getParameter("groupName");
+        String newName = req.getParameter("newName");
+        String blueprint = req.getParameter("blueprintName");
         StatementList statementList = new StatementList();
         StatementElement st = new StatementElement("name", "=", name, "");
 
@@ -118,20 +123,31 @@ public class GroupServlet extends HttpServlet {
         }
 
         StatementList update = new StatementList();
-        StatementElement st0 = new StatementElement("name", "=", name, "");
+        StatementElement st0;
+
+        if (newName != null)
+            st0 = new StatementElement("name", "=", newName, "");
+        else
+            st0 = new StatementElement("name", "=", name, "");
+
+        StatementElement st1 = new StatementElement("blueprint", "=", blueprint, "");
         update.addStatement(st0);
+        update.addStatement(st1);
         StatementList constraint = new StatementList();
-        StatementElement st1 = new StatementElement("name", "=", name, "");
-        constraint.addStatement(st1);
+        StatementElement st2 = new StatementElement("name", "=", name, "");
+        constraint.addStatement(st2);
+
         if (dataStore.getGroupDao().updateObject(update, constraint)) resp.setStatus(200);
         else resp.sendError(500, "could not update the group's name!");
     }
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Group group = new Group();
         group.setName(req.getParameter("name"));
+        group.setBlueprint(req.getParameter("blueprintName"));
         group.setGroupMembers(new ArrayList<String>());
         if (dataStore.getGroupDao().storeObject(group))
             resp.setStatus(200);
@@ -141,9 +157,10 @@ public class GroupServlet extends HttpServlet {
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        StatementElement statementElement = new StatementElement("groupName", "=", req.getParameter("groupName"), "");
+        StatementElement statementElement = new StatementElement("name", "=", req.getParameter("groupName"), "");
         StatementList constraint = new StatementList();
         constraint.addStatement(statementElement);
         if (dataStore.getGroupDao().deleteObject(constraint)) {

@@ -74,10 +74,19 @@ export default function TemporaryDrawer(props) {
     }
 
     const addUserToGroup = (username) => {
-        axios(configApiCall(api_path_put_update_group+"?newName="+props.groupName+"&groupMembers="+username, 'PUT', null, null)).then((response)=>{
+        let url = '';
+        if(props.selectedBlueprint == ''){
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName=&groupMembers="+username;
+        }else{
+            console.log(props.blueprintsOptions)
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.blueprintsOptions[props.selectedBlueprint].label+"&groupMembers="+username;
+        }
+
+        axios(configApiCall(url, 'PUT', null, null)).then((response) => {
             setUserAdded(true);
+            props.getGroup()
             props.setOpenDrawer(false)
-            props.getAllUsers()
+            
         }).catch((error) =>{
             console.log("Error adding user: " + error)
             props.setOpenDrawer(false)
@@ -106,11 +115,11 @@ export default function TemporaryDrawer(props) {
                 addingToGroup
                     ?
                     <ListItem button key={user.username} onClick={() => {addUserToGroup(user.username)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
+                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.username} />
                     </ListItem>
                     :
                     <ListItem button key={user.username} onClick={() => {addContactToUser(user.jamiId)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
+                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.username} />
                     </ListItem>
 
             ))

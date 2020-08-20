@@ -95,82 +95,90 @@ export default function EditGroup(props) {
     const history = useHistory();
     const [groupExists, setGroupExists] = React.useState(false)
 
-    const [name, setName] = React.useState("")
+    const [name, setName] = React.useState(props.groupName)
+    const [blueprint, setBlueprint] = React.useState(null)
     const [groupMembers, setGroupMembers] = React.useState([])
 
     const [openDrawer, setOpenDrawer] = React.useState(false);
 
-    const getAllGroupMembers = () => {
-        /*
-            TODO: Include the username of the user of witch we want to display contacts
-            at the moment the admin sees his contacts in each user profile he visits
-        */
-
+    const getGroup = () => {
         axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
             let groups=response.data;
             if(groups.length > 1){
                 groups.map((group) => {
                     if(group.name == props.groupName){
+                        props.getBlueprintsOptions().forEach((blueprintOption) => {
+                            if(blueprintOption.label === group["blueprint"]){
+                                setBlueprint(blueprintOption.value)
+                            }
+                        })
                         setGroupMembers(group["groupMembers"]);
                     }
                 })
             }
             else{
                 if(groups.name == props.groupName){
-                    setGroupMembers(groups["groupMembers"]);
+                    props.getBlueprintsOptions().forEach((blueprintOption) => {
+                        if(blueprintOption.label === groups["blueprint"]){
+                            setBlueprint(blueprintOption.value)
+                        }
+                    })
+                    setGroupMembers(groups.groupMembers)
                 }
             }
+
         }).catch((error) => {
             console.log("Error fetching group members of: " + props.groupName + " " + error)
         })
     }
 
     React.useEffect(()=>{
-        setName(props.groupName)
-        axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
-            let groups=response.data;
-            if(groups.length > 1){
-                groups.map((group) => {
-                    if(group.name == props.groupName){
-                        setGroupMembers(group["groupMembers"]);
-                    }
-                })
-            }
-            else{
-                if(groups.name == props.groupName){
-                    setGroupMembers(groups["groupMembers"])
-                }
-            }
+        getGroup()
 
-        }).catch((error) => {
-            console.log("Error fetching group members of: " + props.groupName + " " + error)
-        })
-    }, [openDrawer])
+    }, [])
 
-    const handleGroupUpdate = (data) => {
-        setName(data.name)
-        setGroupMembers(data.groupMembers)
-    }
+    const handleUpdateGroup = (blueprintValue) => {
 
-    const handleUpdateGroup = () => {
-        const data = {
-            'name': name,
-            'groupMembers': groupMembers
+        let url = '';
+        if(blueprintValue == null){
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+name+"&blueprintName=&groupMembers=";
+        }else{
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+name+"&blueprintName="+props.getBlueprintsOptions()[blueprintValue].label+"&groupMembers=";
         }
-        //TODO: Add blueprint to data to update the blueprint using the blueprintName
 
-        axios(configApiCall(api_path_put_update_group+"?groupName="+name+"&groupMembers="+groupMembers, 'PUT', null, null)).then((response) => {
-            handleGroupUpdate(data);
+        axios(configApiCall(url, 'PUT', null, null)).then((response) => {
+            getGroup()
         }).catch((error) => {
             console.log("Error updating group: " + error)
         })
+    }
+
+    const removeUserFromGroup = (user) => {
+
+        let url = '';
+        if(blueprint == null){
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName=&groupMembers="+[user,];
+        }else{
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.getBlueprintsOptions()[blueprint].label+"&groupMembers="+[user,];
+        }
+
+        axios(configApiCall(url, 'PUT', null, null)).then((response) => {
+            getGroup()
+        }).catch((error) => {
+            console.log("Error updating group: " + error)
+        })
+    }
+
+    const handleBlueprintsChange = (blueprintValue) => {
+        setBlueprint(blueprintValue)
+        handleUpdateGroup(blueprintValue)
     }
 
     const tableCellClasses = classnames(classes.tableCell);
 
     return(
         <div>
-            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} getAllUsers={getAllGroupMembers} direction="right" addingToGroup={true} groupName={name === ''?props.groupName:name} />
+            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={true} groupName={name === ''?props.groupName:name} selectedBlueprint={blueprint} getGroup={getGroup} blueprintsOptions={props.getBlueprintsOptions()}/>
             <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                     <Card profile>
@@ -198,7 +206,7 @@ export default function EditGroup(props) {
                                                     setName(e.target.value);
                                                     props.initCheckGroupNameExists(e.target.value)
                                                     if(!props.groupNameExits){
-                                                        handleUpdateGroup()
+                                                        handleUpdateGroup(blueprint)
                                                     }
                                                 }}
                                             />
@@ -209,8 +217,8 @@ export default function EditGroup(props) {
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 fullWidth
-                                                value={props.selectedBlueprint.value}
-                                                onChange={props.handleBlueprintsChange}
+                                                value={blueprint}
+                                                onChange={(e) => handleBlueprintsChange(e.target.value)}
                                                 variant="outlined"
                                                 children={props.blueprintsOptionsItems}
                                             />
@@ -237,7 +245,7 @@ export default function EditGroup(props) {
                                         {user}
                                     </TableCell>
                                     <TableCell align="right" className={classes.tableActions}>
-                                        <Button color="primary">Remove user</Button>
+                                        <Button color="primary" onClick={() => removeUserFromGroup(user)}>Remove user</Button>
                                     </TableCell>
                                 </TableRow>
                             ) }

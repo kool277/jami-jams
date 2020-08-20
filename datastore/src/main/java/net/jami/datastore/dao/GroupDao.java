@@ -22,7 +22,7 @@ public class GroupDao extends AbstractDao<Group>{
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try{
             PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO groups " +
-                    "(name) VALUES (?)");
+                    "(name, blueprint) VALUES (?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         }
@@ -39,14 +39,16 @@ public class GroupDao extends AbstractDao<Group>{
     public boolean updateObject(StatementList update, StatementList constraints) {
 
         String name = update.getStatements().get(0).getValue();
+        String blueprint = update.getStatements().get(1).getValue();
         String oldName = constraints.getStatements().get(0).getValue();
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try{
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE groups SET name = ? WHERE name = ?");
+            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE groups SET name = ?, blueprint = ? WHERE name = ?");
             ps.setString(1, name);
-            ps.setString(2, oldName);
+            ps.setString(2, blueprint);
+            ps.setString(3, oldName);
             return ps.executeUpdate() != 0;
         }
         catch (SQLException e){
