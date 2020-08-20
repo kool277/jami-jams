@@ -204,7 +204,7 @@ export default function Groups() {
         let blueprintsOptions = []
         let index = 0
         if(blueprints.length === 0)
-            blueprintsOptions.push({ value: index, label: "No blueprint found"})
+            blueprintsOptions.push({value: index, label: "No blueprint found"})
         else {
             blueprints.map((blueprint) => {
                 blueprintsOptions.push({value: index, label: blueprint.name})
@@ -283,6 +283,7 @@ export default function Groups() {
                                         onChange={handleBlueprintsChange}
                                         variant="outlined"
                                         children={blueprintsOptionsItems}
+                                        disabled={blueprints.length === 0}
                                     />
                                 </Grid>
                             </Grid>
