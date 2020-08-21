@@ -439,7 +439,7 @@ export default function EditCreateUserProfile(props) {
                                                             <label htmlFor="icon-button-file" >
                                                                 <IconButton color="inherit" aria-label="upload picture" component="span" >
                                                                     <PhotoCamera />
-                                                                </IconButton> Update profile image
+                                                                </IconButton> Save profile image
                                                             </label>
                                                         </Grid>
                                                         {createUser &&
@@ -648,8 +648,8 @@ export default function EditCreateUserProfile(props) {
                                         </div>
                                     </CardBody>
                                     <CardFooter>
-                                        {createUser ? <Button color="danger" onClick={handleCancel}>Cancel</Button> : <Button color="danger" onClick={handleCancelUpdate}>Cancel Update</Button>}
-                                        {createUser ? <Button color="info" onClick={() => validateForm().then(() => handleCreateUser())}>Create Profile</Button> : <Button color="info" onClick={() => validateForm().then(() => handleUpdateUser())}>Update Profile</Button>}
+                                        {createUser ? <Button color="danger" onClick={handleCancel}>Cancel</Button> : <Button color="danger" onClick={handleCancelUpdate}>Cancel</Button>}
+                                        {createUser ? <Button color="info" onClick={() => validateForm().then(() => handleCreateUser())}>Create Profile</Button> : <Button color="info" onClick={() => validateForm().then(() => handleUpdateUser())}>Save Profile</Button>}
                                     </CardFooter>
                                 </Card>
                             </form>
