@@ -37,6 +37,7 @@ import configApiCall from "../../api"
 import {
     api_path_get_list_group,
     api_path_put_update_group,
+    api_path_blueprints,
     api_path_get_auth_contacts
 } from "../../globalUrls"
 
@@ -44,6 +45,8 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 import devicesStyle from "assets/jss/material-dashboard-react/components/devicesStyle.js";
 
 import TemporaryDrawer from "components/Drawer/Drawer"
+import * as tool from "../../tools";
+import auth from 'auth.js'
 
 const styles = ()=> ( {
     ...devicesStyle,
@@ -98,6 +101,7 @@ export default function EditGroup(props) {
     const [name, setName] = React.useState(props.groupName)
     const [blueprint, setBlueprint] = React.useState(null)
     const [groupMembers, setGroupMembers] = React.useState([])
+    const [blueprints, setBlueprints] = React.useState([])
 
     const [openDrawer, setOpenDrawer] = React.useState(false);
 
@@ -151,6 +155,26 @@ export default function EditGroup(props) {
         }).catch((error) => {
             console.log("Error updating group: " + error)
         })
+
+        axios(configApiCall(api_path_blueprints+"?name=*", 'GET', null, null)).then((response) => {
+            console.log(blueprints);
+            setBlueprints(response.data)
+        }).catch((error) =>{
+            console.log(error);
+            if(error.response.status === 401){
+                auth.authenticated = false
+                history.push('/')
+            }
+            if(error.response.status === 500){
+                setBlueprints([])
+            }
+        });
+
+    }
+
+    const handleGroupUpdate = (data) => {
+        setName(data.name)
+        setGroupMembers(data.groupMembers)
     }
 
     const removeUserFromGroup = (user) => {
@@ -174,6 +198,21 @@ export default function EditGroup(props) {
         handleUpdateGroup(blueprintValue)
     }
 
+    const getGroupsOptions = () => {
+        let blueprintsOptions = []
+        let index = 0
+        if(blueprints.length === 0)
+            blueprintsOptions.push({value: index, label: "No blueprint found"})
+        else {
+            blueprints.map((blueprint) => {
+                blueprintsOptions.push({value: index, label: blueprint.name});
+                index += 1
+            })
+        }
+        return blueprintsOptions
+    }
+
+    const blueprintsOptionsItems = tool.buildSelectMenuItems(getGroupsOptions());
     const tableCellClasses = classnames(classes.tableCell);
 
     return(
@@ -220,7 +259,8 @@ export default function EditGroup(props) {
                                                 value={blueprint}
                                                 onChange={(e) => handleBlueprintsChange(e.target.value)}
                                                 variant="outlined"
-                                                children={props.blueprintsOptionsItems}
+                                                children={blueprintsOptionsItems}
+                                                disabled={blueprints.length === 0}
                                             />
                                         </FormControl>
                                     </Grid>
