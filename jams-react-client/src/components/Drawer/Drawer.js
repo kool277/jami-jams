@@ -106,11 +106,11 @@ export default function TemporaryDrawer(props) {
                 addingToGroup
                     ?
                     <ListItem button key={user.username} onClick={() => {addUserToGroup(user.username)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.username} />
+                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
                     </ListItem>
                     :
                     <ListItem button key={user.username} onClick={() => {addContactToUser(user.jamiId)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.username} />
+                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
                     </ListItem>
 
             ))
