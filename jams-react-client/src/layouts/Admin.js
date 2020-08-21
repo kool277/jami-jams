@@ -34,6 +34,7 @@ const switchRoutes = (
       }
       return null;
     })}
+    <Redirect from="/users" to="/admin/users" />
     <Redirect from="/admin/u" to="/admin/users" />
     <Redirect from="/admin/g" to="/admin/groups" />
     <Redirect from="/admin/b" to="/admin/blueprints" />
