@@ -182,120 +182,129 @@ export default function Blueprints() {
         )
     }
     else {
-        return (
-            <div>
-                <Dialog
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Create blueprint"}</DialogTitle>
-                    <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        <FormControl className={classes.margin} size="large" error={blueprintNameExits}>
-                                <InputLabel htmlFor="blueprintName">Blueprint name</InputLabel>
-                                <Input
-                                id="blueprintName"
-                                placeholder={blueprintName}
-                                startAdornment={
-                                    <InputAdornment position="start">
-                                    <AllInbox />
-                                    </InputAdornment>   
-                                }
-                                onChange={e => {
-                                    const searchBlueprintNameValue = e.target.value;
-                                    setBlueprintName(searchBlueprintNameValue);
-                                    initCheckBlueprintNameExists(blueprintName);
+        if(selectedBlueprint){
+            return (
+                <div>
+                    <Blueprint blueprintName={selectedBlueprintName} />
+                </div>
+            )
+        }else{
+            return (
+                <div>
+                    <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">{"Create blueprint"}</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            <FormControl className={classes.margin} size="large" error={blueprintNameExits}>
+                                    <InputLabel htmlFor="blueprintName">Blueprint name</InputLabel>
+                                    <Input
+                                    id="blueprintName"
+                                    placeholder={blueprintName}
+                                    startAdornment={
+                                        <InputAdornment position="start">
+                                        <AllInbox />
+                                        </InputAdornment>   
+                                    }
+                                    onChange={e => {
+                                        const searchBlueprintNameValue = e.target.value;
+                                        setBlueprintName(searchBlueprintNameValue);
+                                        initCheckBlueprintNameExists(blueprintName);
+                                    }}
+                                    />
+                            </FormControl>
+                        </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={handleClose} color="danger">
+                            Cancel
+                        </Button>
+                        <Button onClick={handleCreateBlueprint} color="primary" autoFocus>
+                            Create
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Dialog
+                        open={openRemoveDialog}
+                        onClose={() => setOpenRemoveDialog(false)}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">{"Remove blueprint"}</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete <strong>{removedBlueprint}</strong> ?
+                        </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={removeBlueprint} color="danger" autoFocus>
+                            Remove
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <GridContainer>
+                        <GridItem xs={12} sm={12} md={12}>
+                            {auth.isLocalDirectory() &&
+                                <Button variant="contained" color="primary" href="#contained-buttons" onClick={e => setOpen(true)}>
+                                    <AddCircleOutlineIcon /> Create blueprint
+                                </Button>
+                            }
+                            <div className={classes.searchWrapper}>
+                                <CustomInput 
+                                formControlProps={{
+                                    className: classes.margin + " " + classes.search
+                                }}
+                                inputProps={{
+                                    placeholder: "Search blueprints ...",
+                                    inputProps: {
+                                    "aria-label": "Search blueprints"
+                                    },
+                                    onKeyUp: (e) => setSearchValue(e.target.value),
                                 }}
                                 />
-                        </FormControl>
-                    </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                    <Button onClick={handleClose} color="danger">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleCreateBlueprint} color="primary" autoFocus>
-                        Create
-                    </Button>
-                    </DialogActions>
-                </Dialog>
-                <Dialog
-                    open={openRemoveDialog}
-                    onClose={() => setOpenRemoveDialog(false)}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Remove blueprint"}</DialogTitle>
-                    <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete <strong>{removedBlueprint}</strong> ?
-                    </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                    <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={removeBlueprint} color="danger" autoFocus>
-                        Remove
-                    </Button>
-                    </DialogActions>
-                </Dialog>
-                <GridContainer>
-                    <GridItem xs={12} sm={12} md={12}>
-                        {auth.isLocalDirectory() &&
-                            <Button variant="contained" color="primary" href="#contained-buttons" onClick={e => setOpen(true)}>
-                                <AddCircleOutlineIcon /> Create blueprint
-                            </Button>
-                        }
-                        <div className={classes.searchWrapper}>
-                            <CustomInput 
-                            formControlProps={{
-                                className: classes.margin + " " + classes.search
-                            }}
-                            inputProps={{
-                                placeholder: "Search blueprints ...",
-                                inputProps: {
-                                "aria-label": "Search blueprints"
-                                },
-                                onKeyUp: (e) => setSearchValue(e.target.value),
-                            }}
-                            />
-                            <Search />
-                            <div className={classes.loading}>
-                                {loading && <LinearProgress variant="determinate" value={progress} />}
+                                <Search />
+                                <div className={classes.loading}>
+                                    {loading && <LinearProgress variant="determinate" value={progress} />}
+                                </div>
                             </div>
-                        </div>
-                    </GridItem>
-                    {
-                        zeroBlueprint
-                            ?
-                                <span>No blueprint found</span>
-                            :
-                                blueprints.map(blueprint =>
-                                    <GridItem xs={12} sm={12} md={2} key={blueprint.name}>
+                        </GridItem>
+                        {
+                            zeroBlueprint
+                                ?
+                                    <span>No blueprint found</span>
+                                :
+                                    blueprints.map(blueprint =>
+                                        <GridItem xs={12} sm={12} md={2} key={blueprint.name}>
+    
+                                            <Card profile>
+                                                <CardBody profile>
+                                                    <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.name)}>
+                                                        <h3 className={classes.cardTitle}>{blueprint.name ? blueprint.name : 'No blueprint name'}</h3>
+                                                        <strong>Description:</strong>
+                                                        <p>{'No description'}</p>
+                                                        <ul>
+                                                            <li><GroupIcon fontSize='small' style={{marginRight: "10px"}} /> {blueprint.usersCount ? blueprint.usersCount + ' user(s)' : 'No users count'}</li>
+                                                        </ul>
+                                                    </a>
+                                                </CardBody>
+                                                <CardFooter>
+                                                    <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.name)}}><DeleteOutlineIcon /></IconButton>
+                                                </CardFooter>
+                                            </Card>
+    
+                                        </GridItem>)
+                        }
+                    </GridContainer>
+                </div>
+            );
+        }
 
-                                        <Card profile>
-                                            <CardBody profile>
-                                                <a href="#" onClick={(e) => redirectToBlueprint(e, blueprint.name)}>
-                                                    <h3 className={classes.cardTitle}>{blueprint.name ? blueprint.name : 'No blueprint name'}</h3>
-                                                    <strong>Description:</strong>
-                                                    <p>{'No description'}</p>
-                                                    <ul>
-                                                        <li><GroupIcon fontSize='small' style={{marginRight: "10px"}} /> {blueprint.usersCount ? blueprint.usersCount + ' user(s)' : 'No users count'}</li>
-                                                    </ul>
-                                                </a>
-                                            </CardBody>
-                                            <CardFooter>
-                                                <IconButton color="secondary" onClick={ () => {handleRemoveBlueprint(blueprint.name)}}><DeleteOutlineIcon /></IconButton>
-                                            </CardFooter>
-                                        </Card>
-
-                                    </GridItem>)
-                    }
-                </GridContainer>
-            </div>
-        );
     }
 }
