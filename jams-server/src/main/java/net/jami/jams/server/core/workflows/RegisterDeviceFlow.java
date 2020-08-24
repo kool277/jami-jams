@@ -29,6 +29,8 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
+import net.jami.jams.common.objects.user.Group;
+import net.jami.jams.common.objects.user.Policy;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.dht.DeviceReceiptGenerator;
@@ -67,6 +69,13 @@ public class RegisterDeviceFlow {
             dataStore.getDeviceDao().storeObject(device);
             //Now we build this response out.
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
+            userProfile.getGroupMemberships().forEach(e -> {
+                StatementElement st = new StatementElement("name", "=", e, "");
+                StatementList statementList1 = new StatementList();
+                statementList1.addStatement(st);
+                Policy policy = dataStore.getPolicyDao().getObjects(statementList1).get(0);
+                response.setPolicy(policy.getPolicyData());
+            });
             //We need to set the device receipt....
             String[] devReceipt = DeviceReceiptGenerator.generateReceipt(user.getPrivateKey(), user.getCertificate().getPublicKey(),
                     device.getCertificate().getPublicKey(), user.getEthAddress());

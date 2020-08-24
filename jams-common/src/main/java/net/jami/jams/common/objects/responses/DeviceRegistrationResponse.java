@@ -38,6 +38,7 @@ public class DeviceRegistrationResponse {
     private String deviceReceipt;
     private String receiptSignature;
     private String userPhoto;
+    private String policy;
 
     public void setCertificateChain(X509Certificate[] certificateChain){
         StringBuilder stringBuilder = new StringBuilder();
