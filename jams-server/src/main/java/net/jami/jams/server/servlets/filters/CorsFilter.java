@@ -4,6 +4,7 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.annotation.WebInitParam;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,37 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-@WebFilter(urlPatterns = {"*"})
+@WebFilter(urlPatterns = {"*"}, initParams={@WebInitParam(name = "cors.allowed.origins",value = "*")})
 public class CorsFilter extends org.apache.catalina.filters.CorsFilter {
-
-    @Override
-    public void init() throws ServletException {
-        FilterConfig filterConfig = new FilterConfig() {
-
-            final Map<String,String> map = new HashMap<>(){{
-                put("cors.allowed.origins","*");
-            }};
-
-            @Override
-            public String getFilterName() {
-                return null;
-            }
-
-            @Override
-            public ServletContext getServletContext() {
-                return null;
-            }
-
-            @Override
-            public String getInitParameter(String s) {
-                return map.get(s);
-            }
-
-            @Override
-            public Enumeration<String> getInitParameterNames() {
-                return Collections.enumeration(map.keySet());
-            }
-        };
-        super.init(filterConfig);
-    }
 }
