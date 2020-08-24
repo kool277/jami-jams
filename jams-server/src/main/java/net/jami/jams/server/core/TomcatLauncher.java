@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.filters.CorsFilter;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.DirResourceSet;
 import org.apache.catalina.webresources.JarResourceSet;
