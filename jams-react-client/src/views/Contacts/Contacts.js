@@ -28,7 +28,7 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from 'auth.js'
-import { api_path_get_auth_contacts, api_path_delete_auth_contacts } from "globalUrls";
+import { api_path_get_auth_contacts, api_path_get_admin_contacts, api_path_delete_auth_contacts, api_path_delete_admin_contacts } from "globalUrls";
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
@@ -93,24 +93,46 @@ export default function Users(props) {
     const [open, setOpen] = React.useState(false)
 
     const getAllContacts = () => {
-        axios(configApiCall(api_path_get_auth_contacts, 'GET', null, null)).then((response)=>{
-            /*
-                TODO: Include the username of the user of witch we want to display contacts
-                at the moment the admin sees his contacts in each user profile he visits
-            */ 
-            let orginalUsers = response.data
-            orginalUsers.map((user) => {
-                user.display = ""
-            })
-            setContacts(orginalUsers)
-            setLoading(false)
-        }).catch((error) =>{
-            console.log(error);
-            if(error.response.status == 401){
-                auth.authenticated = false
-                history.push('/')
-            }
-        });
+        if(auth.hasAdminScope()){
+            axios(configApiCall(api_path_get_admin_contacts+"?username="+props.username, 'GET', null, null)).then((response)=>{
+                /*
+                    TODO: Include the username of the user of witch we want to display contacts
+                    at the moment the admin sees his contacts in each user profile he visits
+                */
+                let orginalContacts = response.data
+                orginalContacts.map((contact) => {
+                    contact.display = ""
+                })
+                setContacts(orginalContacts)
+                setLoading(false)
+            }).catch((error) =>{
+                console.log(error);
+                if(error.response.status == 401){
+                    auth.authenticated = false
+                    history.push('/')
+                }
+            });
+        }
+        else{
+            axios(configApiCall(api_path_get_auth_contacts, 'GET', null, null)).then((response)=>{
+                /*
+                    TODO: Include the username of the user of witch we want to display contacts
+                    at the moment the admin sees his contacts in each user profile he visits
+                */
+                let orginalContacts = response.data
+                orginalContacts.map((contact) => {
+                    contact.display = ""
+                })
+                setContacts(orginalContacts)
+                setLoading(false)
+            }).catch((error) =>{
+                console.log(error);
+                if(error.response.status == 401){
+                    auth.authenticated = false
+                    history.push('/')
+                }
+            });
+        }
     }
 
     useEffect(() => {
@@ -129,14 +151,25 @@ export default function Users(props) {
         return () => {
             clearInterval(timer);
         };
-    }, []);
+    }, [openDrawer]);
 
     const removeContact = () => {
-        axios(configApiCall(api_path_delete_auth_contacts, 'DELETE', {"uri": removedContact.replace("jami://", "")}, null)).then((response)=>{
-            getAllContacts()
-        }).catch((error) =>{
-            alert("Uri: " + removedContact + " was not removed " + error)
-        });
+        if(auth.hasAdminScope()){
+            axios(configApiCall(api_path_delete_admin_contacts+"?username="+props.username+"&uri="+removedContact.replace("jami://", ""), 'DELETE', null, null)).then((response)=>{
+                setOpen(false);
+                getAllContacts()
+            }).catch((error) =>{
+                alert("Uri: " + removedContact + " was not removed " + error)
+            });
+        }
+        else{
+            axios(configApiCall(api_path_delete_auth_contacts+"?uri="+removedContact.replace("jami://", ""), 'DELETE', null, null)).then((response)=>{
+                setOpen(false);
+                getAllContacts()
+            }).catch((error) =>{
+                alert("Uri: " + removedContact + " was not removed " + error)
+            });
+        }
     }
 
     const handleRemoveContact = (uri) => {
@@ -146,7 +179,7 @@ export default function Users(props) {
 
     return(
         <div>
-                <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} getAllContacts={getAllContacts} direction="right"/>
+                <TemporaryDrawer isAdmin={auth.hasAdminScope()} username={props.username} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} getAllContacts={getAllContacts} direction="right"/>
                 <Dialog
                     open={open}
                     onClose={() => setOpen(false)}
@@ -199,23 +232,22 @@ export default function Users(props) {
                             else if((data.uri != null ) &&  data.uri.toLowerCase().includes(searchValue.toLowerCase())){
                                 return data
                             }
-                        }).map(user =>
-                            <GridItem xs={12} sm={12} md={2} key={user.username} style={{display: user.display}}>                            
+                        }).map(contact =>
+                            <GridItem xs={12} sm={12} md={2} key={contact.uri} style={{display: contact.display}}>
                                 <Card profile>
                                     <CardBody profile>
                                         <CardAvatar profile>
-                                            <img src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} alt="..." />
+                                            <img src={contact.profilePicture ? ('data:image/png;base64, ' + contact.profilePicture) : noProfilePicture} alt="..." />
                                         </CardAvatar>
                                         
-                                        <h4 className={classes.cardTitle}>{user.firstName} {user.lastName}</h4>    
+                                        <h4 className={classes.cardTitle}>{contact.displayName}</h4>
                                         <ul>
-                                            <li><img src={jami} width="20" alt="Jami" style={{marginRight: "10px"}} /> {user.username ? user.username : 'No username'}</li>
-                                            <li><BusinessOutlinedIcon fontSize='small' style={{marginRight: "10px"}} /> {user.organization ? user.organization : 'No organization'}</li>
-                                            {/* <li><img src={jami} width="20" alt="Jami" style={{marginRight: "10px"}} /> {user.uri}</li> */}
+                                            <li><img src={jami} width="20" alt="Jami" style={{marginRight: "10px"}} /> {contact.displayName ? contact.displayName : 'No name'}</li>
+                                            <li><img src={jami} width="20" alt="Jami" style={{marginRight: "10px"}} /><span style={{maxWidth: "100%"}}> {contact.uri}</span></li>
                                         </ul>
                                     </CardBody>
                                     <CardFooter>
-                                        <IconButton color="secondary" onClick={ () => {handleRemoveContact(user.uri)}}><DeleteOutlineIcon /></IconButton>
+                                        <IconButton color="secondary" onClick={ () => {handleRemoveContact(contact.uri)}}><DeleteOutlineIcon /></IconButton>
                                     </CardFooter>
                                 </Card>
                             </GridItem>

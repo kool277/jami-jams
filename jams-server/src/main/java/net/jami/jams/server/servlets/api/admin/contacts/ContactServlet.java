@@ -36,11 +36,13 @@ import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.common.utils.ContactMerger;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import static net.jami.jams.server.Server.dataStore;
 
@@ -94,11 +96,16 @@ public class ContactServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Contact contact = JsonIterator.deserialize(req.getInputStream().readAllBytes(),Contact.class);
+        Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
+        String res = s.hasNext() ? s.next() : "";
+        final JSONObject obj = new JSONObject(res);
+        Contact contact = new Contact();
         //TODO: Replace with mergetool.
+        contact.setDisplayName(obj.get("displayName").toString());
         contact.setTimestamp(System.currentTimeMillis());
         contact.setStatus('A');
-        contact.setOwner(req.getAttribute("username").toString());
+        contact.setOwner(req.getParameter("username"));
+        contact.setUri(obj.get("uri").toString());
         StatementList statementList = new StatementList();
         statementList.addStatement(new StatementElement("owner","=",req.getParameter("username").toString(),""));
         List<Contact> localList = dataStore.getContactDao().getObjects(statementList);
@@ -126,14 +133,14 @@ public class ContactServlet extends HttpServlet {
         StatementList statementList = new StatementList();
         statementList.addStatement(new StatementElement("owner","=",req.getParameter("username").toString(),"AND"));
         statementList.addStatement(new StatementElement("uri","=",req.getParameter("uri"),""));
-        List<Contact> remoteList = dataStore.getContactDao().getObjects(statementList);
+        /*List<Contact> remoteList = dataStore.getContactDao().getObjects(statementList);
         remoteList.get(0).setStatus('D');
         remoteList.get(0).setTimestamp(System.currentTimeMillis());
         statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner","=",req.getParameter("username").toString(),"AND"));
+        statementList.addStatement(new StatementElement("owner","=",req.getParameter("username").toString(),""));
         List<Contact> localList = dataStore.getContactDao().getObjects(statementList);
-        List<Contact> result = ContactMerger.mergeContacts(localList,remoteList);
-        if(dataStore.getContactDao().storeContactList(result)) resp.setStatus(200);
+        List<Contact> result = ContactMerger.mergeContacts(localList,remoteList);*/
+        if(dataStore.getContactDao().deleteObject(statementList)) resp.setStatus(200);
         else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not delete a contact due to server-side error");
     }
 

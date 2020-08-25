@@ -3,26 +3,18 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Drawer from '@material-ui/core/Drawer';
-import Search from "@material-ui/icons/Search";
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import LinearProgress from '@material-ui/core/LinearProgress';
-
-import {api_path_get_user_directory_search, api_path_get_auth_contacts, api_path_put_update_group} from 'globalUrls'
+import {api_path_get_user_directory_search, api_path_get_auth_contacts, api_path_get_admin_contacts, api_path_put_update_group} from 'globalUrls'
 import { useHistory } from 'react-router-dom';
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from 'auth.js'
 
 import { debounce } from "lodash";
-import {api_path_get_list_group} from "../../globalUrls";
 
 const useStyles = makeStyles({
     list: {
@@ -63,14 +55,37 @@ export default function TemporaryDrawer(props) {
         });
     }, [userAdded])
 
-    const addContactToUser = (jamiId) => {
-        axios(configApiCall(api_path_get_auth_contacts, 'PUT', {"uri": "jami://" + jamiId}, null)).then((response)=>{
-            props.setOpenDrawer(false)
-            props.getAllUsers()
-        }).catch((error) =>{
-            console.log("Error adding user: " + error)
-            props.setOpenDrawer(false)
-        });
+    const addContactToUser = (firstName, lastName, jamiId) => {
+        var displayName= firstName+" "+ lastName;
+        var owner = props.username;
+        const data = {
+            "owner": owner,
+            "uri": jamiId,
+            "displayName": displayName,
+            "timestamp": "",
+            "status": '',
+            "banned": false,
+            "confirmed": false
+        };
+        if(props.isAdmin){
+            axios(configApiCall(api_path_get_admin_contacts+"?username="+props.username,'PUT', data, null)).then((response)=>{
+                props.setOpenDrawer(false)
+                props.getAllUsers()
+            }).catch((error) =>{
+                console.log("Error adding user: " + error)
+                props.setOpenDrawer(false)
+            });
+        }
+        else {
+            axios(configApiCall(api_path_get_auth_contacts, 'PUT', data, null)).then((response)=>{
+                props.setOpenDrawer(false)
+                props.getAllUsers()
+            }).catch((error) =>{
+                console.log("Error adding user: " + error)
+                props.setOpenDrawer(false)
+            });
+        }
+
     }
 
     const addUserToGroup = (username) => {
@@ -78,7 +93,6 @@ export default function TemporaryDrawer(props) {
         if(props.selectedBlueprint == ''){
             url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName=&groupMembers="+username;
         }else{
-            console.log(props.blueprintsOptions)
             url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.blueprintsOptions[props.selectedBlueprint].label+"&groupMembers="+username;
         }
 
@@ -115,11 +129,11 @@ export default function TemporaryDrawer(props) {
                 addingToGroup
                     ?
                     <ListItem button key={user.username} onClick={() => {addUserToGroup(user.username)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.username} />
+                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
                     </ListItem>
                     :
-                    <ListItem button key={user.username} onClick={() => {addContactToUser(user.jamiId)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.username} />
+                    <ListItem button key={user.username} onClick={() => {addContactToUser(user.firstName, user.lastName, user.id)}} >
+                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
                     </ListItem>
 
             ))

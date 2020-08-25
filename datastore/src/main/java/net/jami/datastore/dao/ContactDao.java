@@ -25,6 +25,7 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.contacts.Contact;
 
@@ -76,6 +77,23 @@ public class ContactDao extends AbstractDao<Contact> {
             return true;
         } catch (Exception e) {
             log.error("Could not update contacts: {}",e.getMessage());
+            return false;
+        } finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
+    }
+
+    @Override
+    public boolean deleteObject(StatementList constraints) {
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+
+        try {
+            PreparedStatement ps = connection.getConnection().prepareStatement("DELETE FROM contacts WHERE owner = ? AND uri = ?");
+            ps.setString(1, constraints.getStatements().get(0).getValue());
+            ps.setString(2, constraints.getStatements().get(1).getValue());
+            return ps.executeUpdate() != 0;
+        } catch (SQLException e){
+            log.error("Could not delete contact: " + e.toString());
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
