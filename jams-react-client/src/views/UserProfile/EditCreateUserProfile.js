@@ -1,10 +1,10 @@
 import React from "react";
 import { useHistory } from 'react-router-dom';
-import {Formik, Field} from "formik";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
+
 // core components
 import Grid from '@material-ui/core/Grid';
 import GridItem from "components/Grid/GridItem.js";
@@ -59,6 +59,11 @@ import {
 } from "../../globalUrls"
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+
+import FormikField from 'components/FormikField/FormikField';
+import {Formik, ErrorMessage, Field} from "formik";
+import * as Yup from 'yup';
+require('yup-phone');
 
 const fileUpload = require('fuctbase64');
 
@@ -118,6 +123,9 @@ const styles = (theme)=> ( {
         minWidth: '80vh',
         maxWidth: '80vh'
     },
+    alignRight: {
+        float: 'right'
+    }
 });
 
 const useStyles = makeStyles(styles);
@@ -149,21 +157,37 @@ export default function EditCreateUserProfile(props) {
     const [aspect, setAspect] = React.useState(1/1)
     const [rotation, setRotation] = React.useState(0)
 
+    const initialValues = {
+        username: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        profilePicture: "",
+        organization: "",
+        faxNumber: "",
+        phoneNumber: "",
+        phoneNumberExtension: "",
+        mobileNumber: "",
+        jamiId: ""
+    }
+
     React.useEffect(()=>{
         if(!createUser){
             setUserName(props.username)
             axios(configApiCall(api_path_get_user_directory_search, 'GET', {"queryString": props.username}, null)).then((response) => {
                 response.data.map((user) => {
-                    setFirstName(user["firstName"])
-                    setLastName(user["lastName"])
-                    setEmail(user["email"])
-                    setProfilePicture(user["profilePicture"])
-                    setProfilePicturePreview('data:image/png;base64, ' + user["profilePicture"])
-                    setOrganization(user["organization"])
-                    setFaxNumber(user["faxNumber"])
-                    setPhoneNumber(user["phoneNumber"])
-                    setExtension(user["phoneNumberExtension"])
-                    setMobileNumber(user["mobileNumber"])
+                    initialValues.username = user.username;
+                    initialValues.firstName = user.firstName;
+                    initialValues.lastName = user.lastName;
+                    initialValues.email = user.email;
+                    initialValues.profilePicture = user.profilePicture;
+                    setProfilePicture(user.profilePicture)
+                    setProfilePicturePreview('data:image/png;base64, ' + user.profilePicture)
+                    initialValues.organization = user.organization;
+                    initialValues.faxNumber = user.faxNumber;
+                    initialValues.phoneNumber = user.phoneNumber;
+                    initialValues.phoneNumberExtension = user.phoneNumberExtension;
+                    initialValues.mobileNumber = user.mobileNumber;
                 })
             }).catch((error) => {
                 console.log("Error fetching user : " + props.username + " " + error)
@@ -198,21 +222,7 @@ export default function EditCreateUserProfile(props) {
         })
     }
 
-    const handleCreateUser = () => {
-        const data = {
-            'firstName': firstName,
-            'lastName': lastName,
-            'username': userName,
-            'email': email,
-            'profilePicture': profilePicture,
-            'organization': organization,
-            'faxNumber': faxNumber,
-            'phoneNumber': phoneNumber,
-            'phoneNumberExtension': extension,
-            'mobileNumber': mobileNumber,
-            'jamiId': ""
-        }
-
+    const handleCreateUser = (data) => {
         axios(configApiCall(api_path_post_create_user + "?username="+ data.username, 'POST', null, null)).then((response) => {
             setTemporaryPassword(response.data["password"])
             handleUserProfileCreation(data)
@@ -240,20 +250,7 @@ export default function EditCreateUserProfile(props) {
         props.setDisplayUser(true)
     }
 
-    const handleUpdateUser = () => {
-        const data = {
-            'firstName': firstName,
-            'lastName': lastName,
-            'username': userName,
-            'email': email,
-            'profilePicture': profilePicture,
-            'organization': organization,
-            'faxNumber': faxNumber,
-            'phoneNumber': phoneNumber,
-            'phoneNumberExtension': extension,
-            'mobileNumber': mobileNumber
-        }
-
+    const handleUpdateUser = (data) => {
         axios(configApiCall(api_path_put_update_user_profile, 'PUT', data, null)).then((response) => {
             handleUserUpdate();
         }).catch((error) => {
@@ -294,28 +291,27 @@ export default function EditCreateUserProfile(props) {
         history.push('/users');
     }
 
-    /**
-     * Formik Validation Fields
-     *
-     * */
-
-    const validateUsername = usernamevalue => {
-        handleUserExists(usernamevalue)
-        let error;
-        if (!usernamevalue) {
-            error = 'Required';
+    const handleFormikSubmit = (values) => {
+        values.profilePicture=profilePicture;
+        if(createUser){
+            handleCreateUser(values);
+        }else{
+            handleUpdateUser(values);
         }
-        return error;
     }
 
-    const validateEmail = emailvalue => {
-        let error;
-        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailvalue)) {
-            error = 'Invalid email address';
-        }
-        return error;
-    }
-
+    const EditCreateSchema = Yup.object().shape({
+        username: Yup.string().min(2, 'Username is too short!').required('Required!'),
+        firstName: Yup.string().min(2, 'First name is too short!'),
+        lastName: Yup.string().min(2, 'Last Name is too short!'),
+        email: Yup.string().email('Invalid email!'),
+        profilePicture: Yup.string(),
+        organization: Yup.string().min(2, 'Organization name is too short!'),
+        faxNumber: Yup.string().matches(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Fax not valid!'),
+        phoneNumber: Yup.string().matches(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Phone not valid!'),
+        phoneNumberExtension: Yup.number().positive().integer(),
+        mobileNumber: Yup.string().matches(/^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, 'Mobile not valid!'),
+    })
 
     return(
         <div>
@@ -402,22 +398,25 @@ export default function EditCreateUserProfile(props) {
             </Dialog>
             <GridContainer>
                 <GridItem xs={12} sm={12} md={8}>
-                    <Formik validateOnBlur
-                        initialValues={{
-                        username: '',
-                        firstname: '',
-                        lastname: '',
-                        email: '',
-                        organization: '',
-                        phonenumber: '',
-                        extension: '',
-                        mobilephonenumber: '',
-                        faxnumber: '',
-
-                    }}
+                    <Formik initialValues={initialValues} 
+                    onSubmit={handleFormikSubmit}
+                    validationSchema={EditCreateSchema}
+                    // validate={values => {
+                    //     const errors = {};
+                    //     // TODO : Find a way to validate username is unique onChange
+                    //     // handleUserExists(values.username )
+                    //     // if (!values.username) {
+                    //     //   errors.email = 'Required';
+                    //     // } else if (
+                    //     //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                    //     // ) {
+                    //     //   errors.email = 'Invalid email address';
+                    //     // }
+                    //     return errors;
+                    //   }}
                     >
-                        {({ errors, touched, validateForm, setFieldTouched}) => (
-                            <form>
+                        {({ isValid, dirty, handleSubmit}) => (
+                            <form onSubmit={handleSubmit}>
                                 <Card profile>
                                     <CardHeader color="info" stats icon>
                                         <CardIcon color="info">
@@ -439,217 +438,94 @@ export default function EditCreateUserProfile(props) {
                                                             <label htmlFor="icon-button-file" >
                                                                 <IconButton color="inherit" aria-label="upload picture" component="span" >
                                                                     <PhotoCamera />
-                                                                </IconButton> Save profile image
+                                                                </IconButton> Change profile image
                                                             </label>
                                                         </Grid>
                                                         {createUser &&
                                                         <Grid item align="center" xs={12} sm={12} md={12}>
-                                                            <FormControl className={classes.margin} size="medium" error={userExists}>
-                                                                <InputLabel htmlFor="username">{userExists ? "Error username exists" : "Username"}</InputLabel>
-                                                                <Field name="username" validate={validateUsername} >
-                                                                    {({field}) => (
-                                                                        <Input
-                                                                            id="username"
-                                                                            placeholder={userName}
-                                                                            startAdornment={
-                                                                                <InputAdornment position="start">
-                                                                                    <AccountCircleIcon />
-                                                                                </InputAdornment>
-                                                                            }
-                                                                            onChange={setUserName(field.value)}
-                                                                            {...field}
-                                                                        />
-                                                                    )
-                                                                    }
-                                                                </Field>
-                                                                {errors.username && touched.username && <span class="spanError">{errors.username}</span>}
-                                                            </FormControl>
+                                                            <FormikField name="username" label="Username" placeholder="Username" 
+                                                            startAdornment={
+                                                                <InputAdornment position="start">
+                                                                    <AccountCircleIcon />
+                                                                </InputAdornment>
+                                                            }
+                                                            required/>
                                                         </Grid>
                                                         }
                                                     </Grid>
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="firstname">First Name</InputLabel>
-                                                        <Field name="firstname"  >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="firstname"
-                                                                    placeholder={firstName}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <PersonIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setFirstName(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.firstname && touched.firstname && <span class="spanError">{errors.firstname}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="firstName" label="First name" placeholder="First name"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <PersonIcon />
+                                                        </InputAdornment>
+                                                    }
+                                                    />
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="lastname">Last Name</InputLabel>
-                                                        <Field name="lastname"  >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="lastname"
-                                                                    placeholder={lastName}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <PersonOutlinedIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setLastName(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.lastname && touched.lastname && <span class="spanError">{errors.lastname}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="lastName" label="Last name" placeholder="Last name"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <PersonOutlinedIcon />
+                                                        </InputAdornment>
+                                                    }/>
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="email">Email</InputLabel>
-                                                        <Field name="email" validate={validateEmail} >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="email"
-                                                                    placeholder={email}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <AlternateEmailOutlinedIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setEmail(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.email && touched.email && <span class="spanError">{errors.email}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="email" label="Email" placeholder="Email"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <AlternateEmailOutlinedIcon />
+                                                        </InputAdornment>
+                                                    }/>
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="organization">Organisation</InputLabel>
-                                                        <Field name="organization"  >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="organization"
-                                                                    placeholder={organization}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <BusinessCenterOutlinedIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setOrganization(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.organization && touched.organization && <span class="spanError">{errors.organization}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="organization" label="Organization" placeholder="Organization"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <BusinessCenterOutlinedIcon />
+                                                        </InputAdornment>
+                                                    }
+                                                    />
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="phonenumber">Phone Number</InputLabel>
-                                                        <Field name="phonenumber" >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="phonenumber"
-                                                                    placeholder={phoneNumber}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <PhoneInTalkOutlinedIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setPhoneNumber(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.phonenumber && touched.phonenumber && <span class="spanError">{errors.phonenumber}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="faxNumber" label="Fax number" placeholder="Fax number"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <LocalPrintshopOutlinedIcon />
+                                                        </InputAdornment>
+                                                    }/>
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="extension">Extension</InputLabel>
-                                                        <Field name="extension"  >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="extension"
-                                                                    placeholder={extension}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <PhoneForwardedOutlinedIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setExtension(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.extension && touched.extension && <span class="spanError">{errors.extension}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="phoneNumber" label="Phone number" placeholder="Phone number"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <LocalPrintshopOutlinedIcon />
+                                                        </InputAdornment>
+                                                    }/>
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="faxnumber">Fax Number</InputLabel>
-                                                        <Field name="faxnumber"  >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="faxnumber"
-                                                                    placeholder={faxNumber}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <LocalPrintshopOutlinedIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setFaxNumber(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.faxnumber && touched.faxnumber && <span class="spanError">{errors.faxnumber}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="phoneNumberExtension" label="Extension" placeholder="Extension"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <PhoneForwardedOutlinedIcon />
+                                                        </InputAdornment>
+                                                    }/>
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} md={6}>
-                                                    <FormControl className={classes.margin} fullWidth>
-                                                        <InputLabel htmlFor="mobilephonenumber">Mobile Phonenumber</InputLabel>
-                                                        <Field name="mobilephonenumber"  >
-                                                            {({field}) => (
-                                                                <Input
-                                                                    id="mobilephonenumber"
-                                                                    placeholder={mobileNumber}
-                                                                    startAdornment={
-                                                                        <InputAdornment position="start">
-                                                                            <SmartphoneOutlinedIcon />
-                                                                        </InputAdornment>
-                                                                    }
-                                                                    onChange={setMobileNumber(field.value)}
-                                                                    {...field}
-                                                                />
-                                                            )
-                                                            }
-                                                        </Field>
-                                                        {errors.mobilephonenumber && touched.mobilephonenumber && <span class="spanError">{errors.mobilephonenumber}</span>}
-                                                    </FormControl>
+                                                <Grid item align="center" xs={12} sm={12} md={6}>
+                                                    <FormikField name="mobileNumber" label="Mobile" placeholder="Mobile"
+                                                    startAdornment={
+                                                        <InputAdornment position="start">
+                                                            <SmartphoneOutlinedIcon />
+                                                        </InputAdornment>
+                                                    }/>
                                                 </Grid>
                                             </Grid>
                                         </div>
                                     </CardBody>
-                                    <CardFooter>
-                                        {createUser ? <Button color="danger" onClick={handleCancel}>Cancel</Button> : <Button color="danger" onClick={handleCancelUpdate}>Cancel</Button>}
-                                        {createUser ? <Button color="info" onClick={() => validateForm().then(() => handleCreateUser())}>Create Profile</Button> : <Button color="info" onClick={() => validateForm().then(() => handleUpdateUser())}>Save Profile</Button>}
+                                    <CardFooter className={classes.alignRight}>
+                                        {!createUser && <Button color="danger" onClick={handleCancelUpdate}>Cancel</Button>}
+                                        {createUser ? <Button type="submit" disabled={!isValid || !dirty} color="info">Create Profile</Button> : <Button type="submit" disabled={!isValid || !dirty} color="info">Save Profile</Button>}
                                     </CardFooter>
                                 </Card>
                             </form>
