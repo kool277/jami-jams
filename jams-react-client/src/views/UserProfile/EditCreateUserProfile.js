@@ -11,6 +11,7 @@ import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
+import CardAvatar from "components/Card/CardAvatar.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
@@ -301,7 +302,26 @@ export default function EditCreateUserProfile(props) {
     }
 
     const EditCreateSchema = Yup.object().shape({
-        username: Yup.string().min(2, 'Username is too short!').required('Required!'),
+        username: Yup.string().min(2, 'Username is too short!').required('Required!').test('checkDuplUsername', 'Username exists!', function (value) {
+            if(createUser){
+                return new Promise((resolve, reject) => {
+                        const data = {
+                            "username": value.toLowerCase()
+                        }
+                        axios(configApiCall(api_path_get_exists_user, 'GET', data, null)).then((response) =>{
+                            if(response.status === 200){
+                                resolve(false)
+                            }    
+                            resolve(true)
+                        }).catch((error) => {
+                            console.log("Error checking for existing users: " + error)
+                            resolve(true)
+                        })
+                });
+            }else{
+                return true;
+            }
+        }).matches(/^[a-zA-Z0-9]*$/, 'Only alphanumeric characters!'),
         firstName: Yup.string().min(2, 'First name is too short!'),
         lastName: Yup.string().min(2, 'Last Name is too short!'),
         email: Yup.string().email('Invalid email!'),
@@ -401,46 +421,31 @@ export default function EditCreateUserProfile(props) {
                     <Formik initialValues={initialValues} 
                     onSubmit={handleFormikSubmit}
                     validationSchema={EditCreateSchema}
-                    // validate={values => {
-                    //     const errors = {};
-                    //     // TODO : Find a way to validate username is unique onChange
-                    //     // handleUserExists(values.username )
-                    //     // if (!values.username) {
-                    //     //   errors.email = 'Required';
-                    //     // } else if (
-                    //     //   !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-                    //     // ) {
-                    //     //   errors.email = 'Invalid email address';
-                    //     // }
-                    //     return errors;
-                    //   }}
                     >
                         {({ isValid, dirty, handleSubmit}) => (
                             <form onSubmit={handleSubmit}>
                                 <Card profile>
                                     <CardHeader color="info" stats icon>
-                                        <CardIcon color="info">
-                                            {createUser ? <PersonAddOutlinedIcon /> : <EditIcon />}
-                                        </CardIcon>
                                         <p className={classes.cardCategory}>{createUser ? "Create new profile" : "Edit profile"}</p>
                                         {createUser ? "" : <h3 className={classes.cardTitle}>{userName}</h3>}
                                     </CardHeader>
                                     <CardBody profile>
+                                        <CardAvatar editProfile>
+                                            <img src={profilePicturePreview} alt="..." className={classes.editProfilePicture}/>
+                                        </CardAvatar>
                                         <div className={classes.root}>
+
                                             <Grid container spacing={5}>
                                                 <Grid item xs={12} sm={12} md={12}>
+                                                    <input accept="image/*"  className={classes.input} id="icon-button-file" type="file" onChange={handleProfilePictureChange}/>
+                                                    <label htmlFor="icon-button-file" >
+                                                        <IconButton color="inherit" aria-label="upload picture" component="span" >
+                                                            <PhotoCamera />
+                                                        </IconButton> Change profile image
+                                                    </label>
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} md={12}>
                                                     <Grid container spacing={5} >
-                                                        <Grid item align="center" xs={12} sm={12} md={12} >
-                                                            <img src={profilePicturePreview} alt="..." className={classes.editProfilePicture} />
-                                                        </Grid>
-                                                        <Grid item align="center" xs={12} sm={12} md={12}>
-                                                            <input accept="image/*"  className={classes.input} id="icon-button-file" type="file" onChange={handleProfilePictureChange}/>
-                                                            <label htmlFor="icon-button-file" >
-                                                                <IconButton color="inherit" aria-label="upload picture" component="span" >
-                                                                    <PhotoCamera />
-                                                                </IconButton> Change profile image
-                                                            </label>
-                                                        </Grid>
                                                         {createUser &&
                                                         <Grid item align="center" xs={12} sm={12} md={12}>
                                                             <FormikField name="username" label="Username" placeholder="Username" 
