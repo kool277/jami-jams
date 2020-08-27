@@ -45,7 +45,16 @@ export default function TemporaryDrawer(props) {
          * Get users list to pass to the drawer to add contacts to user or users to group
          */
         axios(configApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null)).then((response)=>{
-            setUsers(response.data)
+            let resp = response.data
+            if(!addingToGroup){
+                let contacts = resp.filter((data)=>{
+                    if(data.username !== props.username)
+                        return data
+                })
+                setUsers(contacts);
+            }
+            else
+                setUsers(resp);
         }).catch((error) =>{
             console.log(error);
             if(error.response.status == 401){

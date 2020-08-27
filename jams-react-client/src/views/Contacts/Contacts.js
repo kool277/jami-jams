@@ -1,48 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from 'react-router-dom';
-import { Switch, Route, Redirect } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import UserProfile from "views/UserProfile/UserProfile.js"
-import Divider from '@material-ui/core/Divider';
 
-import PersonIcon from '@material-ui/icons/Person';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
-import PhoneOutlinedIcon from '@material-ui/icons/PhoneOutlined';
 import BusinessOutlinedIcon from '@material-ui/icons/BusinessOutlined';
 import Search from "@material-ui/icons/Search";
 import IconButton from '@material-ui/core/IconButton';
 
-import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from 'auth.js'
 import { api_path_get_auth_contacts, api_path_get_admin_contacts, api_path_delete_auth_contacts, api_path_delete_admin_contacts } from "globalUrls";
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
-import EditCreateUserProfile from "views/UserProfile/EditCreateUserProfile";
-
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
-
 import TemporaryDrawer from "components/Drawer/Drawer"
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
