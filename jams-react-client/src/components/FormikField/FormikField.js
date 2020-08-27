@@ -18,6 +18,7 @@ class FormikField extends React.Component {
                         name={this.props.name}
                         as={Input}
                         startAdornment={this.props.startAdornment}
+                        endAdornment={this.props.endAdornment}
                         label={this.props.label} 
                         fullWidth
                         type={this.props.type}
@@ -29,6 +30,8 @@ class FormikField extends React.Component {
 }
 
 FormikField.propTypes = {
+    startAdornment: false,
+    endAdornment: false,
     placeholder: PropTypes.string,
     required: false,
     name: PropTypes.string.isRequired,

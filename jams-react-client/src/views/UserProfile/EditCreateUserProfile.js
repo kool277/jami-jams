@@ -62,9 +62,8 @@ import {
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
 import FormikField from 'components/FormikField/FormikField';
-import {Formik, ErrorMessage, Field} from "formik";
+import {Formik} from "formik";
 import * as Yup from 'yup';
-require('yup-phone');
 
 const fileUpload = require('fuctbase64');
 
@@ -408,7 +407,7 @@ export default function EditCreateUserProfile(props) {
                             />
                         </div>
                     </div>
-                    <Button onClick={handleClose} color="danger">
+                    <Button onClick={handleClose} color="info">
                         Cancel
                     </Button>
                     <Button onClick={cropProfilePicture} color="success" autoFocus>
@@ -439,7 +438,7 @@ export default function EditCreateUserProfile(props) {
                                                 <Grid item xs={12} sm={12} md={12}>
                                                     <input accept="image/*"  className={classes.input} id="icon-button-file" type="file" onChange={handleProfilePictureChange}/>
                                                     <label htmlFor="icon-button-file" >
-                                                        <IconButton color="inherit" aria-label="upload picture" component="span" >
+                                                        <IconButton color="info" aria-label="upload picture" component="span" >
                                                             <PhotoCamera />
                                                         </IconButton> Change profile image
                                                     </label>
@@ -529,7 +528,7 @@ export default function EditCreateUserProfile(props) {
                                         </div>
                                     </CardBody>
                                     <CardFooter className={classes.alignRight}>
-                                        {!createUser && <Button color="danger" onClick={handleCancelUpdate}>Cancel</Button>}
+                                        {!createUser && <Button color="info" onClick={handleCancelUpdate}>Cancel</Button>}
                                         {createUser ? <Button type="submit" disabled={!isValid || !dirty} color="info">Create Profile</Button> : <Button type="submit" disabled={!isValid || !dirty} color="info">Save Profile</Button>}
                                     </CardFooter>
                                 </Card>

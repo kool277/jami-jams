@@ -222,7 +222,14 @@ export default function Groups() {
         setSelectedBlueprint(getBlueprintsOptions()[e.target.value])
     }
 
-    if(selectedGroup && auth.hasAdminScope()){
+    if (!auth.hasAdminScope()) {
+        return (
+            <div>
+                <h4>You are not allowed to access this section. Please contact your administrator to get administrator privileges.</h4>
+            </div>
+        )
+    }
+    else if(selectedGroup && auth.hasAdminScope()){
         return(
             <div>
                 <EditGroup
@@ -282,7 +289,7 @@ export default function Groups() {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCloseCreate} color="danger">
+                        <Button onClick={handleCloseCreate} color="info">
                             Cancel
                         </Button>
                         <Button onClick={handleCreateGroup} color="primary" autoFocus>
@@ -306,7 +313,7 @@ export default function Groups() {
                         <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={removeGroup} color="danger" autoFocus>
+                        <Button onClick={removeGroup} color="info" autoFocus>
                             Remove
                         </Button>
                     </DialogActions>

@@ -11,12 +11,11 @@ import {
 
 class Auth {
     constructor() {
-        this.authenticated = false
-        this.admin = false
-        this.installed = false
-        this.uri = ''
-        this.adminScope = true
-        this.username = ''
+        this.authenticated = false;
+        this.admin = false;
+        this.installed = false;
+        this.uri = '';
+        this.username = '';
     }
 
     setJWT(access_token) {
@@ -24,19 +23,37 @@ class Auth {
         window.localStorage.setItem('access_token', access_token);
     }
 
+    setScope(scope) {
+        window.localStorage.removeItem('scope');
+        window.localStorage.setItem('scope', scope);
+    }
+
+    setLocalDirectory(localDirectory) {
+        window.localStorage.removeItem('localDirectory');
+        window.localStorage.setItem('localDirectory', localDirectory);
+    }
+
     deleteJWT(){
         window.localStorage.removeItem('access_token');
+    }
+
+    setUsername(username) {
+        window.localStorage.removeItem('username');
+        window.localStorage.setItem('username', username);        
+    }
+
+    deleteUserhame() {
+        window.localStorage.removeItem('username');
     }
 
     login(jsonData, cb) {
         this.deleteJWT()
         axios(configApiCall(api_path_post_auth_login, "POST", jsonData, null)).then((response) => {
             if(response.status == 200){
-                this.setJWT(response.data['access_token'])
-                this.adminScope = JSON.parse(atob(response.data['access_token'].split('.')[1])).scope == "ADMIN" ? true : false;
-                if(!this.adminScope)
-                    this.username= jsonData.username
-                this.authenticated = true
+                this.setJWT(response.data['access_token']);
+                this.setScope(response.data["scope"] == "ADMIN" ? true : false);
+                this.setUsername(jsonData.username);
+                this.authenticated = true;
             }
             cb()
         }).catch((error) => {
@@ -47,8 +64,7 @@ class Auth {
     logout(cb) {
         this.deleteJWT()
         this.authenticated = false
-        this.username=''
-        this.adminScope = true
+        this.deleteUserhame()
         cb()
     }
 
@@ -57,22 +73,22 @@ class Auth {
     }
 
     isLocalDirectory() {
-        return this.localDirectory
+        return window.localStorage.getItem('localDirectory') === 'true' ? true : false;
     }
 
     checkDirectoryType(cb){
         axios(configApiCall(api_path_get_directories, "GET", null, null)).then((response) => {
             if (response.data.length == 1) {
-                this.localDirectory = true
+                this.setLocalDirectory(true);
             }
             else if (response.data.length == 2){
-                this.localDirectory = false
+                this.setLocalDirectory(false);
             }else{
-                console.log("Error getting on checkDirectoryType: Size of directory types is " + response.data.length)    
+                console.log("Error getting on checkDirectoryType: Size of directory types is " + response.data.length);
             }
             cb()
         }).catch((error) => {
-            console.log("Error getting on checkDirectoryType: " + error)
+            console.log("Error getting on checkDirectoryType: " + error);
             cb()
         });
     }
@@ -80,15 +96,15 @@ class Auth {
     checkAdminAccountStatus(cb) {
         axios(configApiCall(api_path_post_install_admin, "GET", null, null)).then((response) => {
             if (response['headers']['showlogin'] == "true") {
-                this.admin = true
+                this.admin = true;
             }
             cb()
         }).catch((error) => {
             if(error.response.status == 404){
-                this.admin = true
+                this.admin = true;
             }
             else{
-                console.log("Error during API request on checkAdminAccountStatus: " + error)
+                console.log("Error during API request on checkAdminAccountStatus: " + error);
             }
             cb()
         });
@@ -97,11 +113,11 @@ class Auth {
     isServerInstalled(cb) {
         axios(configApiCall(api_path_get_server_status, "GET", null, null)).then((response) => {                       
             if (response.data['installed'] == 'true') {
-                this.installed = true
-                console.log("Server is insalled")
+                this.installed = true;
+                console.log("Server is insalled");
             } else {
-                this.installed = false
-                console.log("Server is not insalled")
+                this.installed = false;
+                console.log("Server is not insalled");
             }
             cb()
         }).catch((error) => {
@@ -116,8 +132,8 @@ class Auth {
             cb()
         }else{
             axios(configApiCall(api_path_get_install_lastKnownStep, 'GET', null, null)).then((response) => {
-                this.uri = response.data['uri']
-                this.authenticated = true
+                this.uri = response.data['uri'];
+                this.authenticated = true;
                 cb()
             }).catch((error) => {
                 console.log("Error during API request on checkLastKnowStep: " + error);
@@ -127,19 +143,19 @@ class Auth {
     }
 
     hasAdmin() {
-        return this.admin
+        return this.admin;
     }
 
     hasAdminScope(){
-        return this.adminScope
+        return window.localStorage.getItem('scope') === 'true' ? true : false;
     }
 
     getUsername(){
-        return this.username
+        return window.localStorage.getItem('username');
     }
 
     isInstalled() {
-        return this.installed
+        return this.installed;
     }
 }
 

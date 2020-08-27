@@ -25,7 +25,7 @@ function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://savoirfairelinux.com/">
+            <Link color="info" href="https://savoirfairelinux.com/">
                 JAMS by Savoir-faire Linux
             </Link>{' '}
             {new Date().getFullYear()}

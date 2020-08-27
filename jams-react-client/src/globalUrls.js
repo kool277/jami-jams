@@ -31,6 +31,7 @@ const api_path_get_needs_update = '/api/admin/update';
 const api_path_get_start_update = '/api/admin/update';
 const api_path_post_create_group = '/api/admin/group';
 const api_path_post_create_user = '/api/admin/user';
+const api_path_put_update_user = '/api/admin/user';
 const api_path_get_auth_user = '/api/auth/user';
 const api_path_get_admin_user = '/api/admin/user';
 const api_path_post_update_user = '/api/auth/user';
@@ -75,6 +76,7 @@ module.exports = {
     api_path_get_needs_update,
     api_path_get_start_update,
     api_path_post_create_user,
+    api_path_put_update_user,
     api_path_get_auth_user,
     api_path_get_admin_user,
     api_path_post_update_user,

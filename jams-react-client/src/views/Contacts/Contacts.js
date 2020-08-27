@@ -182,7 +182,7 @@ export default function Users(props) {
                     <Button onClick={() => setOpen(false)} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={removeContact} color="danger" autoFocus>
+                    <Button onClick={removeContact} color="info" autoFocus>
                         Remove
                     </Button>
                     </DialogActions>

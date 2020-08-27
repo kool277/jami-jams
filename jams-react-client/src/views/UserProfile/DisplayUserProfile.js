@@ -40,7 +40,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import auth from "auth.js"
 import configApiCall from "api.js";
-import { api_path_get_admin_user, api_path_get_auth_user, api_path_get_user_directory_search, api_path_delete_admin_user_revoke} from "globalUrls";
+import { api_path_get_admin_user, 
+    api_path_get_auth_user, 
+    api_path_get_user_directory_search, 
+    api_path_delete_admin_user_revoke, 
+    api_path_put_update_user} from "globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
@@ -48,6 +52,17 @@ import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 import axios from "axios";
 import PersonIcon from "../../../node_modules/@material-ui/icons/Person";
 
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import IconButton from '@material-ui/core/IconButton';
+
+import {Formik} from 'formik';
+import FormikField from 'components/FormikField/FormikField';
+import * as Yup from 'yup';
 
 const styles = (theme)=> ( {
     ...dashboardStyle,
@@ -111,9 +126,7 @@ const styles = (theme)=> ( {
     //     [theme.breakpoints.up('sm')]: {
     //       flexDirection: 'row',
     //       alignItems: 'center',
-    //     },
-    // },
-    // sliderContainer: {
+    //     },passwordSchematainer: {
     //     display: 'flex',
     //     flex: '1',
     //     alignItems: 'center',
@@ -143,6 +156,11 @@ export default function DisplayUserProfile(props) {
     const [userStatus, setUserStatus] = React.useState(false)
     const [open, setOpen] = React.useState(false);
     const [revokedUser, setRevokedUser] = React.useState("");
+    const [changePasswordOpen, setChangePasswordOpen] = React.useState(false)
+    const [currentPassword, setCurrentPassword] = React.useState("");
+    const [visibilityValues, setVisibilityValues] = React.useState({
+        showPassword: false
+    });
 
     const  searchData = {
         "queryString":props.username
@@ -158,13 +176,14 @@ export default function DisplayUserProfile(props) {
                 axios(configApiCall(api_path_get_admin_user, 'GET', userData, null)).then((response)=>{
                         const result = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
                         setUserStatus(result.revoked)
+                        setCurrentPassword(result.password)
                     }
                 ).catch((error) =>{
                     console.log(error);
                 });
             }
             else{
-                axios(configApiCall(api_path_get_auth_user, 'GET', null, null)).then((response)=>{
+                axios(configApiCall(api_path_get_auth_user, 'GET', userData, null)).then((response)=>{
                     const result = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
                     setUserStatus(result.revoked)
                     }
@@ -212,6 +231,34 @@ export default function DisplayUserProfile(props) {
         setOpen(false);
     };
 
+    const handleClosechangePassword = () => {
+        setChangePasswordOpen(false);
+    }
+
+    const changePassword = (values) => {
+        axios(configApiCall(api_path_put_update_user+'?username='+props.username+'&password='+values.password, 'PUT', null, null)).then(()=>{
+            setChangePasswordOpen(false);
+            setCurrentPassword(values.password);
+        }).catch((error)=> {
+            console.log("Updating user " + props.username + ' password failed with error: ' + error);
+        });
+        setChangePasswordOpen(false);
+    }
+
+    const passwordSchema = Yup.object().shape({
+        password: Yup.string().required('Password is required'),
+        passwordConfirmation: Yup.string()
+           .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    });
+
+    const handleClickShowPassword = () => {
+        setVisibilityValues({ ...visibilityValues, showPassword: !visibilityValues.showPassword });
+    };
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
     return (
         <div>
         <Dialog
@@ -230,10 +277,65 @@ export default function DisplayUserProfile(props) {
             <Button onClick={handleClose} color="primary">
                 Cancel
             </Button>
-            <Button onClick={revokeUser} color="danger" autoFocus>
+            <Button onClick={revokeUser} color="info" autoFocus>
                 Revoke
             </Button>
             </DialogActions>
+        </Dialog>
+        <Dialog
+            open={changePasswordOpen}
+            onClose={handleClosechangePassword}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="change-password-dialog">{"Change password"}</DialogTitle>
+            <Formik initialValues={{
+                    password: "",
+                    passwordConfirmation: ""
+                }}
+                validationSchema={passwordSchema}
+                onSubmit={changePassword}
+                >
+                    {({ isValid, dirty, handleSubmit}) => (
+                        <form onSubmit={handleSubmit}>
+            <DialogContent>
+            <DialogContentText id="change-password-description">
+                Password change for <strong>{props.username}</strong>
+            </DialogContentText>           
+                <FormikField 
+                    name="password" 
+                    label="Password" 
+                    placeholder="Password"
+                    type="password"
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <VpnKeyIcon />
+                        </InputAdornment>
+                    }
+                />
+                <FormikField 
+                    name="passwordConfirmation" 
+                    label="Confirm password" 
+                    placeholder="Confirm password"
+                    type="password"
+                    startAdornment={
+                        <InputAdornment position="start">
+                            <VpnKeyIcon />
+                        </InputAdornment>
+                    }
+                />
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={handleClosechangePassword} color="primary">
+                Cancel
+            </Button>
+            <Button type="submit" disable={!isValid && !dirty} color="info" autoFocus>
+                Update password
+            </Button>
+            </DialogActions>
+                </form>
+               )}
+            </Formik>
         </Dialog>
         {users.map(user =>
             <GridContainer>
@@ -341,6 +443,34 @@ export default function DisplayUserProfile(props) {
                                                         primary={user.faxNumber ? user.faxNumber : 'no fax number'}
                                                     />
                                                 </ListItem>
+                                                {auth.isLocalDirectory() && auth.hasAdminScope() && <ListItem>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                        <VpnKeyIcon/>
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        children={
+                                                            <Input
+                                                                disabled
+                                                                id="current-password"
+                                                                type={visibilityValues.showPassword ? 'text' : 'password'}
+                                                                value={currentPassword}
+                                                                endAdornment={
+                                                                <InputAdornment position="end">
+                                                                    <IconButton
+                                                                    aria-label="toggle password visibility"
+                                                                    onClick={handleClickShowPassword}
+                                                                    onMouseDown={handleMouseDownPassword}
+                                                                    >
+                                                                    {visibilityValues.showPassword ? <Visibility /> : <VisibilityOff />}
+                                                                    </IconButton>
+                                                                </InputAdornment>
+                                                                }
+                                                            />
+                                                        }
+                                                    />
+                                                </ListItem>}
                                         </List>
                                     </Grid>
                                 </Grid>
@@ -350,8 +480,11 @@ export default function DisplayUserProfile(props) {
                             {auth.isLocalDirectory() && <Button color="info" onClick={() => props.setDisplayUser(false)}>
                                 <EditIcon /> Edit Profile
                             </Button>}
+                            {auth.isLocalDirectory() && auth.hasAdminScope() && <Button color="info" onClick={() => {setChangePasswordOpen(true);}}>
+                                <VpnKeyIcon /> Change password
+                            </Button>}
                             {auth.hasAdminScope() && (userStatus === "Active" || userStatus === '') &&
-                            <Button color="danger" onClick={() => handleClickOpen(user.username)} >
+                            <Button color="info" onClick={() => handleClickOpen(user.username)} >
                                 <DeleteIcon fontSize="small"/> Revoke user
                             </Button>}
                         </CardFooter>

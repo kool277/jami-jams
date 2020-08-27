@@ -220,7 +220,7 @@ export default function Blueprints() {
                         </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                        <Button onClick={handleClose} color="danger">
+                        <Button onClick={handleClose} color="info">
                             Cancel
                         </Button>
                         <Button onClick={handleCreateBlueprint} color="primary" autoFocus>
@@ -244,7 +244,7 @@ export default function Blueprints() {
                         <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={removeBlueprint} color="danger" autoFocus>
+                        <Button onClick={removeBlueprint} color="info" autoFocus>
                             Remove
                         </Button>
                         </DialogActions>

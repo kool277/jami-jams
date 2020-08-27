@@ -25,7 +25,7 @@ export default function Snackbar(props) {
         className={classes.iconButton}
         key="close"
         aria-label="Close"
-        color="inherit"
+        color="info"
         onClick={() => props.closeNotification()}
       >
         <Close className={classes.close} />

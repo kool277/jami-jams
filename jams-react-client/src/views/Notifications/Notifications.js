@@ -195,10 +195,10 @@ export default function Notifications() {
             />
             <SnackbarContent
               message={
-                'DANGER - This is a regular notification made with color="danger"'
+                'DANGER - This is a regular notification made with color="info"'
               }
               close
-              color="danger"
+              color="info"
             />
             <SnackbarContent
               message={
