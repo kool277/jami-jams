@@ -37,6 +37,7 @@ export default function TemporaryDrawer(props) {
     const history = useHistory();
     const [direction, setDirection] = React.useState(props.direction);
     const [users, setUsers] = React.useState([]);
+    const [existingContacts, setExistingContacts] = React.useState([]);
     const [userAdded, setUserAdded] = React.useState(false);
     let addingToGroup = props.addingToGroup;
 
@@ -44,6 +45,25 @@ export default function TemporaryDrawer(props) {
         /**
          * Get users list to pass to the drawer to add contacts to user or users to group
          */
+
+        axios(configApiCall(api_path_get_admin_contacts+"?username="+props.username, 'GET', null, null)).then((response)=>{
+            /*
+                TODO: Include the username of the user of witch we want to display contacts
+                at the moment the admin sees his contacts in each user profile he visits
+            */
+            let originalContacts = response.data
+            originalContacts.map((contact) => {
+                contact.display = ""
+            })
+            setExistingContacts(originalContacts)
+        }).catch((error) =>{
+            console.log(error);
+            if(error.response.status == 401){
+                auth.authenticated = false
+                history.push('/')
+            }
+        });
+
         axios(configApiCall(api_path_get_user_directory_search, 'GET', {"queryString":"*"}, null)).then((response)=>{
             let resp = response.data
             if(!addingToGroup){
@@ -78,8 +98,8 @@ export default function TemporaryDrawer(props) {
         };
         if(props.isAdmin){
             axios(configApiCall(api_path_get_admin_contacts+"?username="+props.username,'PUT', data, null)).then((response)=>{
+                setUserAdded(true);
                 props.setOpenDrawer(false)
-                props.getAllUsers()
             }).catch((error) =>{
                 console.log("Error adding user: " + error)
                 props.setOpenDrawer(false)
@@ -87,8 +107,8 @@ export default function TemporaryDrawer(props) {
         }
         else {
             axios(configApiCall(api_path_get_auth_contacts, 'PUT', data, null)).then((response)=>{
+                setUserAdded(true);
                 props.setOpenDrawer(false)
-                props.getAllUsers()
             }).catch((error) =>{
                 console.log("Error adding user: " + error)
                 props.setOpenDrawer(false)
@@ -134,18 +154,29 @@ export default function TemporaryDrawer(props) {
     const listUsers = () => (
 
         <List>
-            {users.map((user) => (
+            {
                 addingToGroup
                     ?
-                    <ListItem button key={user.username} onClick={() => {addUserToGroup(user.username)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
-                    </ListItem>
+                    users.map((user) => (
+                        <ListItem button key={user.username} onClick={() => {addUserToGroup(user.username)}} >
+                            <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
+                        </ListItem>
+                    ))
                     :
-                    <ListItem button key={user.username} onClick={() => {addContactToUser(user.firstName, user.lastName, user.id)}} >
-                        <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
-                    </ListItem>
+                    users.filter((data)=>{
+                        var added = false;
+                        existingContacts.forEach((contact) => {
+                            if(contact.uri === data.id)
+                                added = true
+                        })
+                        if(!added)
+                            return data
 
-            ))
+                    }).map((user) => (
+                        <ListItem button key={user.username} onClick={() => {addContactToUser(user.firstName, user.lastName, user.id)}} >
+                            <AddCircleOutlineIcon style={{ marginRight: "10px"}} /><ListItemText primary={user.firstName+" "+user.lastName} />
+                        </ListItem>
+                    ))
             }
         </List>
     );

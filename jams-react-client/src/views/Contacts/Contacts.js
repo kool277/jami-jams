@@ -93,7 +93,7 @@ export default function Users(props) {
                 setLoading(false)
             }).catch((error) =>{
                 console.log(error);
-                if(error.response.status == 401){
+                if(error.response.status === 401){
                     auth.authenticated = false
                     history.push('/')
                 }
@@ -165,8 +165,8 @@ export default function Users(props) {
 
     return(
         <div>
-                <TemporaryDrawer isAdmin={auth.hasAdminScope()} username={props.username} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} getAllContacts={getAllContacts} direction="right"/>
-                <Dialog
+            <TemporaryDrawer isAdmin={auth.hasAdminScope()} username={props.username} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={false} />
+            <Dialog
                     open={open}
                     onClose={() => setOpen(false)}
                     aria-labelledby="alert-dialog-title"
