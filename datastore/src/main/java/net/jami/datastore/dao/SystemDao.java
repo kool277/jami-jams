@@ -30,7 +30,6 @@ import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.system.SystemAccount;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @Slf4j
 public class SystemDao extends AbstractDao<SystemAccount> {

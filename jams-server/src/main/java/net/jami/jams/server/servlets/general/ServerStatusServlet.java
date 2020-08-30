@@ -27,7 +27,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.jami.jams.ca.JamsCA;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.server.Server;
 

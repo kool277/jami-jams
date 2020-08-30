@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.objects.roots.X509Entity;
 import net.jami.jams.common.serialization.database.DatabaseObject;
-import net.jami.jams.common.utils.X509Utils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

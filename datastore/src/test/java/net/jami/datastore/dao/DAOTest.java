@@ -22,7 +22,6 @@
 */
 package net.jami.datastore.dao;
 
-import com.jsoniter.JsonIterator;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
@@ -31,13 +30,11 @@ import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 
 class DAOTest {
 

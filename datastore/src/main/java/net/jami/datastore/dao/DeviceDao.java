@@ -30,7 +30,6 @@ import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.devices.Device;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @Slf4j
 public class DeviceDao extends AbstractDao<Device> {

@@ -30,12 +30,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 //This is an endpoint to manipulate directory entry-data, this make sense only for local setups.
@@ -191,6 +195,21 @@ public class DirectoryEntryServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getParameter("jamiId") != null){
+            StatementList statementList = new StatementList();
+            StatementElement statementElement = new StatementElement("jamiId","=",req.getParameter("jamiId"),null);
+            statementList.addStatement(statementElement);
+            User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            List<UserProfile> userProfiles = new ArrayList<>();
+            userAuthenticationModule.getAuthSources().forEach((k, v) -> {
+                userProfiles.addAll(v.searchUserProfiles(user.getUsername(), "LOGON_NAME"));
+            });
+            if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
+                resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
+            }
+            else resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
+            return;
+        }
         if (req.getParameter("directory") != null && req.getParameter("directoryType") != null) {
             List<UserProfile> profiles = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(req.getParameter("directory"), AuthenticationSourceType.fromString(req.getParameter("directoryType"))))

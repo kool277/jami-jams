@@ -32,7 +32,6 @@ import net.jami.jams.common.authentication.local.LocalAuthSettings;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.jami.NameServer;
-import net.jami.jams.common.serialization.JsoniterRegistry;
 import net.jami.jams.common.server.ServerSettings;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.nameserver.LocalNameServer;

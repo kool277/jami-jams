@@ -1,20 +1,13 @@
 package net.jami.jams.server.core.workflows;
 
-
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.common.authentication.AuthenticationSource;
-import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.user.Group;
-import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
-import net.minidev.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;

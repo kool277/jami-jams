@@ -11,16 +11,15 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.user.*;
-import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
+import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.objects.user.Group;
+import net.jami.jams.common.objects.user.UserGroupMapping;
+import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.server.core.workflows.AddUserToGroupFlow;
-import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
-import net.jami.jams.common.annotations.JsonContent;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.dataStore;

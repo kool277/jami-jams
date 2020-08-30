@@ -1,19 +1,13 @@
 package net.jami.jams.common.objects.user;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.jami.jams.common.serialization.database.DatabaseObject;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Arrays;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor

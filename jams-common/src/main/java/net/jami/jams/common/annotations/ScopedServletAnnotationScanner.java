@@ -22,12 +22,15 @@
 */
 package net.jami.jams.common.annotations;
 
-import javassist.*;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.AttributeInfo;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.annotation.Annotation;
 import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 
 @Slf4j

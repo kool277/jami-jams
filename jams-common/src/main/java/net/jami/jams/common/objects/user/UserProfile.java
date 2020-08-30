@@ -22,7 +22,6 @@
 */
 package net.jami.jams.common.objects.user;
 
-import com.jsoniter.JsonIterator;
 import com.jsoniter.annotation.JsonIgnore;
 import com.jsoniter.output.JsonStream;
 import ezvcard.Ezvcard;

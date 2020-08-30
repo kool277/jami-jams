@@ -22,8 +22,10 @@
 */
 package net.jami.jams.common.objects.responses;
 
+import com.jsoniter.JsonIterator;
 import lombok.Getter;
 import lombok.Setter;
+import net.jami.jams.common.objects.user.PolicyData;
 import net.jami.jams.common.utils.X509Utils;
 
 import java.security.cert.X509Certificate;
@@ -38,7 +40,23 @@ public class DeviceRegistrationResponse {
     private String deviceReceipt;
     private String receiptSignature;
     private String userPhoto;
-    private String policy;
+    //Backward compatibility fix so all the fields are included here.
+    private Boolean allowPeersFromHistory;
+    private Boolean allowPeersFromTrusted;
+    private Boolean proxyEnabled;
+    private String  dhtProxyListUrl;
+    private String  proxyServer;
+    private Boolean accountPublish;
+    private Boolean autoAnswer;
+    private String  turnServer;
+    private String  turnServerUserName;
+    private String  turnServerPassword;
+    private Boolean videoEnabled;
+    private Boolean turnEnabled;
+    private Boolean allowPeersFromContact;
+    private Boolean accountDiscovery;
+    private Boolean peerDiscovery;
+    private Boolean upnpEnabled;
 
     public void setCertificateChain(X509Certificate[] certificateChain){
         StringBuilder stringBuilder = new StringBuilder();
@@ -48,6 +66,26 @@ public class DeviceRegistrationResponse {
         //remove the last \n because it's useless.
         stringBuilder.deleteCharAt(stringBuilder.length()-1);
         this.certificateChain = stringBuilder.toString();
+    }
+
+    public void setPolicyData(String policyData){
+        PolicyData policy = JsonIterator.deserialize(policyData,PolicyData.class);
+        this.allowPeersFromHistory = policy.getAllowPeersFromHistory();
+        this.allowPeersFromTrusted = policy.getAllowPeersFromTrusted();
+        this.proxyEnabled = policy.getProxyEnabled();
+        this.dhtProxyListUrl = policy.getDhtProxyListUrl();
+        this.proxyServer = policy.getProxyServer();
+        this.accountPublish = policy.getAccountPublish();
+        this.autoAnswer = policy.getAutoAnswer();
+        this.turnServer = policy.getTurnServer();
+        this.turnServerUserName = policy.getTurnServerUserName();
+        this.turnServerPassword = policy.getTurnServerPassword();
+        this.videoEnabled = policy.getVideoEnabled();
+        this.turnEnabled = policy.getTurnEnabled();
+        this.allowPeersFromContact = policy.getAllowPeersFromContact();
+        this.accountDiscovery = policy.getAccountDiscovery();
+        this.peerDiscovery = policy.getPeerDiscovery();
+        this.upnpEnabled = policy.getUpnpEnabled();
     }
 
 
