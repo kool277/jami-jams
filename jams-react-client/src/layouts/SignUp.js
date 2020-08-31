@@ -80,9 +80,9 @@ export default function SignUp(props) {
         }else if (step === 1) {
             return <CaSetup setError={setError} setErrorMessage={setErrorMessage} />
         }else if (step === 2) {
-            return <IdentityManagement setError={setError} setErrorMessage={setErrorMessage} />
+            return <IdentityManagement setError={setError} setErrorMessage={setErrorMessage}/>
         }else if (step === 3) {
-            return <ServerParameters setError={setError} setErrorMessage={setErrorMessage} />
+            return <ServerParameters setError={setError} setErrorMessage={setErrorMessage}/>
         }
     }
     return (

@@ -18,11 +18,13 @@
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
 import Group from "@material-ui/icons/Group";
-import AllInbox from "@material-ui/icons/AllInbox"
+import AllInbox from "@material-ui/icons/AllInbox";
+import SettingsIcon from '@material-ui/icons/Settings';
 // core components/views for Admin layout
 import Users from "views/Users/Users.js";
 import Groups from "views/Groups/Groups.js";
 import Blueprints from "views/Blueprints/Blueprints.js";
+import Settings from "views/Settings/Settings.js";
 // core components/views for RTL layout
 
 const dashboardRoutes = [
@@ -48,6 +50,14 @@ const dashboardRoutes = [
     rtlName: "المخططات",
     icon: AllInbox,
     component: Blueprints,
+    layout: "/admin"
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    rtlName: "حضانة بيض",
+    icon: SettingsIcon,
+    component: Settings,
     layout: "/admin"
   },
 ];

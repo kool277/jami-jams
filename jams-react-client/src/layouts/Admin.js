@@ -38,6 +38,7 @@ const switchRoutes = (
     <Redirect from="/admin/u" to="/admin/users" />
     <Redirect from="/admin/g" to="/admin/groups" />
     <Redirect from="/admin/b" to="/admin/blueprints" />
+    <Redirect from="/admin/s" to="/admin/settings" />
 
   </Switch>
 );
