@@ -34,6 +34,7 @@ import net.jami.jams.common.objects.responses.SubscriptionStatusResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.licensing.LicenseService;
+import org.json.JSONObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -58,6 +59,9 @@ public class SubscriptionServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String license = new String(req.getInputStream().readAllBytes());
+        final JSONObject obj = new JSONObject(license);
+        license = obj.getString("base64License");
+
         if(license != null || !license.isBlank()) {
             // create .dat file to be used later
             FileWriter fw = new FileWriter("license.dat");
@@ -70,7 +74,6 @@ public class SubscriptionServlet extends HttpServlet {
                 return;
             }
         }
-
         resp.setStatus(500);
 
     }
