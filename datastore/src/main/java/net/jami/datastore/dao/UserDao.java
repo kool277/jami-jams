@@ -44,8 +44,8 @@ public class UserDao extends AbstractDao<User> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
             PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO users " +
-                "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel, needsPasswordReset) " +
-                " VALUES " + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel, needsPasswordReset, salt) " +
+                " VALUES " + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {

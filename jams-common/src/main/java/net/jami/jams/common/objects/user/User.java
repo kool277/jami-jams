@@ -48,6 +48,7 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
     private String realm; //sort of the domain.
     private AccessLevel accessLevel = AccessLevel.USER;
     private Boolean needsPasswordReset = false;
+    private String salt;
 
     private String ethAddress;
     private String ethKey;
@@ -59,6 +60,7 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
         this.userType = AuthenticationSourceType.valueOf(rs.getString("userType"));
         this.accessLevel = AccessLevel.valueOf(rs.getString("accessLevel"));
         this.needsPasswordReset = Boolean.parseBoolean(rs.getString("needsPasswordReset"));
+        this.salt = rs.getString("salt");
         this.realm = rs.getString("realm");
         this.ethAddress = rs.getString("ethAddress");
         this.ethKey = rs.getString("ethKey");
@@ -115,6 +117,7 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
         }
         ps.setString(10,accessLevel.toString());
         ps.setString(11,needsPasswordReset.toString());
+        ps.setString(12,salt);
         return ps;
     }
 

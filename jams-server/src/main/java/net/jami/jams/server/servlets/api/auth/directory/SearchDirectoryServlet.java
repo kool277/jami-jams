@@ -67,15 +67,18 @@ public class SearchDirectoryServlet extends HttpServlet {
             else {
                 profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
                 List<UserProfile> profiles2 = v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME");
-                for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext();) {
-                    UserProfile p = it.next();
-                    for (UserProfile p2: profiles2) {
-                        if (p2.equals(p))
-                            it.remove();
+                if (profiles != null) {
+                    for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
+                        UserProfile p = it.next();
+                        for (UserProfile p2 : profiles2) {
+                            if (p2.equals(p))
+                                it.remove();
+                        }
                     }
                 }
 
-
+                if (profiles == null)
+                    profiles = new ArrayList<>();
                 profiles.addAll(profiles2);
             }
 
@@ -110,7 +113,7 @@ public class SearchDirectoryServlet extends HttpServlet {
                     String[] splits = mapping.getGroups().split(",");
 
                     for (int i = 0; i < splits.length; i++)
-                       list.add(splits[i]);
+                        list.add(splits[i]);
 
                 }
 

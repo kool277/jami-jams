@@ -30,12 +30,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.authmodule.PasswordUtil;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.requests.CredentialsRequest;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
 
@@ -72,7 +74,7 @@ public class StartInstallServlet extends HttpServlet {
         else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
 
-    //This is the ONLY case where we write directy to the DB
+    //This is the ONLY case where we write directly to the DB
     @Override
     @JsonContent
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -82,14 +84,18 @@ public class StartInstallServlet extends HttpServlet {
         }
         CredentialsRequest credentialsRequest = JsonIterator.deserialize(req.getInputStream().readAllBytes(),CredentialsRequest.class);
         //The admin user has no X509 properties.
+        byte[] salt = PasswordUtil.generateSalt();
+        String pw = PasswordUtil.hashPassword(credentialsRequest.getPassword(), salt);
+
         User user = new User();
         user.setUsername(credentialsRequest.getUsername());
-        user.setPassword(credentialsRequest.getPassword());
+        user.setPassword(pw);
+        user.setSalt(Base64.encodeBase64String(salt));
         user.setUserType(AuthenticationSourceType.LOCAL);
         user.setRealm("LOCAL");
         user.setAccessLevel(AccessLevel.ADMIN);
         dataStore.getUserDao().storeObject(user);
-        AuthTokenResponse res = processUsernamePasswordAuth(user.getUsername(),user.getPassword());
+        AuthTokenResponse res = processUsernamePasswordAuth(user.getUsername(), credentialsRequest.getPassword());
         CachedObjects.endpoint = "/api/install/ca";
         resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }

@@ -30,11 +30,16 @@ import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 class DAOTest {
 
@@ -61,7 +66,11 @@ class DAOTest {
         User user = new User();
         user.setUsername("fsidokhine");
         user.setUserType(AuthenticationSourceType.LOCAL);
-        user.setPassword("abc123");
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        user.setSalt(Base64.encodeBase64String(salt));
+        user.setPassword(hashPassword("abc123", salt));
         user.setAccessLevel(AccessLevel.ADMIN);
         user.setCertificate(X509Utils.getCertificateFromPEMString(strCertificate));
         user.setPrivateKey(X509Utils.getKeyFromPEMString(strPrivateKey));
@@ -96,7 +105,11 @@ class DAOTest {
         User user = new User();
         user.setUsername("admin");
         user.setUserType(AuthenticationSourceType.LOCAL);
-        user.setPassword("abc123");
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        user.setSalt(Base64.encodeBase64String(salt));
+        user.setPassword(hashPassword("abc123", salt));
         user.setAccessLevel(AccessLevel.ADMIN);
         UserDao userDAO = new UserDao();
         userDAO.storeObject(user);
@@ -106,5 +119,17 @@ class DAOTest {
         User user1 = userDAO.getObjects(statementList).get(0);
         Assertions.assertNotNull(user1);
         Assertions.assertEquals(user1.getAccessLevel(),AccessLevel.ADMIN);
+    }
+
+    public static String hashPassword(String password, byte[] salt){
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(salt);
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            return new String(Hex.encode(hash));
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 }

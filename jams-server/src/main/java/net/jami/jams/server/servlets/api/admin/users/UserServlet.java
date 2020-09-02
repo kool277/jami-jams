@@ -28,6 +28,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.authmodule.PasswordUtil;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -36,8 +37,8 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.utils.PasswordGenerator;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -66,9 +67,9 @@ public class UserServlet extends HttpServlet {
             else user.setRevoked(false);
 
             if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
-                String password = PasswordGenerator.generatePassword();
+                String pw = PasswordUtil.hashPassword(req.getParameter("password"), Base64.decodeBase64(user.getSalt()));
                 StatementList update = new StatementList();
-                StatementElement st0 = new StatementElement("password", "=", password, "");
+                StatementElement st0 = new StatementElement("password", "=", pw, "");
                 update.addStatement(st0);
                 StatementList constraint = new StatementList();
                 StatementElement st = new StatementElement("username", "=", req.getParameter("username"), "");
@@ -90,11 +91,14 @@ public class UserServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pw = req.getParameter("password");
         User user = new User();
         user.setUsername(req.getParameter("username"));
         user.setNeedsPasswordReset(true);
-        String pw = PasswordGenerator.generatePassword();
+        byte[] salt = PasswordUtil.generateSalt();
+        pw = PasswordUtil.hashPassword(pw, salt);
         user.setPassword(pw);
+        user.setSalt(Base64.encodeBase64String(salt));
         user.setRealm("LOCAL");
         user.setUserType(AuthenticationSourceType.LOCAL);
         if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)){
@@ -117,7 +121,7 @@ public class UserServlet extends HttpServlet {
             return;
         }
         StatementList update = new StatementList();
-        StatementElement st0 = new StatementElement("password","=",req.getParameter("password"),"");
+        StatementElement st0 = new StatementElement("password","=",PasswordUtil.hashPassword(req.getParameter("password"), Base64.decodeBase64(dataStore.getUserDao().getObjects(null).get(0).getSalt())),"");
         update.addStatement(st0);
         StatementList constraint = new StatementList();
         StatementElement st1 = new StatementElement("username","=",username,"");

@@ -85,21 +85,22 @@ public class DirectoryEntryServlet extends HttpServlet {
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, SecurityException {
         //Update a user's profile.
         //Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
         UserProfile userProfile = JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
         StatementList select = new StatementList();
-        StatementElement st = new StatementElement("username","=",userProfile.getUsername(),"");
+        StatementElement st = new StatementElement("username", "=", userProfile.getUsername(), "");
         select.addStatement(st);
-        if(dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL){
-            resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
+        if (dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL) {
+            resp.sendError(500, "The user is not a local user, therefore we cannot change his data!");
             return;
         }
-        if(dataStore.updateUserProfile(userProfile))
+        if (dataStore.updateUserProfile(userProfile)) {
             resp.setStatus(200);
-        else resp.sendError(500,"could not update the users's profile information");
-
+        } else {
+            resp.sendError(500, "could not update the users's profile information");
+        }
     }
 
     @Override

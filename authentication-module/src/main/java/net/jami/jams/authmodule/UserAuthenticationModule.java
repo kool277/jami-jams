@@ -38,6 +38,7 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.common.utils.X509Utils;
+import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.cert.X509CRLHolder;
 
 import java.io.File;
@@ -139,6 +140,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
             StatementElement statementElement = new StatementElement("username","=",username,"");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
+            if((user.getUserType() == AuthenticationSourceType.LOCAL)) password = PasswordUtil.hashPassword(password, Base64.decodeBase64(user.getSalt()));
             if(authenticationSources.get(new AuthModuleKey(user.getRealm(),user.getUserType()))
                     .authenticate(username,password))
                 return tokenController.getToken(user,null);
@@ -147,6 +149,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
         //from, so we have to infer (this is only really true for "users", all others are usually pre-marked)
         //This is also the case when we store the user into the DAO - because he never existed before.
         for(AuthModuleKey key : authenticationSources.keySet()){
+            if(key.getType() == AuthenticationSourceType.LOCAL) password = PasswordUtil.hashPassword(password, new byte[16]);
             if(authenticationSources.get(key).authenticate(username,password)){
                 User user = new User();
                 user.setUsername(username);
