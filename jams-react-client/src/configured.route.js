@@ -26,6 +26,8 @@ export const ConfiguredRoute = ({ component: Component, ...rest }) => {
                             console.log('Error no matching path for configuration')
                         }
                         
+                    }else {
+                        return <SignIn />
                     }
                 } else {
                     return <SignUp step={0}/>

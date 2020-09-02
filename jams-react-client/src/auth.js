@@ -143,7 +143,13 @@ class Auth {
                 this.authenticated = true;
                 cb()
             }).catch((error) => {
-                console.log("Error during API request on checkLastKnownStep: " + error);
+                if(error.response.status == 401){
+                    this.authenticated = false;
+                    console.log("Error during API request on checkLastKnowStep not authenticated!");
+                }
+                else{
+                    console.log("Error during API request on checkLastKnowStep: " + error);
+                }
                 cb()
             })
         }
