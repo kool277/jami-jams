@@ -19,10 +19,23 @@ import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/logo-jams.svg";
 
 import auth from 'auth'
+import configApiCall from "api.js";
+import { api_path_get_start_update, api_path_get_subscription_status } from "globalUrls";
+
+import axios from "axios";
+
 import ReactDOM from "react-dom";
 import {ConfiguredRoute} from "../configured.route";
 import SignIn from "./SignIn";
 import {ProtectedRoute} from "../protected.route";
+import Dialog from "@material-ui/core/Dialog/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import {Field, Formik} from "formik";
+import DialogContent from "@material-ui/core/DialogContent/DialogContent";
+import TextField from "@material-ui/core/TextField/TextField";
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
+import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
+import Button from '@material-ui/core/Button';
 
 let ps;
 
@@ -63,13 +76,17 @@ export default function Admin({ ...rest }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false)
-
   const [signedUp, setSignedUp] = React.useState(false);
   const [signedIn, setSignedIn] = React.useState(false);
   const [token, setToken] = React.useState(false);
   const [severity, setSeverity] = React.useState("success")
-
-
+  const [openUpdate, setOpenUpdate] = React.useState(false)
+  const [dialogMessage, setDialogMessage] = React.useState("")
+  const [messageYes, setMessageYes] = React.useState("")
+  const [messageNo, setMessageNo] = React.useState("")
+  const [updating, setUpdating] = React.useState(false);
+  const [query, setQuery] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState("");
 
   const handleImageClick = image => {
     setImage(image);
@@ -95,6 +112,20 @@ export default function Admin({ ...rest }) {
       setMobileOpen(false);
     }
   };
+
+  const handleQuery = () => {
+    setQuery(true);
+    if (auth.isActivated()) {
+        setDialogMessage("A new version of JAMS is available. Would you like to update now?")
+        setMessageYes("Update Now")
+        setMessageNo("Update Later")
+    } else {
+        setDialogMessage("You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?")
+        setMessageYes("Yes, go to Jami Store")
+        setMessageNo("No thanks")
+    }
+  }
+
   // initialize and destroy the PerfectScrollbar plugin
   React.useEffect(() => {
 
@@ -122,10 +153,50 @@ export default function Admin({ ...rest }) {
       }
       window.removeEventListener("resize", resizeFunction);
     };
-  }, [mainPanel]);
+  }, [openUpdate, mainPanel]);
+
+
+
+  const handleCancel = () => {
+    setOpenUpdate(false);
+  }
+
+  const handleUpdate = () => {
+      setQuery(false)
+      if (auth.isActivated()) {
+          setSnackbarMessage("Updating JAMS, shutting down shortly...")
+          axios(configApiCall(api_path_get_start_update, 'POST', null, null)).then(() => {
+              handleCancel()
+              setUpdating(true)
+          }).catch((error) => {
+              setSnackbarMessage("Error while attempting to update JAMS: " + error)
+          })
+      }
+  }
 
   return (
     <div className={classes.wrapper}>
+      <Dialog open={openUpdate} onClose={handleCancel} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-revoke-dialog-title">Jams Update</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+              {dialogMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={e => {
+              if (auth.isActivated())
+                  handleUpdate()
+              else
+                  window.location.href ='https://staging.jami.biz/'
+        }} color="primary">
+            {messageYes}
+          </Button>
+          <Button onClick={handleCancel} color="primary">
+            {messageNo}
+        </Button>
+        </DialogActions>
+      </Dialog>
       <Sidebar
         routes={routes}
         logoText={"Jams"}
@@ -134,6 +205,10 @@ export default function Admin({ ...rest }) {
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
         color={color}
+        handleQuery={handleQuery}
+        updating={updating}
+        snackbarMessage={snackbarMessage}
+        setOpenUpdate={setOpenUpdate}
         {...rest}
       />
 

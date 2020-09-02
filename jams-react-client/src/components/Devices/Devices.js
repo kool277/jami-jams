@@ -271,7 +271,7 @@ export default function Devices(props) {
                 <DialogTitle id="form-revoke-dialog-title">Revoke Device</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to revoke this device!?
+                        Are you sure you want to revoke this device?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

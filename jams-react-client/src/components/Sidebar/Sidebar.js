@@ -12,7 +12,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
-import Button from '@material-ui/core/Button';
+
 // core components
 import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.js";
 import RTLNavbarLinks from "components/Navbars/RTLNavbarLinks.js";
@@ -21,11 +21,9 @@ import UpdateIcon from '@material-ui/icons/Update';
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js";
 
-import configApiCall from "api.js";
 import auth from "auth";
-import { api_path_get_start_update } from "globalUrls";
-import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+
 
 const useStyles = makeStyles(styles);
 
@@ -33,8 +31,6 @@ export default function Sidebar(props) {
   const classes = useStyles();
   const mainPanel = React.createRef();
   const [open, setOpen] = React.useState(false);
-  const [updating, setUpdating] = React.useState(false);
-  const [message, setMessage] = React.useState(false)
   const history = useHistory();
 
   const handleCloseProfile = () => {
@@ -46,21 +42,12 @@ export default function Sidebar(props) {
     history.push(layout+path.substring(0, 2))
   };
 
-  const handleUpdate = () => {
-      setMessage("Updating JAMS, shutting down shortly...")
-      axios(configApiCall(api_path_get_start_update, 'POST', null, null)).then(()=>{
-          setUpdating(true)
-      }).catch((error) => {
-          setMessage("Error while attempting to update JAMS: " + error)
-      })
-  }
+  React.useEffect(() => {
 
-    React.useEffect(() => {
+      if(auth.isUpdateAvailable())
+          setOpen(true)
 
-        if(auth.isUpdateAvailable())
-            setOpen(true)
-
-    }, [mainPanel]);
+  }, [mainPanel]);
   
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
@@ -87,14 +74,13 @@ export default function Sidebar(props) {
         });
         return (
             <div className={classes.wrapper}>
-              {updating &&<Snackbar
+              {props.updating && <Snackbar
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   open={open}
-                  message={message}
+                  message={props.snackbarMessage}
                   key={'bottomright'}
               >
               </Snackbar>}
-
 
               <NavLink
                 to={prop.layout + prop.path}
@@ -132,7 +118,10 @@ export default function Sidebar(props) {
       })}
 
       {open &&
-        <ListItem button className={classes.itemLink} onClick={handleUpdate}>
+        <ListItem button className={classes.itemLink} onClick={e => {
+            props.handleQuery()
+            props.setOpenUpdate(true)
+            }}>
             <Icon
             className={classNames(classes.itemIcon, {
                 [classes.itemIconRTL]: false
