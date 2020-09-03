@@ -285,7 +285,8 @@ export default function EditBlueprintConfiguration(props) {
                                         <Input
                                         disabled={!turnEnabled}
                                         id="turnServerPassword"
-                                        placeholder={turnServerPassword}
+                                        placeholder="****"
+                                        type="password"
                                         startAdornment={
                                             <InputAdornment position="start">
                                             <VpnKeyOutlinedIcon />
