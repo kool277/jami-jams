@@ -86,9 +86,11 @@ export default function Blueprints() {
     const [progress, setProgress] = React.useState(0);
     const [searchValue, setSearchValue] = React.useState(false)
 
-    const [blueprintName, setBlueprintName] = React.useState()
-    const [blueprintNameExits, setBlueprintNameExits,] = React.useState()
+    const [blueprintName, setBlueprintName] = React.useState("")
+    const [blueprintNameExits, setBlueprintNameExits] = React.useState()
     const [open, setOpen] = React.useState(false)
+
+    const [disableCreate, setDisableCreate] = React.useState(false);
 
     const [removedBlueprint, setRemovedBlueprint] = React.useState()
     const [openRemoveDialog, setOpenRemoveDialog] = React.useState()
@@ -133,10 +135,14 @@ export default function Blueprints() {
     }
 
     const handleCheckBlueprintNameExists = (searchBlueprintNameValue) => {
+        setDisableCreate(true);
         axios(configApiCall(api_path_blueprints+"?name="+searchBlueprintNameValue, 'GET', null, null)).then((response)=>{
-            setBlueprintNameExits(false)
+            setDisableCreate(true);
+            setBlueprintNameExits(true);
         }).catch((error) =>{
-            setBlueprintNameExits(true)
+            console.log(error);
+            setDisableCreate(false);
+            setBlueprintNameExits(false);
         });
     }
 
@@ -204,26 +210,27 @@ export default function Blueprints() {
                                     <InputLabel htmlFor="blueprintName">Blueprint name</InputLabel>
                                     <Input
                                     id="blueprintName"
-                                    placeholder={blueprintName}
+                                    placeholder="Blueprint Name"
                                     startAdornment={
                                         <InputAdornment position="start">
                                         <AllInbox />
                                         </InputAdornment>   
                                     }
                                     onChange={e => {
-                                        const searchBlueprintNameValue = e.target.value;
-                                        setBlueprintName(searchBlueprintNameValue);
-                                        initCheckBlueprintNameExists(blueprintName);
+                                        setBlueprintName(e.target.value);
+                                        initCheckBlueprintNameExists(e.target.value);
                                     }}
                                     />
                             </FormControl>
+                            {disableCreate && blueprintName.length > 0 && <p>Bluerpint name already exists!</p>}
+                            {disableCreate && blueprintName.length == 0 && <p>Bluerpint name is empty</p>}
                         </DialogContentText>
                         </DialogContent>
                         <DialogActions>
                         <Button onClick={handleClose} color="info">
                             Cancel
                         </Button>
-                        <Button onClick={handleCreateBlueprint} color="primary" autoFocus>
+                        <Button onClick={handleCreateBlueprint} color="primary" disabled={disableCreate} autoFocus>
                             Create
                         </Button>
                         </DialogActions>
