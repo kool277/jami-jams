@@ -425,7 +425,7 @@ export default function EditCreateUserProfile(props) {
                             <form onSubmit={handleSubmit}>
                                 <Card profile>
                                     <CardHeader color="info" stats icon>
-                                        <p className={classes.cardCategory}>{createUser ? "Create new profile" : "Edit profile"}</p>
+                                        <p className={classes.cardCategory}>{createUser ? "Create user" : "Edit user"}</p>
                                         {createUser ? "" : <h3 className={classes.cardTitle}>{userName}</h3>}
                                     </CardHeader>
                                     <CardBody profile>
@@ -529,7 +529,7 @@ export default function EditCreateUserProfile(props) {
                                     </CardBody>
                                     <CardFooter className={classes.alignRight}>
                                         {!createUser && <Button color="info" onClick={handleCancelUpdate}>Cancel</Button>}
-                                        {createUser ? <Button type="submit" disabled={!isValid || !dirty} color="info">Create Profile</Button> : <Button type="submit" disabled={!isValid || !dirty} color="info">Save Profile</Button>}
+                                        {createUser ? <Button type="submit" disabled={!isValid || !dirty} color="info">Create user</Button> : <Button type="submit" disabled={!isValid || !dirty} color="info">Save user</Button>}
                                     </CardFooter>
                                 </Card>
                             </form>
