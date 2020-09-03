@@ -217,7 +217,7 @@ export default function EditGroup(props) {
 
     return(
         <div>
-            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={true} groupName={name === ''?props.groupName:name} selectedBlueprint={blueprint} getGroup={getGroup} blueprintsOptions={props.getBlueprintsOptions()}/>
+            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={true} placeholder="Add user ..." groupName={name === ''?props.groupName:name} selectedBlueprint={blueprint} getGroup={getGroup} blueprintsOptions={props.getBlueprintsOptions()}/>
             <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                     <Card profile>

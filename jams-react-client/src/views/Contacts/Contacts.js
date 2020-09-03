@@ -165,7 +165,7 @@ export default function Users(props) {
 
     return(
         <div>
-            <TemporaryDrawer isAdmin={auth.hasAdminScope()} username={props.username} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={false} />
+            <TemporaryDrawer isAdmin={auth.hasAdminScope()} username={props.username} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={false} placeholder="Add contact ..." />
             <Dialog
                     open={open}
                     onClose={() => setOpen(false)}

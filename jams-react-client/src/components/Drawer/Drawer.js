@@ -208,7 +208,7 @@ export default function TemporaryDrawer(props) {
                                     className: classes.margin + " " + classes.search
                                 }}
                                 inputProps={{
-                                    placeholder: "Add a contact ...",
+                                    placeholder: props.placeholder,
                                     inputProps: {
                                         "aria-label": "Add a contact"
                                     },
