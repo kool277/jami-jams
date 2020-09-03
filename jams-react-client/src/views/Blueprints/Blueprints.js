@@ -90,7 +90,7 @@ export default function Blueprints() {
     const [blueprintNameExits, setBlueprintNameExits] = React.useState()
     const [open, setOpen] = React.useState(false)
 
-    const [disableCreate, setDisableCreate] = React.useState(false);
+    const [disableCreate, setDisableCreate] = React.useState(true);
 
     const [removedBlueprint, setRemovedBlueprint] = React.useState()
     const [openRemoveDialog, setOpenRemoveDialog] = React.useState()
@@ -156,6 +156,7 @@ export default function Blueprints() {
 
         axios(configApiCall(api_path_blueprints+"?name="+blueprintName+"&policyData=", 'POST', null, null)).then((response)=>{
             setOpen(false);
+            setDisableCreate(true);
             console.log("Successfully created"  + blueprintName)
         }).catch((error) =>{
             setOpen(false);
