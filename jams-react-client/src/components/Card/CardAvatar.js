@@ -14,10 +14,11 @@ const useStyles = makeStyles(styles);
 
 export default function CardAvatar(props) {
   const classes = useStyles();
-  const { children, className, plain, profile, editProfile, ...rest } = props;
+  const { children, className, plain, profile, displayProfile, editProfile, ...rest } = props;
   const cardAvatarClasses = classNames({
     [classes.cardAvatar]: true,
     [classes.cardAvatarProfile]: profile,
+    [classes.cardAvatarDisplayProfile]: displayProfile,
     [classes.cardAvatarEditProfile]: editProfile,
     [classes.cardAvatarPlain]: plain,
     [className]: className !== undefined
@@ -33,6 +34,7 @@ CardAvatar.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
   profile: PropTypes.bool,
+  displayProfile: PropTypes.bool,
   editProfile: PropTypes.bool,
   plain: PropTypes.bool
 };

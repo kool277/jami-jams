@@ -157,7 +157,7 @@ export default function Users() {
     else {
         return (
             <div>
-                <GridContainer>
+                <GridContainer >
                     <GridItem xs={12} sm={12} md={12}>
                         {auth.isLocalDirectory() &&
                             <Button variant="contained" color="primary" href="#contained-buttons" onClick={e => setCreateUser(true)}>
@@ -189,7 +189,7 @@ export default function Users() {
                         if(a.username > b.username) { return 1; }
                         return 0;
                     }).map(user =>
-                    <GridItem xs={12} sm={12} md={2} key={user.username}>
+                    <GridItem xs={12} sm={12} md={2} key={user.username} wrap="nowrap">
                             
                                 <Card profile>
                                     <CardBody profile>

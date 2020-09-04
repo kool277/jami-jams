@@ -32,6 +32,7 @@ import PermIdentityOutlinedIcon from '@material-ui/icons/PermIdentityOutlined';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -63,6 +64,7 @@ import IconButton from '@material-ui/core/IconButton';
 import {Formik} from 'formik';
 import FormikField from 'components/FormikField/FormikField';
 import * as Yup from 'yup';
+import CardAvatar from "components/Card/CardAvatar";
 
 const styles = (theme)=> ( {
     ...dashboardStyle,
@@ -202,9 +204,9 @@ export default function DisplayUserProfile(props) {
 
     const getUserStatus = (user) => {
         if(userStatus === false) {
-            return <Chip label="Active" avatar={<Avatar alt={user.username} src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} />} color="primary" deleteIcon={<DoneIcon />}/>
+            return <Chip style={{ flex: 1 }} label="Active" variant="outlined" clickable={false} />
         }else{
-            return <Chip label="Revoked" avatar={<Avatar alt={user.username} src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} />} deleteIcon={<DoneIcon />}/>            
+            return <Chip style={{ flex: 1 }} label="Revoked" variant="outlined" clickable={false} disabled/>            
         }
     }
 
@@ -341,20 +343,17 @@ export default function DisplayUserProfile(props) {
             <GridContainer>
                 <Grid item xs={12} sm={12} md={8}>
                     <Card profile>
-                        <CardHeader color="info" stats icon>
-                            <CardIcon color="info">
-                                <PermIdentityOutlinedIcon />
-                            </CardIcon>
-                            <p className={classes.cardCategory}>{"Profile information"}</p>
-                            <h3 className={classes.cardTitle}>{user.username}</h3>
-                            {getUserStatus(user)}
-                        </CardHeader>
                         <CardBody profile>
                             <div className={classes.root}>
                                 <Grid container spacing={2}>
-                                    <Grid item align="center" xs={12} sm={12} md={12}>
-                                        <img src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} className={classes.editProfilePicture} alt="..." />
-                                        <h4>{user.username ? user.username : 'no username'}</h4>
+                                    <Grid item xs={12} sm={12} md={6}>
+                                        <CardAvatar displayProfile>
+                                            <img src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} className={classes.editProfilePicture} alt="..." />
+                                        </CardAvatar>
+                                    </Grid>
+                                    <Grid item xs={12} sm={12} md={6}>
+                                        <h3 className={classes.cardTitle} >{user.username ? user.username : 'no username'}</h3>
+                                        {getUserStatus(user)}
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={6}>
                                         <List dense={false}>
@@ -371,11 +370,11 @@ export default function DisplayUserProfile(props) {
                                                 <ListItem>
                                                     <ListItemAvatar>
                                                         <Avatar>
-                                                        <PersonOutlinedIcon/>
+                                                        <PhoneInTalkOutlinedIcon/>
                                                         </Avatar>
                                                     </ListItemAvatar>
                                                     <ListItemText
-                                                        primary={user.lastName ? user.lastName : 'no lastname'}
+                                                        primary={user.phoneNumber ? user.phoneNumber : 'no phone number'}
                                                     />
                                                 </ListItem>
                                                 <ListItem>
@@ -406,11 +405,11 @@ export default function DisplayUserProfile(props) {
                                                 <ListItem>
                                                     <ListItemAvatar>
                                                         <Avatar>
-                                                        <PhoneInTalkOutlinedIcon/>
+                                                        <PersonOutlinedIcon/>
                                                         </Avatar>
                                                     </ListItemAvatar>
                                                     <ListItemText
-                                                        primary={user.phoneNumber ? user.phoneNumber : 'no phone number'}
+                                                        primary={user.lastName ? user.lastName : 'no lastname'}
                                                     />
                                                 </ListItem>
                                                 <ListItem>
