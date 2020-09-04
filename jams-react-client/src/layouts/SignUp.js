@@ -24,14 +24,14 @@ function Alert(props) {
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="info" href="https://savoirfairelinux.com/">
-                JAMS by Savoir-faire Linux
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
+        {'Copyright © '}
+    {new Date().getFullYear() + ' '}
+<Link color="info" href="https://savoirfairelinux.com">
+        Savoir-Faire-Linux
+        </Link>{' '}
+    {'.'}
+</Typography>
+);
 }
 
 const useStyles = makeStyles((theme) => ({
