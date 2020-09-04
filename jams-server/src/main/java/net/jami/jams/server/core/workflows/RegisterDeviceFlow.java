@@ -70,13 +70,19 @@ public class RegisterDeviceFlow {
             dataStore.getDeviceDao().storeObject(device);
             //Now we build this response out.
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
-            userProfile.getGroupMemberships().forEach(e -> {
-                StatementElement st = new StatementElement("name", "=", e, "");
-                StatementList statementList1 = new StatementList();
-                statementList1.addStatement(st);
-                Policy policy = dataStore.getPolicyDao().getObjects(statementList1).get(0);
-                response.setPolicyData(policy.getPolicyData());
-            });
+            if(userProfile.getGroupMemberships() != null) {
+                userProfile.getGroupMemberships().forEach(e -> {
+                    StatementElement st = new StatementElement("name", "=", e, "");
+                    StatementList statementList1 = new StatementList();
+                    statementList1.addStatement(st);
+                    try {
+                        Policy policy = dataStore.getPolicyDao().getObjects(statementList1).get(0);
+                        response.setPolicyData(policy.getPolicyData());
+                    } catch (Exception e1) {
+                        log.warn("No policy available for user - not adding a policy component to response");
+                    }
+                });
+            }
             //We need to set the device receipt....
             String[] devReceipt = DeviceReceiptGenerator.generateReceipt(user.getPrivateKey(), user.getCertificate().getPublicKey(),
                     device.getCertificate().getPublicKey(), user.getEthAddress());
