@@ -63,6 +63,15 @@ const styles = {
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
         marginBottom: "3px",
         textDecoration: "none"
+    },
+    deleteIcon : {
+        float: "right"
+    },  
+    search : {
+        width: "90%"
+    },
+    loading: {
+        width: '100%',
     }
 };
 
@@ -122,9 +131,6 @@ export default function Groups() {
                 setZeroGroup(true);
             else{
                 setZeroGroup(false);
-                allGroups.map((group) => {
-                    group.display = ""
-                })
             }
             setGroups(allGroups)
             setLoading(false)
@@ -159,12 +165,6 @@ export default function Groups() {
         e.preventDefault()
         setSelectedGroup(true);
         setSelectedGroupName(name)
-    }
-
-    const redirectToGroupList = (e) => {
-        e.preventDefault()
-        setSelectedGroup(false);
-        history.push('/admin/groups')
     }
 
     const handleCheckGroupNameExists = (searchGroupNameValue) => {
@@ -353,40 +353,41 @@ export default function Groups() {
                             ?
                             groups.filter((data)=>{
                                 if(searchValue === null){
-                                    return data
-                                }
-                                else if((data.name != null ) && data.name.toLowerCase().includes(searchValue.toLowerCase())
-                                ){
-                                    return data
+                                    return data;
+                                } else {
+                                    return data.name.toLowerCase().includes(searchValue.toLowerCase());
                                 }
                             }).map(group =>
-                                <GridItem xs={12} sm={12} md={2} key={group.name} style={{display: group.display}}>
+                                <GridItem xs={12} sm={12} md={2} key={group.name} >
                                     <Card profile>
                                         <CardBody profile>
-                                            <h3 className={classes.cardTitle}>{group.name}</h3>
-                                            <ul>
-                                                <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
-                                                <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{group.blueprint}</li>
-                                            </ul>
+                                            <a href="#" onClick={(e) => redirectToGroup(e, group.name)}>
+                                                <h3 className={classes.cardTitle}>{group.name}</h3>
+                                                <ul>
+                                                    <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{group.groupMembers.length}</strong>users</li>
+                                                    <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{group.blueprint}</li>
+                                                </ul>
+                                            </a>
                                         </CardBody>
                                         <CardFooter>
-                                            <IconButton color="primary" onClick={ (e) => redirectToGroup(e, group.name)}><EditOutlinedIcon /></IconButton>
+
                                             <IconButton color="secondary" onClick={ () => {handleRemoveGroup(group.name)}}><DeleteOutlineIcon /></IconButton>
                                         </CardFooter>
                                     </Card>
                                 </GridItem>)
                             :
-                            <GridItem xs={12} sm={12} md={2} key={groups.name} style={{display: groups.display}}>
+                            <GridItem xs={12} sm={12} md={2} key={groups.name}>
                                 <Card profile>
                                     <CardBody profile>
-                                        <h3 className={classes.cardTitle}>{groups.name}</h3>
-                                        <ul>
-                                            <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{typeof groups.groupMembers !== 'undefined' ? groups.groupMembers : 0 }</strong>users</li>
-                                            <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{selectedBlueprint.label}</li>
-                                        </ul>
+                                        <a href="#" onClick={(e) => redirectToGroup(e, groups.name)}>
+                                            <h3 className={classes.cardTitle}>{groups.name}</h3>
+                                            <ul>
+                                                <li><PersonIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>{typeof groups.groupMembers !== 'undefined' ? groups.groupMembers : 0 }</strong>users</li>
+                                                <li><MailOutlineIcon fontSize='small'  style={{ marginRight: "10px"}}/><strong style={{ marginRight: "5px"}}>Blueprint</strong>{selectedBlueprint.label}</li>
+                                            </ul>
+                                        </a>
                                     </CardBody>
                                     <CardFooter>
-                                        <IconButton color="primary" onClick={ (e) => redirectToGroup(e, groups.name)}><EditOutlinedIcon /></IconButton>
                                         <IconButton color="secondary" onClick={ () => {handleRemoveGroup(groups.name)}}><DeleteOutlineIcon /></IconButton>
                                     </CardFooter>
                                 </Card>
