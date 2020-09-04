@@ -80,21 +80,23 @@ const useStyles = makeStyles(styles);
 export default function Groups() {
     const classes = useStyles();
     const history = useHistory();
-    const [groups, setGroups] = React.useState([])
-    const [selectedGroupName, setSelectedGroupName] = React.useState("")
-    const [loading, setLoading] = React.useState(false)
-    const [zeroGroup, setZeroGroup] = React.useState(true)
+    const [groups, setGroups] = React.useState([]);
+    const [selectedGroupName, setSelectedGroupName] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
+    const [zeroGroup, setZeroGroup] = React.useState(true);
     const [progress, setProgress] = React.useState(0);
-    const [searchValue, setSearchValue] = React.useState(null)
+    const [searchValue, setSearchValue] = React.useState(null);
 
-    const [blueprints, setBlueprints] = React.useState([])
+    const [blueprints, setBlueprints] = React.useState([]);
 
-    const [openCreate, setOpenCreate] = React.useState(false)
-    const [groupName, setGroupName] = React.useState('')
-    const [groupNameExits, setGroupNameExits] = React.useState(false)
+    const [openCreate, setOpenCreate] = React.useState(false);
+    const [groupName, setGroupName] = React.useState('');
+    const [groupNameExits, setGroupNameExits] = React.useState(false);
 
-    const [removedGroup, setRemovedGroup] = React.useState()
-    const [openRemoveDialog, setOpenRemoveDialog] = React.useState()
+    const [removedGroup, setRemovedGroup] = React.useState();
+    const [openRemoveDialog, setOpenRemoveDialog] = React.useState();
+
+    const [disableCreate, setDisableCreate] = React.useState(true);
 
     const handleRemoveGroup = (groupRemovedName) => {
         setRemovedGroup(groupRemovedName)
@@ -168,12 +170,14 @@ export default function Groups() {
     }
 
     const handleCheckGroupNameExists = (searchGroupNameValue) => {
+        setDisableCreate(true);
         axios(configApiCall(api_path_get_list_group+"?groupName="+searchGroupNameValue, 'GET', null, null)).then((response)=>{
-            if(response.data === "[]"){
-                setGroupNameExits(true)
-            }
+            setDisableCreate(true);
+            setGroupNameExits(true);
         }).catch((error) => {
-            console.log("Error checking for existing groups: " + error)
+            console.log(error);
+            setDisableCreate(false);
+            setGroupNameExits(false);
         })
     }
 
@@ -261,19 +265,20 @@ export default function Groups() {
                                         <InputLabel htmlFor="groupName">Group name</InputLabel>
                                         <Input
                                             id="groupName"
-                                            placeholder={groupName}
+                                            placeholder="Group Name"
                                             startAdornment={
                                                 <InputAdornment position="start">
                                                     <PeopleOutlineIcon />
                                                 </InputAdornment>
                                             }
                                             onChange={e => {
-                                                const searchGroupNameValue = e.target.value;
-                                                setGroupName(searchGroupNameValue);
-                                                initCheckGroupNameExists(groupName);
+                                                setGroupName(e.target.value);
+                                                initCheckGroupNameExists(e.target.value);
                                             }}
                                         />
                                     </FormControl>
+                                    {disableCreate && groupName.length > 0 && <p>Group name already exists!</p>}
+                                    {disableCreate && groupName.length == 0 && <p>Group name is empty</p>}
                                 </Grid>
                                 <Grid item xs={12} sm={12} md={12}>
                                     <Select
@@ -293,7 +298,7 @@ export default function Groups() {
                         <Button onClick={handleCloseCreate} color="info">
                             Cancel
                         </Button>
-                        <Button onClick={handleCreateGroup} color="primary" autoFocus>
+                        <Button onClick={handleCreateGroup} color="primary" disabled={disableCreate} autoFocus>
                             Create
                         </Button>
                     </DialogActions>
