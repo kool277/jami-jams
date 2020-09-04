@@ -119,10 +119,12 @@ export default function TemporaryDrawer(props) {
 
     const addUserToGroup = (username) => {
         let url = '';
-        if(props.selectedBlueprint == ''){
+        console.log(props.blueprintLabel);
+
+        if(props.blueprintLabel == null){
             url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName=&groupMembers="+username;
         }else{
-            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.blueprintsOptions[props.selectedBlueprint].label+"&groupMembers="+username;
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.blueprintLabel+"&groupMembers="+username;
         }
 
         axios(configApiCall(url, 'PUT', null, null)).then((response) => {

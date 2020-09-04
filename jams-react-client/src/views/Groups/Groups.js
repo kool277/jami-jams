@@ -115,6 +115,22 @@ export default function Groups() {
         history.push('/admin/groups')
     }
 
+    const loadBlueprints = () => {
+        axios(configApiCall(api_path_blueprints+"?name=*", 'GET', null, null)).then((response) => {
+            setBlueprints(response.data)
+            setSelectedBlueprint(getBlueprintsOptions()[0])
+        }).catch((error) =>{
+            console.log(error);
+            if(error.response.status === 401){
+                auth.authenticated = false
+                history.push('/')
+            }
+            if(error.response.status === 500){
+                setBlueprints([])
+            }
+        });
+    }
+
     useEffect(() => {
         setLoading(true)
         const timer = setInterval(() => {
@@ -143,19 +159,7 @@ export default function Groups() {
                 history.push('/')
             }
         });
-        axios(configApiCall(api_path_blueprints+"?name=*", 'GET', null, null)).then((response) => {
-            setBlueprints(response.data)
-            setSelectedBlueprint(getBlueprintsOptions()[0])
-        }).catch((error) =>{
-            console.log(error);
-            if(error.response.status === 401){
-                auth.authenticated = false
-                history.push('/')
-            }
-            if(error.response.status === 500){
-                setBlueprints([])
-            }
-        });
+        loadBlueprints();
         return () => {
             clearInterval(timer);
         };
@@ -241,9 +245,10 @@ export default function Groups() {
                     initCheckGroupNameExists={initCheckGroupNameExists}
                     groupNameExits={groupNameExits}
                     blueprintsOptionsItems={blueprintsOptionsItems}
-                    selectedBlueprint={selectedBlueprint}
                     handleBlueprintsChange={handleBlueprintsChange}
                     getBlueprintsOptions={getBlueprintsOptions}
+                    blueprints={blueprints}
+                    disableCreate={disableCreate}
                 />
             </div>
         )
@@ -261,7 +266,7 @@ export default function Groups() {
                         <DialogContentText id="alert-dialog-description">
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={12} md={12}>
-                                    <FormControl className={classes.margin} size="medium" error={groupNameExits}>
+                                    <FormControl className={classes.margin} error={groupNameExits} fullWidth>
                                         <InputLabel htmlFor="groupName">Group name</InputLabel>
                                         <Input
                                             id="groupName"

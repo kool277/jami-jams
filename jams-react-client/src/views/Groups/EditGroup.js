@@ -32,6 +32,9 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 
+import IconButton from '@material-ui/core/IconButton';
+import SaveIcon from '@material-ui/icons/Save';
+
 import axios from "axios"
 import configApiCall from "../../api"
 import {
@@ -48,7 +51,7 @@ import TemporaryDrawer from "components/Drawer/Drawer"
 import * as tool from "../../tools";
 import auth from 'auth.js'
 
-const styles = ()=> ( {
+const useStyles = makeStyles((theme) => ({
     ...devicesStyle,
     ...dashboardStyle,
     root: {
@@ -89,20 +92,15 @@ const styles = ()=> ( {
         minWidth: '80vh',
         maxWidth: '80vh'
     }
-});
-
-const useStyles = makeStyles(styles);
+}));
 
 export default function EditGroup(props) {
     const classes = useStyles();
-    const history = useHistory();
-    const [groupExists, setGroupExists] = React.useState(false)
 
-    const [name, setName] = React.useState(props.groupName)
-    const [blueprint, setBlueprint] = React.useState(null)
-    const [groupMembers, setGroupMembers] = React.useState([])
-    const [blueprints, setBlueprints] = React.useState([])
-
+    const [name, setName] = React.useState(props.groupName);
+    const [newName, setNewName] = React.useState(props.groupName);
+    const [blueprint, setBlueprint] = React.useState(null);
+    const [groupMembers, setGroupMembers] = React.useState([]);
     const [openDrawer, setOpenDrawer] = React.useState(false);
 
     const getGroup = () => {
@@ -113,7 +111,8 @@ export default function EditGroup(props) {
                     if(group.name == props.groupName){
                         props.getBlueprintsOptions().forEach((blueprintOption) => {
                             if(blueprintOption.label === group["blueprint"]){
-                                setBlueprint(blueprintOption.value)
+                                console.log("Group option value : " + blueprintOption.value);
+                                setBlueprint(blueprintOption.value);
                             }
                         })
                         setGroupMembers(group["groupMembers"]);
@@ -136,9 +135,24 @@ export default function EditGroup(props) {
         })
     }
 
-    React.useEffect(()=>{
-        getGroup()
+    const getGroupsOptions = () => {
+        let blueprintsOptions = []
+        let index = 0
+        if(props.blueprints.length === 0)
+            blueprintsOptions.push({value: index, label: "No blueprint found"})
+        else {
+            props.blueprints.map((blueprintElement) => {
+                blueprintsOptions.push({value: index, label: blueprintElement.name});
+                index += 1
+            })
+        }
+        return blueprintsOptions
+    }
 
+    const blueprintsOptionsItems = tool.buildSelectMenuItems(getGroupsOptions());
+
+    React.useEffect(()=>{
+        getGroup();
     }, [])
 
     const handleUpdateGroup = (blueprintValue) => {
@@ -151,30 +165,11 @@ export default function EditGroup(props) {
         }
 
         axios(configApiCall(url, 'PUT', null, null)).then((response) => {
-            getGroup()
+            setNewName(name);
+            getGroup();
         }).catch((error) => {
             console.log("Error updating group: " + error)
         })
-
-        axios(configApiCall(api_path_blueprints+"?name=*", 'GET', null, null)).then((response) => {
-            console.log(blueprints);
-            setBlueprints(response.data)
-        }).catch((error) =>{
-            console.log(error);
-            if(error.response.status === 401){
-                auth.authenticated = false
-                history.push('/')
-            }
-            if(error.response.status === 500){
-                setBlueprints([])
-            }
-        });
-
-    }
-
-    const handleGroupUpdate = (data) => {
-        setName(data.name)
-        setGroupMembers(data.groupMembers)
     }
 
     const removeUserFromGroup = (user) => {
@@ -198,26 +193,11 @@ export default function EditGroup(props) {
         handleUpdateGroup(blueprintValue)
     }
 
-    const getGroupsOptions = () => {
-        let blueprintsOptions = []
-        let index = 0
-        if(blueprints.length === 0)
-            blueprintsOptions.push({value: index, label: "No blueprint found"})
-        else {
-            blueprints.map((blueprint) => {
-                blueprintsOptions.push({value: index, label: blueprint.name});
-                index += 1
-            })
-        }
-        return blueprintsOptions
-    }
-
-    const blueprintsOptionsItems = tool.buildSelectMenuItems(getGroupsOptions());
     const tableCellClasses = classnames(classes.tableCell);
 
     return(
         <div>
-            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={true} placeholder="Add user ..." groupName={name === ''?props.groupName:name} selectedBlueprint={blueprint} getGroup={getGroup} blueprintsOptions={props.getBlueprintsOptions()}/>
+            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={true} placeholder="Add user ..." groupName={name === ''?props.groupName:name} blueprintLabel={ blueprint == null ? null : props.getBlueprintsOptions()[blueprint].label} getGroup={getGroup}/>
             <GridContainer>
                 <GridItem xs={12} sm={12} md={4}>
                     <Card profile>
@@ -226,7 +206,7 @@ export default function EditGroup(props) {
                                 <EditIcon />
                             </CardIcon>
                             <p className={classes.cardCategory}>Edit group</p>
-                            <h3 className={classes.cardTitle}>{props.groupName}</h3>
+                            <h3 className={classes.cardTitle}>{newName}</h3>
                         </CardHeader>
                         <CardBody profile>
                             <div className={classes.root}>
@@ -241,15 +221,22 @@ export default function EditGroup(props) {
                                                         <PeopleOutlineIcon />
                                                     </InputAdornment>
                                                 }
+                                                endAdornment={
+                                                    <IconButton color="primary" aria-label="upload picture" component="span"
+                                                        onClick={() => {
+                                                            handleUpdateGroup(blueprint);
+                                                        }} 
+                                                        disabled={props.groupNameExits}
+                                                    >
+                                                        <SaveIcon />
+                                                    </IconButton>
+                                                }
                                                 onChange={e => {
                                                     setName(e.target.value);
                                                     props.initCheckGroupNameExists(e.target.value)
-                                                    if(!props.groupNameExits){
-                                                        handleUpdateGroup(blueprint)
-                                                    }
                                                 }}
                                             />
-                                        </FormControl>
+                                        </FormControl>                                        
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
                                         <FormControl className={classes.margin} fullWidth>
@@ -260,7 +247,7 @@ export default function EditGroup(props) {
                                                 onChange={(e) => handleBlueprintsChange(e.target.value)}
                                                 variant="outlined"
                                                 children={blueprintsOptionsItems}
-                                                disabled={blueprints.length === 0}
+                                                disabled={props.blueprints.length === 0}
                                             />
                                         </FormControl>
                                     </Grid>
