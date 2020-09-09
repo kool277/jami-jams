@@ -4,22 +4,19 @@ import { makeStyles } from "@material-ui/core/styles";
 // core components
 import Devices from "components/Devices/Devices.js";
 
-import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import PropTypes from "prop-types";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
-import EditCreateUserProfile from "./EditCreateUserProfile"
+import EditCreateUserProfile from "./EditCreateUserProfile";
 
-import Contacts from "views/Contacts/Contacts"
+import Contacts from "views/Contacts/Contacts";
 
-import {
-  infoColor
-} from "assets/jss/material-dashboard-react.js";
+import { infoColor } from "assets/jss/material-dashboard-react.js";
 import DisplayUserProfile from "./DisplayUserProfile";
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,7 +47,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -60,7 +57,7 @@ const styles = {
     margin: "0",
     fontSize: "14px",
     marginTop: "0",
-    marginBottom: "0"
+    marginBottom: "0",
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -69,8 +66,8 @@ const styles = {
     fontWeight: "300",
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     marginBottom: "3px",
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -88,19 +85,32 @@ export default function UserProfile(props) {
   return (
     <div>
       <AppBar position="static" style={{ background: infoColor[0] }}>
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="simple tabs example"
+        >
           <Tab label="Profile" {...a11yProps(0)} />
           <Tab label="Devices" {...a11yProps(1)} />
           <Tab label="Contacts" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-          {
-            displayUser ? <DisplayUserProfile username={username} setDisplayUser={setDisplayUser}/>: <EditCreateUserProfile username={username} createUser={false} setDisplayUser={setDisplayUser}/>
-          }
+        {displayUser ? (
+          <DisplayUserProfile
+            username={username}
+            setDisplayUser={setDisplayUser}
+          />
+        ) : (
+          <EditCreateUserProfile
+            username={username}
+            createUser={false}
+            setDisplayUser={setDisplayUser}
+          />
+        )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Devices username={props.username}/>
+        <Devices username={props.username} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <Contacts username={props.username} />

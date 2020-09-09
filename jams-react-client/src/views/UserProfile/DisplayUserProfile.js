@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -11,41 +11,41 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
-import Grid from '@material-ui/core/Grid';
-import BusinessCenterOutlinedIcon from '@material-ui/icons/BusinessCenterOutlined';
-import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
-import PhoneInTalkOutlinedIcon from '@material-ui/icons/PhoneInTalkOutlined';
-import SmartphoneOutlinedIcon from '@material-ui/icons/SmartphoneOutlined';
-import LocalPrintshopOutlinedIcon from '@material-ui/icons/LocalPrintshopOutlined';
-import PhoneForwardedOutlinedIcon from '@material-ui/icons/PhoneForwardedOutlined';
-import PersonOutlinedIcon from '@material-ui/icons/PersonOutlined';
-import PermIdentityOutlinedIcon from '@material-ui/icons/PermIdentityOutlined';
+import Grid from "@material-ui/core/Grid";
+import BusinessCenterOutlinedIcon from "@material-ui/icons/BusinessCenterOutlined";
+import AlternateEmailOutlinedIcon from "@material-ui/icons/AlternateEmailOutlined";
+import PhoneInTalkOutlinedIcon from "@material-ui/icons/PhoneInTalkOutlined";
+import SmartphoneOutlinedIcon from "@material-ui/icons/SmartphoneOutlined";
+import LocalPrintshopOutlinedIcon from "@material-ui/icons/LocalPrintshopOutlined";
+import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
+import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
+import PermIdentityOutlinedIcon from "@material-ui/icons/PermIdentityOutlined";
 
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-import DoneIcon from '@material-ui/icons/Done';
-import CancelIcon from '@material-ui/icons/Cancel';
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
+import DoneIcon from "@material-ui/icons/Done";
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemText from "@material-ui/core/ListItemText";
 
-import auth from "auth.js"
+import auth from "auth.js";
 import configApiCall from "api.js";
-import { api_path_get_admin_user, 
-    api_path_get_auth_user, 
-    api_path_get_user_directory_search, 
-    api_path_delete_admin_user_revoke, 
-    api_path_put_update_user} from "globalUrls";
+import {
+  api_path_get_admin_user,
+  api_path_get_auth_user,
+  api_path_get_user_directory_search,
+  api_path_delete_admin_user_revoke,
+} from "globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
@@ -53,445 +53,425 @@ import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 import axios from "axios";
 import PersonIcon from "../../../node_modules/@material-ui/icons/Person";
 
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import IconButton from '@material-ui/core/IconButton';
+import PasswordDialog from "components/PasswordDialog/PasswordDialog";
 
-import {Formik} from 'formik';
-import FormikField from 'components/FormikField/FormikField';
-import * as Yup from 'yup';
-import CardAvatar from "components/Card/CardAvatar";
+const styles = (theme) => ({
+  ...dashboardStyle,
+  root: {
+    flexGrow: 1,
+  },
+  cardCategoryWhite: {
+    color: "rgba(255,255,255,.62)",
+    margin: "0",
+    fontSize: "14px",
+    marginTop: "0",
+    marginBottom: "0",
+  },
+  cardTitleWhite: {
+    color: "#FFFFFF",
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none",
+  },
+  input: {
+    display: "none",
+  },
+  profileAsBackground: {
+    backgroundSize: "100% 100%",
+    width: "80px",
+    height: "80px",
+  },
+  centerIconMiddle: {
+    position: "relative",
+    top: "20px",
+    left: "15px",
+  },
+  editProfilePicture: {
+    borderRadius: "50%",
+    width: "200px",
+    height: "200px",
+    boxShadow:
+      "0 6px 8px -12px rgba(" +
+      hexToRgb(blackColor) +
+      ", 0.56), 0 4px 25px 0px rgba(" +
+      hexToRgb(blackColor) +
+      ", 0.12), 0 8px 10px -5px rgba(" +
+      hexToRgb(blackColor) +
+      ", 0.2)",
+  },
+  dialogPaper: {
+    minHeight: "60vh",
+    maxHeight: "60vh",
+    minWidth: "80vh",
+    maxWidth: "80vh",
+  },
 
-const styles = (theme)=> ( {
-    ...dashboardStyle,
-    root: {
-        flexGrow: 1
-    },
-    cardCategoryWhite: {
-        color: "rgba(255,255,255,.62)",
-        margin: "0",
-        fontSize: "14px",
-        marginTop: "0",
-        marginBottom: "0"
-    },
-    cardTitleWhite: {
-        color: "#FFFFFF",
-        marginTop: "0px",
-        minHeight: "auto",
-        fontWeight: "300",
-        fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-        marginBottom: "3px",
-        textDecoration: "none"
-    },
-    input: {
-        display: 'none',
-    },
-    profileAsBackground: {
-        backgroundSize: "100% 100%",
-        width: "80px",
-        height: "80px",
-    },
-    centerIconMiddle: {
-        position:"relative",
-        top: "20px",
-        left: "15px"
-    },
-    editProfilePicture: {
-        borderRadius: "50%",
-        width: "200px",
-        height: "200px",
-        boxShadow:
-            "0 6px 8px -12px rgba(" +
-            hexToRgb(blackColor) +
-            ", 0.56), 0 4px 25px 0px rgba(" +
-            hexToRgb(blackColor) +
-            ", 0.12), 0 8px 10px -5px rgba(" +
-            hexToRgb(blackColor) +
-            ", 0.2)",
-    },
-    dialogPaper: {
-        minHeight: '60vh',
-        maxHeight: '60vh',
-        minWidth: '80vh',
-        maxWidth: '80vh'
-    }
-
-    // controls: {
-    //     padding: 16,
-    //     display: 'flex',
-    //     flexDirection: 'column',
-    //     alignItems: 'stretch',
-    //     [theme.breakpoints.up('sm')]: {
-    //       flexDirection: 'row',
-    //       alignItems: 'center',
-    //     },passwordSchematainer: {
-    //     display: 'flex',
-    //     flex: '1',
-    //     alignItems: 'center',
-    //   },
-    //   sliderLabel: {
-    //     [theme.breakpoints.down('xs')]: {
-    //       minWidth: 65,
-    //     },
-    // },
-    // slider: {
-    //     padding: '22px 0px',
-    //     marginLeft: 16,
-    //     [theme.breakpoints.up('sm')]: {
-    //         flexDirection: 'row',
-    //         alignItems: 'center',
-    //         margin: '0 16px',
-    //     },
-    // },
+  // controls: {
+  //     padding: 16,
+  //     display: 'flex',
+  //     flexDirection: 'column',
+  //     alignItems: 'stretch',
+  //     [theme.breakpoints.up('sm')]: {
+  //       flexDirection: 'row',
+  //       alignItems: 'center',
+  //     },passwordSchematainer: {
+  //     display: 'flex',
+  //     flex: '1',
+  //     alignItems: 'center',
+  //   },
+  //   sliderLabel: {
+  //     [theme.breakpoints.down('xs')]: {
+  //       minWidth: 65,
+  //     },
+  // },
+  // slider: {
+  //     padding: '22px 0px',
+  //     marginLeft: 16,
+  //     [theme.breakpoints.up('sm')]: {
+  //         flexDirection: 'row',
+  //         alignItems: 'center',
+  //         margin: '0 16px',
+  //     },
+  // },
 });
 
 const useStyles = makeStyles(styles);
 
 export default function DisplayUserProfile(props) {
-    const classes = useStyles();
+  const classes = useStyles();
 
-    const [users, setUsers] = React.useState([])
-    const [userStatus, setUserStatus] = React.useState(false)
-    const [open, setOpen] = React.useState(false);
-    const [revokedUser, setRevokedUser] = React.useState("");
-    const [changePasswordOpen, setChangePasswordOpen] = React.useState(false)
-    const [currentPassword, setCurrentPassword] = React.useState("");
-    const [visibilityValues, setVisibilityValues] = React.useState({
-        showPassword: false
-    });
+  const [users, setUsers] = React.useState([]);
+  const [userStatus, setUserStatus] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [revokedUser, setRevokedUser] = React.useState("");
+  const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
 
-    const  searchData = {
-        "queryString":props.username
-    };
+  const searchData = {
+    queryString: props.username,
+  };
 
-    const  userData = {
-        "username":props.username
-    };
+  const userData = {
+    username: props.username,
+  };
 
-    useEffect(() => {
-        auth.checkDirectoryType(() => {
-            if(auth.hasAdminScope()){
-                axios(configApiCall(api_path_get_admin_user, 'GET', userData, null)).then((response)=>{
-                        const result = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
-                        setUserStatus(result.revoked)
-                        setCurrentPassword(result.password)
-                    }
-                ).catch((error) =>{
-                    console.log(error);
-                });
-            }
-            else{
-                axios(configApiCall(api_path_get_auth_user, 'GET', userData, null)).then((response)=>{
-                    const result = JSON.parse(response.data.replace(/\s+/g, ' ').trim());
-                    setUserStatus(result.revoked)
-                    }
-                ).catch((error) =>{
-                    console.log(error);
-                });
-            }
-        })
-        axios(configApiCall(api_path_get_user_directory_search, 'GET', searchData, null)).then((response)=>{
-                setUsers(response.data)
-            }
-        ).catch((error) =>{
+  useEffect(() => {
+    auth.checkDirectoryType(() => {
+      if (auth.hasAdminScope()) {
+        axios(configApiCall(api_path_get_admin_user, "GET", userData, null))
+          .then((response) => {
+            const result = JSON.parse(
+              response.data.replace(/\s+/g, " ").trim()
+            );
+            setUserStatus(result.revoked);
+          })
+          .catch((error) => {
             console.log(error);
-        });
-    }, []);
-
-    const getUserStatus = (user) => {
-        if(userStatus === false) {
-            return <Chip style={{ flex: 1 }} label="Active" variant="outlined" clickable={false} />
-        }else{
-            return <Chip style={{ flex: 1 }} label="Revoked" variant="outlined" clickable={false} disabled/>            
-        }
-    }
-
-    function revokeUser(){
-
-        const data = {
-            'username': revokedUser
-        }
-
-        axios(configApiCall(api_path_delete_admin_user_revoke, 'DELETE', data, null)).then(()=>{
-            setUserStatus(true)
-        }).catch((error)=> {
-            console.log("Error revoking user: " + revokedUser + ' with error: ' + error);
-        });
-        setOpen(false);
-    }
-
-    const handleClickOpen = (username) => {
-        setRevokedUser(username)
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const handleClosechangePassword = () => {
-        setChangePasswordOpen(false);
-    }
-
-    const changePassword = (values) => {
-        axios(configApiCall(api_path_put_update_user+'?username='+props.username+'&password='+values.password, 'PUT', null, null)).then(()=>{
-            setChangePasswordOpen(false);
-            setCurrentPassword(values.password);
-        }).catch((error)=> {
-            console.log("Updating user " + props.username + ' password failed with error: ' + error);
-        });
-        setChangePasswordOpen(false);
-    }
-
-    const passwordSchema = Yup.object().shape({
-        password: Yup.string().required('Password is required'),
-        passwordConfirmation: Yup.string()
-           .oneOf([Yup.ref('password'), null], 'Passwords must match')
+          });
+      } else {
+        axios(configApiCall(api_path_get_auth_user, "GET", userData, null))
+          .then((response) => {
+            const result = JSON.parse(
+              response.data.replace(/\s+/g, " ").trim()
+            );
+            setUserStatus(result.revoked);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     });
+    axios(
+      configApiCall(api_path_get_user_directory_search, "GET", searchData, null)
+    )
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-    const handleClickShowPassword = () => {
-        setVisibilityValues({ ...visibilityValues, showPassword: !visibilityValues.showPassword });
+  const getUserStatus = (user) => {
+    if (userStatus === false) {
+      return (
+        <Chip
+          label="Active"
+          avatar={
+            <Avatar
+              alt={user.username}
+              src={
+                user.profilePicture
+                  ? "data:image/png;base64, " + user.profilePicture
+                  : noProfilePicture
+              }
+            />
+          }
+          color="primary"
+          deleteIcon={<DoneIcon />}
+        />
+      );
+    } else {
+      return (
+        <Chip
+          label="Revoked"
+          avatar={
+            <Avatar
+              alt={user.username}
+              src={
+                user.profilePicture
+                  ? "data:image/png;base64, " + user.profilePicture
+                  : noProfilePicture
+              }
+            />
+          }
+          deleteIcon={<DoneIcon />}
+        />
+      );
+    }
+  };
+
+  function revokeUser() {
+    const data = {
+      username: revokedUser,
     };
 
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
+    axios(
+      configApiCall(api_path_delete_admin_user_revoke, "DELETE", data, null)
+    )
+      .then(() => {
+        setUserStatus(true);
+      })
+      .catch((error) => {
+        console.log(
+          "Error revoking user: " + revokedUser + " with error: " + error
+        );
+      });
+    setOpen(false);
+  }
 
-    return (
-        <div>
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">{"Revoke user account"}</DialogTitle>
-            <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                Are you sure you want to revoke <strong>{revokedUser}</strong> ?
-            </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={handleClose} color="primary">
-                Cancel
-            </Button>
-            <Button onClick={revokeUser} color="info" autoFocus>
-                Revoke
-            </Button>
-            </DialogActions>
-        </Dialog>
-        <Dialog
-            open={changePasswordOpen}
-            onClose={handleClosechangePassword}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="change-password-dialog">{"Change password"}</DialogTitle>
-            <Formik initialValues={{
-                    password: "",
-                    passwordConfirmation: ""
-                }}
-                validationSchema={passwordSchema}
-                onSubmit={changePassword}
-                >
-                    {({ isValid, dirty, handleSubmit}) => (
-                        <form onSubmit={handleSubmit}>
-            <DialogContent>
-            <DialogContentText id="change-password-description">
-                Password change for <strong>{props.username}</strong>
-            </DialogContentText>           
-                <FormikField 
-                    name="password" 
-                    label="Password" 
-                    placeholder="Password"
-                    type="password"
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <VpnKeyIcon />
-                        </InputAdornment>
-                    }
-                />
-                <FormikField 
-                    name="passwordConfirmation" 
-                    label="Confirm password" 
-                    placeholder="Confirm password"
-                    type="password"
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <VpnKeyIcon />
-                        </InputAdornment>
-                    }
-                />
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={handleClosechangePassword} color="primary">
-                Cancel
-            </Button>
-            <Button type="submit" disable={!isValid && !dirty} color="info" autoFocus>
-                Update password
-            </Button>
-            </DialogActions>
-                </form>
-               )}
-            </Formik>
-        </Dialog>
-        {users.map(user =>
-            <GridContainer>
-                <Grid item xs={12} sm={12} md={8}>
-                    <Card profile>
-                        <CardBody profile>
-                            <div className={classes.root}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <CardAvatar displayProfile>
-                                            <img src={user.profilePicture ? ('data:image/png;base64, ' + user.profilePicture) : noProfilePicture} className={classes.editProfilePicture} alt="..." />
-                                        </CardAvatar>
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <h3 className={classes.cardTitle} >{user.username ? user.username : 'no username'}</h3>
-                                        {getUserStatus(user)}
-                                    </Grid>
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <List dense={false}>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <PersonIcon />
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.firstName ? user.firstName : 'no firstname'}
-                                                    />
-                                                </ListItem>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <PhoneInTalkOutlinedIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.phoneNumber ? user.phoneNumber : 'no phone number'}
-                                                    />
-                                                </ListItem>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <AlternateEmailOutlinedIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.email ? user.email : 'no email'}
-                                                    />
-                                                </ListItem>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <BusinessCenterOutlinedIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.organization ? user.organization : 'no organization'}
-                                                    />
-                                                </ListItem>
-                                        </List>
-                                    </Grid>
+  const handleClickOpen = (username) => {
+    setRevokedUser(username);
+    setOpen(true);
+  };
 
-                                    <Grid item xs={12} sm={12} md={6}>
-                                        <List dense={false}>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <PersonOutlinedIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.lastName ? user.lastName : 'no lastname'}
-                                                    />
-                                                </ListItem>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <PhoneForwardedOutlinedIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.phoneNumberExtension ? user.phoneNumberExtension : 'no Extension'}
-                                                    />
-                                                </ListItem>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <SmartphoneOutlinedIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.mobileNumber ? user.mobileNumber : 'no mobile number'}
-                                                    />
-                                                </ListItem>
-                                                <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <LocalPrintshopOutlinedIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={user.faxNumber ? user.faxNumber : 'no fax number'}
-                                                    />
-                                                </ListItem>
-                                                {auth.isLocalDirectory() && auth.hasAdminScope() && <ListItem>
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                        <VpnKeyIcon/>
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        children={
-                                                            <Input
-                                                                disabled
-                                                                id="current-password"
-                                                                type={visibilityValues.showPassword ? 'text' : 'password'}
-                                                                value={currentPassword}
-                                                                endAdornment={
-                                                                <InputAdornment position="end">
-                                                                    <IconButton
-                                                                    aria-label="toggle password visibility"
-                                                                    onClick={handleClickShowPassword}
-                                                                    onMouseDown={handleMouseDownPassword}
-                                                                    >
-                                                                    {visibilityValues.showPassword ? <Visibility /> : <VisibilityOff />}
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                                }
-                                                            />
-                                                        }
-                                                    />
-                                                </ListItem>}
-                                        </List>
-                                    </Grid>
-                                </Grid>
-                            </div>
-                        </CardBody>
-                        <CardFooter>
-                            {auth.isLocalDirectory() && <Button color="info" onClick={() => props.setDisplayUser(false)}>
-                                <EditIcon /> Edit Profile
-                            </Button>}
-                            {auth.isLocalDirectory() && auth.hasAdminScope() && <Button color="info" onClick={() => {setChangePasswordOpen(true);}}>
-                                <VpnKeyIcon /> Change password
-                            </Button>}
-                            {auth.hasAdminScope() && (userStatus === "Active" || userStatus === '') &&
-                            <Button color="info" onClick={() => handleClickOpen(user.username)} >
-                                <DeleteIcon fontSize="small"/> Revoke user
-                            </Button>}
-                        </CardFooter>
-                    </Card>
-                </Grid>
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-            </GridContainer>
-        )}
-        </div>
-    );
+  const handleClosechangePassword = () => {
+    setChangePasswordOpen(false);
+  };
+
+  return (
+    <div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Revoke user account"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to revoke <strong>{revokedUser}</strong> ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={revokeUser} color="info" autoFocus>
+            Revoke
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <PasswordDialog
+        username={props.username}
+        changePasswordOpen={changePasswordOpen}
+        setChangePasswordOpen={setChangePasswordOpen}
+        handleClosechangePassword={handleClosechangePassword}
+      />
+      {users.map((user) => (
+        <GridContainer>
+          <Grid item xs={12} sm={12} md={8}>
+            <Card profile>
+              <CardHeader color="info" stats icon>
+                <CardIcon color="info">
+                  <PermIdentityOutlinedIcon />
+                </CardIcon>
+                <p className={classes.cardCategory}>{"Profile information"}</p>
+                <h3 className={classes.cardTitle}>{user.username}</h3>
+                {getUserStatus(user)}
+              </CardHeader>
+              <CardBody profile>
+                <div className={classes.root}>
+                  <Grid container spacing={2}>
+                    <Grid item align="center" xs={12} sm={12} md={12}>
+                      <img
+                        src={
+                          user.profilePicture
+                            ? "data:image/png;base64, " + user.profilePicture
+                            : noProfilePicture
+                        }
+                        className={classes.editProfilePicture}
+                        alt="..."
+                      />
+                      <h4>{user.username ? user.username : "no username"}</h4>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <List dense={false}>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PersonIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              user.firstName ? user.firstName : "no firstname"
+                            }
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PersonOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              user.lastName ? user.lastName : "no lastname"
+                            }
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <AlternateEmailOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={user.email ? user.email : "no email"}
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <BusinessCenterOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              user.organization
+                                ? user.organization
+                                : "no organization"
+                            }
+                          />
+                        </ListItem>
+                      </List>
+                    </Grid>
+
+                    <Grid item xs={12} sm={12} md={6}>
+                      <List dense={false}>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PhoneInTalkOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              user.phoneNumber
+                                ? user.phoneNumber
+                                : "no phone number"
+                            }
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PhoneForwardedOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              user.phoneNumberExtension
+                                ? user.phoneNumberExtension
+                                : "no Extension"
+                            }
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <SmartphoneOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              user.mobileNumber
+                                ? user.mobileNumber
+                                : "no mobile number"
+                            }
+                          />
+                        </ListItem>
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <LocalPrintshopOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              user.faxNumber ? user.faxNumber : "no fax number"
+                            }
+                          />
+                        </ListItem>
+                      </List>
+                    </Grid>
+                  </Grid>
+                </div>
+              </CardBody>
+              <CardFooter>
+                {auth.isLocalDirectory() && (
+                  <Button
+                    color="info"
+                    onClick={() => props.setDisplayUser(false)}
+                  >
+                    <EditIcon /> Edit Profile
+                  </Button>
+                )}
+                {auth.isLocalDirectory() && auth.hasAdminScope() && (
+                  <Button
+                    color="info"
+                    onClick={() => {
+                      setChangePasswordOpen(true);
+                    }}
+                  >
+                    <VpnKeyIcon /> Change password
+                  </Button>
+                )}
+                {auth.hasAdminScope() &&
+                  (userStatus === "Active" || userStatus === "") && (
+                    <Button
+                      color="info"
+                      onClick={() => handleClickOpen(user.username)}
+                    >
+                      <DeleteIcon fontSize="small" /> Revoke user
+                    </Button>
+                  )}
+              </CardFooter>
+            </Card>
+          </Grid>
+        </GridContainer>
+      ))}
+    </div>
+  );
 }
