@@ -77,6 +77,8 @@ public class UserServlet extends HttpServlet {
                 dataStore.getUserDao().updateObject(update, constraint);
                 user = dataStore.getUserDao().getObjects(statementList).get(0);
             }
+            user.setPassword("");
+            user.setSalt("");
             resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
             resp.setStatus(200);
         } else {
