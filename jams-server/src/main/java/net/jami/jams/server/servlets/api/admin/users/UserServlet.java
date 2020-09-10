@@ -99,19 +99,14 @@ public class UserServlet extends HttpServlet {
             user.setSalt(Base64.encodeBase64String(salt));
             user.setRealm("LOCAL");
             user.setUserType(AuthenticationSourceType.LOCAL);
-            if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)){
+            if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)) {
                 HashMap<String,String> statusInfo = new HashMap<>();
                 statusInfo.put("password", pw);
                 resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
-        
                 resp.setStatus(200);
-        
                 return;
-        
             }
-        
         }
-        
         
         resp.sendError(500,"Could not create a user successfully!");
     }
@@ -119,14 +114,16 @@ public class UserServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String username = req.getParameter("username");
+        final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
+        String pw = obj.getString("password");
+        String username = obj.getString("username");
         //Check if he is AD/LDAP - then return a 403, because we can't set such password.
         if(dataStore.getUserDao().getObjects(null).get(0).getUserType() != AuthenticationSourceType.LOCAL){
             resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
             return;
         }
         StatementList update = new StatementList();
-        StatementElement st0 = new StatementElement("password","=",PasswordUtil.hashPassword(req.getParameter("password"), Base64.decodeBase64(dataStore.getUserDao().getObjects(null).get(0).getSalt())),"");
+        StatementElement st0 = new StatementElement("password","=",PasswordUtil.hashPassword(pw, Base64.decodeBase64(dataStore.getUserDao().getObjects(null).get(0).getSalt())),"");
         update.addStatement(st0);
         StatementList constraint = new StatementList();
         StatementElement st1 = new StatementElement("username","=",username,"");
