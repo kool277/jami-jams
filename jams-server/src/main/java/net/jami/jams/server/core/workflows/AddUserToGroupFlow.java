@@ -17,31 +17,29 @@ public class AddUserToGroupFlow {
 
     public static void addUserToGroup(String groupName, String username) {
         userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-            List<UserProfile> profiles = v.searchUserProfiles(username, "LOGON_NAME");
-            if (!profiles.isEmpty()) {
-                UserProfile profile = profiles.get(0);
+            UserProfile profile = v.getUserProfile(username);
+            List<UserProfile> groupProfiles = v.searchUserProfiles(username, "LOGON_NAME");
+            if (!groupProfiles.isEmpty()) {
+                UserGroupMapping mapping = null;
                 StatementList statementList = new StatementList();
-                statementList.addStatement(new StatementElement("name", "=", username, ""));
-
-                if (profile != null) {
-                    if (profile.getGroupMemberships() == null)
-                        profile.setGroupMemberships(new ArrayList<>());
-                    profile.getGroupMemberships().add(groupName);
-                }
-
-                statementList = new StatementList();
                 statementList.addStatement(new StatementElement("username", "=", username, ""));
                 if (dataStore.getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
                     // if the mapping doesn't exist, create it and add the group directly.
-                    UserGroupMapping newMapping = new UserGroupMapping();
-                    newMapping.setUsername(username);
-                    newMapping.setGroups("");
-                    newMapping.addGroup(groupName);
-                    dataStore.getUserGroupMappingsDao().storeObject(newMapping);
+
+                    try {
+                        mapping = new UserGroupMapping();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mapping.setUsername(username);
+                    mapping.setGroups("");
+                    mapping.addGroup(groupName);
+                    dataStore.getUserGroupMappingsDao().storeObject(mapping);
+
                 } else {
                     // otherwise, update the object.
 
-                    UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
+                    mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
                     mapping.addGroup(groupName);
                     String newGroups = mapping.getGroups();
 
@@ -52,6 +50,13 @@ public class AddUserToGroupFlow {
                     StatementElement st1 = new StatementElement("username", "=", username, "");
                     constraint.addStatement(st1);
                     dataStore.getUserGroupMappingsDao().updateObject(update, constraint);
+                }
+
+                if (profile != null) {
+                    if (profile.getGroupMemberships() == null)
+                        profile.setGroupMemberships(new ArrayList<>());
+                    profile.getGroupMemberships().add(groupName);
+                    dataStore.updateUserProfile(profile);
                 }
             }
         });

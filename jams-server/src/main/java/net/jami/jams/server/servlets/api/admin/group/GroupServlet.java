@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @WebServlet("/api/admin/group")
 @Slf4j
@@ -93,13 +94,15 @@ public class GroupServlet extends HttpServlet {
         profiles.forEach(profile ->
                 targetGroup.getGroupMembers().add(profile.getUsername()));
 
+        String groupMembers = req.getParameter("groupMembers");
+
         // if the username sent isn't already part of the group members, then we add it
-        if (!targetGroup.getGroupMembers().contains(req.getParameter("groupMembers")))
+        if (!targetGroup.getGroupMembers().contains(groupMembers)) {
+            // otherwise remove the group from the user's memberships.
             AddUserToGroupFlow.addUserToGroup(name, req.getParameter("groupMembers"));
-        // otherwise remove the group from the user's memberships.
-        else {
+        } else {
             statementList = new StatementList();
-            st = new StatementElement("username", "=", req.getParameter("groupMembers"), "");
+            st = new StatementElement("username", "=", groupMembers, "");
             statementList.addStatement(st);
 
             UserProfile targetProfile = dataStore.getUserProfileDao().getObjects(statementList).get(0);
