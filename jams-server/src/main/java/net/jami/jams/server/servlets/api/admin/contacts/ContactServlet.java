@@ -102,7 +102,7 @@ public class ContactServlet extends HttpServlet {
         Contact contact = new Contact();
         //TODO: Replace with mergetool.
         contact.setDisplayName(obj.get("displayName").toString());
-        contact.setTimestamp(System.currentTimeMillis());
+        contact.setTimestamp(System.currentTimeMillis()/1000);
         contact.setStatus('A');
         contact.setOwner(req.getParameter("username"));
         contact.setUri(obj.get("uri").toString());
