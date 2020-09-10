@@ -28,6 +28,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
@@ -39,7 +40,8 @@ import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processX509Auth;
 
 @WebServlet("/api/login")
-//This method returns the token which is used for all the next calls to the API.
+// This method returns the token which is used for all the next calls to the
+// API.
 public class LoginServlet extends HttpServlet {
 
     /**
@@ -49,35 +51,33 @@ public class LoginServlet extends HttpServlet {
      * @apiGroup Login
      * @apiParam {header} [authorization] classical HTTP auth header
      * @apiParam {attribute} [X509Certificate] X509 User certificate
-     * @apiParam {body} [LoginRequest] username/password sent to server as JSON object
+     * @apiParam {body} [LoginRequest] username/password sent to server as JSON
+     *           object
      *
      * @apiSuccess (200) {body} AuthTokenResponse the 0Auth authentication token
      * @apiError (403) {null} null The user is unauthorized
      */
     @Override
+    @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         AuthTokenResponse res = null;
-        //Case 1: Authorization header.
-        if(req.getHeader("authorization") != null){
+        // Case 1: Authorization header.
+        if (req.getHeader("authorization") != null) {
             res = processUsernamePasswordAuth(req.getHeader("authorization"));
         }
-        //Case 2 SSL Certificate
-        else if(req.getAttribute("jakarta.servlet.request.X509Certificate") != null){
-            res = processX509Auth((X509Certificate[])req.getAttribute("jakarta.servlet.request.X509Certificate"));
-        }
-        else{
-            //Case 3: form submitted username/password
+        // Case 2 SSL Certificate
+        else if (req.getAttribute("jakarta.servlet.request.X509Certificate") != null) {
+            res = processX509Auth((X509Certificate[]) req.getAttribute("jakarta.servlet.request.X509Certificate"));
+        } else {
+            // Case 3: form submitted username/password
             LoginRequest object = JsonIterator.deserialize(req.getInputStream().readAllBytes(), LoginRequest.class);
-            if(object.getUsername() != null && object.getPassword() != null){
+            if (object.getUsername() != null && object.getPassword() != null) {
                 res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());
             }
         }
-        if(res == null) TomcatCustomErrorHandler.sendCustomError(resp,401,"Invalid credentials provided!");
-        else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setStatus(200);
+        if (res == null)
+            TomcatCustomErrorHandler.sendCustomError(resp, 401, "Invalid credentials provided!");
+        else
+            resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
     }
 }

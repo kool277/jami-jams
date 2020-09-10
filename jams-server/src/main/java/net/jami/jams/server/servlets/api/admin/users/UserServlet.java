@@ -88,6 +88,7 @@ public class UserServlet extends HttpServlet {
     //Create an internal user - this is always technically available, because internal users have the right to exist.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
         String pw = obj.getString("password");

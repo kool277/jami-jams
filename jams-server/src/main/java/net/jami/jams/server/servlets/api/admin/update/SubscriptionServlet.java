@@ -57,6 +57,7 @@ public class SubscriptionServlet extends HttpServlet {
     // on disk..
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
+    @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String license = new String(req.getInputStream().readAllBytes());
         final JSONObject obj = new JSONObject(license);
