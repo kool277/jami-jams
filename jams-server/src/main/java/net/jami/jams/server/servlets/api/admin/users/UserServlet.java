@@ -21,7 +21,6 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 package net.jami.jams.server.servlets.api.admin.users;
-
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -39,18 +38,18 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 import org.apache.commons.codec.binary.Base64;
-
+import org.json.JSONObject;
+        
 import java.io.IOException;
 import java.util.HashMap;
-
+import java.util.stream.Collectors;
+        
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
-
 @WebServlet("/api/admin/user")
 public class UserServlet extends HttpServlet {
-
     //Get the user
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -59,13 +58,11 @@ public class UserServlet extends HttpServlet {
         StatementList statementList = new StatementList();
         StatementElement st1 = new StatementElement("username","=",req.getParameter("username"),"");
         statementList.addStatement(st1);
-
         if (!dataStore.getUserDao().getObjects(statementList).isEmpty()) {
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
             if (certificateAuthority.getLatestCRL().get() != null)
                 user.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null);
             else user.setRevoked(false);
-
             if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
                 String pw = PasswordUtil.hashPassword(req.getParameter("password"), Base64.decodeBase64(user.getSalt()));
                 StatementList update = new StatementList();
@@ -86,30 +83,38 @@ public class UserServlet extends HttpServlet {
             resp.sendError(404, "Could not obtain user!");
         }
     }
-
     //Create an internal user - this is always technically available, because internal users have the right to exist.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String pw = req.getParameter("password");
-        User user = new User();
-        user.setUsername(req.getParameter("username"));
-        user.setNeedsPasswordReset(true);
-        byte[] salt = PasswordUtil.generateSalt();
-        pw = PasswordUtil.hashPassword(pw, salt);
-        user.setPassword(pw);
-        user.setSalt(Base64.encodeBase64String(salt));
-        user.setRealm("LOCAL");
-        user.setUserType(AuthenticationSourceType.LOCAL);
-        if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)){
-            HashMap<String,String> statusInfo = new HashMap<>();
-            statusInfo.put("password", pw);
-            resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
-            return;
+        final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
+        String pw = obj.getString("password");
+        if (!pw.isEmpty()) {
+            User user = new User();
+            user.setUsername(obj.getString("username"));
+            user.setNeedsPasswordReset(true);
+            byte[] salt = PasswordUtil.generateSalt();
+            pw = PasswordUtil.hashPassword(pw, salt);
+            user.setPassword(pw);
+            user.setSalt(Base64.encodeBase64String(salt));
+            user.setRealm("LOCAL");
+            user.setUserType(AuthenticationSourceType.LOCAL);
+            if(userAuthenticationModule.createUser(user.getUserType(),user.getRealm(),nameServer,user)){
+                HashMap<String,String> statusInfo = new HashMap<>();
+                statusInfo.put("password", pw);
+                resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
+        
+                resp.setStatus(200);
+        
+                return;
+        
+            }
+        
         }
+        
+        
         resp.sendError(500,"Could not create a user successfully!");
     }
-
     //Update user data.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -129,7 +134,6 @@ public class UserServlet extends HttpServlet {
         if(dataStore.getUserDao().updateObject(update,constraint)) resp.setStatus(200);
         else resp.sendError(500,"could not update the users's data field!");
     }
-
     //Revoke a user.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
