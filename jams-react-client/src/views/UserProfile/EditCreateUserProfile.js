@@ -60,7 +60,7 @@ import {
   api_path_put_update_user_profile,
   api_path_post_create_user,
   api_path_post_create_user_profile,
-  api_path_get_user_directory_search,
+  api_path_get_user_profile,
   api_path_get_exists_user,
 } from "../../globalUrls";
 
@@ -191,29 +191,28 @@ export default function EditCreateUserProfile(props) {
       setUserName(props.username);
       axios(
         configApiCall(
-          api_path_get_user_directory_search,
+          api_path_get_user_profile + props.username,
           "GET",
-          { queryString: props.username },
+          null,
           null
         )
       )
         .then((response) => {
-          response.data.map((user) => {
-            initialValues.username = user.username;
-            initialValues.firstName = user.firstName;
-            initialValues.lastName = user.lastName;
-            initialValues.email = user.email;
-            initialValues.profilePicture = user.profilePicture;
-            setProfilePicture(user.profilePicture);
-            setProfilePicturePreview(
-              "data:image/png;base64, " + user.profilePicture
-            );
-            initialValues.organization = user.organization;
-            initialValues.faxNumber = user.faxNumber;
-            initialValues.phoneNumber = user.phoneNumber;
-            initialValues.phoneNumberExtension = user.phoneNumberExtension;
-            initialValues.mobileNumber = user.mobileNumber;
-          });
+          const user = response.data;
+          initialValues.username = user.username;
+          initialValues.firstName = user.firstName;
+          initialValues.lastName = user.lastName;
+          initialValues.email = user.email;
+          initialValues.profilePicture = user.profilePicture;
+          setProfilePicture(user.profilePicture);
+          setProfilePicturePreview(
+            "data:image/png;base64, " + user.profilePicture
+          );
+          initialValues.organization = user.organization;
+          initialValues.faxNumber = user.faxNumber;
+          initialValues.phoneNumber = user.phoneNumber;
+          initialValues.phoneNumberExtension = user.phoneNumberExtension;
+          initialValues.mobileNumber = user.mobileNumber;
         })
         .catch((error) => {
           console.log("Error fetching user : " + props.username + " " + error);

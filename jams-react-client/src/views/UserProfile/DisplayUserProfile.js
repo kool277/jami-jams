@@ -45,7 +45,7 @@ import configApiCall from "api.js";
 import {
   api_path_get_admin_user,
   api_path_get_auth_user,
-  api_path_get_user_directory_search,
+  api_path_get_user_profile,
   api_path_delete_admin_user_revoke,
 } from "globalUrls";
 
@@ -147,15 +147,11 @@ const useStyles = makeStyles(styles);
 export default function DisplayUserProfile(props) {
   const classes = useStyles();
 
-  const [users, setUsers] = React.useState([]);
+  const [user, setUser] = React.useState([]);
   const [userStatus, setUserStatus] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [revokedUser, setRevokedUser] = React.useState("");
   const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
-
-  const searchData = {
-    queryString: props.username,
-  };
 
   const userData = {
     username: props.username,
@@ -188,17 +184,22 @@ export default function DisplayUserProfile(props) {
       }
     });
     axios(
-      configApiCall(api_path_get_user_directory_search, "GET", searchData, null)
+      configApiCall(
+        api_path_get_user_profile + props.username,
+        "GET",
+        null,
+        null
+      )
     )
       .then((response) => {
-        setUsers(response.data);
+        setUser(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const getUserStatus = (user) => {
+  const getUserStatus = () => {
     if (userStatus === false) {
       return (
         <Chip
@@ -284,181 +285,178 @@ export default function DisplayUserProfile(props) {
         setChangePasswordOpen={setChangePasswordOpen}
         handleClosechangePassword={handleClosechangePassword}
       />
-      {users.map((user) => (
-        <GridContainer>
-          <Grid item xs={12} sm={12} md={8}>
-            <Card profile>
-              <CardBody profile>
-                <div className={classes.root}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12} md={6}>
-                      <CardAvatar displayProfile>
-                        <img
-                          src={
-                            user.profilePicture
-                              ? "data:image/png;base64, " + user.profilePicture
-                              : noProfilePicture
-                          }
-                          className={classes.editProfilePicture}
-                          alt="..."
-                        />
-                      </CardAvatar>
-                    </Grid>
-
-                    <Grid item xs={12} sm={12} md={6}>
-                      <h3 className={classes.cardTitle}>
-                        {user.username ? user.username : "no username"}
-                      </h3>
-
-                      {getUserStatus(user)}
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={6}>
-                      <List dense={false}>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PersonIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              user.firstName ? user.firstName : "no firstname"
-                            }
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PhoneInTalkOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              user.phoneNumber
-                                ? user.phoneNumber
-                                : "no phone number"
-                            }
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <AlternateEmailOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={user.email ? user.email : "no email"}
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <BusinessCenterOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              user.organization
-                                ? user.organization
-                                : "no organization"
-                            }
-                          />
-                        </ListItem>
-                      </List>
-                    </Grid>
-
-                    <Grid item xs={12} sm={12} md={6}>
-                      <List dense={false}>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PersonOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              user.lastName ? user.lastName : "no lastname"
-                            }
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PhoneForwardedOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              user.phoneNumberExtension
-                                ? user.phoneNumberExtension
-                                : "no Extension"
-                            }
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <SmartphoneOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              user.mobileNumber
-                                ? user.mobileNumber
-                                : "no mobile number"
-                            }
-                          />
-                        </ListItem>
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <LocalPrintshopOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              user.faxNumber ? user.faxNumber : "no fax number"
-                            }
-                          />
-                        </ListItem>
-                      </List>
-                    </Grid>
+      <GridContainer>
+        <Grid item xs={12} sm={12} md={8}>
+          <Card profile>
+            <CardBody profile>
+              <div className={classes.root}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12} md={6}>
+                    <CardAvatar displayProfile>
+                      <img
+                        src={
+                          user.profilePicture
+                            ? "data:image/png;base64, " + user.profilePicture
+                            : noProfilePicture
+                        }
+                        className={classes.editProfilePicture}
+                        alt="..."
+                      />
+                    </CardAvatar>
                   </Grid>
-                </div>
-              </CardBody>
-              <CardFooter>
-                {auth.isLocalDirectory() && (
+                  <Grid item xs={12} sm={12} md={6}>
+                    <h3 className={classes.cardTitle}>
+                      {user.username ? user.username : "no username"}
+                    </h3>
+
+                    {getUserStatus()}
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6}>
+                    <List dense={false}>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <PersonIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            user.firstName ? user.firstName : "no firstname"
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <PhoneInTalkOutlinedIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            user.phoneNumber
+                              ? user.phoneNumber
+                              : "no phone number"
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <AlternateEmailOutlinedIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={user.email ? user.email : "no email"}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <BusinessCenterOutlinedIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            user.organization
+                              ? user.organization
+                              : "no organization"
+                          }
+                        />
+                      </ListItem>
+                    </List>
+                  </Grid>
+
+                  <Grid item xs={12} sm={12} md={6}>
+                    <List dense={false}>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <PersonOutlinedIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            user.lastName ? user.lastName : "no lastname"
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <PhoneForwardedOutlinedIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            user.phoneNumberExtension
+                              ? user.phoneNumberExtension
+                              : "no Extension"
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <SmartphoneOutlinedIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            user.mobileNumber
+                              ? user.mobileNumber
+                              : "no mobile number"
+                          }
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <LocalPrintshopOutlinedIcon />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={
+                            user.faxNumber ? user.faxNumber : "no fax number"
+                          }
+                        />
+                      </ListItem>
+                    </List>
+                  </Grid>
+                </Grid>
+              </div>
+            </CardBody>
+            <CardFooter>
+              {auth.isLocalDirectory() && (
+                <Button
+                  color="info"
+                  onClick={() => props.setDisplayUser(false)}
+                >
+                  <EditIcon /> Edit Profile
+                </Button>
+              )}
+              {auth.isLocalDirectory() && auth.hasAdminScope() && (
+                <Button
+                  color="info"
+                  onClick={() => {
+                    setChangePasswordOpen(true);
+                  }}
+                >
+                  <VpnKeyIcon /> Change password
+                </Button>
+              )}
+              {auth.hasAdminScope() &&
+                (userStatus === "Active" || userStatus === "") && (
                   <Button
                     color="info"
-                    onClick={() => props.setDisplayUser(false)}
+                    onClick={() => handleClickOpen(user.username)}
                   >
-                    <EditIcon /> Edit Profile
+                    <DeleteIcon fontSize="small" /> Revoke user
                   </Button>
                 )}
-                {auth.isLocalDirectory() && auth.hasAdminScope() && (
-                  <Button
-                    color="info"
-                    onClick={() => {
-                      setChangePasswordOpen(true);
-                    }}
-                  >
-                    <VpnKeyIcon /> Change password
-                  </Button>
-                )}
-                {auth.hasAdminScope() &&
-                  (userStatus === "Active" || userStatus === "") && (
-                    <Button
-                      color="info"
-                      onClick={() => handleClickOpen(user.username)}
-                    >
-                      <DeleteIcon fontSize="small" /> Revoke user
-                    </Button>
-                  )}
-              </CardFooter>
-            </Card>
-          </Grid>
-        </GridContainer>
-      ))}
+            </CardFooter>
+          </Card>
+        </Grid>
+      </GridContainer>
     </div>
   );
 }
