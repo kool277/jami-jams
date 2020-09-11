@@ -148,7 +148,7 @@ export default function DisplayUserProfile(props) {
   const classes = useStyles();
 
   const [user, setUser] = React.useState([]);
-  const [userStatus, setUserStatus] = React.useState(false);
+  const [revoked, setRevoked] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [revokedUser, setRevokedUser] = React.useState("");
   const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
@@ -165,7 +165,7 @@ export default function DisplayUserProfile(props) {
             const result = JSON.parse(
               response.data.replace(/\s+/g, " ").trim()
             );
-            setUserStatus(result.revoked);
+            setRevoked(result.revoked);
           })
           .catch((error) => {
             console.log(error);
@@ -176,7 +176,7 @@ export default function DisplayUserProfile(props) {
             const result = JSON.parse(
               response.data.replace(/\s+/g, " ").trim()
             );
-            setUserStatus(result.revoked);
+            setRevoked(result.revoked);
           })
           .catch((error) => {
             console.log(error);
@@ -200,7 +200,7 @@ export default function DisplayUserProfile(props) {
   }, []);
 
   const getUserStatus = () => {
-    if (userStatus === false) {
+    if (revoked === false) {
       return (
         <Chip
           style={{ flex: 1 }}
@@ -231,7 +231,7 @@ export default function DisplayUserProfile(props) {
       configApiCall(api_path_delete_admin_user_revoke, "DELETE", data, null)
     )
       .then(() => {
-        setUserStatus(true);
+        setRevoked(true);
       })
       .catch((error) => {
         console.log(
@@ -305,11 +305,29 @@ export default function DisplayUserProfile(props) {
                     </CardAvatar>
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
-                    <h3 className={classes.cardTitle}>
-                      {user.username ? user.username : "no username"}
-                    </h3>
-
-                    {getUserStatus()}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div>
+                        <h3 className={classes.cardTitle}>
+                          {user.username ? user.username : "no username"}
+                        </h3>
+                        {getUserStatus()}
+                      </div>
+                      <div>
+                        {auth.hasAdminScope() && revoked === false && (
+                          <Button
+                            color="info"
+                            onClick={() => handleClickOpen(user.username)}
+                          >
+                            <DeleteIcon fontSize="small" /> Revoke user
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <List dense={false}>
@@ -444,15 +462,6 @@ export default function DisplayUserProfile(props) {
                   <VpnKeyIcon /> Change password
                 </Button>
               )}
-              {auth.hasAdminScope() &&
-                (userStatus === "Active" || userStatus === "") && (
-                  <Button
-                    color="info"
-                    onClick={() => handleClickOpen(user.username)}
-                  >
-                    <DeleteIcon fontSize="small" /> Revoke user
-                  </Button>
-                )}
             </CardFooter>
           </Card>
         </Grid>
