@@ -98,9 +98,9 @@ public class GroupServlet extends HttpServlet {
 
         // if the username sent isn't already part of the group members, then we add it
         if (!targetGroup.getGroupMembers().contains(groupMembers)) {
-            // otherwise remove the group from the user's memberships.
             AddUserToGroupFlow.addUserToGroup(name, req.getParameter("groupMembers"));
         } else {
+            // otherwise remove the group from the user's memberships.
             statementList = new StatementList();
             st = new StatementElement("username", "=", groupMembers, "");
             statementList.addStatement(st);
@@ -169,10 +169,37 @@ public class GroupServlet extends HttpServlet {
         if (dataStore.getGroupDao().deleteObject(constraint)) {
             // if deletion was successful, cascade the deletion onto the users
             List<UserProfile> validProfiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
-                    profile.getGroupMemberships().remove(Long.parseLong(req.getParameter("groupName")))).collect(Collectors.toList());
+                    profile.getGroupMemberships().remove(req.getParameter("groupName"))).collect(Collectors.toList());
 
-            validProfiles.forEach(profile ->
-                    dataStore.updateUserProfile(profile));
+
+
+
+
+
+
+            validProfiles.parallelStream().forEach(profile -> {
+
+                StatementList statementList = new StatementList();
+                StatementElement st = new StatementElement("username", "=", profile.getUsername(), "");
+                statementList.addStatement(st);
+
+                UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
+                mapping.removeGroup(req.getParameter("groupName"));
+
+                StatementList update = new StatementList();
+                StatementElement st0 = new StatementElement("groups", "=", mapping.getGroups(), "");
+                update.addStatement(st0);
+                StatementList constraint2 = new StatementList();
+                StatementElement st1 = new StatementElement("username", "=", mapping.getUsername(), "");
+                constraint2.addStatement(st1);
+
+                // update user mappings
+                dataStore.getUserGroupMappingsDao().updateObject(update, constraint2);
+
+                // then update the profile itself
+                dataStore.updateUserProfile(profile);
+            });
+
 
             resp.setStatus(200);
         }
