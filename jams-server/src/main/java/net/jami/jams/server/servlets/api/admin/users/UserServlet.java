@@ -119,17 +119,32 @@ public class UserServlet extends HttpServlet {
         final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
         String pw = obj.getString("password");
         String username = obj.getString("username");
+
+        StatementList statementList = new StatementList();
+        StatementElement st0 = new StatementElement("username","=",username,"");
+        statementList.addStatement(st0);
+        if (dataStore.getUserDao().getObjects(statementList).isEmpty()) {
+            resp.sendError(404,"User was not found!");
+            return;
+        }
+
+        User user = dataStore.getUserDao().getObjects(statementList).get(0);
+
         //Check if he is AD/LDAP - then return a 403, because we can't set such password.
-        if(dataStore.getUserDao().getObjects(null).get(0).getUserType() != AuthenticationSourceType.LOCAL){
+        if(user.getUserType() != AuthenticationSourceType.LOCAL){
             resp.sendError(500,"The user is not a local user, therefore we cannot change his data!");
             return;
         }
+
+        byte[] salt = PasswordUtil.generateSalt();
         StatementList update = new StatementList();
-        StatementElement st0 = new StatementElement("password","=",PasswordUtil.hashPassword(pw, Base64.decodeBase64(dataStore.getUserDao().getObjects(null).get(0).getSalt())),"");
-        update.addStatement(st0);
+        StatementElement st1 = new StatementElement("password","=",PasswordUtil.hashPassword(pw, salt),"");
+        update.addStatement(st1);
+        StatementElement st2 = new StatementElement("salt","=",Base64.encodeBase64String(salt),"");
+        update.addStatement(st2);
         StatementList constraint = new StatementList();
-        StatementElement st1 = new StatementElement("username","=",username,"");
-        constraint.addStatement(st1);
+        StatementElement st3 = new StatementElement("username","=",username,"");
+        constraint.addStatement(st3);
         if(dataStore.getUserDao().updateObject(update,constraint)) resp.setStatus(200);
         else resp.sendError(500,"could not update the users's data field!");
     }

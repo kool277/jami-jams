@@ -60,25 +60,30 @@ public class UserDao extends AbstractDao<User> {
     public boolean updateObject(StatementList update, StatementList constraints) {
 
         String pw = update.getStatements().get(0).getValue();
-        String user = constraints.getStatements().get(0).getValue();
-        String pwReset = "false";
+        String salt = "";
+        if (update.getStatements().size() > 1)
+            salt = update.getStatements().get(1).getValue();
 
-        if (update.getStatements().size() > 1) {
-            pwReset = update.getStatements().get(1).getValue();
-        }
+        String user = constraints.getStatements().get(0).getValue();
+//        String pwReset = "false";
+//
+//        if (update.getStatements().size() > 1) {
+//            pwReset = update.getStatements().get(1).getValue();
+//        }
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE users SET password = ? WHERE username = ?");
+            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE users SET password = ?, salt = ? WHERE username = ?");
             ps.setString(1, pw);
-            ps.setString(2, user);
-            ps.executeUpdate();
-
-            ps = connection.getConnection().prepareStatement("UPDATE users SET needsPasswordReset = ? WHERE username = ?");
-            ps.setString(1, pwReset);
-
-            ps.setString(2, user);
+            ps.setString(2, salt);
+            ps.setString(3, user);
+//            ps.executeUpdate();
+//
+//            ps = connection.getConnection().prepareStatement("UPDATE users SET needsPasswordReset = ? WHERE username = ?");
+//            ps.setString(1, pwReset);
+//
+//            ps.setString(2, user);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
             log.error("An error has occurred while trying to update a user: " + e.toString());
