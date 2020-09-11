@@ -61,7 +61,7 @@ import {
   api_path_post_create_user,
   api_path_post_create_user_profile,
   api_path_get_user_profile,
-  api_path_get_exists_user,
+  api_path_get_ns_addr_from_name,
 } from "../../globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
@@ -248,6 +248,7 @@ export default function EditCreateUserProfile(props) {
   };
 
   const handleCreateUser = (data) => {
+    data.username = data.username.toLowerCase();
     const body = {
       username: data.username,
       password: data.password,
@@ -334,7 +335,14 @@ export default function EditCreateUserProfile(props) {
             const data = {
               username: value.toLowerCase(),
             };
-            axios(configApiCall(api_path_get_exists_user, "GET", data, null))
+            axios(
+              configApiCall(
+                api_path_get_ns_addr_from_name + data.username,
+                "GET",
+                null,
+                null
+              )
+            )
               .then((response) => {
                 if (response.status === 200) {
                   resolve(false);

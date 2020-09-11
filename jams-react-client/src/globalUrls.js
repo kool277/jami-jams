@@ -49,6 +49,7 @@ const api_path_delete_admin_contacts = "/api/admin/contacts";
 const api_path_blueprints = "/api/admin/policy";
 const api_path_get_user_profile = "/api/auth/userprofile/";
 const api_path_get_ns_name_from_addr = "/api/nameserver/addr/";
+const api_path_get_ns_addr_from_name = "/api/nameserver/name/";
 
 module.exports = {
   uri,
@@ -100,4 +101,5 @@ module.exports = {
   api_path_blueprints,
   api_path_get_user_profile,
   api_path_get_ns_name_from_addr,
+  api_path_get_ns_addr_from_name,
 };
