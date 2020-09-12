@@ -134,6 +134,49 @@ const styles = (theme) => ({
   button: {
     margin: theme.spacing(1),
   },
+  cropContainer: {
+    position: "relative",
+    width: "100%",
+    height: 200,
+    background: "#333",
+    [theme.breakpoints.up("sm")]: {
+      height: 400,
+    },
+  },
+  cropButton: {
+    flexShrink: 0,
+    marginLeft: 16,
+  },
+  controls: {
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch",
+    [theme.breakpoints.up("sm")]: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+  },
+  sliderContainer: {
+    display: "flex",
+    flex: "1",
+    alignItems: "center",
+  },
+  sliderLabel: {
+    [theme.breakpoints.down("xs")]: {
+      minWidth: 65,
+    },
+  },
+  slider: {
+    padding: "22px 0px",
+    marginLeft: "10px",
+    marginRight: "10px",
+    [theme.breakpoints.up("sm")]: {
+      flexDirection: "row",
+      alignItems: "center",
+      margin: "0 16px",
+    },
+  },
 });
 
 const useStyles = makeStyles(styles);
@@ -187,6 +230,7 @@ export default function EditCreateUserProfile(props) {
   };
 
   React.useEffect(() => {
+    console.log(rotation);
     if (!createUser) {
       setUserName(props.username);
       axios(
@@ -205,9 +249,14 @@ export default function EditCreateUserProfile(props) {
           initialValues.email = user.email;
           initialValues.profilePicture = user.profilePicture;
           setProfilePicture(user.profilePicture);
-          setProfilePicturePreview(
-            "data:image/png;base64, " + user.profilePicture
-          );
+          if (user.profilePicture != "") {
+            setProfilePicturePreview(
+              "data:image/png;base64, " + user.profilePicture
+            );
+          } else {
+            setProfilePicturePreview(noProfilePicture);
+          }
+
           initialValues.organization = user.organization;
           initialValues.faxNumber = user.faxNumber;
           initialValues.phoneNumber = user.phoneNumber;
@@ -281,20 +330,12 @@ export default function EditCreateUserProfile(props) {
       });
   };
 
-  const onCropChange = (crop) => {
-    setCrop(crop);
-  };
-
   const onCropComplete = (croppedArea, croppedAreaPixels) => {
     getCroppedImg(originalUploadedImage, croppedAreaPixels, rotation).then(
       (value) => {
         setProfilePicturePreview(value);
       }
     );
-  };
-
-  const onZoomChange = (zoom) => {
-    setZoom(zoom);
   };
 
   const handleClose = () => {
@@ -396,17 +437,19 @@ export default function EditCreateUserProfile(props) {
       >
         <DialogTitle id="alert-dialog-title">{"Crop image"}</DialogTitle>
         <DialogContent>
-          <Cropper
-            image={originalUploadedImage}
-            crop={crop}
-            zoom={zoom}
-            aspect={aspect}
-            onCropChange={onCropChange}
-            onCropComplete={onCropComplete}
-            onZoomChange={onZoomChange}
-          />
-        </DialogContent>
-        <DialogActions>
+          <div className={classes.cropContainer}>
+            <Cropper
+              image={originalUploadedImage}
+              crop={crop}
+              rotation={rotation}
+              zoom={zoom}
+              aspect={aspect}
+              onCropChange={setCrop}
+              onRotationChange={setRotation}
+              onCropComplete={onCropComplete}
+              onZoomChange={setZoom}
+            />
+          </div>
           <div className={classes.controls}>
             <div className={classes.sliderContainer}>
               <Typography
@@ -421,7 +464,7 @@ export default function EditCreateUserProfile(props) {
                 max={3}
                 step={0.1}
                 aria-labelledby="Zoom"
-                classes={{ container: classes.slider }}
+                className={classes.slider}
                 onChange={(e, zoom) => setZoom(zoom)}
               />
             </div>
@@ -438,11 +481,13 @@ export default function EditCreateUserProfile(props) {
                 max={360}
                 step={1}
                 aria-labelledby="Rotation"
-                classes={{ container: classes.slider }}
+                className={classes.slider}
                 onChange={(e, rotation) => setRotation(rotation)}
               />
             </div>
           </div>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={handleClose} color="info">
             Cancel
           </Button>
@@ -477,6 +522,12 @@ export default function EditCreateUserProfile(props) {
                         src={profilePicturePreview}
                         alt="..."
                         className={classes.editProfilePicture}
+                        onClick={() => {
+                          let pictureChange = document.getElementById(
+                            "change-profile-picture"
+                          );
+                          pictureChange.click();
+                        }}
                       />
                     </CardAvatar>
                     <div className={classes.root}>
@@ -491,6 +542,7 @@ export default function EditCreateUserProfile(props) {
                           />
                           <label htmlFor="icon-button-file">
                             <IconButton
+                              id="change-profile-picture"
                               color="info"
                               aria-label="upload picture"
                               component="span"
