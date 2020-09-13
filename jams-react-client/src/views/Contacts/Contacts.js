@@ -82,6 +82,7 @@ export default function Users(props) {
   const [progress, setProgress] = React.useState(0);
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [removedContact, setRemovedContact] = React.useState();
+  const [removedContactName, setRemovedContactName] = React.useState();
   const [open, setOpen] = React.useState(false);
 
   const getAllContacts = () => {
@@ -145,6 +146,28 @@ export default function Users(props) {
           let orginalContacts = response.data;
           orginalContacts.map((contact) => {
             contact.display = "";
+            axios(
+              configApiCall(
+                api_path_get_ns_name_from_addr + contact.uri,
+                null,
+                null
+              )
+            ).then((response) => {
+              contact.name = response.data.name;
+              axios(
+                configApiCall(
+                  api_path_get_user_profile + contact.name,
+                  "GET",
+                  null,
+                  null
+                )
+              ).then((response) => {
+                contact.profilePicture = response.data.profilePicture;
+                contact.firstName = response.data.firstName;
+                contact.lastName = response.data.lastName;
+                contact.organization = response.data.organization;
+              });
+            });
           });
           setContacts(orginalContacts);
           setLoading(false);
@@ -195,7 +218,7 @@ export default function Users(props) {
           getAllContacts();
         })
         .catch((error) => {
-          alert("Uri: " + removedContact + " was not removed " + error);
+          alert("Uri: " + removedContactName + " was not removed " + error);
         });
     } else {
       axios(
@@ -213,13 +236,14 @@ export default function Users(props) {
           getAllContacts();
         })
         .catch((error) => {
-          alert("Uri: " + removedContact + " was not removed " + error);
+          alert("Uri: " + removedContactName + " was not removed " + error);
         });
     }
   };
 
-  const handleRemoveContact = (uri) => {
+  const handleRemoveContact = (uri, name) => {
     setRemovedContact(uri);
+    setRemovedContactName(name);
     setOpen(true);
   };
 
@@ -243,7 +267,9 @@ export default function Users(props) {
         <DialogTitle id="alert-dialog-title">{"Remove contact"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete <strong>{removedContact}</strong> ?
+            Are you sure you want to remove{" "}
+            <strong>{removedContactName}</strong> from {props.username} contacts{" "}
+            ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -346,7 +372,7 @@ export default function Users(props) {
                   <IconButton
                     color="secondary"
                     onClick={() => {
-                      handleRemoveContact(contact.uri);
+                      handleRemoveContact(contact.uri, contact.name);
                     }}
                   >
                     <DeleteOutlineIcon />
