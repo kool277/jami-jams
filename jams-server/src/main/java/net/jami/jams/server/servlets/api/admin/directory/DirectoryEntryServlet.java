@@ -38,6 +38,7 @@ import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import org.json.JSONObject;
 
@@ -86,7 +87,6 @@ public class DirectoryEntryServlet extends HttpServlet {
     }
 
     @Override
-    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, SecurityException {
         //Update a user's profile.
         //Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
@@ -94,14 +94,27 @@ public class DirectoryEntryServlet extends HttpServlet {
         StatementList select = new StatementList();
         StatementElement st = new StatementElement("username", "=", userProfile.getUsername(), "");
         select.addStatement(st);
-        if (dataStore.getUserDao().getObjects(select).get(0).getUserType() != AuthenticationSourceType.LOCAL) {
-            resp.sendError(500, "The user is not a local user, therefore we cannot change his data!");
+
+        User targetUser = dataStore.getUserDao().getObjects(select).get(0);
+        select = new StatementList();
+        st = new StatementElement("username", "=", req.getAttribute("username").toString(), "");
+        select.addStatement(st);
+
+        User callingUser = dataStore.getUserDao().getObjects(select).get(0);
+
+        if (targetUser.getUserType() != AuthenticationSourceType.LOCAL) {
+            resp.sendError(403, "The user is not a local user, therefore we cannot change his data!");
             return;
         }
-        if (dataStore.updateUserProfile(userProfile)) {
-            resp.setStatus(200);
+
+        if (callingUser.getAccessLevel() == AccessLevel.ADMIN || (callingUser.getAccessLevel() == AccessLevel.USER && callingUser.getUsername().equals(targetUser.getUsername()))) {
+            if (dataStore.updateUserProfile(userProfile))
+                resp.setStatus(200);
+            else
+                resp.sendError(404, "Could not update the users's profile information");
         } else {
-            resp.sendError(500, "could not update the users's profile information");
+            resp.sendError(403, "The user is either not an admin account or is attempting to edit a profile that is not his own!");
+            return;
         }
     }
 
