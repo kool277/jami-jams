@@ -72,9 +72,16 @@ public class PolicyServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("name");
+
+        Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
+        String result = s.hasNext() ? s.next() : "";
+
+        final JSONObject obj = new JSONObject(result);
+        final String jsonString = obj.toString();
+
         Policy policy = new Policy();
         policy.setName(name);
-        policy.setPolicyData(req.getParameter("policyData"));
+        policy.setPolicyData(jsonString);
         if (dataStore.getPolicyDao().storeObject(policy)) resp.setStatus(200);
         else resp.sendError(500, "Could not create a group successfully!");
     }
