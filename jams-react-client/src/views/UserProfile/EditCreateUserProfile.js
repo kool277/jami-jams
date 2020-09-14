@@ -52,6 +52,8 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
+import Resizer from "react-image-file-resizer";
+
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 import axios from "axios";
@@ -271,12 +273,29 @@ export default function EditCreateUserProfile(props) {
     }
   }, []);
 
+  const resizeFile = (file, outputFormat) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        512,
+        512,
+        "PNG",
+        100,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        outputFormat
+      );
+    });
+
   const handleProfilePictureChange = (event) => {
-    setOriginalUploadedImage(URL.createObjectURL(event.target.files[0]));
     fileUpload(event)
-      .then((data) => {
-        setProfilePicture(data.base64);
-        setProfilePicturePreview("data:image/png;base64, " + data.base64);
+      .then(async (data) => {
+        const imageBase64 = await resizeFile(data, "base64");
+        setProfilePicture(imageBase64);
+        setProfilePicturePreview("data:image/png;base64, " + imageBase64);
+        setOriginalUploadedImage(imageBase64);
         setOpen(true);
       })
       .catch((error) => {
@@ -443,6 +462,7 @@ export default function EditCreateUserProfile(props) {
           <div className={classes.cropContainer}>
             <Cropper
               image={originalUploadedImage}
+              cropSize={{ width: 300, height: 300 }}
               crop={crop}
               rotation={rotation}
               zoom={zoom}
