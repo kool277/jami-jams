@@ -67,18 +67,13 @@ public class SearchDirectoryServlet extends HttpServlet {
             else {
                 profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
                 List<UserProfile> profiles2 = v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME");
-                if (profiles != null) {
-                    for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
-                        UserProfile p = it.next();
-                        for (UserProfile p2 : profiles2) {
-                            if (p2.equals(p))
-                                it.remove();
-                        }
+                for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
+                    UserProfile p = it.next();
+                    for (UserProfile p2 : profiles2) {
+                        if (p2.equals(p))
+                            it.remove();
                     }
                 }
-
-                if (profiles == null)
-                    profiles = new ArrayList<>();
                 profiles.addAll(profiles2);
             }
 
@@ -122,7 +117,9 @@ public class SearchDirectoryServlet extends HttpServlet {
             }
             dataStore.updateUserProfile(profile);
         });
-
-        resp.getOutputStream().write(JsonStream.serialize(userProfiles).getBytes());
+        if (!userProfiles.isEmpty()) {
+            resp.getOutputStream().write(JsonStream.serialize(userProfiles).getBytes());
+            resp.setStatus(200);
+        } else resp.sendError(404, "No users were found!");
     }
 }

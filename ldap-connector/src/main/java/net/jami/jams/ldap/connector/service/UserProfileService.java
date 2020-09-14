@@ -32,6 +32,7 @@ import org.ldaptive.SearchOperation;
 import org.ldaptive.SearchRequest;
 import org.ldaptive.SearchResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public class UserProfileService {
                 connection.open();
                 SearchOperation search = new SearchOperation(connectionFactory);
                 SearchResponse res = search.execute(buildRequest(queryString,field, exactMatch));
-                if (res.getEntries().size() == 0) return null;
+                if (res.getEntries().size() == 0) return new ArrayList<>();
                 return res.getEntries().stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
             } catch (Exception e) {
                 log.error("Could not search LDAP directory with error " + e.toString());
