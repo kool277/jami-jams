@@ -22,6 +22,7 @@
 */
 package net.jami.jams.server.servlets.api.jaminameserver;
 
+import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -29,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -57,7 +59,11 @@ public class AddressServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String[] path = req.getPathInfo().split("/");
         String username = nameServer.getNameFromAddress(path[path.length - 1]);
+
+        JSONObject obj = new JSONObject();
+        obj.put("name", username);
+
         if (username == null) TomcatCustomErrorHandler.sendCustomError(resp,404,"Address not found!");
-        else resp.getWriter().write(username);
+        else resp.getWriter().write(obj.toString());
     }
 }
