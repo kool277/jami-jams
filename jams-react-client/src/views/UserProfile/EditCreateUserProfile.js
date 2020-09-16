@@ -186,7 +186,7 @@ export default function EditCreateUserProfile(props) {
   const history = useHistory();
   const [createUser, setCreateUser] = React.useState(props.createUser);
   const [copied, setCopied] = React.useState(false);
-  const [generated, setGenerated] = React.useState(false);
+  const [generated, setGenerated] = React.useState(true);
   const [userExists, setUserExists] = React.useState(false);
 
   const [userName, setUserName] = React.useState("");
@@ -204,10 +204,21 @@ export default function EditCreateUserProfile(props) {
   const [rotation, setRotation] = React.useState(0);
   const [passwordVisible, setPasswordVisible] = React.useState(false);
 
+  const passwordGenerator = () => {
+    return generator.generate({
+      length: 10,
+      uppercase: false,
+      numbers: true,
+      symbols: true,
+    });
+  };
+
+  const intialyGeneratedPassword = passwordGenerator();
+
   const initialValues = {
     username: "",
-    password: "",
-    confirmPassword: "",
+    password: intialyGeneratedPassword,
+    confirmPassword: intialyGeneratedPassword,
     firstName: "",
     lastName: "",
     email: "",
@@ -218,15 +229,6 @@ export default function EditCreateUserProfile(props) {
     phoneNumberExtension: "",
     mobileNumber: "",
     jamiId: "",
-  };
-
-  const passwordGenerator = () => {
-    return generator.generate({
-      length: 10,
-      uppercase: false,
-      numbers: true,
-      symbols: true,
-    });
   };
 
   React.useEffect(() => {
@@ -368,9 +370,10 @@ export default function EditCreateUserProfile(props) {
 
   const EditCreateSchema = Yup.object().shape({
     username: Yup.string()
-      .min(2, "Username is too short!")
-      .required("Required!")
-      .test("checkDuplUsername", "Username exists!", function (value) {
+      .min(3, "Username must be minimum 3 characters!")
+      .max(32, "Username must be maximum 32 characters!")
+      .required("Username is required!")
+      .test("checkDuplUsername", "Username already taken", function (value) {
         if (createUser) {
           return new Promise((resolve, reject) => {
             const data = {
@@ -399,7 +402,7 @@ export default function EditCreateUserProfile(props) {
           return true;
         }
       })
-      .matches(/^[a-zA-Z0-9]*$/, "Only alphanumeric characters!"),
+      .matches(/^[A-Za-z_][A-Za-z0-9_]*$/, "Only alphanumeric characters!"),
     password: createUser
       ? Yup.string().required("Password is required!")
       : null,
