@@ -30,6 +30,7 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
+import net.jami.jams.common.objects.user.Group;
 import net.jami.jams.common.objects.user.Policy;
 import net.jami.jams.common.objects.user.PolicyData;
 import net.jami.jams.common.objects.user.User;
@@ -72,14 +73,24 @@ public class RegisterDeviceFlow {
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
             if(userProfile.getGroupMemberships() != null) {
                 userProfile.getGroupMemberships().forEach(e -> {
-                    StatementElement st = new StatementElement("name", "=", e, "");
-                    StatementList statementList1 = new StatementList();
-                    statementList1.addStatement(st);
-                    try {
-                        Policy policy = dataStore.getPolicyDao().getObjects(statementList1).get(0);
-                        response.setPolicyData(policy.getPolicyData());
-                    } catch (Exception e1) {
-                        log.warn("No policy available for user - not adding a policy component to response");
+                    if (!e.equals("")) {
+                        StatementElement st = new StatementElement("name", "=", e, "");
+                        StatementList statementList1 = new StatementList();
+                        statementList1.addStatement(st);
+
+                        Group group = dataStore.getGroupDao().getObjects(statementList1).get(0);
+                        String policyName = group.getBlueprint();
+                        if(group != null && policyName != null){
+                            StatementElement st2 = new StatementElement("name", "=", policyName, "");
+                            StatementList statementList2 = new StatementList();
+                            statementList2.addStatement((st2));
+                            try {
+                                Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
+                                response.setPolicyData(policy.getPolicyData());
+                            } catch (Exception e1) {
+                                log.warn("No policy available for user - not adding a policy component to response");
+                            }
+                        }
                     }
                 });
             }

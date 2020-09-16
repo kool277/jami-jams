@@ -41,8 +41,8 @@ public class DeviceRegistrationResponse {
     private String receiptSignature;
     private String userPhoto;
     //Backward compatibility fix so all the fields are included here.
-    private Boolean allowPeersFromHistory;
-    private Boolean allowPeersFromTrusted;
+    private Boolean allowCertFromHistory;
+    private Boolean allowCertFromTrusted;
     private Boolean proxyEnabled;
     private String  dhtProxyListUrl;
     private String  proxyServer;
@@ -53,10 +53,11 @@ public class DeviceRegistrationResponse {
     private String  turnServerPassword;
     private Boolean videoEnabled;
     private Boolean turnEnabled;
-    private Boolean allowPeersFromContact;
+    private Boolean allowCertFromContact;
     private Boolean accountDiscovery;
     private Boolean peerDiscovery;
     private Boolean upnpEnabled;
+    private Boolean rendezVous;
 
     public void setCertificateChain(X509Certificate[] certificateChain){
         StringBuilder stringBuilder = new StringBuilder();
@@ -70,8 +71,8 @@ public class DeviceRegistrationResponse {
 
     public void setPolicyData(String policyData){
         PolicyData policy = JsonIterator.deserialize(policyData,PolicyData.class);
-        this.allowPeersFromHistory = policy.getAllowPeersFromHistory();
-        this.allowPeersFromTrusted = policy.getAllowPeersFromTrusted();
+        this.allowCertFromHistory = policy.getAllowCertFromHistory();
+        this.allowCertFromTrusted = policy.getAllowCertFromTrusted();
         this.proxyEnabled = policy.getProxyEnabled();
         this.dhtProxyListUrl = policy.getDhtProxyListUrl();
         this.proxyServer = policy.getProxyServer();
@@ -82,10 +83,11 @@ public class DeviceRegistrationResponse {
         this.turnServerPassword = policy.getTurnServerPassword();
         this.videoEnabled = policy.getVideoEnabled();
         this.turnEnabled = policy.getTurnEnabled();
-        this.allowPeersFromContact = policy.getAllowPeersFromContact();
+        this.allowCertFromContact = policy.getAllowCertFromContact();
         this.accountDiscovery = policy.getAccountDiscovery();
         this.peerDiscovery = policy.getPeerDiscovery();
         this.upnpEnabled = policy.getUpnpEnabled();
+        this.rendezVous = policy.getRendezVous();
     }
 
 

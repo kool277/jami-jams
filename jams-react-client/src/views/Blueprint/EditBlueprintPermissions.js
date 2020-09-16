@@ -94,11 +94,9 @@ export default function EditBlueprintPermissions(props) {
   const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [allowPeersFromContact, setAllowPeersFromContact] = React.useState(
-    true
-  );
+  const [allowCertFromContact, setallowCertFromContact] = React.useState(true);
   const [autoAnswer, setAutoAnswer] = React.useState(false);
-  const [accountPeerDiscovery, setAccountPeerDiscovery] = React.useState(true);
+  const [peerDiscovery, setpeerDiscovery] = React.useState(true);
   const [rendezVous, setRendezVous] = React.useState(false);
 
   const [upnpEnabled, setUpnpEnabled] = React.useState(true);
@@ -108,9 +106,7 @@ export default function EditBlueprintPermissions(props) {
   const [turnServerPassword, setTurnServerPassword] = React.useState("ring");
   const [proxyEnabled, setProxyEnabled] = React.useState(false);
   const [proxyServer, setProxyServer] = React.useState("dhtproxy.jami.net");
-  const [accountDhtProxyListUrl, setAccountDhtProxyListUrl] = React.useState(
-    ""
-  );
+  const [dhtProxyListUrl, setdhtProxyListUrl] = React.useState("");
 
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
@@ -128,9 +124,9 @@ export default function EditBlueprintPermissions(props) {
       .then((response) => {
         let policyData = JSON.parse(response.data.policyData);
         setVideoEnabled(policyData["videoEnabled"]);
-        setAllowPeersFromContact(policyData["allowPeersFromContact"]);
+        setallowCertFromContact(policyData["allowCertFromContact"]);
         setAutoAnswer(policyData["autoAnswer"]);
-        setAccountPeerDiscovery(policyData["Account.peerDiscovery"]);
+        setpeerDiscovery(policyData["peerDiscovery"]);
         setRendezVous(policyData["rendezVous"]);
 
         setUpnpEnabled(policyData["upnpEnabled"]);
@@ -140,7 +136,7 @@ export default function EditBlueprintPermissions(props) {
         setTurnServerPassword(policyData["turnServerPassword"]);
         setProxyEnabled(policyData["proxyEnabled"]);
         setProxyServer(policyData["proxyServer"]);
-        setAccountDhtProxyListUrl(policyData["Account.dhtProxyListUrl"]);
+        setdhtProxyListUrl(policyData["Account.dhtProxyListUrl"]);
       })
       .catch((error) => {
         console.log(
@@ -155,13 +151,13 @@ export default function EditBlueprintPermissions(props) {
   const handleUpdatePermissions = (field, value) => {
     let data = {
       videoEnabled: videoEnabled,
-      allowPeersFromContact: allowPeersFromContact,
-      allowPeersFromHistory: allowPeersFromContact,
-      allowPeersFromTrusted: allowPeersFromContact,
+      allowCertFromContact: allowCertFromContact,
+      allowCertFromHistory: allowCertFromContact,
+      allowCertFromTrusted: allowCertFromContact,
       autoAnswer: autoAnswer,
-      "Account.peerDiscovery": accountPeerDiscovery,
-      "Account.accountDiscovery": accountPeerDiscovery,
-      "Account.accountPublish": accountPeerDiscovery,
+      peerDiscovery: peerDiscovery,
+      accountDiscovery: peerDiscovery,
+      accountPublish: peerDiscovery,
       rendezVous: rendezVous,
       upnpEnabled: upnpEnabled,
       turnEnabled: turnEnabled,
@@ -170,17 +166,17 @@ export default function EditBlueprintPermissions(props) {
       turnServerPassword: turnServerPassword,
       proxyEnabled: proxyEnabled,
       proxyServer: proxyServer,
-      "Account.dhtProxyListUrl": accountDhtProxyListUrl,
+      dhtProxyListUrl: dhtProxyListUrl,
     };
 
-    if (field === "allowPeersFromContact") {
-      data["allowPeersFromContact"] = value;
-      data["allowPeersFromHistory"] = value;
-      data["allowPeersFromTrusted"] = value;
-    } else if (field === "accountPeerDiscovery") {
-      data["Account.peerDiscovery"] = value;
-      data["Account.accountDiscovery"] = value;
-      data["Account.accountPublish"] = value;
+    if (field === "allowCertFromContact") {
+      data.allowCertFromContact = value;
+      data.allowCertFromHistory = value;
+      data.allowCertFromTrusted = value;
+    } else if (field === "peerDiscovery") {
+      data.peerDiscovery = value;
+      data.accountDiscovery = value;
+      data.accountPublish = value;
     } else {
       data[field] = value;
     }
@@ -195,7 +191,7 @@ export default function EditBlueprintPermissions(props) {
     if (proxyEnabled == undefined) {
       delete data.proxyEnabled;
       delete data.proxyServer;
-      delete data["Account.dhtProxyListUrl"];
+      delete data.dhtProxyListUrl;
     }
 
     axios(
@@ -274,16 +270,16 @@ export default function EditBlueprintPermissions(props) {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={allowPeersFromContact}
+                            checked={allowCertFromContact}
                             color="primary"
                             onChange={(e) => {
-                              setAllowPeersFromContact(e.target.checked);
+                              setallowCertFromContact(e.target.checked);
                               handleUpdatePermissions(
-                                "allowPeersFromContact",
+                                "allowCertFromContact",
                                 e.target.checked
                               );
                             }}
-                            name="allowPeersFromContact"
+                            name="allowCertFromContact"
                           />
                         }
                         label="Allow incomming calls from unknown contacts"
@@ -312,16 +308,16 @@ export default function EditBlueprintPermissions(props) {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={accountPeerDiscovery}
+                            checked={peerDiscovery}
                             color="primary"
                             onChange={(e) => {
-                              setAccountPeerDiscovery(e.target.checked);
+                              setpeerDiscovery(e.target.checked);
                               handleUpdatePermissions(
-                                "accountPeerDiscovery",
+                                "peerDiscovery",
                                 e.target.checked
                               );
                             }}
-                            name="accountPeerDiscovery"
+                            name="peerDiscovery"
                           />
                         }
                         label="Allow use of Jami in a local lan"

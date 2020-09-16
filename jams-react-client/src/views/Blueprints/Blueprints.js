@@ -172,8 +172,12 @@ export default function Blueprints() {
      let defaultPolicyData = {
         videoEnabled: true,
         allowPeersFromContact: true,
+        allowPeersFromHistory: true,
+        allowPeersFromTrusted: true,
         autoAnswer: false,
-        accountPeerDiscovery: true,
+        "Account.peerDiscovery": true,
+        "Account.accountDiscovery": true,
+        "Account.accountPublish": true,
         rendezVous: false,
         upnpEnabled: true,
       };

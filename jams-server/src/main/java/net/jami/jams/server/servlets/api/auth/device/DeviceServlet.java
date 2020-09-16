@@ -1,27 +1,29 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.server.servlets.api.auth.device;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
@@ -40,6 +42,8 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
+
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -113,10 +117,89 @@ public class DeviceServlet extends HttpServlet {
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.USER})
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
         DeviceRegistrationResponse devResponse = RegisterDeviceFlow.registerDevice(req.getAttribute("username").toString(),request);
-        if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        if(devResponse != null) {
+            Gson gson = new Gson();
+            String filteredJson = gson.toJson(devResponse);
+            JsonObject obj = gson.fromJson(filteredJson, JsonObject.class);
+
+            if (obj.get("videoEnabled") != null) {
+                obj.add("Account.videoEnabled", obj.get("videoEnabled"));
+                obj.remove("videoEnabled");
+            }
+
+            if (obj.get("allowCertFromContact") != null) {
+                obj.add("Account.allowCertFromContact", obj.get("allowCertFromContact"));
+                obj.remove("allowCertFromContact");
+            }
+            if (obj.get("allowCertFromHistory") != null) {
+                obj.add("Account.allowCertFromHistory", obj.get("allowCertFromHistory"));
+                obj.remove("allowCertFromHistory");
+            }
+            if (obj.get("allowCertFromTrusted") != null) {
+                obj.add("Account.allowCertFromTrusted", obj.get("allowCertFromTrusted"));
+                obj.remove("allowCertFromTrusted");
+            }
+
+            if (obj.get("autoAnswer") != null) {
+                obj.add("Account.autoAnswer", obj.get("autoAnswer"));
+                obj.remove("autoAnswer");
+            }
+            if (obj.get("peerDiscovery") != null) {
+                obj.add("Account.peerDiscovery", obj.get("peerDiscovery"));
+                obj.remove("peerDiscovery");
+            }
+            if (obj.get("accountDiscovery") != null) {
+                obj.add("Account.accountDiscovery", obj.get("accountDiscovery"));
+                obj.remove("accountDiscovery");
+            }
+            if (obj.get("accountPublish") != null) {
+                obj.add("Account.accountPublish", obj.get("accountPublish"));
+                obj.remove("accountPublish");
+            }
+
+            if (obj.get("rendezVous") != null) {
+                obj.add("Account.rendezVous", obj.get("rendezVous"));
+                obj.remove("rendezVous");
+            }
+            if (obj.get("upnpEnabled") != null) {
+                obj.add("Account.upnpEnabled", obj.get("upnpEnabled"));
+                obj.remove("upnpEnabled");
+            }
+
+            if (obj.get("turnEnabled") != null) {
+                obj.add("TURN.enable", obj.get("turnEnabled"));
+                obj.remove("turnEnabled");
+            }
+            if (obj.get("turnServer") != null) {
+                obj.add("TURN.server", obj.get("turnServer"));
+                obj.remove("turnServer");
+            }
+            if (obj.get("turnServerUserName") != null) {
+                obj.add("TURN.username", obj.get("turnServerUserName"));
+                obj.remove("turnServerUserName");
+            }
+            if (obj.get("turnServerPassword") != null) {
+                obj.add("TURN.password", obj.get("turnServerPassword"));
+                obj.remove("turnServerPassword");
+            }
+
+            if (obj.get("proxyEnabled") != null) {
+                obj.add("Account.proxyEnabled", obj.get("proxyEnabled"));
+                obj.remove("proxyEnabled");
+            }
+            if (obj.get("proxyServer") != null) {
+                obj.add("Account.proxyServer", obj.get("proxyServer"));
+                obj.remove("proxyServer");
+            }
+            if (obj.get("dhtProxyListUrl") != null) {
+                obj.add("Account.dhtProxyListUrl", obj.get("dhtProxyListUrl"));
+                obj.remove("dhtProxyListUrl");
+            }
+            resp.getOutputStream().write((obj.toString()).getBytes());
+        }
         else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not enroll a device due to server-side error");
     }
 
@@ -169,7 +252,7 @@ public class DeviceServlet extends HttpServlet {
         StatementElement statementElement = new StatementElement("owner","=",req.getAttribute("username").toString(),"");
         statementList.addStatement(statementElement);
         if(dataStore.getDeviceDao().getObjects(statementList).stream().filter(device ->
-            device.getDeviceId().equals(deviceId)).count() == 0){
+                device.getDeviceId().equals(deviceId)).count() == 0){
             TomcatCustomErrorHandler.sendCustomError(resp,403,"You do not have sufficient rights to revoke this device!");
             return;
         }

@@ -171,11 +171,9 @@ export default function EditBlueprintConfiguration(props) {
   const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [allowPeersFromContact, setAllowPeersFromContact] = React.useState(
-    true
-  );
+  const [allowCertFromContact, setallowCertFromContact] = React.useState(true);
   const [autoAnswer, setAutoAnswer] = React.useState(false);
-  const [accountPeerDiscovery, setAccountPeerDiscovery] = React.useState(true);
+  const [peerDiscovery, setpeerDiscovery] = React.useState(true);
   const [rendezVous, setRendezVous] = React.useState(false);
 
   const [selectedTurnOption, setSelectedTurnOption] = React.useState(
@@ -191,9 +189,7 @@ export default function EditBlueprintConfiguration(props) {
   const [turnServerPassword, setTurnServerPassword] = React.useState("ring");
   const [proxyEnabled, setProxyEnabled] = React.useState(false);
   const [proxyServer, setProxyServer] = React.useState("dhtproxy.jami.net");
-  const [accountDhtProxyListUrl, setAccountDhtProxyListUrl] = React.useState(
-    ""
-  );
+  const [dhtProxyListUrl, setDhtProxyListUrl] = React.useState("");
 
   const [turnPassowrdVisible, setTurnPasswordVisible] = React.useState(false);
 
@@ -213,9 +209,9 @@ export default function EditBlueprintConfiguration(props) {
       .then((response) => {
         let policyData = JSON.parse(response.data.policyData);
         setVideoEnabled(policyData["videoEnabled"]);
-        setAllowPeersFromContact(policyData["allowPeersFromContact"]);
+        setallowCertFromContact(policyData["allowCertFromContact"]);
         setAutoAnswer(policyData["autoAnswer"]);
-        setAccountPeerDiscovery(policyData["Account.peerDiscovery"]);
+        setpeerDiscovery(policyData["peerDiscovery"]);
         setRendezVous(policyData["rendezVous"]);
 
         setUpnpEnabled(policyData["upnpEnabled"]);
@@ -235,7 +231,7 @@ export default function EditBlueprintConfiguration(props) {
           setSelectedDHTProxyOption("customDHTProxy");
           setProxyEnabled(policyData["proxyEnabled"]);
           setProxyServer(policyData["proxyServer"]);
-          setAccountDhtProxyListUrl(policyData["Account.dhtProxyListUrl"]);
+          setDhtProxyListUrl(policyData["dhtProxyListUrl"]);
         } else if (policyData["proxyEnabled"] === false) {
           setSelectedDHTProxyOption("disabledDHTProxy");
           setTurnEnabled(false);
@@ -256,13 +252,13 @@ export default function EditBlueprintConfiguration(props) {
   const handleUpdateConfiguration = (field, value, selectedOptions = []) => {
     let data = {
       videoEnabled: videoEnabled,
-      allowPeersFromContact: allowPeersFromContact,
-      allowPeersFromHistory: allowPeersFromContact,
-      allowPeersFromTrusted: allowPeersFromContact,
+      allowCertFromContact: allowCertFromContact,
+      allowCertFromHistory: allowCertFromContact,
+      allowCertFromTrusted: allowCertFromContact,
       autoAnswer: autoAnswer,
-      "Account.peerDiscovery": accountPeerDiscovery,
-      "Account.accountDiscovery": accountPeerDiscovery,
-      "Account.accountPublish": accountPeerDiscovery,
+      peerDiscovery: peerDiscovery,
+      accountDiscovery: peerDiscovery,
+      accountPublish: peerDiscovery,
       rendezVous: rendezVous,
       upnpEnabled: upnpEnabled,
       turnEnabled: turnEnabled,
@@ -271,14 +267,10 @@ export default function EditBlueprintConfiguration(props) {
       turnServerPassword: turnServerPassword,
       proxyEnabled: proxyEnabled,
       proxyServer: proxyServer,
-      "Account.dhtProxyListUrl": accountDhtProxyListUrl,
+      dhtProxyListUrl: dhtProxyListUrl,
     };
 
-    if (field === "accountDhtProxyListUrl") {
-      data["Account.dhtProxyListUrl"] = value;
-    } else {
-      data[field] = value;
-    }
+    data[field] = value;
 
     selectedOptions.forEach((selectedOption) => {
       if (selectedOption === "defaultTurn") {
@@ -291,7 +283,7 @@ export default function EditBlueprintConfiguration(props) {
       if (selectedOption === "defaultDHTProxy") {
         delete data.proxyEnabled;
         delete data.proxyServer;
-        delete data["Account.dhtProxyListUrl"];
+        delete data.dhtProxyListUrl;
       }
 
       if (selectedOption == "customTurn") {
@@ -627,21 +619,21 @@ export default function EditBlueprintConfiguration(props) {
                                   : "none",
                             }}
                           >
-                            <InputLabel htmlFor="accountDhtProxyListUrl">
+                            <InputLabel htmlFor="dhtProxyListUrl">
                               DHT proxy List URL
                             </InputLabel>
                             <Input
                               id="proxyServer"
-                              placeholder={accountDhtProxyListUrl}
+                              placeholder={dhtProxyListUrl}
                               startAdornment={
                                 <InputAdornment position="start">
                                   <LanguageOutlinedIcon />
                                 </InputAdornment>
                               }
                               onChange={(e) => {
-                                setAccountDhtProxyListUrl(e.target.value);
+                                setDhtProxyListUrl(e.target.value);
                                 handleUpdateConfiguration(
-                                  "accountDhtProxyListUrl",
+                                  "dhtProxyListUrl",
                                   e.target.value,
                                   [selectedTurnOption, "customDHTProxy"]
                                 );

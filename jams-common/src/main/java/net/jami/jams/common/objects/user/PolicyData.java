@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class PolicyData {
 
-    private Boolean allowPeersFromHistory;
-    private Boolean allowPeersFromTrusted;
+    private Boolean allowCertFromHistory;
+    private Boolean allowCertFromTrusted;
     private Boolean proxyEnabled;
     private String  dhtProxyListUrl;
     private String proxyServer;
@@ -19,8 +19,9 @@ public class PolicyData {
     private String turnServerPassword;
     private Boolean videoEnabled;
     private Boolean turnEnabled;
-    private Boolean allowPeersFromContact;
+    private Boolean allowCertFromContact;
     private Boolean accountDiscovery;
     private Boolean peerDiscovery;
     private Boolean upnpEnabled;
+    private Boolean rendezVous;
 }
