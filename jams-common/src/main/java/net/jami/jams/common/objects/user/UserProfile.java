@@ -157,4 +157,27 @@ public class UserProfile implements DatabaseObject {
                 profile.getLastName().equals(this.lastName));
     }
 
+    public void setDefaultValues() {
+        if (this.firstName == null)
+            this.firstName = "";
+        if (this.lastName == null)
+            this.lastName = "";
+        if (this.email == null)
+            this.email = "";
+        if (this.profilePicture == null)
+            this.profilePicture = "";
+        if (this.organization == null)
+            this.organization = "";
+        if (this.phoneNumber == null)
+            this.phoneNumber = "";
+        if (this.phoneNumberExtension == null)
+            this.phoneNumberExtension = "";
+        if (this.faxNumber == null)
+            this.faxNumber = "";
+        if (this.mobileNumber == null)
+            this.mobileNumber = "";
+        if (this.groupMemberships == null)
+            this.groupMemberships = new ArrayList<>();
+    }
+
 }

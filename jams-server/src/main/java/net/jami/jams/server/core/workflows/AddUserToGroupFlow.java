@@ -40,22 +40,27 @@ public class AddUserToGroupFlow {
                     // otherwise, update the object.
 
                     mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
-                    mapping.addGroup(groupName);
-                    String newGroups = mapping.getGroups();
+                    if (!mapping.getGroups().contains(groupName)) {
+                        mapping.addGroup(groupName);
+                        String newGroups = mapping.getGroups();
 
-                    StatementList update = new StatementList();
-                    StatementElement st0 = new StatementElement("groups", "=", newGroups, "");
-                    update.addStatement(st0);
-                    StatementList constraint = new StatementList();
-                    StatementElement st1 = new StatementElement("username", "=", username, "");
-                    constraint.addStatement(st1);
-                    dataStore.getUserGroupMappingsDao().updateObject(update, constraint);
+                        StatementList update = new StatementList();
+                        StatementElement st0 = new StatementElement("groups", "=", newGroups, "");
+                        update.addStatement(st0);
+                        StatementList constraint = new StatementList();
+                        StatementElement st1 = new StatementElement("username", "=", username, "");
+                        constraint.addStatement(st1);
+                        dataStore.getUserGroupMappingsDao().updateObject(update, constraint);
+                    }
                 }
 
                 if (profile != null) {
                     if (profile.getGroupMemberships() == null)
                         profile.setGroupMemberships(new ArrayList<>());
-                    profile.getGroupMemberships().add(groupName);
+
+                    if (!profile.getGroupMemberships().contains(groupName))
+                        profile.getGroupMemberships().add(groupName);
+
                     dataStore.updateUserProfile(profile);
                 }
             }

@@ -23,6 +23,8 @@
 package net.jami.jams.ldap.connector.service;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.ldap.connector.LDAPConnector;
 import org.ldaptive.Connection;
@@ -36,6 +38,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static net.jami.jams.server.Server.dataStore;
 
 @Slf4j
 public class UserProfileService {
@@ -57,7 +61,18 @@ public class UserProfileService {
                 SearchOperation search = new SearchOperation(connectionFactory);
                 SearchResponse res = search.execute(buildRequest(queryString,field, exactMatch));
                 if (res.getEntries().size() == 0) return new ArrayList<>();
-                return res.getEntries().stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
+                List<UserProfile> profilesFromResponse = res.getEntries().stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
+                for (UserProfile p: profilesFromResponse) {
+
+                    StatementList statementList = new StatementList();
+                    StatementElement st = new StatementElement("username", "=", p.getUsername(), "");
+                    statementList.addStatement(st);
+
+                    if (dataStore.getUserProfileDao().getObjects(statementList).isEmpty())
+                        dataStore.getUserProfileDao().storeObject(p);
+                }
+
+                return profilesFromResponse;
             } catch (Exception e) {
                 log.error("Could not search LDAP directory with error " + e.toString());
                 return null;
@@ -104,6 +119,7 @@ public class UserProfileService {
                     UserProfile.exposedMethods.get("set" + fieldMap.get(attribute)).invoke(userProfile, entry.getAttribute(attribute).getStringValue());
                 }
             }
+            userProfile.setDefaultValues();
             return userProfile;
         }
         catch (Exception e){

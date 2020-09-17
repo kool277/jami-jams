@@ -52,6 +52,7 @@ public class RegisterDeviceFlow {
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
+//            UserProfile userProfile = dataStore.getUserProfileDao().getObjects(statementList).get(0);
             UserProfile userProfile = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(user.getRealm(),user.getUserType()))
                     .searchUserProfiles(username,"LOGON_NAME").get(0);

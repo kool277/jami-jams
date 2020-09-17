@@ -171,12 +171,6 @@ public class GroupServlet extends HttpServlet {
             List<UserProfile> validProfiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
                     profile.getGroupMemberships().remove(req.getParameter("groupName"))).collect(Collectors.toList());
 
-
-
-
-
-
-
             validProfiles.parallelStream().forEach(profile -> {
 
                 StatementList statementList = new StatementList();

@@ -51,6 +51,7 @@ public class SearchDirectoryServlet extends HttpServlet {
     //The search directory function does not automatically create users, this would be costly at this point
     //right now, we will implement it when Jami supports lists of users. this is a work in progress as it
     //requires changes on the name server as well.
+    List<UserProfile> userProfiles = new ArrayList<>();
 
     /**
      *
@@ -58,26 +59,24 @@ public class SearchDirectoryServlet extends HttpServlet {
     @Override
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        List<UserProfile> userProfiles = new ArrayList<>();
-        userAuthenticationModule.getAuthSources().forEach((k, v) -> {
 
-            List<UserProfile> profiles;
+        userAuthenticationModule.getAuthSources().forEach((k, v) -> {
             if (req.getParameter("queryString").equals("*"))
-                profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
+                userProfiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
             else {
-                profiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
+                userProfiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
                 List<UserProfile> profiles2 = v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME");
-                for (Iterator<UserProfile> it = profiles.iterator(); it.hasNext(); ) {
+                for (Iterator<UserProfile> it = userProfiles.iterator(); it.hasNext(); ) {
                     UserProfile p = it.next();
                     for (UserProfile p2 : profiles2) {
                         if (p2.equals(p))
                             it.remove();
                     }
                 }
-                profiles.addAll(profiles2);
+                userProfiles.addAll(profiles2);
             }
 
-            profiles.parallelStream().forEach(profile -> {
+            userProfiles.parallelStream().forEach(profile -> {
                 StatementList statementList = new StatementList();
                 StatementElement statementElement = new StatementElement("username", "=", profile.getUsername(), "");
                 statementList.addStatement(statementElement);
@@ -95,7 +94,6 @@ public class SearchDirectoryServlet extends HttpServlet {
                         profile.setId(results.get(0).getJamiId());
                     }
                 }
-                userProfiles.add(profile);
             });
         });
 
