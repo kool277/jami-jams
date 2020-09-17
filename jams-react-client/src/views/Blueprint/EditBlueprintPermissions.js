@@ -94,9 +94,9 @@ export default function EditBlueprintPermissions(props) {
   const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [allowCertFromContact, setallowCertFromContact] = React.useState(true);
+  const [allowCertFromContact, setAllowCertFromContact] = React.useState(true);
   const [autoAnswer, setAutoAnswer] = React.useState(false);
-  const [peerDiscovery, setpeerDiscovery] = React.useState(true);
+  const [peerDiscovery, setPeerDiscovery] = React.useState(true);
   const [rendezVous, setRendezVous] = React.useState(false);
 
   const [upnpEnabled, setUpnpEnabled] = React.useState(true);
@@ -106,7 +106,7 @@ export default function EditBlueprintPermissions(props) {
   const [turnServerPassword, setTurnServerPassword] = React.useState("ring");
   const [proxyEnabled, setProxyEnabled] = React.useState(false);
   const [proxyServer, setProxyServer] = React.useState("dhtproxy.jami.net");
-  const [dhtProxyListUrl, setdhtProxyListUrl] = React.useState("");
+  const [dhtProxyListUrl, setDhtProxyListUrl] = React.useState("");
 
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
@@ -124,9 +124,9 @@ export default function EditBlueprintPermissions(props) {
       .then((response) => {
         let policyData = JSON.parse(response.data.policyData);
         setVideoEnabled(policyData["videoEnabled"]);
-        setallowCertFromContact(policyData["allowCertFromContact"]);
+        setAllowCertFromContact(policyData["allowCertFromContact"]);
         setAutoAnswer(policyData["autoAnswer"]);
-        setpeerDiscovery(policyData["peerDiscovery"]);
+        setPeerDiscovery(policyData["peerDiscovery"]);
         setRendezVous(policyData["rendezVous"]);
 
         setUpnpEnabled(policyData["upnpEnabled"]);
@@ -136,7 +136,7 @@ export default function EditBlueprintPermissions(props) {
         setTurnServerPassword(policyData["turnServerPassword"]);
         setProxyEnabled(policyData["proxyEnabled"]);
         setProxyServer(policyData["proxyServer"]);
-        setdhtProxyListUrl(policyData["Account.dhtProxyListUrl"]);
+        setDhtProxyListUrl(policyData["dhtProxyListUrl"]);
       })
       .catch((error) => {
         console.log(
@@ -273,7 +273,7 @@ export default function EditBlueprintPermissions(props) {
                             checked={allowCertFromContact}
                             color="primary"
                             onChange={(e) => {
-                              setallowCertFromContact(e.target.checked);
+                              setAllowCertFromContact(e.target.checked);
                               handleUpdatePermissions(
                                 "allowCertFromContact",
                                 e.target.checked
@@ -311,7 +311,7 @@ export default function EditBlueprintPermissions(props) {
                             checked={peerDiscovery}
                             color="primary"
                             onChange={(e) => {
-                              setpeerDiscovery(e.target.checked);
+                              setPeerDiscovery(e.target.checked);
                               handleUpdatePermissions(
                                 "peerDiscovery",
                                 e.target.checked

@@ -171,9 +171,9 @@ export default function EditBlueprintConfiguration(props) {
   const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [allowCertFromContact, setallowCertFromContact] = React.useState(true);
+  const [allowCertFromContact, setAllowCertFromContact] = React.useState(true);
   const [autoAnswer, setAutoAnswer] = React.useState(false);
-  const [peerDiscovery, setpeerDiscovery] = React.useState(true);
+  const [peerDiscovery, setPeerDiscovery] = React.useState(true);
   const [rendezVous, setRendezVous] = React.useState(false);
 
   const [selectedTurnOption, setSelectedTurnOption] = React.useState(
@@ -209,9 +209,9 @@ export default function EditBlueprintConfiguration(props) {
       .then((response) => {
         let policyData = JSON.parse(response.data.policyData);
         setVideoEnabled(policyData["videoEnabled"]);
-        setallowCertFromContact(policyData["allowCertFromContact"]);
+        setAllowCertFromContact(policyData["allowCertFromContact"]);
         setAutoAnswer(policyData["autoAnswer"]);
-        setpeerDiscovery(policyData["peerDiscovery"]);
+        setPeerDiscovery(policyData["peerDiscovery"]);
         setRendezVous(policyData["rendezVous"]);
 
         setUpnpEnabled(policyData["upnpEnabled"]);
