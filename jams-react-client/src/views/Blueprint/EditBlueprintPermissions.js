@@ -94,7 +94,7 @@ export default function EditBlueprintPermissions(props) {
   const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [allowCertFromContact, setAllowCertFromContact] = React.useState(true);
+  const [publicInCalls, setPublicInCalls] = React.useState(true);
   const [autoAnswer, setAutoAnswer] = React.useState(false);
   const [peerDiscovery, setPeerDiscovery] = React.useState(true);
   const [rendezVous, setRendezVous] = React.useState(false);
@@ -124,7 +124,7 @@ export default function EditBlueprintPermissions(props) {
       .then((response) => {
         let policyData = JSON.parse(response.data.policyData);
         setVideoEnabled(policyData["videoEnabled"]);
-        setAllowCertFromContact(policyData["allowCertFromContact"]);
+        setPublicInCalls(policyData["publicInCalls"]);
         setAutoAnswer(policyData["autoAnswer"]);
         setPeerDiscovery(policyData["peerDiscovery"]);
         setRendezVous(policyData["rendezVous"]);
@@ -151,9 +151,7 @@ export default function EditBlueprintPermissions(props) {
   const handleUpdatePermissions = (field, value) => {
     let data = {
       videoEnabled: videoEnabled,
-      allowCertFromContact: allowCertFromContact,
-      allowCertFromHistory: allowCertFromContact,
-      allowCertFromTrusted: allowCertFromContact,
+      publicInCalls: publicInCalls,
       autoAnswer: autoAnswer,
       peerDiscovery: peerDiscovery,
       accountDiscovery: peerDiscovery,
@@ -169,11 +167,7 @@ export default function EditBlueprintPermissions(props) {
       dhtProxyListUrl: dhtProxyListUrl,
     };
 
-    if (field === "allowCertFromContact") {
-      data.allowCertFromContact = value;
-      data.allowCertFromHistory = value;
-      data.allowCertFromTrusted = value;
-    } else if (field === "peerDiscovery") {
+    if (field === "peerDiscovery") {
       data.peerDiscovery = value;
       data.accountDiscovery = value;
       data.accountPublish = value;
@@ -270,19 +264,19 @@ export default function EditBlueprintPermissions(props) {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={allowCertFromContact}
+                            checked={publicInCalls}
                             color="primary"
                             onChange={(e) => {
-                              setAllowCertFromContact(e.target.checked);
+                              setPublicInCalls(e.target.checked);
                               handleUpdatePermissions(
-                                "allowCertFromContact",
+                                "publicInCalls",
                                 e.target.checked
                               );
                             }}
-                            name="allowCertFromContact"
+                            name="publicInCalls"
                           />
                         }
-                        label="Allow incomming calls from unknown contacts"
+                        label="Allow incoming calls from unknown contacts"
                       />
                     </FormGroup>
                     <FormGroup row>

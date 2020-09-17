@@ -130,17 +130,9 @@ public class DeviceServlet extends HttpServlet {
                 obj.remove("videoEnabled");
             }
 
-            if (obj.get("allowCertFromContact") != null) {
-                obj.add("Account.allowCertFromContact", obj.get("allowCertFromContact"));
-                obj.remove("allowCertFromContact");
-            }
-            if (obj.get("allowCertFromHistory") != null) {
-                obj.add("Account.allowCertFromHistory", obj.get("allowCertFromHistory"));
-                obj.remove("allowCertFromHistory");
-            }
-            if (obj.get("allowCertFromTrusted") != null) {
-                obj.add("Account.allowCertFromTrusted", obj.get("allowCertFromTrusted"));
-                obj.remove("allowCertFromTrusted");
+            if (obj.get("publicInCalls") != null) {
+                obj.add("DHT.PublicInCalls", obj.get("publicInCalls"));
+                obj.remove("publicInCalls");
             }
 
             if (obj.get("autoAnswer") != null) {

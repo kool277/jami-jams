@@ -171,7 +171,7 @@ export default function EditBlueprintConfiguration(props) {
   const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [allowCertFromContact, setAllowCertFromContact] = React.useState(true);
+  const [publicInCalls, setPublicInCalls] = React.useState(true);
   const [autoAnswer, setAutoAnswer] = React.useState(false);
   const [peerDiscovery, setPeerDiscovery] = React.useState(true);
   const [rendezVous, setRendezVous] = React.useState(false);
@@ -209,7 +209,7 @@ export default function EditBlueprintConfiguration(props) {
       .then((response) => {
         let policyData = JSON.parse(response.data.policyData);
         setVideoEnabled(policyData["videoEnabled"]);
-        setAllowCertFromContact(policyData["allowCertFromContact"]);
+        setPublicInCalls(policyData["publicInCalls"]);
         setAutoAnswer(policyData["autoAnswer"]);
         setPeerDiscovery(policyData["peerDiscovery"]);
         setRendezVous(policyData["rendezVous"]);
@@ -252,9 +252,7 @@ export default function EditBlueprintConfiguration(props) {
   const handleUpdateConfiguration = (field, value, selectedOptions = []) => {
     let data = {
       videoEnabled: videoEnabled,
-      allowCertFromContact: allowCertFromContact,
-      allowCertFromHistory: allowCertFromContact,
-      allowCertFromTrusted: allowCertFromContact,
+      publicInCalls: publicInCalls,
       autoAnswer: autoAnswer,
       peerDiscovery: peerDiscovery,
       accountDiscovery: peerDiscovery,
