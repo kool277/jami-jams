@@ -60,7 +60,7 @@ public abstract class AbstractDao<T> {
             return result;
         }
         catch (Exception e){
-            log.error("An error has occurred while trying to fetch a device: " + e.toString());
+            log.error("An error has occurred while trying to fetch an object: " + e.toString());
             return null;
         }
         finally {

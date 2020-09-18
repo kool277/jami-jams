@@ -51,7 +51,7 @@ import java.util.TimerTask;
 public class UpdateCheckTask extends TimerTask {
 
     private HashMap<String, FileDescription> remoteData = new HashMap<>();
-    private HashMap<String, FileDescription> localData;
+    private HashMap<String, FileDescription> localData = new HashMap<>();
     private SSLContext sslContext;
     private volatile KeyStore trustStore;
     protected static volatile String UPDATE_SERVER_URI;
@@ -89,7 +89,6 @@ public class UpdateCheckTask extends TimerTask {
                     JAMSUpdater.updateAvailable.set(true);
                 }
             });
-
         }
         catch (Exception e){
             log.error("Could not check for updates with error: {}",e.getMessage());

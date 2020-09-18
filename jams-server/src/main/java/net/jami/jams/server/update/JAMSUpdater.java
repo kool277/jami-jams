@@ -29,7 +29,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.updater.FileDescription;
-import net.jami.jams.common.utils.VersioningUtils;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
@@ -76,7 +75,7 @@ public class JAMSUpdater implements AppUpdater {
 
     @Override
     public HashMap<String, FileDescription> getLocalVersions() {
-        return VersioningUtils.checkVersion(null);
+        return updateCheckTask.getLocalData();
     }
 
     @Override

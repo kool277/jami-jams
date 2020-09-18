@@ -51,6 +51,7 @@ public class SubscriptionServlet extends HttpServlet {
         subscriptionStatusResponse.setLicenseInformation(Server.licenseService.getLicenseInformation());
         subscriptionStatusResponse.setActivated(Server.activated.get());
         resp.getOutputStream().write(JsonStream.serialize(subscriptionStatusResponse).getBytes());
+        resp.getOutputStream().close();
     }
 
     //Upload the license here, which is really just uploading a base64 representation of the keypair - and store it

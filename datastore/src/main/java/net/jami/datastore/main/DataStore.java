@@ -43,6 +43,7 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import org.flywaydb.core.Flyway;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -105,6 +106,9 @@ public class DataStore implements AuthenticationSource {
             userList = userProfileDao.getObjects(statementList);
         } else
             userList = userProfileDao.getObjects(null);
+
+        if (userList == null)
+            userList = new ArrayList<>();
 
         return userList;
     }

@@ -158,7 +158,6 @@ class Auth {
     checkForUpdates(cb) {
         if (this.installed && this.authenticated) {
             axios(configApiCall(api_path_get_subscription_status, 'GET', null, null)).then((response) => {
-                this.localVersion = response.data['versions']['jams-server.jar']['version'];
                 this.activated = response.data['activated'];
                 cb()
             })

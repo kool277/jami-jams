@@ -43,8 +43,6 @@ import static net.jami.jams.server.Server.dataStore;
 
 @Slf4j
 public class UserProfileService {
-
-    private static final HashMap<String,String> fieldMap = LDAPConnector.settings.getFieldMappings();
     private final ConnectionFactory connectionFactory;
 
     public UserProfileService(ConnectionFactory connectionFactory) {
@@ -112,6 +110,8 @@ public class UserProfileService {
 
     public static UserProfile profileFromResponse(LdapEntry entry){
         //Use reflection to remap.
+        HashMap<String,String> fieldMap = LDAPConnector.settings.getFieldMappings();
+
         try {
             UserProfile userProfile = new UserProfile();
             for (String attribute : entry.getAttributeNames()) {
@@ -123,7 +123,7 @@ public class UserProfileService {
             return userProfile;
         }
         catch (Exception e){
-            log.error("An error occured while trying to invoke methods: " + e.toString());
+            log.error("An error occurred while trying to invoke methods: " + e.toString());
             return null;
         }
     }

@@ -49,8 +49,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserProfileService {
 
-    private static final HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
-
     public List<UserProfile> getUserProfile(String queryString, String field,boolean exactMatch) {
         Endpoint endpoint = ADConnector.getConnection();
         try {
@@ -92,6 +90,7 @@ public class UserProfileService {
     }
 
     public static QueryRequest buildRequest(Endpoint endpoint) {
+        HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
         QueryRequest queryRequest = new QueryRequest();
         queryRequest.setDirectoryType(DirectoryType.MS_ACTIVE_DIRECTORY);
         queryRequest.setEndpoints(new ArrayList<>() {{
@@ -108,6 +107,8 @@ public class UserProfileService {
 
     public static UserProfile profileFromResponse(List<Field> fields) {
         //Use reflection to remap.
+        HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
+
         try {
             UserProfile userProfile = new UserProfile();
             for (Field field : fields) {
