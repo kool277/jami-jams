@@ -28,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.jami.NameLookupResponse;
 import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -96,7 +98,9 @@ public class PublicNameServer implements NameServer {
                     currentSize++;
                 }
                 log.info("Response received from public nameserver {} ",responseData.toString());
-                return responseData.toString();
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(responseData.toString());
+                return json.getAsString("name");
             }
             return null;
         }
