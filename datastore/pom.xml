@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
-            <version>${debry.version}</version>
+            <version>${derby.version}</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>

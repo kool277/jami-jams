@@ -39,7 +39,7 @@
         <junit.surefire.version>1.1.0</junit.surefire.version>
         <jsoniter.version>0.9.23</jsoniter.version>
         <javassist.version>3.27.0-GA</javassist.version>
-        <debry.version>10.14.2.0</debry.version>
+        <derby.version>10.14.2.0</derby.version>
         <msgpack.version>0.8.16</msgpack.version>
         <commons.codec.version>1.11</commons.codec.version>
         <xbean.version>4.17</xbean.version>
