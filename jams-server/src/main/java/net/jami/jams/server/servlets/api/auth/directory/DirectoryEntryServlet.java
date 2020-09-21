@@ -38,6 +38,7 @@ import net.jami.jams.common.objects.user.UserProfile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
@@ -202,7 +203,7 @@ public class DirectoryEntryServlet extends HttpServlet {
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
             List<UserProfile> userProfiles = new ArrayList<>();
             userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-                userProfiles.addAll(v.searchUserProfiles(user.getUsername(), "LOGON_NAME"));
+                userProfiles.addAll(v.searchUserProfiles(user.getUsername(), "LOGON_NAME", Optional.empty()));
             });
             if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
                 resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
@@ -213,7 +214,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         if (req.getParameter("directory") != null && req.getParameter("directoryType") != null) {
             List<UserProfile> profiles = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(req.getParameter("directory"), AuthenticationSourceType.fromString(req.getParameter("directoryType"))))
-                    .searchUserProfiles(req.getParameter("username"), "LOGON_NAME");
+                    .searchUserProfiles(req.getParameter("username"), "LOGON_NAME", Optional.empty());
             if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
                 resp.getOutputStream().write(profiles.get(0).getAsVCard().getBytes());
             }
@@ -222,7 +223,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         }
         List<UserProfile> userProfiles = new ArrayList<>();
         userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-            userProfiles.addAll(v.searchUserProfiles(req.getParameter("username"), "LOGON_NAME"));
+            userProfiles.addAll(v.searchUserProfiles(req.getParameter("username"), "LOGON_NAME", Optional.empty()));
         });
         if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
             resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());

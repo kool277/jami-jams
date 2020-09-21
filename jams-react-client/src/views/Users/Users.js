@@ -4,6 +4,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
+import Pagination from "@material-ui/lab/Pagination";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -16,33 +17,25 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import Divider from "@material-ui/core/Divider";
-
 import PersonIcon from "@material-ui/icons/Person";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import PhoneOutlinedIcon from "@material-ui/icons/PhoneOutlined";
 import InfoIcon from "@material-ui/icons/Info";
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
 import Search from "@material-ui/icons/Search";
-
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from "auth.js";
 import { api_path_get_user_directory_search } from "globalUrls";
-
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
-
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 import EditCreateUserProfile from "views/UserProfile/EditCreateUserProfile";
-
 import LinearProgress from "@material-ui/core/LinearProgress";
-
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
-
 import { debounce } from "lodash";
-
 const styles = {
   ...headerLinksStyle,
   cardCategoryWhite: {
@@ -76,19 +69,23 @@ const styles = {
     alignItems: "center",
   },
 };
-
 const useStyles = makeStyles(styles);
-
 export default function Users(props) {
   const classes = useStyles();
   const history = useHistory();
   const [users, setUsers] = React.useState([]);
   const [noUsersFound, setNoUsersFound] = React.useState(false);
+  const [noMatchFound, setNoMatchFound] = React.useState(false);
   const [selectedUsername, setSelectedUsername] = React.useState("");
   const [createUser, setCreateUser] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
 
+  const [searchValue, setSearchValue] = React.useState("");
+
+  const [selectedPage, setSelectedPage] = React.useState(1);
+
+  const [numberPages, setNumberPages] = React.useState(1);
   useEffect(() => {
     setLoading(true);
     const timer = setInterval(() => {
@@ -104,13 +101,15 @@ export default function Users(props) {
       configApiCall(
         api_path_get_user_directory_search,
         "GET",
-        { queryString: "*" },
+        { queryString: "*", page: "1" },
         null
       )
     )
       .then((response) => {
         if (response.status != 204) {
-          setUsers(response.data);
+          setUsers(response.data.profiles);
+
+          setNumberPages(response.data.numPages);
         } else {
           setNoUsersFound(true);
         }
@@ -127,47 +126,66 @@ export default function Users(props) {
       clearInterval(timer);
     };
   }, []);
-
   const [selectedProfile, setSelectedProfile] = useState(false);
-
   const redirectToUserProfile = (e, username) => {
     e.preventDefault();
     setSelectedProfile(true);
     setSelectedUsername(username);
   };
-
-  const searchUsers = (value) => {
+  const searchUsers = (value, page = "1") => {
+    setSelectedPage(page);
+    setLoading(true);
+    setNoMatchFound(false);
+    setUsers([]);
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
     axios(
       configApiCall(
         api_path_get_user_directory_search,
         "GET",
-        { queryString: value ? value : "*" },
+        { queryString: value ? value : "*", page: page },
         null
       )
     )
       .then((response) => {
-        setUsers(response.data);
+        setLoading(false);
+        if (response.status != 204) {
+          setUsers(response.data.profiles);
+          setNumberPages(response.data.numPages);
+        } else {
+          setNoMatchFound(true);
+        }
       })
       .catch((error) => {
         console.log(error);
         setUsers([]);
+
+        setNoMatchFound(true);
         if (error.response.status == 401) {
           auth.authenticated = false;
           history.push("/");
         }
       });
   };
-
   const initSearchUsers = useCallback(
-    debounce((searchValue) => searchUsers(searchValue), 500),
+    debounce((value) => searchUsers(value), 500),
     []
   );
-
   const handleSearchUsers = (e) => {
-    const searchValue = e.target.value;
-    initSearchUsers(searchValue);
+    setSearchValue(e.target.value);
+    initSearchUsers(e.target.value);
   };
 
+  const handleChangePage = (e, page) => {
+    searchUsers(searchValue, page);
+  };
   if (!auth.hasAdminScope()) {
     return (
       <div>
@@ -205,37 +223,51 @@ export default function Users(props) {
                 <AddCircleOutlineIcon /> Create user
               </Button>
             )}
-            <div className={classes.searchWrapper}>
-              {!noUsersFound && (
-                <CustomInput
-                  formControlProps={{
-                    className: classes.margin + " " + classes.search,
-                  }}
-                  inputProps={{
-                    placeholder:
-                      "Search users using (username, name, phone, email, ...)",
-                    inputProps: {
-                      "aria-label": "Search users",
-                    },
-                    onKeyUp: handleSearchUsers,
-                  }}
-                />
-              )}
-              {!noUsersFound && <Search />}
-              <div className={classes.loading}>
-                {loading && (
-                  <LinearProgress variant="determinate" value={progress} />
+            <GridContainer>
+              <GridItem xs={12} sm={12} md={6}>
+                {!noUsersFound && (
+                  <CustomInput
+                    formControlProps={{
+                      className: classes.margin + " " + classes.search,
+                    }}
+                    inputProps={{
+                      placeholder:
+                        "Search users using (username, name, phone, email, ...)",
+                      inputProps: {
+                        "aria-label": "Search users",
+                      },
+                      onKeyUp: handleSearchUsers,
+                    }}
+                  />
                 )}
-              </div>
-              {noUsersFound && (
-                <div className={classes.usersNotFound}>
-                  <InfoIcon />
-                  <p style={{ marginLeft: "10px" }}>No users found</p>
-                </div>
+                {!noUsersFound && <Search />}
+              </GridItem>
+              <GridItem xs={12} sm={12} md={6}>
+                {!noUsersFound && (
+                  <Pagination
+                    count={numberPages}
+                    page={selectedPage}
+                    onChange={handleChangePage}
+                  />
+                )}
+              </GridItem>
+            </GridContainer>
+
+            <div className={classes.loading}>
+              {loading && (
+                <LinearProgress variant="determinate" value={progress} />
               )}
             </div>
+
+            {noUsersFound && (
+              <div className={classes.usersNotFound}>
+                <InfoIcon />
+
+                <p style={{ marginLeft: "10px" }}>No users found</p>
+              </div>
+            )}
           </GridItem>
-          {!noUsersFound &&
+          {(!noUsersFound || !noMatchFound) &&
             users
               .sort(function (a, b) {
                 if (a.username < b.username) {
@@ -271,7 +303,6 @@ export default function Users(props) {
                             alt="..."
                           />
                         </CardAvatar>
-
                         <h4 className={classes.cardTitle}>
                           {user.firstName != ""
                             ? user.firstName
@@ -303,6 +334,16 @@ export default function Users(props) {
                   </Card>
                 </GridItem>
               ))}
+          {noMatchFound && (
+            <div className={classes.usersNotFound}>
+              <InfoIcon />
+
+              <p style={{ marginLeft: "10px" }}>
+                No users found mathcing <strong>{searchValue}</strong> search
+                value!
+              </p>
+            </div>
+          )}
         </GridContainer>
       </div>
     );

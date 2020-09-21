@@ -22,6 +22,9 @@ const headerStyle = (theme) => ({
     [theme.breakpoints.down("md")]: {
       width: "130px",
     },
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
     paddingTop: "10px",
     zIndex: "1029",
     color: grayColor[7],

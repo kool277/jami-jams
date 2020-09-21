@@ -20,7 +20,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package net.jami.jams.server.servlets.api.auth.directory;
 
 import com.jsoniter.output.JsonStream;
@@ -29,17 +28,21 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.JsonContent;
+import net.jami.jams.common.authentication.AuthenticationSource;
+import net.jami.jams.common.authentication.AuthenticationSourceType;
+import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.server.servlets.api.install.CachedObjects;
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
@@ -47,10 +50,11 @@ import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @WebServlet("/api/auth/directory/search")
 public class SearchDirectoryServlet extends HttpServlet {
-
-    //The search directory function does not automatically create users, this would be costly at this point
-    //right now, we will implement it when Jami supports lists of users. this is a work in progress as it
-    //requires changes on the name server as well.
+    // The search directory function does not automatically create users, this would
+    // be costly at this point
+    // right now, we will implement it when Jami supports lists of users. this is a
+    // work in progress as it
+    // requires changes on the name server as well.
     List<UserProfile> userProfiles = new ArrayList<>();
 
     /**
@@ -59,23 +63,42 @@ public class SearchDirectoryServlet extends HttpServlet {
     @Override
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Optional<Integer> page;
+        if (req.getParameter("page") == null)
+            page = Optional.empty();
+        else
+            page = Optional.ofNullable(Integer.parseInt(req.getParameter("page")));
 
-        userAuthenticationModule.getAuthSources().forEach((k, v) -> {
+        ConcurrentHashMap<AuthModuleKey, AuthenticationSource> authSources = new ConcurrentHashMap<>(
+                userAuthenticationModule.getAuthSources());
+
+        if (authSources.size() > 1) {
+            authSources.forEach((k, v) -> {
+                if (k.getType() == AuthenticationSourceType.LOCAL)
+                    authSources.remove(k);
+            });
+        }
+
+        authSources.forEach((k, v) -> {
             if (req.getParameter("queryString").equals("*"))
-                userProfiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
+                userProfiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME", page);
             else {
-                userProfiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME");
-                List<UserProfile> profiles2 = v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME");
-                for (Iterator<UserProfile> it = userProfiles.iterator(); it.hasNext(); ) {
-                    UserProfile p = it.next();
-                    for (UserProfile p2 : profiles2) {
-                        if (p2.equals(p))
-                            it.remove();
-                    }
+                userProfiles = v.searchUserProfiles(req.getParameter("queryString"), "FULL_TEXT_NAME", page);
+                if (userProfiles.isEmpty() && userProfiles
+                        .addAll(v.searchUserProfiles(req.getParameter("queryString"), "LOGON_NAME", page))) {
+                    Set<UserProfile> s = new TreeSet<UserProfile>(new Comparator<UserProfile>() {
+                        @Override
+                        public int compare(UserProfile o1, UserProfile o2) {
+                            if (o1.getUsername().equals(o2.getUsername()))
+                                return 0;
+                            return 1;
+                        }
+                    });
+                    s.addAll(userProfiles);
+                    userProfiles = new ArrayList<>(s);
                 }
-                userProfiles.addAll(profiles2);
-            }
 
+            }
             userProfiles.parallelStream().forEach(profile -> {
                 StatementList statementList = new StatementList();
                 StatementElement statementElement = new StatementElement("username", "=", profile.getUsername(), "");
@@ -96,9 +119,14 @@ public class SearchDirectoryServlet extends HttpServlet {
                 }
             });
         });
+
+        JSONObject obj = new JSONObject();
+        obj.put("profiles", userProfiles);
+        obj.put("numPages", dataStore.NUM_PAGES);
         if (!userProfiles.isEmpty()) {
-            resp.getOutputStream().write(JsonStream.serialize(userProfiles).getBytes());
+            resp.getOutputStream().write((obj.toString()).getBytes());
             resp.setStatus(200);
-        } else resp.setStatus(204, "No users were found!");
+        } else
+            resp.setStatus(204, "No users were found!");
     }
 }

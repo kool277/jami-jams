@@ -36,6 +36,7 @@ import net.jami.jams.dht.DeviceReceiptGenerator;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
@@ -45,14 +46,15 @@ import static net.jami.jams.server.Server.userAuthenticationModule;
 @Slf4j
 public class RegisterDeviceFlow {
 
-    public static DeviceRegistrationResponse registerDevice(String username, DeviceRegistrationRequest registrationRequest){
+    public static DeviceRegistrationResponse registerDevice(String username,
+            DeviceRegistrationRequest registrationRequest) {
         try {
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
             UserProfile userProfile = userAuthenticationModule.getAuthSources()
-                    .get(new AuthModuleKey(user.getRealm(),user.getUserType()))
-                    .searchUserProfiles(username,"LOGON_NAME").get(0);
+                    .get(new AuthModuleKey(user.getRealm(), user.getUserType()))
+                    .searchUserProfiles(username, "LOGON_NAME", Optional.empty()).get(0);
 
             if (user == null) {
                 log.error("Tried to enroll a device, but could not find a user, this is impossible!");
@@ -62,7 +64,7 @@ public class RegisterDeviceFlow {
             device.setOwner(username);
             device.setDisplayName(registrationRequest.getDeviceName());
             device = certificateAuthority.getSignedCertificate(user, device);
-            if(device == null){
+            if (device == null) {
                 log.error("Could not succesfully create a device certificate!");
                 return null;
             }
@@ -83,11 +85,9 @@ public class RegisterDeviceFlow {
                     userProfile.setGroupMemberships(list);
             }
 
-
-
-            //Now we build this response out.
+            // Now we build this response out.
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
-            if(userProfile.getGroupMemberships() != null) {
+            if (userProfile.getGroupMemberships() != null) {
                 userProfile.getGroupMemberships().forEach(e -> {
                     if (!e.equals("")) {
                         StatementElement st = new StatementElement("name", "=", e, "");
@@ -96,7 +96,7 @@ public class RegisterDeviceFlow {
 
                         Group group = dataStore.getGroupDao().getObjects(statementList1).get(0);
                         String policyName = group.getBlueprint();
-                        if(group != null && policyName != null){
+                        if (group != null && policyName != null) {
                             StatementElement st2 = new StatementElement("name", "=", policyName, "");
                             StatementList statementList2 = new StatementList();
                             statementList2.addStatement((st2));
@@ -110,21 +110,22 @@ public class RegisterDeviceFlow {
                     }
                 });
             }
-            //We need to set the device receipt....
-            String[] devReceipt = DeviceReceiptGenerator.generateReceipt(user.getPrivateKey(), user.getCertificate().getPublicKey(),
-                    device.getCertificate().getPublicKey(), user.getEthAddress());
+            // We need to set the device receipt....
+            String[] devReceipt = DeviceReceiptGenerator.generateReceipt(user.getPrivateKey(),
+                    user.getCertificate().getPublicKey(), device.getCertificate().getPublicKey(), user.getEthAddress());
             response.setDeviceReceipt(devReceipt[0]);
             response.setReceiptSignature(devReceipt[1]);
-            response.setDisplayName(userProfile.getFirstName()+" "+userProfile.getLastName());
-            //We need to set
+            response.setDisplayName(userProfile.getFirstName() + " " + userProfile.getLastName());
+            // We need to set
             response.setNameServer(nameServer.getURI());
-            if(userProfile.getProfilePicture() != null) response.setUserPhoto(userProfile.getProfilePicture());
-            //Finally we set the certificate chain.
-            response.setCertificateChain(new X509Certificate[]{certificateAuthority.getCA(),user.getCertificate(),device.getCertificate()});
+            if (userProfile.getProfilePicture() != null)
+                response.setUserPhoto(userProfile.getProfilePicture());
+            // Finally we set the certificate chain.
+            response.setCertificateChain(new X509Certificate[] { certificateAuthority.getCA(), user.getCertificate(),
+                    device.getCertificate() });
             return response;
-        }
-        catch (Exception e){
-            log.error("An exception has occurred while trying to enroll a device with error {}",e.getMessage());
+        } catch (Exception e) {
+            log.error("An exception has occurred while trying to enroll a device with error {}", e.getMessage());
             return null;
         }
     }

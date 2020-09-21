@@ -34,9 +34,7 @@ import org.ldaptive.SearchOperation;
 import org.ldaptive.SearchRequest;
 import org.ldaptive.SearchResponse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.dataStore;
@@ -49,7 +47,7 @@ public class UserProfileService {
         this.connectionFactory = connectionFactory;
     }
 
-    public List<UserProfile> getUserProfile(String queryString, String field, boolean exactMatch){
+    public List<UserProfile> getUserProfile(String queryString, String field, boolean exactMatch, Optional<Integer> page){
         Connection connection = null;
         try {
             queryString = queryString.replaceAll("[^\\x00-\\x7F]","*");
@@ -58,10 +56,24 @@ public class UserProfileService {
                 connection.open();
                 SearchOperation search = new SearchOperation(connectionFactory);
                 SearchResponse res = search.execute(buildRequest(queryString,field, exactMatch));
+
+                dataStore.NUM_PAGES = (Integer) res.getEntries().size() / dataStore.RESULTS_PER_PAGE;
+                if (res.getEntries().size() % dataStore.RESULTS_PER_PAGE != 0)
+                    dataStore.NUM_PAGES++;
+
+                if (page.isPresent() && !res.getEntries().isEmpty()) {
+                    if (res.getEntries().size() < dataStore.RESULTS_PER_PAGE)
+                        res= res.subResult(0, res.getEntries().size());
+                    else if (page.get() * dataStore.RESULTS_PER_PAGE > res.getEntries().size())
+                        res = res.subResult((page.get()-1) * dataStore.RESULTS_PER_PAGE, res.getEntries().size());
+                    else
+                        res = res.subResult((page.get()-1) * dataStore.RESULTS_PER_PAGE, (page.get() * dataStore.RESULTS_PER_PAGE));
+
+                }
+
                 if (res.getEntries().size() == 0) return new ArrayList<>();
                 List<UserProfile> profilesFromResponse = res.getEntries().stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
                 for (UserProfile p: profilesFromResponse) {
-
                     StatementList statementList = new StatementList();
                     StatementElement st = new StatementElement("username", "=", p.getUsername(), "");
                     statementList.addStatement(st);

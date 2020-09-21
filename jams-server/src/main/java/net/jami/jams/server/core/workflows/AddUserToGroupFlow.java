@@ -8,6 +8,7 @@ import net.jami.jams.common.objects.user.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
@@ -18,7 +19,7 @@ public class AddUserToGroupFlow {
     public static void addUserToGroup(String groupName, String username) {
         userAuthenticationModule.getAuthSources().forEach((k, v) -> {
             UserProfile profile = v.getUserProfile(username);
-            List<UserProfile> groupProfiles = v.searchUserProfiles(username, "LOGON_NAME");
+            List<UserProfile> groupProfiles = v.searchUserProfiles(username, "LOGON_NAME", Optional.empty());
             if (!groupProfiles.isEmpty()) {
                 UserGroupMapping mapping = null;
                 StatementList statementList = new StatementList();

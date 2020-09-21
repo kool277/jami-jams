@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 @Setter
@@ -37,6 +38,6 @@ public class ActiveDirectorySettings {
     private String  host;
     private String  username;
     private String  password;
-    private HashMap<String,String> fieldMappings;
+    private ConcurrentHashMap<String,String> fieldMappings;
 
 }

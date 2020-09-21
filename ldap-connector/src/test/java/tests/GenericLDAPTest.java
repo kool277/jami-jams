@@ -11,6 +11,7 @@ import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 
 public class GenericLDAPTest {
 
@@ -34,7 +35,7 @@ public class GenericLDAPTest {
     @Test
     public void testLookUp() throws Exception{
         initLdapConnector();
-        List<UserProfile> profiles = ldapConnector.searchUserProfiles("*","FULL_TEXT_NAME");
+        List<UserProfile> profiles = ldapConnector.searchUserProfiles("*","FULL_TEXT_NAME", Optional.empty());
         Assertions.assertEquals(2,profiles.size());
         Assertions.assertNotNull(profiles.get(0).getFirstName());
         Assertions.assertNotNull(profiles.get(1).getFirstName());
@@ -53,7 +54,7 @@ public class GenericLDAPTest {
     @Test
     public void getVcard() throws Exception{
         initLdapConnector();
-        List<UserProfile> profiles = ldapConnector.searchUserProfiles("Felix","FULL_TEXT_NAME");
+        List<UserProfile> profiles = ldapConnector.searchUserProfiles("Felix","FULL_TEXT_NAME", Optional.empty());
         Assert.assertEquals(1,profiles.size());
         Assert.assertNotNull(profiles.get(0).getUsername());
         String vcard = profiles.get(0).getAsVCard();

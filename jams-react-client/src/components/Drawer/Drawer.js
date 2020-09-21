@@ -86,12 +86,12 @@ export default function TemporaryDrawer(props) {
       configApiCall(
         api_path_get_user_directory_search,
         "GET",
-        { queryString: "*" },
+        { queryString: "*", page: "1" },
         null
       )
     )
       .then((response) => {
-        let resp = response.data;
+        let resp = response.data.profiles;
         if (!addingToGroup) {
           let contacts = resp.filter((data) => {
             if (data.username !== props.username) return data;
@@ -193,12 +193,18 @@ export default function TemporaryDrawer(props) {
       configApiCall(
         api_path_get_user_directory_search,
         "GET",
-        { queryString: value ? value : "*" },
+        { queryString: value ? value : "*", page: "1" },
         null
       )
     )
       .then((response) => {
-        setUsers(response.data);
+        let resp = response.data.profiles;
+        if (!addingToGroup) {
+          let contacts = resp.filter((data) => {
+            if (data.username !== props.username) return data;
+          });
+          setUsers(contacts);
+        } else setUsers(resp);
       })
       .catch((error) => {
         console.log(error);

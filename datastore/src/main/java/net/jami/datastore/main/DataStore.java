@@ -45,6 +45,7 @@ import org.flywaydb.core.Flyway;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -60,6 +61,8 @@ public class DataStore implements AuthenticationSource {
     private JwtDao jwtDao;
     private UserProfileDao userProfileDao;
     private UserGroupMappingsDao userGroupMappingsDao;
+    public static final Integer RESULTS_PER_PAGE = 24;
+    public static Integer NUM_PAGES;
 
     //Implicitly connect to derby.
     public DataStore(String connectionString) {
@@ -90,7 +93,7 @@ public class DataStore implements AuthenticationSource {
         return userDao.storeObject(user);
     }
     @Override
-    public List<UserProfile> searchUserProfiles(String queryString, String field) {
+    public List<UserProfile> searchUserProfiles(String queryString, String field, Optional<Integer> page) {
         List<UserProfile> userList;
 
         if (!queryString.equals("*")) {
@@ -109,6 +112,19 @@ public class DataStore implements AuthenticationSource {
 
         if (userList == null)
             userList = new ArrayList<>();
+
+        NUM_PAGES = (Integer) userList.size() / RESULTS_PER_PAGE;
+        if (userList.size() % RESULTS_PER_PAGE != 0)
+            NUM_PAGES++;
+
+        if (page.isPresent() && !userList.isEmpty()) {
+            if (userList.size() < RESULTS_PER_PAGE)
+                userList = userList.subList(0, userList.size());
+            else if (page.get() * RESULTS_PER_PAGE > userList.size())
+                userList = userList.subList((page.get()-1) * RESULTS_PER_PAGE, userList.size());
+            else
+                userList = userList.subList((page.get()-1) * RESULTS_PER_PAGE, (page.get() * RESULTS_PER_PAGE));
+        }
 
         return userList;
     }

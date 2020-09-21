@@ -38,18 +38,22 @@ import com.imperva.ddc.core.query.QueryRequest;
 import com.imperva.ddc.core.query.QueryResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ad.connector.ADConnector;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.UserProfile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import static net.jami.jams.server.Server.dataStore;
 
 @Slf4j
 public class UserProfileService {
 
-    public List<UserProfile> getUserProfile(String queryString, String field,boolean exactMatch) {
+    private static final ConcurrentHashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
+
+    public List<UserProfile> getUserProfile(String queryString, String field, boolean exactMatch, Optional<Integer> page) {
         Endpoint endpoint = ADConnector.getConnection();
         try {
             QueryRequest queryRequest = buildRequest(endpoint);
@@ -79,8 +83,32 @@ public class UserProfileService {
                 queryResponse = connector.execute();
             }
             List<List<Field>> results = queryResponse.getAll().stream().map(EntityResponse::getValue).collect(Collectors.toList());
-            return results.stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList())
-                .stream().filter(Objects::nonNull).collect(Collectors.toList());
+
+            dataStore.NUM_PAGES = (Integer) results.size() / dataStore.RESULTS_PER_PAGE;
+            if (results.size() % dataStore.RESULTS_PER_PAGE != 0)
+                dataStore.NUM_PAGES++;
+
+            if (page.isPresent() && !results.isEmpty()) {
+                if (results.size() < dataStore.RESULTS_PER_PAGE)
+                    results = results.subList(0, results.size());
+                else if (page.get() * dataStore.RESULTS_PER_PAGE > results.size())
+                    results = results.subList((page.get()-1) * dataStore.RESULTS_PER_PAGE, results.size());
+                else
+                    results = results.subList((page.get()-1) * dataStore.RESULTS_PER_PAGE, (page.get() * dataStore.RESULTS_PER_PAGE));
+            }
+
+            if (results.size() == 0) return new ArrayList<>();
+            List<UserProfile> profilesFromResponse = results.stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
+            for (UserProfile p: profilesFromResponse) {
+                StatementList statementList = new StatementList();
+                StatementElement st = new StatementElement("username", "=", p.getUsername(), "");
+                statementList.addStatement(st);
+
+                if (dataStore.getUserProfileDao().getObjects(statementList).isEmpty())
+                    dataStore.getUserProfileDao().storeObject(p);
+            }
+
+            return profilesFromResponse;
         } catch (Exception e) {
             log.error("Could not find entity with specified parameters.");
             return null;
@@ -90,7 +118,6 @@ public class UserProfileService {
     }
 
     public static QueryRequest buildRequest(Endpoint endpoint) {
-        HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
         QueryRequest queryRequest = new QueryRequest();
         queryRequest.setDirectoryType(DirectoryType.MS_ACTIVE_DIRECTORY);
         queryRequest.setEndpoints(new ArrayList<>() {{
@@ -106,8 +133,19 @@ public class UserProfileService {
     }
 
     public static UserProfile profileFromResponse(List<Field> fields) {
-        //Use reflection to remap.
-        HashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
+        fieldMap.forEach((k, v) -> {
+            String temp = v;
+            fieldMap.put(k.toLowerCase(), temp);
+        });
+        fieldMap.forEach((k, v) -> {
+            char[] charArray = k.toCharArray();
+            for(int i=0; i < charArray.length; i++) {
+                if(Character.isUpperCase( charArray[i] )) {
+                    fieldMap.remove(k);
+                    break;
+                }
+            }
+        });
 
         try {
             UserProfile userProfile = new UserProfile();
