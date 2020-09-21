@@ -118,6 +118,6 @@ public class SearchDirectoryServlet extends HttpServlet {
         if (!userProfiles.isEmpty()) {
             resp.getOutputStream().write(JsonStream.serialize(userProfiles).getBytes());
             resp.setStatus(200);
-        } else resp.sendError(404, "No users were found!");
+        } else resp.setStatus(204, "No users were found!");
     }
 }
