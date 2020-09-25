@@ -83,7 +83,7 @@ export default function ServerParameters(props) {
     certificateRevocationTypes[0]
   );
   const [deviceLifetime, setDeviceLifetime] = React.useState(
-    deviceLifetimeTypes[0]
+    deviceLifetimeTypes[3]
   );
   const [userAccountLifetime, setUserAccountLifetime] = React.useState(
     userAccountLifetimeTypes[0]
