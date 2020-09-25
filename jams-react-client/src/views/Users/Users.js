@@ -20,6 +20,7 @@ import Divider from "@material-ui/core/Divider";
 import PersonIcon from "@material-ui/icons/Person";
 import PermIdentityIcon from "@material-ui/icons/PermIdentity";
 import PhoneOutlinedIcon from "@material-ui/icons/PhoneOutlined";
+import InfoIcon from "@material-ui/icons/Info";
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
 import Search from "@material-ui/icons/Search";
 
@@ -69,6 +70,11 @@ const styles = {
   loading: {
     width: "100%",
   },
+  usersNotFound: {
+    marginLeft: "10px",
+    display: "flex",
+    alignItems: "center",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -77,6 +83,7 @@ export default function Users(props) {
   const classes = useStyles();
   const history = useHistory();
   const [users, setUsers] = React.useState([]);
+  const [noUsersFound, setNoUsersFound] = React.useState(false);
   const [selectedUsername, setSelectedUsername] = React.useState("");
   const [createUser, setCreateUser] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -102,7 +109,11 @@ export default function Users(props) {
       )
     )
       .then((response) => {
-        setUsers(response.data);
+        if (response.status != 204) {
+          setUsers(response.data);
+        } else {
+          setNoUsersFound(true);
+        }
         setLoading(false);
       })
       .catch((error) => {
@@ -195,84 +206,94 @@ export default function Users(props) {
               </Button>
             )}
             <div className={classes.searchWrapper}>
-              <CustomInput
-                formControlProps={{
-                  className: classes.margin + " " + classes.search,
-                }}
-                inputProps={{
-                  placeholder:
-                    "Search users using (username, name, phone, email, ...)",
-                  inputProps: {
-                    "aria-label": "Search users",
-                  },
-                  onKeyUp: handleSearchUsers,
-                }}
-              />
-              <Search />
+              {!noUsersFound && (
+                <CustomInput
+                  formControlProps={{
+                    className: classes.margin + " " + classes.search,
+                  }}
+                  inputProps={{
+                    placeholder:
+                      "Search users using (username, name, phone, email, ...)",
+                    inputProps: {
+                      "aria-label": "Search users",
+                    },
+                    onKeyUp: handleSearchUsers,
+                  }}
+                />
+              )}
+              {!noUsersFound && <Search />}
               <div className={classes.loading}>
                 {loading && (
                   <LinearProgress variant="determinate" value={progress} />
                 )}
               </div>
+              {noUsersFound && (
+                <div className={classes.usersNotFound}>
+                  <InfoIcon />{" "}
+                  <p style={{ marginLeft: "10px" }}>No users found</p>
+                </div>
+              )}
             </div>
           </GridItem>
-          {users
-            .sort(function (a, b) {
-              if (a.username < b.username) {
-                return -1;
-              }
-              if (a.username > b.username) {
-                return 1;
-              }
-              return 0;
-            })
-            .map((user) => (
-              <GridItem xs={12} sm={12} md={2} key={user.username}>
-                <Card profile>
-                  <CardBody profile>
-                    <a
-                      href="#"
-                      onClick={(e) => redirectToUserProfile(e, user.username)}
-                    >
-                      <CardAvatar profile>
-                        <img
-                          src={
-                            user.profilePicture
-                              ? "data:image/png;base64, " + user.profilePicture
-                              : noProfilePicture
-                          }
-                          alt="..."
-                        />
-                      </CardAvatar>
-
-                      <h4 className={classes.cardTitle}>
-                        {user.firstName} {user.lastName}
-                      </h4>
-                      <ul>
-                        <li>
+          {!noUsersFound &&
+            users
+              .sort(function (a, b) {
+                if (a.username < b.username) {
+                  return -1;
+                }
+                if (a.username > b.username) {
+                  return 1;
+                }
+                return 0;
+              })
+              .map((user) => (
+                <GridItem xs={12} sm={12} md={2} key={user.username}>
+                  <Card profile>
+                    <CardBody profile>
+                      <a
+                        href="#"
+                        onClick={(e) => redirectToUserProfile(e, user.username)}
+                      >
+                        <CardAvatar profile>
                           <img
-                            src={jami}
-                            width="20"
-                            alt="Jami"
-                            style={{ marginRight: "10px" }}
-                          />{" "}
-                          {user.username}
-                        </li>
-                        <li>
-                          <BusinessOutlinedIcon
-                            fontSize="small"
-                            style={{ marginRight: "10px" }}
-                          />{" "}
-                          {user.organization
-                            ? user.organization
-                            : "No organization"}
-                        </li>
-                      </ul>
-                    </a>
-                  </CardBody>
-                </Card>
-              </GridItem>
-            ))}
+                            src={
+                              user.profilePicture
+                                ? "data:image/png;base64, " +
+                                  user.profilePicture
+                                : noProfilePicture
+                            }
+                            alt="..."
+                          />
+                        </CardAvatar>
+
+                        <h4 className={classes.cardTitle}>
+                          {user.firstName} {user.lastName}
+                        </h4>
+                        <ul>
+                          <li>
+                            <img
+                              src={jami}
+                              width="20"
+                              alt="Jami"
+                              style={{ marginRight: "10px" }}
+                            />{" "}
+                            {user.username}
+                          </li>
+                          <li>
+                            <BusinessOutlinedIcon
+                              fontSize="small"
+                              style={{ marginRight: "10px" }}
+                            />{" "}
+                            {user.organization
+                              ? user.organization
+                              : "No organization"}
+                          </li>
+                        </ul>
+                      </a>
+                    </CardBody>
+                  </Card>
+                </GridItem>
+              ))}
         </GridContainer>
       </div>
     );
