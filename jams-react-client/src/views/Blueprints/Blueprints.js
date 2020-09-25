@@ -20,6 +20,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import GroupIcon from "@material-ui/icons/Group";
 import Search from "@material-ui/icons/Search";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import InfoIcon from "@material-ui/icons/Info";
 
 import AllInbox from "@material-ui/icons/AllInbox";
 import axios from "axios";
@@ -70,6 +71,11 @@ const styles = {
   },
   loading: {
     width: "100%",
+  },
+  blueprintsNotFound: {
+    marginLeft: "10px",
+    display: "flex",
+    alignItems: "center",
   },
 };
 
@@ -168,19 +174,18 @@ export default function Blueprints() {
   };
 
   const handleCreateBlueprint = () => {
-
-     let defaultPolicyData = {
-        videoEnabled: true,
-        allowCertFromContact: true,
-        allowCertFromHistory: true,
-        allowCertFromTrusted: true,
-        autoAnswer: false,
-        peerDiscovery: true,
-        accountDiscovery: true,
-        accountPublish: true,
-        rendezVous: false,
-        upnpEnabled: true,
-      };
+    let defaultPolicyData = {
+      videoEnabled: true,
+      allowCertFromContact: true,
+      allowCertFromHistory: true,
+      allowCertFromTrusted: true,
+      autoAnswer: false,
+      peerDiscovery: true,
+      accountDiscovery: true,
+      accountPublish: true,
+      rendezVous: false,
+      upnpEnabled: true,
+    };
 
     axios(
       configApiCall(
@@ -341,19 +346,21 @@ export default function Blueprints() {
                 <AddCircleOutlineIcon /> Create blueprint
               </Button>
               <div className={classes.searchWrapper}>
-                <CustomInput
-                  formControlProps={{
-                    className: classes.margin + " " + classes.search,
-                  }}
-                  inputProps={{
-                    placeholder: "Search blueprints ...",
-                    inputProps: {
-                      "aria-label": "Search blueprints",
-                    },
-                    onKeyUp: (e) => setSearchValue(e.target.value),
-                  }}
-                />
-                <Search />
+                {!zeroBlueprint && (
+                  <CustomInput
+                    formControlProps={{
+                      className: classes.margin + " " + classes.search,
+                    }}
+                    inputProps={{
+                      placeholder: "Search blueprints ...",
+                      inputProps: {
+                        "aria-label": "Search blueprints",
+                      },
+                      onKeyUp: (e) => setSearchValue(e.target.value),
+                    }}
+                  />
+                )}
+                {!zeroBlueprint && <Search />}
                 <div className={classes.loading}>
                   {loading && (
                     <LinearProgress variant="determinate" value={progress} />
@@ -362,7 +369,10 @@ export default function Blueprints() {
               </div>
             </GridItem>
             {zeroBlueprint ? (
-              <span>No blueprint found</span>
+              <div className={classes.blueprintsNotFound}>
+                <InfoIcon />
+                <p style={{ marginLeft: "10px" }}>No blueprints found</p>
+              </div>
             ) : (
               blueprints.map((blueprint) => (
                 <GridItem xs={12} sm={12} md={2} key={blueprint.name}>

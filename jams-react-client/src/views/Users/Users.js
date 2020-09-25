@@ -229,7 +229,7 @@ export default function Users(props) {
               </div>
               {noUsersFound && (
                 <div className={classes.usersNotFound}>
-                  <InfoIcon />{" "}
+                  <InfoIcon />
                   <p style={{ marginLeft: "10px" }}>No users found</p>
                 </div>
               )}
