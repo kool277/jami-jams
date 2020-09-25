@@ -333,7 +333,7 @@ export default function EditBlueprintPermissions(props) {
                             name="rendezVous"
                           />
                         }
-                        label="Rendezvous point: turn your account into a meeting point"
+                        label="Convert your account into a rendezvous point"
                       />
                     </FormGroup>
                   </Grid>
