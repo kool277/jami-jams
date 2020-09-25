@@ -12,11 +12,16 @@ class FormikField extends React.Component {
       <div className="FormikField">
         <FormControl
           size="medium"
-          error={<ErrorMessage name={this.props.name} /> === ""}
+          error={
+            this.props.onKeyUpError ||
+            <ErrorMessage name={this.props.name} /> === ""
+          }
           fullWidth
         >
           <InputLabel htmlFor={this.props.name}>
-            {<ErrorMessage name={this.props.name} /> === "" ? (
+            {this.props.onKeyUpError ? (
+              this.props.onKeyUpErrorMessage
+            ) : "" || <ErrorMessage name={this.props.name} /> === "" ? (
               this.props.label
             ) : (
               <ErrorMessage name={this.props.name} />
@@ -33,6 +38,7 @@ class FormikField extends React.Component {
             fullWidth
             type={this.props.type}
             autoComplete={this.props.autoComplete}
+            onKeyUp={(e) => this.props.handleChange(e.target.value)}
           />
         </FormControl>
       </div>
@@ -49,6 +55,9 @@ FormikField.propTypes = {
   label: PropTypes.string.isRequired,
   type: "text",
   autoComplete: "on",
+  handleChange: PropTypes.func,
+  onKeyUpError: false,
+  onKeyUpErrorMessage: PropTypes.string,
 };
 
 export default FormikField;

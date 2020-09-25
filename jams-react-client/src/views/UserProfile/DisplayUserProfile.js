@@ -112,34 +112,12 @@ const styles = (theme) => ({
     minWidth: "80vh",
     maxWidth: "80vh",
   },
-
-  // controls: {
-  //     padding: 16,
-  //     display: 'flex',
-  //     flexDirection: 'column',
-  //     alignItems: 'stretch',
-  //     [theme.breakpoints.up('sm')]: {
-  //       flexDirection: 'row',
-  //       alignItems: 'center',
-  //     },passwordSchematainer: {
-  //     display: 'flex',
-  //     flex: '1',
-  //     alignItems: 'center',
-  //   },
-  //   sliderLabel: {
-  //     [theme.breakpoints.down('xs')]: {
-  //       minWidth: 65,
-  //     },
-  // },
-  // slider: {
-  //     padding: '22px 0px',
-  //     marginLeft: 16,
-  //     [theme.breakpoints.up('sm')]: {
-  //         flexDirection: 'row',
-  //         alignItems: 'center',
-  //         margin: '0 16px',
-  //     },
-  // },
+  footerActionButtons: {
+    [theme.breakpoints.down("sm")]: {
+      display: "flex",
+      flexDirection: "column",
+    },
+  },
 });
 
 const useStyles = makeStyles(styles);
@@ -443,7 +421,7 @@ export default function DisplayUserProfile(props) {
                 </Grid>
               </div>
             </CardBody>
-            <CardFooter>
+            <CardFooter className={classes.footerActionButtons}>
               {auth.isLocalDirectory() && (
                 <Button
                   color="info"

@@ -45,6 +45,8 @@ import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import CancelIcon from "@material-ui/icons/Cancel";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 import IconButton from "@material-ui/core/IconButton";
 import PhotoCamera from "@material-ui/icons/PhotoCamera";
@@ -125,13 +127,20 @@ const styles = (theme) => ({
       ", 0.2)",
   },
   dialogPaper: {
-    minHeight: "60vh",
+    [theme.breakpoints.up("sm")]: {
+      minHeight: "60vh",
+      minWidth: "80vh",
+    },
+    width: "100%",
     maxHeight: "60vh",
-    minWidth: "80vh",
     maxWidth: "80vh",
   },
   alignRight: {
     float: "right",
+    [theme.breakpoints.down("sm")]: {
+      display: "flex",
+      flexDirection: "column",
+    },
   },
   button: {
     margin: theme.spacing(1),
@@ -234,7 +243,6 @@ export default function EditCreateUserProfile(props) {
   };
 
   React.useEffect(() => {
-    console.log(rotation);
     if (!createUser) {
       setUserName(props.username);
       axios(
@@ -387,40 +395,38 @@ export default function EditCreateUserProfile(props) {
     setPasswordVisible(false);
   };
 
-  const EditCreateSchema = Yup.object().shape({
-    username: Yup.string()
-      .min(3, "Username must be minimum 3 characters!")
-      .max(32, "Username must be maximum 32 characters!")
-      .required("Username is required!")
-      .test("checkDuplUsername", "Username already taken", function (value) {
-        if (createUser) {
-          return new Promise((resolve, reject) => {
-            const data = {
-              username: value.toLowerCase(),
-            };
-            axios(
-              configApiCall(
-                api_path_get_ns_addr_from_name + data.username,
-                "GET",
-                null,
-                null
-              )
-            )
-              .then((response) => {
-                if (response.status === 200) {
-                  resolve(false);
-                }
-                resolve(true);
-              })
-              .catch((error) => {
-                console.log("Error checking for existing users: " + error);
-                resolve(true);
-              });
-          });
-        } else {
+  const checkUserExists = async (value) => {
+    const data = {
+      username: value,
+    };
+
+    const userExsits = await axios(
+      configApiCall(
+        api_path_get_ns_addr_from_name + data.username,
+        "GET",
+        null,
+        null
+      )
+    )
+      .then((response) => {
+        if (response.status === 200) {
           return true;
         }
+        return false;
       })
+      .catch((error) => {
+        console.log("Error checking for existing users: " + error);
+        return false;
+      });
+
+    setUserExists(userExsits);
+  };
+
+  const EditCreateSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(3, "Minimum 3 characters!")
+      .max(32, "Maximum 32 characters!")
+      .required("Username is required!")
       .matches(/^[A-Za-z_][A-Za-z0-9_]*$/, "Only alphanumeric characters!"),
     password: createUser
       ? Yup.string().required("Password is required!")
@@ -576,7 +582,7 @@ export default function EditCreateUserProfile(props) {
                           </label>
                         </Grid>
                         {createUser && (
-                          <Grid item align="center" xs={12} sm={12} md={12}>
+                          <Grid item xs={12} sm={12} md={6}>
                             <FormikField
                               name="username"
                               label="Username"
@@ -586,10 +592,27 @@ export default function EditCreateUserProfile(props) {
                                   <AccountCircleIcon />
                                 </InputAdornment>
                               }
+                              endAdornment={
+                                values.username === "" ? (
+                                  ""
+                                ) : userExists ? (
+                                  <CancelIcon style={{ color: "#cc0000" }} />
+                                ) : (
+                                  <CheckCircleIcon
+                                    style={{ color: "#99cc00" }}
+                                  />
+                                )
+                              }
                               required
                               autoComplete="off"
+                              handleChange={checkUserExists}
+                              onKeyUpError={userExists}
+                              onKeyUpErrorMessage="Username already taken"
                             />
                           </Grid>
+                        )}
+                        {createUser && (
+                          <Grid item xs={12} sm={12} md={6}></Grid>
                         )}
                         {createUser && (
                           <Grid item xs={12} sm={12} md={6}>
@@ -815,7 +838,7 @@ export default function EditCreateUserProfile(props) {
                     {createUser ? (
                       <Button
                         type="submit"
-                        disabled={!isValid || !dirty}
+                        disabled={!isValid || !dirty || userExists}
                         color="info"
                       >
                         Create Profile
