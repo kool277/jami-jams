@@ -329,6 +329,7 @@ export default function Users(props) {
               xs={12}
               sm={12}
               md={2}
+              wrap="nowrap"
               key={contact.uri}
               style={{ display: contact.display }}
             >
@@ -345,7 +346,10 @@ export default function Users(props) {
                     />
                   </CardAvatar>
                   <h4 className={classes.cardTitle}>
-                    {contact.firstName} {contact.lastName}
+                    {contact.firstName != ""
+                      ? contact.firstName
+                      : "No first name"}{" "}
+                    {contact.lastName != "" ? contact.lastName : "No last name"}
                   </h4>
                   <ul>
                     <li>

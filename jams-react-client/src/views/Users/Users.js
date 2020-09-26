@@ -247,7 +247,13 @@ export default function Users(props) {
                 return 0;
               })
               .map((user) => (
-                <GridItem xs={12} sm={12} md={2} key={user.username}>
+                <GridItem
+                  xs={12}
+                  sm={12}
+                  md={2}
+                  wrap="nowrap"
+                  key={user.username}
+                >
                   <Card profile>
                     <CardBody profile>
                       <a
@@ -267,7 +273,10 @@ export default function Users(props) {
                         </CardAvatar>
 
                         <h4 className={classes.cardTitle}>
-                          {user.firstName} {user.lastName}
+                          {user.firstName != ""
+                            ? user.firstName
+                            : "No first name"}{" "}
+                          {user.lastName != "" ? user.lastName : "No last name"}
                         </h4>
                         <ul>
                           <li>
