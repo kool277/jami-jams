@@ -162,7 +162,7 @@ public class DataStore implements AuthenticationSource {
         StatementElement statementElement = new StatementElement("username","=",username,"");
         statementList.addStatement(statementElement);
         List<User> userList = userDao.getObjects(statementList);
-        if(userList.size() != 1) return false;
+        if(userList.size() != 1 || userList.get(0).getPassword() == null) return false;
         return userList.get(0).getPassword().equals(password);
     }
 
