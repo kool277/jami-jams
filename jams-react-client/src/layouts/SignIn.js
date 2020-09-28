@@ -27,7 +27,7 @@ function Copyright() {
       {"Copyright © "}
       {new Date().getFullYear() + " "}
       <Link color="info" href="https://savoirfairelinux.com">
-        Savoir-Faire-Linux
+        Savoir-faire Linux Inc.
       </Link>{" "}
       {"."}
     </Typography>

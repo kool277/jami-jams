@@ -23,7 +23,7 @@ export default function Footer(props) {
               target="_blank"
               className={classes.a}
             >
-              Savoir-Faire-Linux
+              Savoir-faire Linux Inc.
             </a>
           </span>
         </p>
