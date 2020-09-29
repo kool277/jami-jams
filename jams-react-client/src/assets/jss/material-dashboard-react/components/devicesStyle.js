@@ -2,7 +2,8 @@ import {
   defaultFont,
   primaryColor,
   dangerColor,
-  grayColor
+  grayColor,
+  infoColor
 } from "assets/jss/material-dashboard-react.js";
 import tooltipStyle from "assets/jss/material-dashboard-react/tooltipStyle.js";
 import checkboxAdnRadioStyle from "assets/jss/material-dashboard-react/checkboxAdnRadioStyle.js";
@@ -45,7 +46,7 @@ const tasksStyle = {
   },
   edit: {
     backgroundColor: "transparent",
-    color: primaryColor[0],
+    color: infoColor[0],
     boxShadow: "none"
   },
   close: {

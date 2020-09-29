@@ -206,7 +206,7 @@ export default function Devices(props) {
                                 </Tooltip>
                                 <Tooltip
                                     id="tooltip-top-start"
-                                    title="Desactivate Device"
+                                    title="Revoke Device"
                                     placement="top"
                                     classes={{ tooltip: classes.tooltip }}
                                 >
