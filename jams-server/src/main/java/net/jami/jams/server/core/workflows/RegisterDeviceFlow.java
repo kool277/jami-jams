@@ -72,7 +72,7 @@ public class RegisterDeviceFlow {
 
             statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
-            if (dataStore.getUserGroupMappingsDao().getObjects(statementList) != null) {
+            if (dataStore.getUserGroupMappingsDao().getObjects(statementList) != null && !dataStore.getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
                 UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
                 List<String> list = new ArrayList<>();
                 if (mapping.getUsername().equals(userProfile.getUsername())) {
