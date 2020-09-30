@@ -96,25 +96,6 @@ public class SearchDirectoryServlet extends HttpServlet {
                 }
             });
         });
-
-        // update user group mappings table
-        userProfiles.forEach(profile -> {
-            List<UserGroupMapping> mappings = dataStore.getUserGroupMappingsDao().getObjects(null);
-            for(UserGroupMapping mapping: mappings) {
-                List<String> list = new ArrayList<>();
-                if (mapping.getUsername().equals(profile.getUsername())) {
-                    String[] splits = mapping.getGroups().split(",");
-
-                    for (int i = 0; i < splits.length; i++)
-                        list.add(splits[i]);
-
-                }
-
-                if (!list.isEmpty())
-                    profile.setGroupMemberships(list);
-            }
-            dataStore.updateUserProfile(profile);
-        });
         if (!userProfiles.isEmpty()) {
             resp.getOutputStream().write(JsonStream.serialize(userProfiles).getBytes());
             resp.setStatus(200);

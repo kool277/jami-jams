@@ -30,14 +30,12 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
-import net.jami.jams.common.objects.user.Group;
-import net.jami.jams.common.objects.user.Policy;
-import net.jami.jams.common.objects.user.PolicyData;
-import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.objects.user.*;
 import net.jami.jams.dht.DeviceReceiptGenerator;
 
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
@@ -52,7 +50,6 @@ public class RegisterDeviceFlow {
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
-//            UserProfile userProfile = dataStore.getUserProfileDao().getObjects(statementList).get(0);
             UserProfile userProfile = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(user.getRealm(),user.getUserType()))
                     .searchUserProfiles(username,"LOGON_NAME").get(0);
@@ -70,6 +67,24 @@ public class RegisterDeviceFlow {
                 return null;
             }
             dataStore.getDeviceDao().storeObject(device);
+
+            statementList = new StatementList();
+            statementList.addStatement(new StatementElement("username", "=", username, ""));
+            if (dataStore.getUserGroupMappingsDao().getObjects(statementList) != null) {
+                UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
+                List<String> list = new ArrayList<>();
+                if (mapping.getUsername().equals(userProfile.getUsername())) {
+                    String[] splits = mapping.getGroups().split(",");
+
+                    for (int i = 0; i < splits.length; i++)
+                        list.add(splits[i]);
+                }
+                if (!list.isEmpty())
+                    userProfile.setGroupMemberships(list);
+            }
+
+
+
             //Now we build this response out.
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
             if(userProfile.getGroupMemberships() != null) {
