@@ -82,6 +82,9 @@ export default function UserProfile(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  React.useEffect(() => {}, []);
+
   return (
     <div>
       <AppBar position="static" style={{ background: infoColor[0] }}>

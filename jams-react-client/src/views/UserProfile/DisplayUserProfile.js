@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -18,6 +19,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import GroupIcon from "@material-ui/icons/Group";
 
 import Grid from "@material-ui/core/Grid";
 import BusinessCenterOutlinedIcon from "@material-ui/icons/BusinessCenterOutlined";
@@ -47,6 +49,8 @@ import {
   api_path_get_auth_user,
   api_path_get_user_profile,
   api_path_delete_admin_user_revoke,
+  api_path_get_list_group,
+  api_path_put_update_group,
 } from "globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
@@ -118,24 +122,48 @@ const styles = (theme) => ({
       flexDirection: "column",
     },
   },
+  userProfileHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    [theme.breakpoints.down("md")]: {
+      display: "flex",
+      flexDirection: "column",
+      textAlign: "center",
+    },
+  },
+  groups: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    "& > *": {
+      margin: theme.spacing(0.5),
+    },
+  },
+  cardAvatarMobile: {
+    [theme.breakpoints.down("md")]: {
+      margin: "-50px 50px 0",
+    },
+  },
 });
 
 const useStyles = makeStyles(styles);
 
 export default function DisplayUserProfile(props) {
   const classes = useStyles();
-
+  const history = useHistory();
   const [user, setUser] = React.useState([]);
   const [revoked, setRevoked] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [revokedUser, setRevokedUser] = React.useState("");
   const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
 
-  const userData = {
-    username: props.username,
-  };
+  const [groups, setGroups] = React.useState([]);
+  const [zeroGroup, setZeroGroup] = React.useState(false);
 
   useEffect(() => {
+    const userData = {
+      username: props.username,
+    };
     auth.checkDirectoryType(() => {
       if (auth.hasAdminScope()) {
         axios(configApiCall(api_path_get_admin_user, "GET", userData, null))
@@ -144,37 +172,94 @@ export default function DisplayUserProfile(props) {
               response.data.replace(/\s+/g, " ").trim()
             );
             setRevoked(result.revoked);
+            axios(
+              configApiCall(
+                api_path_get_user_profile + props.username,
+                "GET",
+                null,
+                null
+              )
+            )
+              .then((response) => {
+                setUser(response.data);
+                const groupMemberships = response.data.groupMemberships;
+                axios(
+                  configApiCall(
+                    api_path_get_list_group + "?groupName=*",
+                    "GET",
+                    null,
+                    null
+                  )
+                )
+                  .then((response) => {
+                    let allGroups = response.data;
+                    if (allGroups.length === 0) setZeroGroup(true);
+                    else {
+                      setZeroGroup(false);
+
+                      allGroups.forEach((group) => {
+                        group.actif = false;
+                      });
+
+                      allGroups.forEach((group) => {
+                        groupMemberships.forEach((userGroup) => {
+                          if (group.name === userGroup) {
+                            group.actif = true;
+                          }
+                        });
+                      });
+                    }
+                    setGroups(allGroups);
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    if (error.response.status === 401) {
+                      auth.authenticated = false;
+                      history.push("/");
+                    }
+                  });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           })
           .catch((error) => {
             console.log(error);
           });
       } else {
-        axios(configApiCall(api_path_get_auth_user, "GET", userData, null))
+        axios(
+          configApiCall(
+            api_path_get_auth_user + "?username=" + props.username,
+            "GET",
+            null,
+            null
+          )
+        )
           .then((response) => {
             const result = JSON.parse(
               response.data.replace(/\s+/g, " ").trim()
             );
             setRevoked(result.revoked);
+            axios(
+              configApiCall(
+                api_path_get_user_profile + props.username,
+                "GET",
+                null,
+                null
+              )
+            )
+              .then((response) => {
+                setUser(response.data);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           })
           .catch((error) => {
             console.log(error);
           });
       }
     });
-    axios(
-      configApiCall(
-        api_path_get_user_profile + props.username,
-        "GET",
-        null,
-        null
-      )
-    )
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }, []);
 
   const getUserStatus = () => {
@@ -200,7 +285,7 @@ export default function DisplayUserProfile(props) {
     }
   };
 
-  function revokeUser() {
+  const revokeUser = () => {
     const data = {
       username: revokedUser,
     };
@@ -217,7 +302,7 @@ export default function DisplayUserProfile(props) {
         );
       });
     setOpen(false);
-  }
+  };
 
   const handleClickOpen = (username) => {
     setRevokedUser(username);
@@ -230,6 +315,46 @@ export default function DisplayUserProfile(props) {
 
   const handleClosechangePassword = () => {
     setChangePasswordOpen(false);
+  };
+
+  const updateUserGroup = (group) => {
+    const newGroups = groups;
+    newGroups.forEach((g) => {
+      if (g === group) {
+        if (group.actif) g.actif = false;
+        else g.actif = true;
+      }
+    });
+    let url = "";
+    if (group.blueprint == null) {
+      url =
+        api_path_put_update_group +
+        "?groupName=" +
+        group.name +
+        "&newName=" +
+        group.name +
+        "&blueprintName=&groupMembers=" +
+        [props.username];
+    } else {
+      url =
+        api_path_put_update_group +
+        "?groupName=" +
+        group.name +
+        "&newName=" +
+        group.name +
+        "&blueprintName=" +
+        group.blueprint +
+        "&groupMembers=" +
+        [props.username];
+    }
+
+    axios(configApiCall(url, "PUT", null, null))
+      .then(() => {
+        setGroups(newGroups);
+      })
+      .catch((error) => {
+        console.log("Error updating group: " + error);
+      });
   };
 
   return (
@@ -270,7 +395,10 @@ export default function DisplayUserProfile(props) {
               <div className={classes.root}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={12} md={6}>
-                    <CardAvatar displayProfile>
+                    <CardAvatar
+                      displayProfile
+                      className={classes.cardAvatarMobile}
+                    >
                       <img
                         src={
                           user.profilePicture
@@ -283,12 +411,7 @@ export default function DisplayUserProfile(props) {
                     </CardAvatar>
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
+                    <div className={classes.userProfileHeader}>
                       <div>
                         <h3 className={classes.cardTitle}>
                           {user.username ? user.username : "no username"}
@@ -309,113 +432,114 @@ export default function DisplayUserProfile(props) {
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <List dense={false}>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <PersonIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            user.firstName ? user.firstName : "no firstname"
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <PhoneInTalkOutlinedIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            user.phoneNumber
-                              ? user.phoneNumber
-                              : "no phone number"
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <AlternateEmailOutlinedIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={user.email ? user.email : "no email"}
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <BusinessCenterOutlinedIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            user.organization
-                              ? user.organization
-                              : "no organization"
-                          }
-                        />
-                      </ListItem>
+                      {user.firstName && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PersonIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.firstName} />
+                        </ListItem>
+                      )}
+                      {user.phoneNumber && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PhoneInTalkOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.phoneNumber} />
+                        </ListItem>
+                      )}
+                      {user.email && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <AlternateEmailOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.email} />
+                        </ListItem>
+                      )}
+                      {user.organization && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <BusinessCenterOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.organization} />
+                        </ListItem>
+                      )}
                     </List>
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <List dense={false}>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <PersonOutlinedIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            user.lastName ? user.lastName : "no lastname"
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <PhoneForwardedOutlinedIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            user.phoneNumberExtension
-                              ? user.phoneNumberExtension
-                              : "no Extension"
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <SmartphoneOutlinedIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            user.mobileNumber
-                              ? user.mobileNumber
-                              : "no mobile number"
-                          }
-                        />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>
-                            <LocalPrintshopOutlinedIcon />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            user.faxNumber ? user.faxNumber : "no fax number"
-                          }
-                        />
-                      </ListItem>
+                      {user.lastName && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PersonOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.lastName} />
+                        </ListItem>
+                      )}
+                      {user.phoneNumberExtension && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <PhoneForwardedOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.phoneNumberExtension} />
+                        </ListItem>
+                      )}
+                      {user.mobileNumber && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <SmartphoneOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.mobileNumber} />
+                        </ListItem>
+                      )}
+                      {user.faxNumber && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <LocalPrintshopOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.faxNumber} />
+                        </ListItem>
+                      )}
+                      {auth.hasAdminScope() && !zeroGroup && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <GroupIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <div className={classes.groups}>
+                            {groups.map((group) => (
+                              <Chip
+                                style={{ flex: 1 }}
+                                label={group.name}
+                                variant="default"
+                                clickable
+                                size="medium"
+                                onClick={() => updateUserGroup(group)}
+                                color={group.actif ? "primary" : "default"}
+                                icon={group.actif ? <DoneIcon /> : ""}
+                              />
+                            ))}
+                          </div>
+                        </ListItem>
+                      )}
                     </List>
                   </Grid>
                 </Grid>

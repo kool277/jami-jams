@@ -83,7 +83,7 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(200);
             resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
         }
-        resp.sendError(404, "User was not found!");
+        else resp.sendError(404, "User was not found!");
     }
 
     //The user can update 3 fields: password,privatekey,publickey

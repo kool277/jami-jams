@@ -797,7 +797,7 @@ export default function EditCreateUserProfile(props) {
                             placeholder="Phone number"
                             startAdornment={
                               <InputAdornment position="start">
-                                <LocalPrintshopOutlinedIcon />
+                                <PhoneInTalkOutlinedIcon />
                               </InputAdornment>
                             }
                           />
