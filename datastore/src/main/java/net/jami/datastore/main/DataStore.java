@@ -40,6 +40,7 @@ import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.ConnectionPool;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
 import org.flywaydb.core.Flyway;
 
@@ -141,6 +142,27 @@ public class DataStore implements AuthenticationSource {
     @Override
     public boolean setUserProfile(UserProfile userProfile) {
         return userProfileDao.storeObject(userProfile);
+    }
+
+    public boolean updateUserGroupMappings (UserProfile userProfile) {
+        StatementList statementList = new StatementList();
+        statementList.addStatement(new StatementElement("username", "=", userProfile.getUsername(), ""));
+        if (getUserGroupMappingsDao().getObjects(statementList) != null && !getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
+            UserGroupMapping mapping = getUserGroupMappingsDao().getObjects(statementList).get(0);
+            List<String> list = new ArrayList<>();
+            if (mapping.getUsername().equals(userProfile.getUsername())) {
+                String[] splits = mapping.getGroups().split(",");
+
+                for (int i = 0; i < splits.length; i++)
+                    list.add(splits[i]);
+            }
+            if (!list.isEmpty())
+                userProfile.setGroupMemberships(list);
+
+            return (updateUserProfile(userProfile));
+        }
+
+        return true;
     }
 
     public boolean updateUserProfile(UserProfile userProfile){

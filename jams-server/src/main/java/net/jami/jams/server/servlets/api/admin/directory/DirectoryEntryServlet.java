@@ -39,12 +39,14 @@ import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 import static net.jami.jams.server.Server.dataStore;
@@ -108,7 +110,9 @@ public class DirectoryEntryServlet extends HttpServlet {
         }
 
         if (callingUser.getAccessLevel() == AccessLevel.ADMIN || (callingUser.getAccessLevel() == AccessLevel.USER && callingUser.getUsername().equals(targetUser.getUsername()))) {
-            if (dataStore.updateUserProfile(userProfile))
+            select = new StatementList();
+            select.addStatement(new StatementElement("username", "=", userProfile.getUsername(), ""));
+            if (dataStore.updateUserGroupMappings(userProfile))
                 resp.setStatus(200);
             else
                 resp.sendError(404, "Could not update the users's profile information");

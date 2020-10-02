@@ -32,8 +32,10 @@ public class UserGroupMapping implements DatabaseObject {
 
     public void removeGroup(String s) {
         if (this.groups.contains(s) ) {
-            if (this.groups.contains(","))
+            if (this.groups.contains(",")) {
                 this.groups = this.groups.replace(s + ",", "");
+                this.groups = this.groups.replace("," + s, "");
+            }
             else
                 this.groups = "";
         }

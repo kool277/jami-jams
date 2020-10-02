@@ -28,14 +28,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
 
+import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @WebServlet("/api/auth/userprofile/*")
+@JsonContent
 public class UserProfileServlet extends HttpServlet {
 
     //Get the user profile
@@ -49,6 +51,7 @@ public class UserProfileServlet extends HttpServlet {
             if (v.getUserProfile(username) != null)
                 profile[0] = v.getUserProfile(username);
         });
+        dataStore.updateUserGroupMappings(profile[0]);
 
         if (profile[0] != null) {
             resp.getOutputStream().write(JsonStream.serialize(profile[0]).getBytes());
