@@ -190,6 +190,11 @@ public class DeviceServlet extends HttpServlet {
                 obj.add("Account.dhtProxyListUrl", obj.get("dhtProxyListUrl"));
                 obj.remove("dhtProxyListUrl");
             }
+            if (obj.get("displayName") != null) {
+                obj.add("Account.displayName", obj.get("displayName"));
+                obj.remove("displayName");
+            }
+
             resp.getOutputStream().write((obj.toString()).getBytes());
         }
         else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not enroll a device due to server-side error");
