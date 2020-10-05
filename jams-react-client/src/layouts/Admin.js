@@ -117,19 +117,23 @@ export default function Admin({ ...rest }) {
 
   const handleQuery = () => {
     setQuery(true);
-    if (auth.isActivated()) {
-      setDialogMessage(
-        "A new version of JAMS is available. Would you like to update now?"
-      );
-      setMessageYes("Update Now");
-      setMessageNo("Update Later");
-    } else {
-      setDialogMessage(
-        "You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?"
-      );
-      setMessageYes("Yes, go to Jami Store");
-      setMessageNo("No thanks");
-    }
+    if (auth.hasAdminScope()) {
+        if (auth.isActivated()) {
+            setDialogMessage(
+                "A new version of JAMS is available. Would you like to update now?"
+            );
+            setMessageYes("Update Now");
+            setMessageNo("Update Later");
+        } else {
+            setDialogMessage(
+                "You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?"
+            );
+            setMessageYes("Yes, go to Jami Store");
+            setMessageNo("No thanks");
+        }
+    } else
+        setDialogMessage("You are not allowed to access this section. Please contact your administrator to get administrator privileges.");
+
   };
 
   // initialize and destroy the PerfectScrollbar plugin

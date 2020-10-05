@@ -44,7 +44,7 @@ export default function Sidebar(props) {
 
   React.useEffect(() => {
 
-      if(auth.isUpdateAvailable())
+      if(auth.isUpdateAvailable() && auth.hasAdminScope())
           setOpen(true)
 
   }, [mainPanel]);
