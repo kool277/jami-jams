@@ -20,7 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package net.jami.jams.server.servlets.api.auth.device;
+package net.jami.jams.server.servlets.api.auth.user;
 
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.ServletException;
