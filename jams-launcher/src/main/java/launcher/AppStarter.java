@@ -140,8 +140,8 @@ public class AppStarter extends Thread {
                 pb = new ProcessBuilder("java", "-jar", "jams-server.jar", parentArgs[0]);
                 break;
             case 3:
-                pb = new ProcessBuilder("java", "-jar", "jams-server.jar",
-                    parentArgs[0], parentArgs[1], parentArgs[2]);
+                pb = new ProcessBuilder("java", "-Dorg.ldaptive.sortSearchResults=true", "-jar", "jams-server.jar",
+                                        parentArgs[0], parentArgs[1], parentArgs[2]);
                 break;
             default:
                 pb = new ProcessBuilder("java", "-jar", "jams-server.jar", "8080");
