@@ -42,7 +42,6 @@ public interface CertificateAuthority {
     void revokeCertificate(RevocationRequest revocationRequest);
     AtomicReference<X509CRLHolder> getLatestCRL();
     String getLatestCRLPEMEncoded();
-    OCSPResp getOCSPResponse(OCSPReq ocspRequest);
     X509Certificate getCA();
     boolean shutdownThreads();
 

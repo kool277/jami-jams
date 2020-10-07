@@ -31,31 +31,129 @@ import javax.security.auth.x500.X500Principal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class CertificateSummary {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyMMddHHmmssZ");
 
-    private CertificateStatus status;
-    private LocalDateTime expirationTime;
-    private LocalDateTime revocationTime;
-    private RevocationReason revocationReason;
-    private BigInteger serialNumber;
-    private String fileName;
-    private X500Principal subjectDN;
+    private final CertificateStatus status;
+    private final LocalDateTime expirationTime;
+    private final LocalDateTime revocationTime;
+    private final RevocationReason revocationReason;
+    private final BigInteger serialNumber;
+    private final String fileName;
+    private final X500Principal subjectDN;
 
-    public CertificateSummary(CertificateStatus status, LocalDateTime revocationTime, BigInteger serialNumber) {
-        this.status = status;
-        this.revocationTime = revocationTime;
-        this.serialNumber = serialNumber;
+    private final LocalDateTime thisUpdateTime;
+
+    public CertificateStatus getStatus() {
+        return status;
     }
 
-    public CertificateSummary(CertificateStatus status, BigInteger serialNumber) {
-        this.status = status;
-        this.serialNumber = serialNumber;
+    public LocalDateTime getExpirationTime() {
+        return expirationTime;
+    }
+
+    public LocalDateTime getRevocationTime() {
+        return revocationTime;
+    }
+
+    public RevocationReason getRevocationReason() {
+        return revocationReason;
+    }
+
+    public BigInteger getSerialNumber() {
+        return serialNumber;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public X500Principal getSubjectDN() {
+        return subjectDN;
+    }
+
+    public LocalDateTime getThisUpdateTime() {
+        return thisUpdateTime;
+    }
+
+    private CertificateSummary(Builder builder) {
+        status = builder.status;
+        expirationTime = builder.expirationTime;
+        revocationTime = builder.revocationTime;
+        revocationReason = builder.revocationReason;
+        serialNumber = builder.serialNumber;
+        fileName = builder.fileName;
+        subjectDN = builder.subjectDN;
+        thisUpdateTime = builder.thisUpdateTime == null ? LocalDateTime.now() : builder.thisUpdateTime;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private CertificateStatus status = CertificateStatus.UNKNOWN;
+        private LocalDateTime expirationTime = null;
+        private LocalDateTime revocationTime = null;
+        private RevocationReason revocationReason = null;
+        private BigInteger serialNumber = null;
+        private String fileName = null;
+        private X500Principal subjectDN = null;
+
+        private LocalDateTime thisUpdateTime = null;
+
+        private Builder() {
+        }
+
+        public Builder withStatus(CertificateStatus val) {
+            status = val;
+            return this;
+        }
+
+        public Builder withExpirationTime(LocalDateTime val) {
+            expirationTime = val;
+            return this;
+        }
+
+        public Builder withRevocationTime(LocalDateTime val) {
+            revocationTime = val;
+            return this;
+        }
+
+        public Builder withRevocationReason(RevocationReason val) {
+            revocationReason = val;
+            return this;
+        }
+
+        public Builder withSerialNumber(BigInteger val) {
+            serialNumber = val;
+            return this;
+        }
+
+        public Builder withFileName(String val) {
+            fileName = val;
+            return this;
+        }
+
+        public Builder withSubjectDN(X500Principal val) {
+            subjectDN = val;
+            return this;
+        }
+
+        public Builder withThisUpdateTime(LocalDateTime val) {
+            thisUpdateTime = val;
+            return this;
+        }
+
+        public CertificateSummary build() {
+            return new CertificateSummary(this);
+        }
     }
 }
