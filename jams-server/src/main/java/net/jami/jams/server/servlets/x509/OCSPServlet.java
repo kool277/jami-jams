@@ -22,22 +22,38 @@
 */
 package net.jami.jams.server.servlets.x509;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bouncycastle.cert.ocsp.OCSPReq;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 
 import java.io.IOException;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 
-@WebServlet("/api/auth/ocsp")
+@WebServlet("/api/ocsp")
 public class OCSPServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        certificateAuthority.getOCSPResponse(null);
-        super.doGet(req, resp);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/ocsp-response");
+        byte[] content = new byte[Integer.parseInt(req.getHeader("Content-Length"))];
+        try {
+            for(int i=0;i<content.length;i++){
+                req.getInputStream().read(content);
+            }
+            OCSPReq ocspReq = new OCSPReq(content);
+            OCSPResp ocspResp =  certificateAuthority.getOCSPResponse(ocspReq);
+
+            if (ocspResp != null) {
+                byte[] respBytes = ocspResp.getEncoded();
+                resp.getOutputStream().write(respBytes);
+            } else resp.setStatus(404);
+        }
+        catch (Exception e) {
+            resp.sendError(404, "Could not find the requested certificate!");
+        }
     }
 }
