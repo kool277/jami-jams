@@ -50,7 +50,7 @@ public class UserProfileService {
     public List<UserProfile> getUserProfile(String queryString, String field, boolean exactMatch, Optional<Integer> page){
         Connection connection = null;
         try {
-            queryString = queryString.replaceAll("[^\\x00-\\x7F]","*");
+            queryString = new String(queryString.getBytes("UTF-8"), "ISO-8859-1");
             connection = connectionFactory.getConnection();
             try {
                 connection.open();
@@ -102,7 +102,9 @@ public class UserProfileService {
 
         if(!exactMatch) {
             if (!queryString.startsWith("*"))
-                queryString = "*".concat(queryString).concat("*");
+                queryString = "*".concat(queryString);
+            if(!queryString.endsWith("*"))
+                queryString = queryString.concat("*");
         }
 
         if(field.equals("LOGON_NAME")) {
