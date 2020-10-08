@@ -455,11 +455,11 @@ export default function Groups() {
               .map((group) => (
                 <GridItem xs={12} sm={12} md={2} key={group.name}>
                   <Card profile>
-                    <CardBody profile>
                       <a
                         href="#"
                         onClick={(e) => redirectToGroup(e, group.name)}
                       >
+                      <CardBody profile>
                         <h3 className={classes.cardTitle}>{group.name}</h3>
                         <ul>
                           <li>
@@ -483,8 +483,8 @@ export default function Groups() {
                             {group.blueprint}
                           </li>
                         </ul>
-                      </a>
-                    </CardBody>
+                      </CardBody>
+                    </a>
                     <CardFooter>
                       <IconButton
                         color="secondary"
@@ -501,8 +501,9 @@ export default function Groups() {
           ) : (
             <GridItem xs={12} sm={12} md={2} key={groups.name}>
               <Card profile>
+
+                <a href="#" onClick={(e) => redirectToGroup(e, groups.name)}>
                 <CardBody profile>
-                  <a href="#" onClick={(e) => redirectToGroup(e, groups.name)}>
                     <h3 className={classes.cardTitle}>{groups.name}</h3>
                     <ul>
                       <li>
@@ -528,8 +529,8 @@ export default function Groups() {
                         {selectedBlueprint.label}
                       </li>
                     </ul>
+                    </CardBody>
                   </a>
-                </CardBody>
                 <CardFooter>
                   <IconButton
                     color="secondary"

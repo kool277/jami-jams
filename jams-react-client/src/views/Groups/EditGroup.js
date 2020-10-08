@@ -201,7 +201,7 @@ export default function EditGroup(props) {
         <div>
             <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={true} placeholder="Add user ..." groupName={name === ''?props.groupName:name} blueprintLabel={ blueprint == null ? null : props.getBlueprintsOptions()[blueprint].label} getGroup={getGroup}/>
             <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={6}>
                     <Card profile>
                         <CardHeader color="info" stats icon>
                             <CardIcon color="info">

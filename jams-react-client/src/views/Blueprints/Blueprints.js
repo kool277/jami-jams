@@ -378,11 +378,11 @@ export default function Blueprints() {
               blueprints.map((blueprint) => (
                 <GridItem xs={12} sm={12} md={2} key={blueprint.name}>
                   <Card profile>
-                    <CardBody profile>
                       <a
                         href="#"
                         onClick={(e) => redirectToBlueprint(e, blueprint.name)}
                       >
+                      <CardBody profile>
                         <h3 className={classes.cardTitle}>
                           {blueprint.name
                             ? blueprint.name
@@ -401,8 +401,8 @@ export default function Blueprints() {
                               : i18next.t("no_users_count", "No users count")}
                           </li>
                         </ul>
+                        </CardBody>
                       </a>
-                    </CardBody>
                     <CardFooter>
                       <IconButton
                         color="secondary"

@@ -47,6 +47,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
 import Switch from "@material-ui/core/Switch";
+import CustomPopupState from "../../components/CustomPopupState/CustomPopupState";
 
 import i18next from "i18next";
 
@@ -383,7 +384,7 @@ export default function EditBlueprintConfiguration(props) {
         </Alert>
       </Snackbar>
       <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem xs={12} sm={12} md={6}>
           <Card profile>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
@@ -396,7 +397,7 @@ export default function EditBlueprintConfiguration(props) {
               <div className={classes.root}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">UPnP</FormLabel>
+                    <FormLabel component="legend">UPnP <CustomPopupState message="UPnP allows networked devices to seamlessly discover each other's presence on the network and establish communications." /></FormLabel>
                     <FormControlLabel
                       control={
                         <Switch
@@ -419,7 +420,7 @@ export default function EditBlueprintConfiguration(props) {
                   </Grid>
                   <Grid item xs={12} sm={12} md={12}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">Turn</FormLabel>
+                      <FormLabel component="legend">TURN <CustomPopupState message="TURN is a protocol that assists your devices in traversing NATs (Network address translators) or firewalls." /></FormLabel>
                       <RadioGroup
                         value={selectedTurnOption}
                         aria-label="gender"
@@ -558,7 +559,7 @@ export default function EditBlueprintConfiguration(props) {
                   <Grid item xs={12} sm={12} md={4}></Grid>
                   <Grid item xs={12} sm={12} md={12}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">DHT Proxy</FormLabel>
+                      <FormLabel component="legend">DHT Proxy <CustomPopupState message="Configure custom settings for a given Distributed Hash Table (DHT) proxy server." /></FormLabel>
                       <RadioGroup
                         value={selectedDHTProxyOption}
                         aria-label="gender"

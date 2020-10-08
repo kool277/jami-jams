@@ -230,7 +230,7 @@ export default function EditBlueprintPermissions(props) {
         </Alert>
       </Snackbar>
       <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem xs={12} sm={12} md={6}>
           <Card profile>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
@@ -242,7 +242,7 @@ export default function EditBlueprintPermissions(props) {
             <CardBody profile>
               <div className={classes.root}>
                 <Grid container spacing={5}>
-                  <Grid item xs={12} sm={12} md={6}>
+                  <Grid item xs={12} sm={12} md={12}>
                     <FormGroup row>
                       <FormControlLabel
                         control={
