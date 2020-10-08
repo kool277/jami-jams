@@ -112,10 +112,10 @@ public class DirectoryEntryServlet extends HttpServlet {
         if (callingUser.getAccessLevel() == AccessLevel.ADMIN || (callingUser.getAccessLevel() == AccessLevel.USER && callingUser.getUsername().equals(targetUser.getUsername()))) {
             select = new StatementList();
             select.addStatement(new StatementElement("username", "=", userProfile.getUsername(), ""));
-            if (dataStore.updateUserGroupMappings(userProfile))
+            if (dataStore.updateUserProfile(userProfile) && dataStore.updateUserGroupMappings(userProfile))
                 resp.setStatus(200);
             else
-                resp.sendError(404, "Could not update the users's profile information");
+                resp.sendError(500, "Could not update the users's profile information");
         } else {
             resp.sendError(403, "The user is either not an admin account or is attempting to edit a profile that is not his own!");
             return;
