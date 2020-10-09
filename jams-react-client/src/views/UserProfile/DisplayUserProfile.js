@@ -63,6 +63,8 @@ import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 import PasswordDialog from "components/PasswordDialog/PasswordDialog";
 
+import i18next from "i18next";
+
 const styles = (theme) => ({
   ...dashboardStyle,
   root: {
@@ -267,7 +269,7 @@ export default function DisplayUserProfile(props) {
       return (
         <Chip
           style={{ flex: 1 }}
-          label="Active"
+          label={i18next.t("active", "Active")}
           variant="outlined"
           clickable={false}
         />
@@ -276,7 +278,7 @@ export default function DisplayUserProfile(props) {
       return (
         <Chip
           style={{ flex: 1 }}
-          label="Revoked"
+          label={i18next.t("revoked", "Revoked")}
           variant="outlined"
           clickable={false}
           disabled
@@ -366,19 +368,19 @@ export default function DisplayUserProfile(props) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Revoke user account"}
+          {i18next.t("revoke_user_account", "Revoke user account")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to revoke <strong>{revokedUser}</strong> ?
+            {i18next.t("are_you_sure_want_revoke", "Are you sure you want to revoke")} <strong>{revokedUser}</strong> ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            {i18next.t("cancel", "Cancel")}
           </Button>
           <Button onClick={revokeUser} color="info" autoFocus>
-            Revoke
+            {i18next.t("revoke", "Revoke")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -424,7 +426,7 @@ export default function DisplayUserProfile(props) {
                             color="info"
                             onClick={() => handleClickOpen(user.username)}
                           >
-                            <DeleteIcon fontSize="small" /> Revoke user
+                            <DeleteIcon fontSize="small" /> {i18next.t("revoke_user", "Revoke user")}
                           </Button>
                         )}
                       </div>
@@ -551,7 +553,7 @@ export default function DisplayUserProfile(props) {
                   color="info"
                   onClick={() => props.setDisplayUser(false)}
                 >
-                  <EditIcon /> Edit Profile
+                  <EditIcon /> {i18next.t("edit_profile", "Edit Profile")}
                 </Button>
               )}
               {auth.isLocalDirectory() && auth.hasAdminScope() && (
@@ -561,7 +563,7 @@ export default function DisplayUserProfile(props) {
                     setChangePasswordOpen(true);
                   }}
                 >
-                  <VpnKeyIcon /> Change password
+                  <VpnKeyIcon /> {i18next.t("change_password", "Change password")}
                 </Button>
               )}
             </CardFooter>

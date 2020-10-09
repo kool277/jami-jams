@@ -15,13 +15,13 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
-import { ProtectedRoute } from 'protected.route'
-import { ConfiguredRoute } from 'configured.route'
-import auth from './auth'
+import { ProtectedRoute } from "protected.route";
+import { ConfiguredRoute } from "configured.route";
+import auth from "./auth";
 
 // core components
 import Admin from "layouts/Admin.js";
@@ -30,22 +30,25 @@ import SignIn from "layouts/SignIn.js";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
+import "./i18n";
+
 const hist = createBrowserHistory();
 auth.isServerInstalled(() => {
   auth.checkAdminAccountStatus(() => {
     auth.checkLastKnownStep(() => {
-          ReactDOM.render(
-            <Router history={hist}>
-              <Switch>
-                <ConfiguredRoute path="/signin" component={SignIn} />
-                <ProtectedRoute path="/admin" component={Admin} />
-                {/*<Route path="/rtl" component={RTL} />*/}
-                <Redirect from="/" to="/signin" />
-              </Switch>
-            </Router>,
-            document.getElementById("root")
-          );;
+      ReactDOM.render(
+        <Suspense fallback={<div>Loading...</div>}>
+          <Router history={hist}>
+            <Switch>
+              <ConfiguredRoute path="/signin" component={SignIn} />
+              <ProtectedRoute path="/admin" component={Admin} />
+              {/*<Route path="/rtl" component={RTL} />*/}
+              <Redirect from="/" to="/signin" />
+            </Switch>
+          </Router>
+        </Suspense>,
+        document.getElementById("root")
+      );
     });
   });
 });
-

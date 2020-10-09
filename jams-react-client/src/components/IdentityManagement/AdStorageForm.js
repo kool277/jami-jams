@@ -7,12 +7,14 @@ import TextField from "@material-ui/core/TextField";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
+import i18next from 'i18next';
+
 export default function AdStorageForm(props) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
-          Active directory server informations
+        {i18next.t("active_directory_server_informations", "Active directory server informations")}
         </Typography>
       </Grid>
       <Grid item xs={6}>
@@ -22,7 +24,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="port"
-          label="Port"
+          label={i18next.t("port", "Port")}
           name="port"
           autoComplete="port"
           value={props.values.port}
@@ -40,7 +42,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="host"
-          label="Host"
+          label={i18next.t("host", "Host")}
           name="host"
           autoComplete="host"
           value={props.values.host}
@@ -58,7 +60,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="adminusername"
-          label="Admin username"
+          label={i18next.t("admin_username", "Admin username")}
           name="adadminusername"
           autoComplete="adminusername"
           value={props.values.adadminusername}
@@ -78,7 +80,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="password"
-          label="Password"
+          label={i18next.t("password", "Password")}
           name="adpassword"
           autoComplete="password"
           type="password"
@@ -99,7 +101,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="domainname"
-          label="Domain Name"
+          label={i18next.t("domain_name", "Domain Name")}
           name="domainname"
           autoComplete="domainname"
           value={props.values.domainname}
@@ -126,12 +128,12 @@ export default function AdStorageForm(props) {
           <FormControlLabel
             value="true"
             control={<Radio color="primary" />}
-            label="Yes"
+            label={i18next.t("yes", "Yes")}
           />
           <FormControlLabel
             value="false"
             control={<Radio color="default" />}
-            label="No"
+            label={i18next.t("no", "No")}
           />
         </RadioGroup>
       </Grid>

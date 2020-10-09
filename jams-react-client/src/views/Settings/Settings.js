@@ -19,6 +19,8 @@ import MuiAlert from "@material-ui/lab/Alert";
 
 import auth from "auth.js";
 
+import i18next from "i18next";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -92,8 +94,7 @@ export default function Settings(props) {
     return (
       <div>
         <h4>
-          You are not allowed to access this section. Please contact your
-          administrator to get administrator privileges.
+        {i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")}
         </h4>
       </div>
     );
@@ -106,8 +107,8 @@ export default function Settings(props) {
             onChange={handleChange}
             aria-label="simple tabs example"
           >
-            <Tab label="Admin Password" {...a11yProps(0)} />
-            <Tab label="Subscription" {...a11yProps(1)} />
+            <Tab label={i18next.t("admin_password", "Admin Password")} {...a11yProps(0)} />
+            <Tab label={i18next.t("subscription", "Subscription")} {...a11yProps(1)} />
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>

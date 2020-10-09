@@ -25,6 +25,8 @@ import auth from "auth.js";
 
 import { debounce } from "lodash";
 
+import i18next from "i18next";
+
 const useStyles = makeStyles({
   list: {
     width: 500,
@@ -322,7 +324,7 @@ export default function TemporaryDrawer(props) {
                 inputProps={{
                   placeholder: props.placeholder,
                   inputProps: {
-                    "aria-label": "Add a contact",
+                    "aria-label": i18next.t("add_a_contact", "Add a contact"),
                   },
                   onKeyUp: handleSearchUsers,
                 }}

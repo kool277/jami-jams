@@ -11,32 +11,26 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
-import routes from "routes.js";
+// @material-ui/icons
+import Person from "@material-ui/icons/Person";
+import Group from "@material-ui/icons/Group";
+import AllInbox from "@material-ui/icons/AllInbox";
+import SettingsIcon from "@material-ui/icons/Settings";
+// core components/views for Admin layout
+import Users from "views/Users/Users.js";
+import Groups from "views/Groups/Groups.js";
+import Blueprints from "views/Blueprints/Blueprints.js";
+import Settings from "views/Settings/Settings.js";
+// core components/views for RTL layout
 
 import styles from "assets/jss/material-dashboard-react/layouts/rtlStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/reactlogo.png";
 
-let ps;
+import i18next from "i18next";
 
-const switchRoutes = (
-  <Switch>
-    {routes.map((prop, key) => {
-      if (prop.layout === "/rtl") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      }
-      return null;
-    })}
-    <Redirect from="/rtl" to="/rtl/rtl-page" />
-  </Switch>
-);
+let ps;
 
 const useStyles = makeStyles(styles);
 
@@ -50,10 +44,64 @@ export default function RTL({ ...rest }) {
   const [color, setColor] = React.useState("blue");
   const [fixedClasses, setFixedClasses] = React.useState("dropdown show");
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const handleImageClick = image => {
+
+  const routes = [
+    {
+      path: "/users",
+      name: i18next.t("users", "Users"),
+      rtlName: "المستخدمون",
+      icon: Person,
+      component: Users,
+      layout: "/admin",
+    },
+    {
+      path: "/groups",
+      name: i18next.t("groups", "Groups"),
+      rtlName: "مجموعات",
+      icon: Group,
+      component: Groups,
+      layout: "/admin",
+    },
+    {
+      path: "/blueprints",
+      name: i18next.t("blueprints", "Blueprints"),
+      rtlName: "المخططات",
+      icon: AllInbox,
+      component: Blueprints,
+      layout: "/admin",
+    },
+    {
+      path: "/settings",
+      name: i18next.t("settings", "Settings"),
+      rtlName: "حضانة بيض",
+      icon: SettingsIcon,
+      component: Settings,
+      layout: "/admin",
+    },
+  ];
+
+  const switchRoutes = (
+    <Switch>
+      {routes.map((prop, key) => {
+        if (prop.layout === "/rtl") {
+          return (
+            <Route
+              path={prop.layout + prop.path}
+              component={prop.component}
+              key={key}
+            />
+          );
+        }
+        return null;
+      })}
+      <Redirect from="/rtl" to="/rtl/rtl-page" />
+    </Switch>
+  );
+
+  const handleImageClick = (image) => {
     setImage(image);
   };
-  const handleColorClick = color => {
+  const handleColorClick = (color) => {
     setColor(color);
   };
   const handleFixedClick = () => {
@@ -79,7 +127,7 @@ export default function RTL({ ...rest }) {
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
-        suppressScrollY: false
+        suppressScrollY: false,
       });
       document.body.style.overflow = "hidden";
     }
@@ -96,7 +144,7 @@ export default function RTL({ ...rest }) {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"الإبداعية تيم"}
+        logoText={"Jams"}
         logo={logo}
         image={image}
         handleDrawerToggle={handleDrawerToggle}

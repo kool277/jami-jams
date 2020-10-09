@@ -13,6 +13,7 @@ import StepConnector from '@material-ui/core/StepConnector';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import i18next from 'i18next';
 
 const useQontoStepIconStyles = makeStyles({
   root: {
@@ -137,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return ['Create Administrator User', 'Certificate Authority Setup', 'Identity Management', 'Server Parameters'];
+  return [i18next.t("create_administrator_user", 'Create Administrator User'), i18next.t("certificate_authority_setup", 'Certificate Authority Setup'), i18next.t("identity_management", 'Identity Management'), i18next.t("server_parameters", 'Server Parameters')];
 }
 
 export default function CustomizedSteppers(props) {

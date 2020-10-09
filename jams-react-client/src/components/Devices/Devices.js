@@ -32,6 +32,8 @@ import {
 } from "../../globalUrls";
 import axios from "axios";
 
+import i18next from "i18next";
+
 const useStyles = makeStyles(styles);
 
 export default function Devices(props) {
@@ -171,9 +173,9 @@ export default function Devices(props) {
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Device Name</TableCell>
-                        <TableCell align="right">Status</TableCell>
-                        <TableCell align="right">Actions</TableCell>
+                        <TableCell>{i18next.t("device_name", "Device Name")}</TableCell>
+                        <TableCell align="right">{i18next.t("status", "Status")}</TableCell>
+                        <TableCell align="right">{i18next.t("actions", "Actions")}</TableCell>
                     </TableRow>
                 </TableHead>
                 {devices != null &&
@@ -206,7 +208,7 @@ export default function Devices(props) {
                                 </Tooltip>
                                 <Tooltip
                                     id="tooltip-top-start"
-                                    title="Revoke Device"
+                                    title={i18next.t("revoke_device", "Revoke Device")}
                                     placement="top"
                                     classes={{ tooltip: classes.tooltip }}
                                 >
@@ -229,7 +231,7 @@ export default function Devices(props) {
                 </TableBody>}
             </Table>
             <Dialog open={openEdit} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-edit-dialog-title">Update Device Information</DialogTitle>
+                <DialogTitle id="form-edit-dialog-title">{i18next.t("update_device_information", "Update Device Information")}</DialogTitle>
                 <Formik initialValues={{
                     displayName: '',
                 }}
@@ -244,7 +246,7 @@ export default function Devices(props) {
                                                 autoFocus
                                                 margin="dense"
                                                 id="name"
-                                                label="Device Display Name"
+                                                label={i18next.t("device_display_name", "Device Display Name")}
                                                 fullWidth
                                                 onChange={setDisplayName(field.value)}
                                                 helperText={(errors.displayName && touched.displayName) && errors.displayName}
@@ -257,10 +259,10 @@ export default function Devices(props) {
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleCancel} color="primary">
-                                    Cancel
+                                    {i18next.t("cancel", "Cancel")}
                                 </Button>
                                 <Button onClick={() => validateField('displayName').then(() =>handleUpdate())} color="primary">
-                                    Update
+                                {i18next.t("update", "Update")}
                                 </Button>
                             </DialogActions>
                         </form>
@@ -268,18 +270,18 @@ export default function Devices(props) {
                 </Formik>
             </Dialog>
             <Dialog open={openRevoke} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-revoke-dialog-title">Revoke Device</DialogTitle>
+                <DialogTitle id="form-revoke-dialog-title">{i18next.t("revoke_device", "Revoke Device")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to revoke this device?
+                        {i18next.t("are_you_sure_you_want_to_revoke_this_device", "Are you sure you want to revoke this device?")}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCancel} color="primary">
-                        Cancel
+                        {i18next.t("cancel", "Cancel")}
                     </Button>
                     <Button onClick={handleDeviceRevoke} color="primary">
-                        Confirm Revoke
+                        {i18next.t("confirm_revoke", "Confirm Revoke")}
                     </Button>
                 </DialogActions>
             </Dialog>

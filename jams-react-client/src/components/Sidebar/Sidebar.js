@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import React from "react";
-import { useHistory } from 'react-router-dom'
+import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
@@ -16,14 +16,17 @@ import Icon from "@material-ui/core/Icon";
 // core components
 import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.js";
 import RTLNavbarLinks from "components/Navbars/RTLNavbarLinks.js";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import UpdateIcon from '@material-ui/icons/Update';
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import UpdateIcon from "@material-ui/icons/Update";
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js";
 
 import auth from "auth";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
+import LanguagePicker from "../LanguagePicker/LanguagePicker";
+
+import i18next from "i18next";
 
 const useStyles = makeStyles(styles);
 
@@ -34,21 +37,20 @@ export default function Sidebar(props) {
   const history = useHistory();
 
   const handleCloseProfile = () => {
-    auth.logout(() => { history.push("/") })
+    auth.logout(() => {
+      history.push("/");
+    });
   };
 
   const handleListItemClick = (e, layout, path) => {
     e.preventDefault();
-    history.push(layout+path.substring(0, 2))
+    history.push(layout + path.substring(0, 2));
   };
 
   React.useEffect(() => {
-
-      if(auth.isUpdateAvailable() && auth.hasAdminScope())
-          setOpen(true)
-
+    if (auth.isUpdateAvailable() && auth.hasAdminScope()) setOpen(true);
   }, [mainPanel]);
-  
+
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
@@ -62,99 +64,114 @@ export default function Sidebar(props) {
         if (prop.path === "/upgrade-to-pro") {
           activePro = classes.activePro + " ";
           listItemClasses = classNames({
-            [" " + classes[color]]: true
+            [" " + classes[color]]: true,
           });
         } else {
           listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
+            [" " + classes[color]]: activeRoute(prop.layout + prop.path),
           });
         }
         const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
+          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path),
         });
         return (
-            <div className={classes.wrapper}>
-              {props.updating && <Snackbar
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  open={open}
-                  message={props.snackbarMessage}
-                  key={'bottomright'}
-              >
-              </Snackbar>}
+          <div className={classes.wrapper}>
+            {props.updating && (
+              <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                open={open}
+                message={props.snackbarMessage}
+                key={"bottomright"}
+              ></Snackbar>
+            )}
 
-              <NavLink
-                to={prop.layout + prop.path}
-                className={activePro + classes.item}
-                activeClassName="active"
-                key={key}
+            <NavLink
+              to={prop.layout + prop.path}
+              className={activePro + classes.item}
+              activeClassName="active"
+              key={key}
+            >
+              <ListItem
+                button
+                className={classes.itemLink + listItemClasses}
+                onClick={(e) => handleListItemClick(e, prop.layout, prop.path)}
               >
-                <ListItem button className={classes.itemLink + listItemClasses} onClick={e => handleListItemClick(e, prop.layout, prop.path)}>
-                  {typeof prop.icon === "string" ? (
-                    <Icon
-                      className={classNames(classes.itemIcon, whiteFontClasses, {
-                        [classes.itemIconRTL]: props.rtlActive
-                      })}
-                    >
-                      {prop.icon}
-                    </Icon>
-                  ) : (
-                      <prop.icon
-                        className={classNames(classes.itemIcon, whiteFontClasses, {
-                          [classes.itemIconRTL]: props.rtlActive
-                        })}
-                      />
-                    )}
-                  <ListItemText
-                    primary={props.rtlActive ? prop.rtlName : prop.name}
-                    className={classNames(classes.itemText, whiteFontClasses, {
-                      [classes.itemTextRTL]: props.rtlActive
+                {typeof prop.icon === "string" ? (
+                  <Icon
+                    className={classNames(classes.itemIcon, whiteFontClasses, {
+                      [classes.itemIconRTL]: props.rtlActive,
                     })}
-                    disableTypography={true}
+                  >
+                    {prop.icon}
+                  </Icon>
+                ) : (
+                  <prop.icon
+                    className={classNames(classes.itemIcon, whiteFontClasses, {
+                      [classes.itemIconRTL]: props.rtlActive,
+                    })}
                   />
-                </ListItem>
-              </NavLink>
-            </div>
+                )}
+                <ListItemText
+                  primary={props.rtlActive ? prop.rtlName : prop.name}
+                  className={classNames(classes.itemText, whiteFontClasses, {
+                    [classes.itemTextRTL]: props.rtlActive,
+                  })}
+                  disableTypography={true}
+                />
+              </ListItem>
+            </NavLink>
+          </div>
         );
       })}
 
-      {open &&
-        <ListItem button className={classes.itemLink} onClick={e => {
-            props.handleQuery()
-            props.setOpenUpdate(true)
-            }}>
-            <Icon
+      {open && (
+        <ListItem
+          button
+          className={classes.itemLink}
+          onClick={(e) => {
+            props.handleQuery();
+            props.setOpenUpdate(true);
+          }}
+        >
+          <Icon
             className={classNames(classes.itemIcon, {
-                [classes.itemIconRTL]: false
+              [classes.itemIconRTL]: false,
             })}
-            >
-          <UpdateIcon />
-            </Icon>
+          >
+            <UpdateIcon />
+          </Icon>
           <ListItemText
             primary="Update now"
             className={classNames(classes.itemText, {
-                [classes.itemTextRTL]: false
+              [classes.itemTextRTL]: false,
             })}
             disableTypography={true}
           />
         </ListItem>
-      }
+      )}
 
-
-<ListItem button className={classes.itemLink} onClick={handleCloseProfile}>
+      <ListItem
+        button
+        className={classes.itemLink}
+        onClick={handleCloseProfile}
+      >
         <Icon
           className={classNames(classes.itemIcon, {
-            [classes.itemIconRTL]: false
+            [classes.itemIconRTL]: false,
           })}
         >
-        <ExitToAppIcon />
+          <ExitToAppIcon />
         </Icon>
         <ListItemText
-          primary="Logout"
+          primary={i18next.t("Logout", "Logout")}
           className={classNames(classes.itemText, {
-            [classes.itemTextRTL]: false
+            [classes.itemTextRTL]: false,
           })}
           disableTypography={true}
         />
+      </ListItem>
+      <ListItem alignItems="center">
+        <LanguagePicker />
       </ListItem>
     </List>
   );
@@ -163,7 +180,7 @@ export default function Sidebar(props) {
       <a
         href="/"
         className={classNames(classes.logoLink, {
-          [classes.logoLinkRTL]: props.rtlActive
+          [classes.logoLinkRTL]: props.rtlActive,
         })}
         target="_blank"
       >
@@ -183,12 +200,12 @@ export default function Sidebar(props) {
           open={props.open}
           classes={{
             paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive
-            })
+              [classes.drawerPaperRTL]: props.rtlActive,
+            }),
           }}
           onClose={props.handleDrawerToggle}
           ModalProps={{
-            keepMounted: true // Better open performance on mobile.
+            keepMounted: true, // Better open performance on mobile.
           }}
         >
           {brand}
@@ -211,8 +228,8 @@ export default function Sidebar(props) {
           open
           classes={{
             paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive
-            })
+              [classes.drawerPaperRTL]: props.rtlActive,
+            }),
           }}
         >
           {brand}
@@ -230,12 +247,12 @@ export default function Sidebar(props) {
 }
 
 Sidebar.propTypes = {
-    rtlActive: PropTypes.bool,
-    handleDrawerToggle: PropTypes.func,
-    bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
-    logo: PropTypes.string,
-    image: PropTypes.string,
-    logoText: PropTypes.string,
-    routes: PropTypes.arrayOf(PropTypes.object),
-    open: PropTypes.bool
+  rtlActive: PropTypes.bool,
+  handleDrawerToggle: PropTypes.func,
+  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
+  logo: PropTypes.string,
+  image: PropTypes.string,
+  logoText: PropTypes.string,
+  routes: PropTypes.arrayOf(PropTypes.object),
+  open: PropTypes.bool,
 };

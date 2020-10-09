@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[jams-jami-account-management-server.translation-json]
+file_filter = src/locales/<lang>/translation.json
+minimum_perc = 0
+source_file = src/locales/en/translation.json
+source_lang = en
+type = KEYVALUEJSON
+

@@ -17,6 +17,7 @@ import {
   infoColor
 } from "assets/jss/material-dashboard-react.js";
 
+import i18next from "i18next";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -84,8 +85,8 @@ export default function Blueprint(props) {
     <div>
       <AppBar position="static" style={{ background: infoColor[0] }}>
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Permissions" {...a11yProps(0)} />
-          <Tab label="Configuration" {...a11yProps(1)} />
+          <Tab label={i18next.t("permissions", "Permissions")} {...a11yProps(0)} />
+          <Tab label={i18next.t("configuration", "Configuration")} {...a11yProps(1)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>

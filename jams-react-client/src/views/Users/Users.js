@@ -36,6 +36,9 @@ import EditCreateUserProfile from "views/UserProfile/EditCreateUserProfile";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import { debounce } from "lodash";
+
+import i18next from "i18next";
+
 const styles = {
   ...headerLinksStyle,
   cardCategoryWhite: {
@@ -220,7 +223,8 @@ export default function Users(props) {
                 href="#contained-buttons"
                 onClick={(e) => setCreateUser(true)}
               >
-                <AddCircleOutlineIcon /> Create user
+                <AddCircleOutlineIcon />{" "}
+                {i18next.t("create_user", "Create user")}
               </Button>
             )}
             <GridContainer>
@@ -232,9 +236,9 @@ export default function Users(props) {
                     }}
                     inputProps={{
                       placeholder:
-                        "Search users using (username, name, phone, email, ...)",
+                      i18next.t("search_users_using", "Search users using (username, name, phone, email, ...)"),
                       inputProps: {
-                        "aria-label": "Search users",
+                        "aria-label": i18next.t("search_users", "Search users"),
                       },
                       onKeyUp: handleSearchUsers,
                     }}
@@ -263,7 +267,7 @@ export default function Users(props) {
               <div className={classes.usersNotFound}>
                 <InfoIcon />
 
-                <p style={{ marginLeft: "10px" }}>No users found</p>
+            <p style={{ marginLeft: "10px" }}>{i18next.t("no_users_found", "No users found")}</p>
               </div>
             )}
           </GridItem>
@@ -339,8 +343,7 @@ export default function Users(props) {
               <InfoIcon />
 
               <p style={{ marginLeft: "10px" }}>
-                No users found mathcing <strong>{searchValue}</strong> search
-                value!
+                  {i18next.t("no_users_found_matching", "No users found mathcing search value!")}
               </p>
             </div>
           )}

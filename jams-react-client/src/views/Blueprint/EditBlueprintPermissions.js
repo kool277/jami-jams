@@ -28,6 +28,8 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 
 import MuiAlert from "@material-ui/lab/Alert";
 
+import i18next from "i18next";
+
 const styles = (theme) => ({
   ...dashboardStyle,
   root: {
@@ -200,13 +202,13 @@ export default function EditBlueprintPermissions(props) {
         setOpen(false);
         setSeverity("success");
         setOpen(true);
-        setMessage("Updated blueprint permissions successfully !");
+        setMessage(i18next.t("updated_blueprint_permissions_successfully", "Updated blueprint permissions successfully !"));
       })
       .catch((error) => {
         setOpen(false);
         setSeverity("error");
         setOpen(true);
-        setMessage("Error updating blueprint permissions " + error + "!");
+        setMessage(i18next.t("error_updating_blueprint_permissions", "Error updating blueprint permissions ") + error + "!");
       });
   };
 
@@ -234,7 +236,7 @@ export default function EditBlueprintPermissions(props) {
               <CardIcon color="info">
                 <PriorityHighOutlinedIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>Permissions</p>
+              <p className={classes.cardCategory}>{i18next.t("permissions", "Permissions")}</p>
               <h3 className={classes.cardTitle}>{props.blueprintName}</h3>
             </CardHeader>
             <CardBody profile>
@@ -257,7 +259,7 @@ export default function EditBlueprintPermissions(props) {
                             name="videoEnabled"
                           />
                         }
-                        label="Allow videos calls"
+                        label={i18next.t("allow_video_calls", "Allow videos calls")}
                       />
                     </FormGroup>
                     <FormGroup row>
@@ -276,7 +278,7 @@ export default function EditBlueprintPermissions(props) {
                             name="publicInCalls"
                           />
                         }
-                        label="Allow incoming calls from unknown contacts"
+                        label={i18next.t("allow_incoming_calls_from_unknown_contacts", "Allow incoming calls from unknown contacts")}
                       />
                     </FormGroup>
                     <FormGroup row>
@@ -295,7 +297,7 @@ export default function EditBlueprintPermissions(props) {
                             name="autoAnswer"
                           />
                         }
-                        label="Auto answer calls"
+                        label={i18next.t("auto_answer_calss", "Auto answer calls")}
                       />
                     </FormGroup>
                     <FormGroup row>
@@ -314,7 +316,7 @@ export default function EditBlueprintPermissions(props) {
                             name="peerDiscovery"
                           />
                         }
-                        label="Allow use of Jami in a local lan"
+                        label={i18next.t("allow_use_of_jami_in_local_lan", "Allow use of Jami in a local lan")}
                       />
                     </FormGroup>
                     <FormGroup row>
@@ -333,7 +335,7 @@ export default function EditBlueprintPermissions(props) {
                             name="rendezVous"
                           />
                         }
-                        label="Convert your account into a rendezvous point"
+                        label={i18next.t("convert_your_account_into_a_rendezvous_point", "Activate this account into rendezvous mode")}
                       />
                     </FormGroup>
                   </Grid>

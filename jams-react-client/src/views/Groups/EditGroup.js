@@ -51,6 +51,8 @@ import TemporaryDrawer from "components/Drawer/Drawer"
 import * as tool from "../../tools";
 import auth from 'auth.js'
 
+import i18next from "i18next";
+
 const useStyles = makeStyles((theme) => ({
     ...devicesStyle,
     ...dashboardStyle,
@@ -205,7 +207,7 @@ export default function EditGroup(props) {
                             <CardIcon color="info">
                                 <EditIcon />
                             </CardIcon>
-                            <p className={classes.cardCategory}>Edit group</p>
+                                <p className={classes.cardCategory}>{i18next.t("edit_group", "Edit group")}</p>
                             <h3 className={classes.cardTitle}>{newName}</h3>
                         </CardHeader>
                         <CardBody profile>
@@ -257,12 +259,12 @@ export default function EditGroup(props) {
                     </Card>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={12}>
-                    <Button color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> Add user to {props.groupName}</Button>
+                    <Button color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_user_to", "Add user to")} {props.groupName}</Button>
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Username</TableCell>
-                                <TableCell align="right">Action</TableCell>
+                                <TableCell>{i18next.t("username", "Username")}</TableCell>
+                                <TableCell align="right">{i18next.t("action", "Action")}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -272,7 +274,7 @@ export default function EditGroup(props) {
                                         {user}
                                     </TableCell>
                                     <TableCell align="right" className={classes.tableActions}>
-                                        <Button color="primary" onClick={() => removeUserFromGroup(user)}>Remove user</Button>
+                                        <Button color="primary" onClick={() => removeUserFromGroup(user)}>{i18next.t("remove_user", "Remove user")}</Button>
                                     </TableCell>
                                 </TableRow>
                             ) }

@@ -5,13 +5,14 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import CustomPopupState from '../CustomPopupState/CustomPopupState'
 
+import i18next from 'i18next';
 
 export default function LocalStorageForm(props) {
     
     return (
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Typography variant="subtitle1" gutterBottom color="primary">Advanced settings</Typography>
+                    <Typography variant="subtitle1" gutterBottom color="primary">{i18next.t("advanced_settings", "Advanced settings")}</Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <FormControlLabel
@@ -23,9 +24,9 @@ export default function LocalStorageForm(props) {
                         color="primary"
                         />
                     }
-                    label="Use public nameserver"
+                    label={i18next.t("use_public_nameserver", "Use public nameserver")}
                     />
-                    <CustomPopupState message="Check this box if you want to register your usernames on Jami's public nameserver."/>
+                    <CustomPopupState message={i18next.t("check_box_register_usernames_on_jami_public_nameserver", "Check this box if you want to register your usernames on Jami's public nameserver.")}/>
                 </Grid>
             </Grid>
     );

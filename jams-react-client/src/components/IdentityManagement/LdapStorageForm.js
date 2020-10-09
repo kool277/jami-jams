@@ -9,12 +9,14 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Select from '@material-ui/core/Select';
 import CustomPopupState from '../CustomPopupState/CustomPopupState'
 
+import i18next from 'i18next';
+
 export default function LdapStorageForm(props) {
 
     return (
         <Grid container spacing={3}>
             <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom color="primary">LDAP Server informations</Typography>
+    <Typography variant="subtitle1" gutterBottom color="primary">{i18next.t("ldap_server_information", "LDAP Server informations")}</Typography>
             </Grid>
             <Grid item xs={12}>
                 <TextField
@@ -23,7 +25,7 @@ export default function LdapStorageForm(props) {
                     required
                     fullWidth
                     id="servername"
-                    label="Server Address"
+                    label={i18next.t("server_address", "Server address")}
                     name="servername"
                     autoComplete="servername"
                     value={props.values.servername}
@@ -40,7 +42,7 @@ export default function LdapStorageForm(props) {
                     required
                     fullWidth
                     id="adminusername"
-                    label="Administrator Username"
+                    label={i18next.t("administrator_username", "Administrator username")}
                     name="ldapadminusername"
                     autoComplete="adminusername"
                     value={props.values.ldapadminusername}
@@ -56,7 +58,7 @@ export default function LdapStorageForm(props) {
                     required
                     fullWidth
                     id="password"
-                    label="Password"
+                    label={i18next.t("password", "Password")}
                     name="ldappassword"
                     autoComplete="password"
                     type="password"
@@ -70,7 +72,7 @@ export default function LdapStorageForm(props) {
                 <TextField
                     variant="outlined"
                     id="basedn"
-                    label="Base DN (Please use LDAP convention)"
+                    label={i18next.t("base_dn_please_use_ldap_convention", "Base DN (Please use LDAP convention)")}
                     name="basedn"
                     autoComplete="basedn"
                     required
@@ -84,12 +86,12 @@ export default function LdapStorageForm(props) {
             <Grid item xs={12}>
                 <Typography variant="subtitle1" gutterBottom color="primary">Use Start TLS</Typography>
                 <RadioGroup row aria-label="useStartTLS" name="useStartTLS" value={props.useStartTLS} onChange={props.handleUseStartTLSChange} >
-                    <FormControlLabel value="true" control={<Radio color="primary"/>} label="Yes" />
-                    <FormControlLabel value="false" control={<Radio color="default"/>} label="No" />
+                    <FormControlLabel value="true" control={<Radio color="primary"/>} label={i18next.t("yes", "Yes")} />
+                    <FormControlLabel value="false" control={<Radio color="default"/>} label={i18next.t("no", "No")} />
                 </RadioGroup>
             </Grid>
             <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom color="primary">Filter<CustomPopupState message="This is the field in your LDAP structure which contains the username."/></Typography>
+                <Typography variant="subtitle1" gutterBottom color="primary">Filter<CustomPopupState message={i18next.t("field_ldap_structure_contains_username", "This is the field in your LDAP structure which contains the username.")}/></Typography>
                 <Select
                     labelId="filter-ldap-select"
                     fullWidth

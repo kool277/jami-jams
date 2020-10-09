@@ -42,6 +42,8 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import i18next from "i18next";
+
 const styles = {
   ...headerLinksStyle,
   cardCategoryWhite: {
@@ -256,7 +258,7 @@ export default function Users(props) {
         setOpenDrawer={setOpenDrawer}
         direction="right"
         addingToGroup={false}
-        placeholder="Add contact ..."
+        placeholder={i18next.t("add_contact", "Add contact ...")}
       />
       <Dialog
         open={open}
@@ -264,20 +266,20 @@ export default function Users(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Remove contact"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{i18next.t("remove_contact", "Remove contact")}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to remove{" "}
-            <strong>{removedContactName}</strong> from {props.username} contacts{" "}
+          {i18next.t("are_you_sure_you_want_to_remove", "Are you sure you want to remove")}
+            <strong>{removedContactName}</strong> {i18next.t("from", "from")} {props.username} {i18next.t("contacts", "contacts")}{" "}
             ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-            Cancel
+          {i18next.t("cancel", "Cancel")}
           </Button>
           <Button onClick={removeContact} color="info" autoFocus>
-            Remove
+            {i18next.t("remove", "Remove")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -291,7 +293,7 @@ export default function Users(props) {
               setOpenDrawer(true);
             }}
           >
-            <AddCircleOutlineIcon /> Add a contact
+            <AddCircleOutlineIcon /> {i18next.t("add_a_contact", "Add a contact")}
           </Button>
           <div className={classes.searchWrapper}>
             <CustomInput
@@ -299,9 +301,9 @@ export default function Users(props) {
                 className: classes.margin + " " + classes.search,
               }}
               inputProps={{
-                placeholder: "Search contacts using (uri, firstname, lastname)",
+                placeholder: i18next.t("search_contacts_using", "Search contacts using (uri, firstname, lastname)"),
                 inputProps: {
-                  "aria-label": "Search contacts",
+                  "aria-label": i18next.t("search_contacts", "Search contacts"),
                 },
                 onKeyUp: (e) => setSearchValue(e.target.value),
               }}
@@ -385,7 +387,7 @@ export default function Users(props) {
               </Card>
             </GridItem>
           ))}
-        {contacts == [] && props.username + " has no contacts"}
+        {contacts == [] && props.username + i18next.t("has_no_contacts", " has no contacts")}
       </GridContainer>
     </div>
   );

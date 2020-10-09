@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import MuiAlert from "@material-ui/lab/Alert";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 
 import logo from "assets/img/logo-jams-blue.svg";
 
@@ -15,6 +16,8 @@ import CreateAdmin from "components/CreateAdmin/CreateAdmin";
 import CaSetup from "components/CaSetup/CaSetup";
 import IdentityManagement from "components/IdentityManagement/IdentityManagement";
 import ServerParameters from "components/ServerParameters/ServerParameters";
+
+import LanguagePicker from "../components/LanguagePicker/LanguagePicker";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -108,6 +111,9 @@ export default function SignUp(props) {
 
         <Box mt={8}>
           <Copyright />
+        </Box>
+        <Box mt={8} justifyContent="center" >
+          <LanguagePicker />
         </Box>
       </Paper>
     </Container>

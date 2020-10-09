@@ -3,6 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 
+import i18next from "i18next";
+
 // ISO 3166-1 alpha-2
 // ⚠️ No support for IE 11
 function countryToFlag(isoCode) {
@@ -51,7 +53,7 @@ export default function CountrySelect(props) {
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Choose a country"
+                    label={i18next.t("choose_a_country", "Choose a country")}
                     name="country"
                     variant="outlined"
                     onBlur={props.handleBlur}

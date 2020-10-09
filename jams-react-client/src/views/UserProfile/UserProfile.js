@@ -18,6 +18,8 @@ import Contacts from "views/Contacts/Contacts";
 import { infoColor } from "assets/jss/material-dashboard-react.js";
 import DisplayUserProfile from "./DisplayUserProfile";
 
+import i18next from "i18next";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -93,9 +95,9 @@ export default function UserProfile(props) {
           onChange={handleChange}
           aria-label="simple tabs example"
         >
-          <Tab label="Profile" {...a11yProps(0)} />
-          <Tab label="Devices" {...a11yProps(1)} />
-          <Tab label="Contacts" {...a11yProps(2)} />
+          <Tab label={i18next.t("profile", "Profile")} {...a11yProps(0)} />
+          <Tab label={i18next.t("devices", "Devices")} {...a11yProps(1)} />
+          <Tab label={i18next.t("contacts", "Contacts")} {...a11yProps(2)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>

@@ -15,6 +15,10 @@ import Container from "@material-ui/core/Container";
 import MuiAlert from "@material-ui/lab/Alert";
 import auth from "../auth.js";
 
+import LanguagePicker from "../components/LanguagePicker/LanguagePicker";
+
+import i18next from "i18next";
+
 import logo from "assets/img/logo-jams-blue.svg";
 import * as Yup from "yup";
 function Alert(props) {
@@ -95,7 +99,9 @@ export default function SignIn(props) {
         });
       } else {
         setError(true);
-        setErrorMessage("Login failed check your credentials");
+        setErrorMessage(
+          i18next.t("login_failed", "Login failed check your credentials")
+        );
       }
     });
   }
@@ -110,7 +116,7 @@ export default function SignIn(props) {
           alt="logo"
         />
         <Typography component="h1" variant="h5">
-          Sign in
+          {i18next.t("sign_in", "Sign In")}
         </Typography>
         {error && <Alert severity="error">{errorMessage}</Alert>}
         <Formik
@@ -137,7 +143,7 @@ export default function SignIn(props) {
                   required
                   fullWidth
                   id="username"
-                  label="Username"
+                  label={i18next.t("username", "Username")}
                   name="username"
                   autoComplete="username"
                   autoFocus
@@ -154,7 +160,7 @@ export default function SignIn(props) {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label={i18next.t("password", "Password")}
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -172,7 +178,7 @@ export default function SignIn(props) {
                   color="primary"
                   className={classes.submit}
                 >
-                  Sign In
+                  {i18next.t("sign_in", "Sign In")}
                 </Button>
               </form>
             );
@@ -181,6 +187,9 @@ export default function SignIn(props) {
       </div>
       <Box mt={8}>
         <Copyright />
+      </Box>
+      <Box mt={8} justifyContent="center">
+        <LanguagePicker />
       </Box>
     </Container>
   );

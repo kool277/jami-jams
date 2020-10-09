@@ -45,6 +45,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { debounce } from "lodash";
 
+import i18next from "i18next";
+
 const styles = {
   ...headerLinksStyle,
   cardCategoryWhite: {
@@ -238,8 +240,7 @@ export default function Blueprints() {
     return (
       <div>
         <h4>
-          You are not allowed to access this section. Please contact your
-          administrator to get administrator privileges.
+        {i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")}
         </h4>
       </div>
     );
@@ -260,7 +261,7 @@ export default function Blueprints() {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Create blueprint"}
+            {i18next.t("create_blueprint", "Create blueprint")}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
@@ -270,11 +271,11 @@ export default function Blueprints() {
                   error={blueprintNameExits}
                 >
                   <InputLabel htmlFor="blueprintName">
-                    Blueprint name
+                  {i18next.t("blueprint_name", "Blueprint name")}
                   </InputLabel>
                   <Input
                     id="blueprintName"
-                    placeholder="Blueprint Name"
+                    placeholder={i18next.t("blueprint_name", "Blueprint name")}
                     startAdornment={
                       <InputAdornment position="start">
                         <AllInbox />
@@ -287,10 +288,10 @@ export default function Blueprints() {
                   />
                 </FormControl>
                 {disableCreate && blueprintName.length > 0 && (
-                  <p>Bluerpint name already exists!</p>
+                  <p>{i18next.t("blueprint_name_already_exists", "Blueprint name already exists!")}</p>
                 )}
                 {disableCreate && blueprintName.length == 0 && (
-                  <p>Bluerpint name is empty</p>
+                  <p>{i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}</p>
                 )}
               </DialogContentText>
             </DialogContent>
@@ -315,11 +316,11 @@ export default function Blueprints() {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Remove blueprint"}
+            {i18next.t("remove_blueprint", "Remove blueprint")}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete{" "}
+              {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")}{" "}
                 <strong>{removedBlueprint}</strong> ?
               </DialogContentText>
             </DialogContent>
@@ -328,10 +329,10 @@ export default function Blueprints() {
                 onClick={() => setOpenRemoveDialog(false)}
                 color="primary"
               >
-                Cancel
+                {i18next.t("cancel", "Cancel")}
               </Button>
               <Button onClick={removeBlueprint} color="info" autoFocus>
-                Remove
+              {i18next.t("remove", "Remove")}
               </Button>
             </DialogActions>
           </Dialog>
@@ -343,7 +344,7 @@ export default function Blueprints() {
                 href="#contained-buttons"
                 onClick={(e) => setOpen(true)}
               >
-                <AddCircleOutlineIcon /> Create blueprint
+                <AddCircleOutlineIcon /> {i18next.t("create_blueprint", "Create blueprint")}
               </Button>
               <div className={classes.searchWrapper}>
                 {!zeroBlueprint && (
@@ -352,9 +353,9 @@ export default function Blueprints() {
                       className: classes.margin + " " + classes.search,
                     }}
                     inputProps={{
-                      placeholder: "Search blueprints ...",
+                      placeholder: i18next.t("search_blueprints_placeholder", "Search blueprints ..."),
                       inputProps: {
-                        "aria-label": "Search blueprints",
+                        "aria-label": i18next.t("search_blueprints", "Search blueprints"),
                       },
                       onKeyUp: (e) => setSearchValue(e.target.value),
                     }}
@@ -371,7 +372,7 @@ export default function Blueprints() {
             {zeroBlueprint ? (
               <div className={classes.blueprintsNotFound}>
                 <InfoIcon />
-                <p style={{ marginLeft: "10px" }}>No blueprints found</p>
+                  <p style={{ marginLeft: "10px" }}>{i18next.t("no_blueprints_found", "No blueprints found.")}</p>
               </div>
             ) : (
               blueprints.map((blueprint) => (
@@ -385,10 +386,10 @@ export default function Blueprints() {
                         <h3 className={classes.cardTitle}>
                           {blueprint.name
                             ? blueprint.name
-                            : "No blueprint name"}
+                            : i18next.t("no_blueprint_name", "No blueprint name")}
                         </h3>
                         <strong>Description:</strong>
-                        <p>{"No description"}</p>
+                        <p>{i18next.t("no_description", "No description")}</p>
                         <ul>
                           <li>
                             <GroupIcon
@@ -397,7 +398,7 @@ export default function Blueprints() {
                             />{" "}
                             {blueprint.usersCount
                               ? blueprint.usersCount + " user(s)"
-                              : "No users count"}
+                              : i18next.t("no_users_count", "No users count")}
                           </li>
                         </ul>
                       </a>

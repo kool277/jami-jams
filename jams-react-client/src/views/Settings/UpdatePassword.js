@@ -23,6 +23,8 @@ import { api_path_put_update_user } from "../../globalUrls";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
+import i18next from "i18next";
+
 let generator = require("generate-password");
 
 const useStyles = makeStyles((theme) => ({
@@ -65,15 +67,15 @@ export default function UpdatePassword(props) {
     axios(configApiCall(api_path_put_update_user, "PUT", data, null))
       .then(() => {
         props.setSeverity("success");
-        props.setErrorMessage("Admin password updated successfully!");
+        props.setErrorMessage(i18next.t("admin_password_updated_successfully", "Admin password updated successfully!"));
         props.setError(true);
       })
       .catch((error) => {
         props.setSeverity("error");
         props.setErrorMessage(
-          "Updating user " +
+          i18next.t("updating_user", "Updating user ") +
             props.username +
-            " password failed with error: " +
+            i18next.t("password_failed", " password failed with error: ") +
             error
         );
         props.setError(true);
@@ -94,10 +96,10 @@ export default function UpdatePassword(props) {
    */
 
   const passwordSchema = Yup.object().shape({
-    password: Yup.string().required("Password is required"),
+    password: Yup.string().required(i18next.t("password_is_required", "Password is required")),
     passwordConfirmation: Yup.string().oneOf(
       [Yup.ref("password"), null],
-      "Passwords must match"
+      i18next.t("password_must_match", "Passwords must match")
     ),
   });
 
@@ -128,14 +130,14 @@ export default function UpdatePassword(props) {
       }) => (
         <form onSubmit={handleSubmit} className={classes.form}>
           <Typography variant="h5" gutterBottom color="primary">
-            Enter the following information below to change your admin password.
+          {i18next.t("enter_the_following_information_below_to_change_your_admin_password", "Enter the following information below to change your admin password.")}
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={6}>
               <FormikField
                 name="password"
-                label="Password"
-                placeholder="Password"
+                label={i18next.t("password", "Password")}
+                placeholder={i18next.t("password", "Password")}
                 type={passwordVisible ? "text" : "password"}
                 startAdornment={
                   <InputAdornment position="start">
@@ -164,8 +166,8 @@ export default function UpdatePassword(props) {
             <Grid item xs={6}>
               <FormikField
                 name="confirmPassword"
-                label="Confirm password"
-                placeholder="Confirm password"
+                label={i18next.t("Confirm password", "Confirm password")}
+                placeholder={i18next.t("Confirm password", "Confirm password")}
                 type={passwordVisible ? "text" : "password"}
                 startAdornment={
                   <InputAdornment position="start">
@@ -206,7 +208,7 @@ export default function UpdatePassword(props) {
                   setGenerated(true);
                 }}
               >
-                {"Generate"}
+                {i18next.t("generate", "Generate")}
               </Button>
               <CopyToClipboard
                 text={values.password}
@@ -222,14 +224,14 @@ export default function UpdatePassword(props) {
                   className={classes.button}
                   startIcon={<FileCopyIcon />}
                 >
-                  Copy to clipboard
+                  {i18next.t("copy_to_clipboard", "Copy to clipboard")}
                 </Button>
               </CopyToClipboard>
               {copied ? (
-                <span style={{ marginLeft: "10px" }}>Copied</span>
+                <span style={{ marginLeft: "10px" }}>{i18next.t("copied", "Copied")}</span>
               ) : null}
               {generated ? (
-                <span style={{ marginLeft: "10px" }}>Generated</span>
+                <span style={{ marginLeft: "10px" }}>{i18next.t("generated", "Generated")}</span>
               ) : null}
             </Grid>
           </Grid>
@@ -242,7 +244,7 @@ export default function UpdatePassword(props) {
             disable={!isValid && !dirty}
             className={classes.submit}
           >
-            Change Admin Password
+            {i18next.t("change_admin_password", "Change administrator password")}
           </Button>
         </form>
       )}

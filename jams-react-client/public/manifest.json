@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "JAMS",
+  "name": "Jami Account Management Server",
   "icons": [
     {
       "src": "favicon.ico",

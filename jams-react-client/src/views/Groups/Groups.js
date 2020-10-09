@@ -53,6 +53,8 @@ import { debounce } from "lodash";
 
 import LinearProgress from "@material-ui/core/LinearProgress";
 
+import i18next from "i18next";
+
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -291,8 +293,7 @@ export default function Groups() {
     return (
       <div>
         <h4>
-          You are not allowed to access this section. Please contact your
-          administrator to get administrator privileges.
+          {i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")}
         </h4>
       </div>
     );
@@ -320,7 +321,7 @@ export default function Groups() {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Create group"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{i18next.t("create_group", "Create group")}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <Grid container spacing={2}>
@@ -330,10 +331,10 @@ export default function Groups() {
                     error={groupNameExits}
                     fullWidth
                   >
-                    <InputLabel htmlFor="groupName">Group name</InputLabel>
+                    <InputLabel htmlFor="groupName">{i18next.t("group_name", "Group name")}</InputLabel>
                     <Input
                       id="groupName"
-                      placeholder="Group Name"
+                      placeholder={i18next.t("group_name", "Group name")}
                       startAdornment={
                         <InputAdornment position="start">
                           <PeopleOutlineIcon />
@@ -346,10 +347,10 @@ export default function Groups() {
                     />
                   </FormControl>
                   {disableCreate && groupName.length > 0 && (
-                    <p>Group name already exists!</p>
+                    <p>{i18next.t("group_name_already_exists", "Group name already exists!")}</p>
                   )}
                   {disableCreate && groupName.length == 0 && (
-                    <p>Group name is empty</p>
+                    <p>{i18next.t("group_name_is_empty", "Group name is empty")}</p>
                   )}
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>
@@ -386,18 +387,18 @@ export default function Groups() {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Remove group"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{i18next.t("remove_group", "Remove group")}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete <strong>{removedGroup}</strong> ?
+            {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")} <strong>{removedGroup}</strong> ?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
-              Cancel
+              {i18next.t("cancel", "Cancel")}
             </Button>
             <Button onClick={removeGroup} color="info" autoFocus>
-              Remove
+              {i18next.t("remove", "Remove")}
             </Button>
           </DialogActions>
         </Dialog>
@@ -410,7 +411,7 @@ export default function Groups() {
                 href="#contained-buttons"
                 onClick={(e) => setOpenCreate(true)}
               >
-                <AddCircleOutlineIcon /> Create group
+                <AddCircleOutlineIcon /> {i18next.t("create_group", "Create group")}
               </Button>
             }
             <div className={classes.searchWrapper}>
@@ -420,9 +421,9 @@ export default function Groups() {
                     className: classes.margin + " " + classes.search,
                   }}
                   inputProps={{
-                    placeholder: "Search groups ...",
+                    placeholder: i18next.t("search_groups_placeholder", "Search groups ..."),
                     inputProps: {
-                      "aria-label": "Search groups",
+                      "aria-label": i18next.t("search_groups", "Search groups"),
                     },
                     onKeyUp: (e) => setSearchValue(e.target.value),
                   }}
@@ -438,7 +439,7 @@ export default function Groups() {
           </GridItem>
           {zeroGroup ? (
             <div className={classes.groupsNotFound}>
-              <InfoIcon /> <p style={{ marginLeft: "10px" }}>No groups Found</p>
+              <InfoIcon /> <p style={{ marginLeft: "10px" }}>{i18next.t("no_groups_found", "No groups Found")}</p>
             </div>
           ) : groups.length >= 1 ? (
             groups
@@ -469,7 +470,7 @@ export default function Groups() {
                             <strong style={{ marginRight: "5px" }}>
                               {group.groupMembers.length}
                             </strong>
-                            users
+                            {i18next.t("users", "users")}
                           </li>
                           <li>
                             <MailOutlineIcon
@@ -477,7 +478,7 @@ export default function Groups() {
                               style={{ marginRight: "10px" }}
                             />
                             <strong style={{ marginRight: "5px" }}>
-                              Blueprint
+                              {i18next.t("blueprint", "Blueprint")}
                             </strong>
                             {group.blueprint}
                           </li>
@@ -514,7 +515,7 @@ export default function Groups() {
                             ? groups.groupMembers
                             : 0}
                         </strong>
-                        users
+                        {i18next.t("users", "users")}
                       </li>
                       <li>
                         <MailOutlineIcon
@@ -522,7 +523,7 @@ export default function Groups() {
                           style={{ marginRight: "10px" }}
                         />
                         <strong style={{ marginRight: "5px" }}>
-                          Blueprint
+                          {i18next.t("blueprint", "Blueprint")}
                         </strong>
                         {selectedBlueprint.label}
                       </li>

@@ -11,7 +11,17 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import Snackbar from "@material-ui/core/Snackbar";
 
-import routes from "routes.js";
+// @material-ui/icons
+import Person from "@material-ui/icons/Person";
+import Group from "@material-ui/icons/Group";
+import AllInbox from "@material-ui/icons/AllInbox";
+import SettingsIcon from "@material-ui/icons/Settings";
+// core components/views for Admin layout
+import Users from "views/Users/Users.js";
+import Groups from "views/Groups/Groups.js";
+import Blueprints from "views/Blueprints/Blueprints.js";
+import Settings from "views/Settings/Settings.js";
+// core components/views for RTL layout
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
@@ -40,29 +50,9 @@ import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
 import Button from "@material-ui/core/Button";
 
-let ps;
+import i18next from "i18next";
 
-const switchRoutes = (
-  <Switch>
-    {routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      }
-      return null;
-    })}
-    <Redirect from="/users" to="/admin/users" />
-    <Redirect from="/admin/u" to="/admin/users" />
-    <Redirect from="/admin/g" to="/admin/groups" />
-    <Redirect from="/admin/b" to="/admin/blueprints" />
-    <Redirect from="/admin/s" to="/admin/settings" />
-  </Switch>
-);
+let ps;
 
 const useStyles = makeStyles(styles);
 
@@ -89,6 +79,63 @@ export default function Admin({ ...rest }) {
   const [updating, setUpdating] = React.useState(false);
   const [query, setQuery] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState("");
+
+  const routes = [
+    {
+      path: "/users",
+      name: i18next.t("users", "Users"),
+      rtlName: "المستخدمون",
+      icon: Person,
+      component: Users,
+      layout: "/admin",
+    },
+    {
+      path: "/groups",
+      name: i18next.t("groups", "Groups"),
+      rtlName: "مجموعات",
+      icon: Group,
+      component: Groups,
+      layout: "/admin",
+    },
+    {
+      path: "/blueprints",
+      name: i18next.t("blueprints", "Blueprints"),
+      rtlName: "المخططات",
+      icon: AllInbox,
+      component: Blueprints,
+      layout: "/admin",
+    },
+    {
+      path: "/settings",
+      name: i18next.t("settings", "Settings"),
+      rtlName: "حضانة بيض",
+      icon: SettingsIcon,
+      component: Settings,
+      layout: "/admin",
+    },
+  ];
+
+  const switchRoutes = (
+    <Switch>
+      {routes.map((prop, key) => {
+        if (prop.layout === "/admin") {
+          return (
+            <Route
+              path={prop.layout + prop.path}
+              component={prop.component}
+              key={key}
+            />
+          );
+        }
+        return null;
+      })}
+      <Redirect from="/users" to="/admin/users" />
+      <Redirect from="/admin/u" to="/admin/users" />
+      <Redirect from="/admin/g" to="/admin/groups" />
+      <Redirect from="/admin/b" to="/admin/blueprints" />
+      <Redirect from="/admin/s" to="/admin/settings" />
+    </Switch>
+  );
 
   const handleImageClick = (image) => {
     setImage(image);
@@ -118,22 +165,24 @@ export default function Admin({ ...rest }) {
   const handleQuery = () => {
     setQuery(true);
     if (auth.hasAdminScope()) {
-        if (auth.isActivated()) {
-            setDialogMessage(
-                "A new version of JAMS is available. Would you like to update now?"
-            );
-            setMessageYes("Update Now");
-            setMessageNo("Update Later");
-        } else {
-            setDialogMessage(
-                "You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?"
-            );
-            setMessageYes("Yes, go to Jami Store");
-            setMessageNo("No thanks");
-        }
-    } else
-        setDialogMessage("You are not allowed to access this section. Please contact your administrator to get administrator privileges.");
-
+      if (auth.isActivated()) {
+        setDialogMessage(
+          i18next.t("new_version_jams_available", "A new version of JAMS is available. Would you like to update now?")
+        );
+        setMessageYes("Update Now");
+        setMessageNo("Update Later");
+      } else {
+        setDialogMessage(
+          i18next.t("running_community_version_jams", "You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?")
+        );
+        setMessageYes("Yes, go to Jami Store");
+        setMessageNo("No thanks");
+      }
+    } else {
+      setDialogMessage(
+        i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")
+      );
+    }
   };
 
   // initialize and destroy the PerfectScrollbar plugin
@@ -142,7 +191,7 @@ export default function Admin({ ...rest }) {
       auth.getUpdates(() => {
         if (auth.isUpdateAvailable()) {
           setOpen(true);
-          setMessage("An update is available for JAMS.");
+          setMessage(i18next.t("an_update_is_available_for_jams", "An update is available for JAMS."));
         }
       });
     });
@@ -171,14 +220,14 @@ export default function Admin({ ...rest }) {
   const handleUpdate = () => {
     setQuery(false);
     if (auth.isActivated()) {
-      setSnackbarMessage("Updating JAMS, shutting down shortly...");
+      setSnackbarMessage(i18next.t("updating_jams_shutting_down_shortly", "Updating JAMS, shutting down shortly..."));
       axios(configApiCall(api_path_get_start_update, "POST", null, null))
         .then(() => {
           handleCancel();
           setUpdating(true);
         })
         .catch((error) => {
-          setSnackbarMessage("Error while attempting to update JAMS: " + error);
+          setSnackbarMessage(i18next.t("error_while_attempting_update_jams", "Error while attempting to update JAMS: ") + error);
         });
     }
   };
