@@ -2,9 +2,9 @@
 
 JAMS is a server application used to enroll Jami clients into an enterprise context. Currently, JAMS supports 3 sources for user authentication: LDAP, Active Directory and an embedded database.
 
-## Obtaining Jams
+## Obtaining JAMS
 
-The current alpha build of JAMS can be downloaded at: ``https://``
+The latest Beta build of JAMS can be downloaded at: ``https://git.jami.net/savoirfairelinux/jami-jams``
 
 ## System Requirements
 
@@ -13,17 +13,17 @@ The current alpha build of JAMS can be downloaded at: ``https://``
 * 4 GB RAM
 * 1 CPU 
 
-## Jams Concepts
+## JAMS Concepts
 
-Jams was built with security in mind, therefore it is intimately related to the X509 certificate management workflows. 
+JAMS was built with security in mind, therefore it is intimately related to the X509 certificate management workflows. 
 
 The central concepts which are used in JAMS are the Certification Authority (CA) and the Certificate Signing Requests (CSR).
 
-In the Jams paradigm, a device (Jami client) basically requests the server to issue a certificate to it in order to present it to other devices which lets them recognize the device as a valid member of the organization, therefore Jams MUST be provided with a certificate authority in order to function correctly. Please note that a CA is NOT a standard SSL server certificate, as they do not have the permission to issue certificates.
+In the JAMS paradigm, a device (Jami client) requests a certificate to the server then presents it to other devices to be recognized as a valid member of the organization. Therefore, JAMS must be provided with a certificate authority in order to work properly.
 
-In order to be completely secure, Jams does not generate certificates for devices, but instead issues certificates based on a certificate signing request sent to it by the device, therefore removing the need to send a private key over the wire.
+In order to be completely secure, JAMS does not generate certificates for devices, but instead issues certificates based on a certificate signing request sent to it by the device, therefore removing the need to send a private key over the wire.
 
-The diagram below shows the entire process of how a device enrolls with Jams:
+The diagram below shows the entire process of how a device enrolls with JAMS:
 
 <p align="center">
     <img src="img/device_enroll.png" alt="Device Enrollement"  style="height:250px;width:400px" />
@@ -32,32 +32,57 @@ The diagram below shows the entire process of how a device enrolls with Jams:
 ​    
 ## Getting Started
 
-Download the latest version from: <https://dl.jami.net/jams/jams-alpha.zip>
+Download the latest version from: <https://jami.net/services/>
 
-Unpack the ZIP file to a directory of your choice.
+Unpack the .tar file to a directory of your choice.
 
-To run the server, navigate to the directory where you have extracted the Jams package and execute ``java -jar jams-launcher.jar``
+To run the server, navigate to the directory where you have extracted the JAMS package and execute:
 
-## Step 1: Create your admin account
+ ``java -jar jams-launcher.jar``
 
-This account will be used for administrative purposes, it is used to browse the user database, removing devices and performing other basic administrative tasks.
+To run Jams with SSL, you need to overload the command-line arguments when starting the server.
+
+```java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY```
+
+| Argument         | Details       |
+| ------------- |-------------  |
+| **PORT**      | The TCP port on which you want Jams to listen for incoming connections |
+| **SSL_CERTIFICATE**     | The location of the PEM-formatted SSL Certificate file   |
+| **SSL_CERTIFICATE_KEY** | The location of the PEM-formatted key file which is used with the SSL Certificate file from above    |
+
+
+An example of the command would be: 
+
+``java -jar jams-launcher 8443 server.pem server.key``
+
+
+In order to generate a pair of pem and key use the following command using openssl:
+
+``openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem``
+
+**Current limitation:** JAMS does not support reading encrypted private keys which require a password unlock.
+
+
+## Step 1: create your admininistrator account
+
+This account will have administrative control and the rights to manage your users and group of Jami users.
 
 <p align="center">
-    <img src="img/step1.png" alt="Create an admin account" style="height:400px;width:600px" />
+    <img src="img/step1.png" alt="Create an admin account" style="height:347px;width:381px" />
 </p>
 
 
-## Step 2: Setup the Certification Authority
+## Step 2: setup the Certification Authority
 
 The second step is to define your Certification Authority. 
 
-<span style="color:red"> **A CA IS NOT A SERVER-SIDE SSL CERTIFICATE, IT IS A CERTIFICATE WHICH HAS THE POWER TO ISSUE OTHER CERTIFICATES. DO NOT USE THE IMPORT OPTION UNLESS
-	YOUR COMPANY'S SECURITY OFFICER HAS ISSUED YOU A CA CERTIFICATE. MOST COMMERICALLY AVAILABLE CERTIFICATES (I.E. THOSE ISSUED BY GODADDY, LETSENCRYPT, ETC... ) ARE NOT CA 
-	CERTIFICATES. IF YOU ARE AN END-USER WE HIGHLY RECOMMEND YOU USE THE CREATE A SELF-SIGNED CA OPTION AS PROVIDING AN INCORRECT CERTIFICATE TYPE WILL LEAD TO A NON-FUNCTIONAL SERVER!!!** </span>
+**Important:** a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by godaddy, letsencrypt, etc... ) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.
 
 <p align="center">
-    <img src="img/step2.png" alt="Create an admin account" style="height:400px;width:600px" />
+    <img src="img/step2-1.png" alt="Create an admin account" style="height:470px;width:265px" />
+    <img src="img/step2-2.png" alt="Create an admin account" style="height:309px;width:247px" />
 </p>
+
 
 This certificate will be used to sign the enrollement requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
 articles to get familiar with the processes and practices which surround it:
@@ -65,45 +90,45 @@ articles to get familiar with the processes and practices which surround it:
 <https://www.securew2.com/blog/public-key-infrastructure-explained/>
 <https://cheapsslsecurity.com/blog/understanding-the-role-of-certificate-authorities-in-pki/> 
 
-## Step 3: Setup the user database
+## Step 3: setup the user database
 
-Currently, Jams supports 3 sources of authentication of users:
+JAMS supports 3 different sources for the authentication of users:
 
 1) LDAP-compatible directory (such as OpenLDAP)
 2) Microsoft Active Directory
 3) Local embedded database
 
-<p align="center">
-    <img src="img/step3.png" width="300" height="200" style="height:400px;width:600px" />
-</p>
+<br/>
 
-### LDAP Authentication source
+### Option 1: LDAP authentication
 
 If your company provides you with LDAP directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.
 
 <p align="center">
-    <img src="img/ldap.png" style="height:400px;width:600px" />
+    <img src="img/ldap.png" style="height:478px;width:250px" />
 </p>
 
 Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:
 
+
 | Field         | Details       |
 | ------------- |-------------  |
 | **Use StartTLS**      | Your LDAP server can be configured to use either TLS/STARTTLS or PLAIN sockets, if STARTTLS is used you should mark this as true |
-| **Server Address**     | The address of your server with respect to the JAMS server, your LDAP does not need to be publicly accessible but should be accessible to Jams. You should have either ``ldap://`` or ``ldaps://`` preceding the address.      |
+| **Server Address**     | The address of your server with respect to the JAMS server, your LDAP does not need to be publicly accessible but should be accessible to JAMS. You should have either ``ldap://`` or ``ldaps://`` preceding the address.      |
 | **Port** | The port on which the LDAP server is listening for requests (usually 389 for PLAIN/STARTTLS and 636 for SSL/TLS)      |
 | **Administrator Username** | This is **NOT** the LDAP's administration account credentials, but the credentials of the account which has Read permissions to the LDAP database in order to lookup users. The format is generally ``cn=bot,ou=robots,dc=domain,dc=org``     |
 | **Password** | The password used by the account above.     |
 | **BaseDN** | The base realm where the users accounts are located, in most cases it is ``ou=users,dc=company,dc=org``     |
 
+<br/>
 
-### Microsoft Active Directory
+### Option 2: Microsoft Active Directory
 
-If your company provides you with Active Directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.
+If your company provides you with Active Directory for user management, you will need to know its access information and an automated account which has read-only rights to do use look-ups.
 
 
 <p align="center">
-    <img src="img/ad.png"style="height:400px;width:600px" />
+    <img src="img/ad.png"style="height:439px;width:240px" />
 </p>
 
 Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:
@@ -111,26 +136,30 @@ Your admin should provide you most of this information but we do provide a detai
 | Field         | Details       |
 | ------------- |-------------  |
 | **Port**      | The port on which Active Directory is listening (generally it is either 389 or 636) |
-| **Host**     | The address of your server with respect to the JAMS server, your Active Directory does not need to be publicly accessible but should be accessible to Jams. |
+| **Host**     | The address of your server with respect to the JAMS server, your Active Directory does not need to be publicly accessible but should be accessible to JAMS. |
 | **Administrator Username** | This is **NOT** the Active Directory's administration account credentials, but the credentials of the account which has Read permissions to the Active Directory database in order to lookup users. The format is generally ``cn=bot,ou=robots,dc=domain,dc=net``     |
 | **Password** | The password used by the account above.     |
 | **Use SSL** | Whenever this server uses SSL for data transmission    |
 | **Domain Name** | This is the legacy-formatted Windows Domain Name (i.e. ``WINDOMAIN``)     |
 
+<br/>
 
-### Local Embedded Database
+### Option 3: local embedded database
 
-The local database does not require any additional configuration, everything in the process is automated.
+The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from JAMS interface.
 
 <p align="center">
-    <img src="img/local.png" style="height:400px;width:600px" />
+    <img src="img/local.png" style="height:307px;width:244px" />
 </p>
 
+**Advanced settings:** by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.
 
-## Step 4: Server Parameters
+If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option,
+
+## Step 4: setup the server parameters
 
 <p align="center">
-    <img src="img/step4.png" style="height:400px;width:600px" />
+    <img src="img/step4.png" style="height:452px;width:239px" />
 </p>
 
 | Parameter         | Details       |
@@ -141,23 +170,15 @@ The local database does not require any additional configuration, everything in 
 | **User Account Lifetime** | How long a user account is valid before being considered stale and requiring re-enrollement  |
 
 
-<span style="color:red"> IMPORTANT NOTICE REGARDING THE FIELD **CORS Domain Name** </span> Many users have trouble with this part of the installation, to make it explicitly clear, this is web address used to access the Web UI. For example, if you expect users to access the Web UI by visiting the URL ``http://jams.mycompany.com`` then you should set the **CORS Domain Name** field to ``http://jams.mycompany.com``.
+**Important** The *CORS Domain Name* corresponds to the web address used to access the Web UI. By default, it is set to the same URL as the one where you deploy JAMS. Only set a different URL if the Web UI has a different URL to the one where JAMS is deployed.
 
-## Troubleshooting and resetting
+<br/>
 
-If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the Jams directory:
+Click on "Set Server Parameters" to finalize the configuration.
+You will be redirected to the JAMS interface.
 
-```
-jams.tmp/
-jams.script
-jams.properties
-tomcat.8080/
-config.json
-keystore.jks
-jams.log
-tmpjar/
-jams.lck
-```
+<p align="center">
+    <img src="img/jams-dashboard.png" style="height:233px;width:457px" />
+</p>
 
-This will reset the server to its original state and you will be able to run the configuration wizard again. Please make sure to shutdown the server before
-doing performing this operation.
+If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization shoud be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User"

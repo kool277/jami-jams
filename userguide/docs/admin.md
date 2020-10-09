@@ -1,3 +1,17 @@
+## Troubleshooting and resetting
+
+If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your project root folder>/jams):
+
+```
+The internal jams folder: <your project root folder>/jams/jams
+derby.log
+oauth.key
+oauth.pub
+config.json
+```
+
+This will reset the server to its original state and you will be able to run the configuration wizard again. Before performing this operation, please make sure to shutdown the server.
+
 # Admin Guide
 
 By default Jams runs an embedded tomcat server visible on port 8080, however this is not practical for many reasons. This guide is designed
