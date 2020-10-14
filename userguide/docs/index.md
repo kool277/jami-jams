@@ -1,6 +1,6 @@
 # Getting Started
 
-JAMS is a server application used to enroll Jami clients into an enterprise context. Currently, JAMS supports 3 sources for user authentication: LDAP, Active Directory and an embedded database.
+JAMS is a server application used to enroll Jami clients into an Enterprise context. Currently, JAMS supports 3 sources for user authentication: LDAP, Active Directory and an embedded database.
 
 ## Obtaining JAMS
 
@@ -32,35 +32,30 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 ​    
 ## Getting Started
 
-Download the latest version from: <https://jami.net/services/>
+1. Download the latest version of JAMS from: <https://jami.net/services/>
 
-Unpack the .tar file to a directory of your choice.
+2. Unpack the .tar file to a directory of your choice.
 
-To run the server, navigate to the directory where you have extracted the JAMS package and execute:
+3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:
 
- ``java -jar jams-launcher.jar``
+``openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem``
 
-To run Jams with SSL, you need to overload the command-line arguments when starting the server.
+**Current limitation:** JAMS does not support reading encrypted private keys which require a password unlock.
+
+4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:
 
 ```java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY```
 
 | Argument         | Details       |
 | ------------- |-------------  |
-| **PORT**      | The TCP port on which you want Jams to listen for incoming connections |
+| **PORT**      | The TCP port on which you want JAMS to listen for incoming connections |
 | **SSL_CERTIFICATE**     | The location of the PEM-formatted SSL Certificate file   |
 | **SSL_CERTIFICATE_KEY** | The location of the PEM-formatted key file which is used with the SSL Certificate file from above    |
 
-
+<br/>
 An example of the command would be: 
 
-``java -jar jams-launcher 8443 server.pem server.key``
-
-
-In order to generate a pair of pem and key use the following command using openssl:
-
-``openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem``
-
-**Current limitation:** JAMS does not support reading encrypted private keys which require a password unlock.
+``java -jar jams-launcher 443 server.pem server.key``
 
 
 ## Step 1: create your admininistrator account
@@ -94,9 +89,9 @@ articles to get familiar with the processes and practices which surround it:
 
 JAMS supports 3 different sources for the authentication of users:
 
-1) LDAP-compatible directory (such as OpenLDAP)
-2) Microsoft Active Directory
-3) Local embedded database
+* LDAP-compatible directory (such as OpenLDAP)
+* Microsoft Active Directory
+* Local embedded database
 
 <br/>
 
@@ -146,7 +141,7 @@ Your admin should provide you most of this information but we do provide a detai
 
 ### Option 3: local embedded database
 
-The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from JAMS interface.
+The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from the JAMS interface.
 
 <p align="center">
     <img src="img/local.png" style="height:307px;width:244px" />
