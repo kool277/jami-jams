@@ -519,11 +519,8 @@ export default function EditCreateUserProfile(props) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="info">
-            {i18next.t("cancel", "Cancel")}
-          </Button>
-          <Button onClick={cropProfilePicture} color="success" autoFocus>
-            {i18next.t("crop", "Crop")}
+          <Button onClick={cropProfilePicture} color="info" autoFocus>
+            {i18next.t("validate", "Validate")}
           </Button>
         </DialogActions>
       </Dialog>

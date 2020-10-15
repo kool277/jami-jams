@@ -210,7 +210,6 @@
     "crop_image": "Couper l'image",
     "zoom": "Zoom",
     "rotation": "Rotation",
-    "crop": "Couper",
     "create_new_profile": "Créer un nouveau profil",
     "change_profile_image": "Modifier l'image du profil ",
     "username_already_taken": "Ce nom d'utilisateur est déjà utilisé",
@@ -229,5 +228,6 @@
     "advanced_settings": "Configurations avancées",
     "create_administrator": "Créer un Administrateur",
     "paste_your_jams_enterprise_subscription_code_received_from_jami": "Coller votre code de souscription JAMS Entreprise émis par la boutique Jami. ",
-    "blueprint_name": "Nom du plan"
+    "blueprint_name": "Nom du plan",
+    "validate": "Validate"
 }
