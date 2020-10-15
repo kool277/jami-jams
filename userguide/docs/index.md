@@ -55,7 +55,9 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 <br/>
 An example of the command would be: 
 
-``java -jar jams-launcher 443 server.pem server.key``
+``java -jar jams-launcher 8080 server.pem server.key``
+
+Please note that any port above 1024 can be safely used to run JAMS.
 
 
 ## Step 1: create your admininistrator account
