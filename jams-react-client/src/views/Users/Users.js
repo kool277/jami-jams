@@ -189,13 +189,13 @@ export default function Users(props) {
   const handleChangePage = (e, page) => {
     searchUsers(searchValue, page);
   };
-  if (!auth.hasAdminScope()) {
+  if (!auth.hasAdminScope() && auth.getUsername() != "") {
     return (
       <div>
         <UserProfile username={auth.getUsername()} />
       </div>
     );
-  } else if (selectedProfile && auth.hasAdminScope()) {
+  } else if (selectedProfile && auth.hasAdminScope() && selectedUsername != "") {
     return (
       <div>
         <UserProfile username={selectedUsername} />

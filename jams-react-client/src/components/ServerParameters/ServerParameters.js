@@ -107,6 +107,7 @@ export default function ServerParameters(props) {
     auth.installed = true;
     auth.authenticated = true;
     auth.admin = true;
+    window.localStorage.setItem('scope', 'true');
     auth.checkDirectoryType(() => {
       history.push("/admin/users");
     });
