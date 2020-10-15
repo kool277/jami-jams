@@ -62,7 +62,6 @@ export default function LanguagePicker() {
             variant="contained"
             color="default"
             fullWidth
-            startIcon={<TranslateIcon />}
             {...bindTrigger(popupState)}
           >
             {languages.map((option) => {

@@ -210,7 +210,6 @@
     "crop_image": "Crop image",
     "zoom": "Zoom",
     "rotation": "Rotation",
-    "crop": "Crop",
     "create_new_profile": "Create new profile",
     "change_profile_image": "Change profile image",
     "username_already_taken": "Username already taken",
@@ -229,5 +228,6 @@
     "advanced_settings": "Advanced settings",
     "create_administrator": "Create Administrator",
     "paste_your_jams_enterprise_subscription_code_received_from_jami": "Paste your JAMS Enterprise subscription code received from the Jami store.",
-    "blueprint_name": "Blueprint name"
+    "blueprint_name": "Blueprint name",
+    "validate": "Validate"
 }
