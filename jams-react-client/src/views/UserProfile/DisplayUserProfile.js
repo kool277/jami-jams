@@ -416,7 +416,7 @@ export default function DisplayUserProfile(props) {
                     <div className={classes.userProfileHeader}>
                       <div>
                         <h3 className={classes.cardTitle}>
-                          {user.username ? user.username : "no username"}
+                          {user.username}
                         </h3>
                         {getUserStatus()}
                       </div>
@@ -434,14 +434,14 @@ export default function DisplayUserProfile(props) {
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <List dense={false}>
-                      {user.firstName && (
+                      {(user.firstName || user.lastName) && (
                         <ListItem>
                           <ListItemAvatar>
                             <Avatar>
                               <PersonIcon />
                             </Avatar>
                           </ListItemAvatar>
-                          <ListItemText primary={user.firstName} />
+                          <ListItemText primary={`${user.firstName} ${user.lastName}`} />
                         </ListItem>
                       )}
                       {user.phoneNumber && (
@@ -479,16 +479,6 @@ export default function DisplayUserProfile(props) {
 
                   <Grid item xs={12} sm={12} md={6}>
                     <List dense={false}>
-                      {user.lastName && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PersonOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.lastName} />
-                        </ListItem>
-                      )}
                       {user.phoneNumberExtension && (
                         <ListItem>
                           <ListItemAvatar>
