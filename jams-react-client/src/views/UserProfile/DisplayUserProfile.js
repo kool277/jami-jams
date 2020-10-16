@@ -167,7 +167,6 @@ export default function DisplayUserProfile(props) {
   const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-  
   const [groups, setGroups] = React.useState([]);
   const [zeroGroup, setZeroGroup] = React.useState(false);
 
@@ -385,13 +384,6 @@ export default function DisplayUserProfile(props) {
 
   
   return (
-  <div>
-      <div className={classes.loading}>
-        {loading && (
-          <LinearProgress variant="determinate" value={progress} />
-        )}
-      </div>
-
     <div>
       <Dialog
         open={open}
@@ -422,8 +414,12 @@ export default function DisplayUserProfile(props) {
         setChangePasswordOpen={setChangePasswordOpen}
         handleClosechangePassword={handleClosechangePassword}
       />
-      {!loading && (
-      <GridContainer>
+      <div className={classes.loading}>
+        {loading && (
+          <LinearProgress variant="determinate" value={progress} />
+        )}
+      </div>
+      {!loading && (<GridContainer>
         <Grid item xs={12} sm={12} md={8}>
           <Card profile>
             <CardBody profile>
@@ -603,7 +599,6 @@ export default function DisplayUserProfile(props) {
         </Grid>
       </GridContainer>
       )}
-    </div>
     </div>
   );
 }

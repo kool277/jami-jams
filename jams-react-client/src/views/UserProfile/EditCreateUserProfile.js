@@ -74,6 +74,8 @@ import FormikField from "components/FormikField/FormikField";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
+import LinearProgress from "@material-ui/core/LinearProgress";
+
 import i18next from "i18next";
 
 let generator = require("generate-password");
@@ -227,8 +229,9 @@ export default function EditCreateUserProfile(props) {
   const [copied, setCopied] = React.useState(false);
   const [generated, setGenerated] = React.useState(true);
   const [userExists, setUserExists] = React.useState(false);
-
   const [userName, setUserName] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
 
   const [profilePicture, setProfilePicture] = React.useState("");
   const [profilePicturePreview, setProfilePicturePreview] = React.useState(
@@ -271,6 +274,16 @@ export default function EditCreateUserProfile(props) {
   };
 
   React.useEffect(() => {
+    setLoading(true);
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
     if (!createUser) {
       setUserName(props.username);
       axios(
@@ -302,11 +315,15 @@ export default function EditCreateUserProfile(props) {
           initialValues.phoneNumber = user.phoneNumber;
           initialValues.phoneNumberExtension = user.phoneNumberExtension;
           initialValues.mobileNumber = user.mobileNumber;
+          setLoading(false);
         })
         .catch((error) => {
           console.log("Error fetching user : " + props.username + " " + error);
         });
     }
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   const resizeFile = (file, outputFormat) =>
@@ -550,7 +567,12 @@ export default function EditCreateUserProfile(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      <GridContainer>
+      <div className={classes.loading}>
+        {loading && (
+          <LinearProgress variant="determinate" value={progress} />
+        )}
+      </div>
+      {!loading && (<GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Formik
             initialValues={initialValues}
@@ -884,6 +906,7 @@ export default function EditCreateUserProfile(props) {
           </Formik>
         </GridItem>
       </GridContainer>
+      )}
     </div>
   );
 }

@@ -137,6 +137,18 @@ const sidebarStyle = theme => ({
     listStyle: "none",
     position: "unset"
   },
+  bottomlist: {
+    marginTop: "20px",
+    paddingLeft: "0",
+    paddingTop: "0",
+    paddingBottom: "0",
+    marginBottom: "0",
+    listStyle: "none",
+    position: "fixed",
+    bottom: "0",
+    left: "0",
+    width: drawerWidth
+  },
   item: {
     position: "relative",
     display: "block",

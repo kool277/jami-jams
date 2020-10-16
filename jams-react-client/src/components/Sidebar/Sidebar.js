@@ -24,8 +24,6 @@ import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.
 import auth from "auth";
 import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
-import LanguagePicker from "../LanguagePicker/LanguagePicker";
-
 import i18next from "i18next";
 
 const useStyles = makeStyles(styles);
@@ -123,6 +121,11 @@ export default function Sidebar(props) {
           </div>
         );
       })}
+    </List>
+  );
+
+  var bottomLinks = (
+    <List className={classes.bottomlist}>
 
       {open && (
         <ListItem
@@ -170,11 +173,9 @@ export default function Sidebar(props) {
           disableTypography={true}
         />
       </ListItem>
-      <ListItem alignItems="center">
-        <LanguagePicker />
-      </ListItem>
     </List>
   );
+
   var brand = (
     <div className={classes.logo}>
       <a
@@ -212,6 +213,7 @@ export default function Sidebar(props) {
           <div className={classes.sidebarWrapper}>
             {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
             {links}
+            {bottomLinks}
           </div>
           {image !== undefined ? (
             <div
@@ -234,6 +236,7 @@ export default function Sidebar(props) {
         >
           {brand}
           <div className={classes.sidebarWrapper}>{links}</div>
+          <div className={classes.sidebarWrapper}>{bottomLinks}</div>
           {image !== undefined ? (
             <div
               className={classes.background}

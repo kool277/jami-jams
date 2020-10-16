@@ -2,9 +2,7 @@ import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import IdentityManagement from "components/IdentityManagement/IdentityManagement.js";
-import ServerParameters from "components/ServerParameters/ServerParameters.js";
-import UpdatePassword from "./UpdatePassword";
+import General from "./General";
 import Subscription from "./Subscription";
 
 import PropTypes from "prop-types";
@@ -107,12 +105,12 @@ export default function Settings(props) {
             onChange={handleChange}
             aria-label="simple tabs example"
           >
-            <Tab label={i18next.t("admin_password", "Admin Password")} {...a11yProps(0)} />
+            <Tab label={i18next.t("general", "General")} {...a11yProps(0)} />
             <Tab label={i18next.t("subscription", "Subscription")} {...a11yProps(1)} />
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <UpdatePassword
+          <General
             username="admin"
             setError={setError}
             setErrorMessage={setErrorMessage}

@@ -189,7 +189,7 @@ export default function SignIn(props) {
         <Copyright />
       </Box>
       <Box mt={8} justifyContent="center">
-        <LanguagePicker />
+        <LanguagePicker navigationTarget={"/"} />
       </Box>
     </Container>
   );

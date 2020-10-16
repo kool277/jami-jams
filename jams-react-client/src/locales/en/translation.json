@@ -170,7 +170,6 @@
     "search_groups": "Search groups",
     "no_groups_found": "No groups Found",
     "blueprint": "Blueprint",
-    "admin_password": "Admin Password",
     "subscription": "Subscription",
     "an_error_occured_while_getting_license_information": "An error occurred while getting subscription information!",
     "subscription_code_is_required": "Subscription code is required",
@@ -229,5 +228,7 @@
     "create_administrator": "Create Administrator",
     "paste_your_jams_enterprise_subscription_code_received_from_jami": "Paste your JAMS Enterprise subscription code received from the Jami store.",
     "blueprint_name": "Blueprint name",
-    "validate": "Validate"
+    "validate": "Validate",
+    "change_language": "Change language",
+    "general": "General"
 }

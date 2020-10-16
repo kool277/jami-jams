@@ -8,6 +8,12 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import GridContainer from "components/Grid/GridContainer.js";
+import Card from "components/Card/Card.js";
+import CardHeader from "components/Card/CardHeader.js";
+import CardIcon from "components/Card/CardIcon.js";
+import CardBody from "components/Card/CardBody.js";
+
 import axios from 'axios';
 import configApiCall from '../../api'
 import { api_path_post_configuration_register_license } from '../../globalUrls'
@@ -90,10 +96,17 @@ export default function Subscription(props) {
 
     if(!activated){
         return (
+            <GridContainer>
+            <Grid item xs={12} sm={12} md={6}>
+            <Card profile>
+            <CardHeader color="info" stats icon></CardHeader>
+            <CardBody profile>
             <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
-                <Typography variant="h5" gutterBottom color="primary">{i18next.t("paste_your_jams_enterprise_subscription_code_received_from_jami", "Paste your JAMS Enterprise subscription code received from the Jami store.")}</Typography>
                 <Grid container spacing={3}>
-                    <Grid item xs={12}>
+                    <Grid item lg={6}>
+                        <Typography variant="p" gutterBottom color="primary">{i18next.t("paste_your_jams_enterprise_subscription_code_received_from_jami", "Paste your JAMS Enterprise subscription code received from the Jami store.")}</Typography>
+                    </Grid>
+                    <Grid item lg={6}>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -107,20 +120,22 @@ export default function Subscription(props) {
                             {...formik.getFieldProps('subscriptionCode')}
                         />
                         {formik.touched.subscriptionCode && formik.errors.subscriptionCode ? (<span>{formik.errors.subscriptionCode}</span>) : null}
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            {i18next.t("register", "Register")}
+                        </Button>
                     </Grid>
-                </Grid>
-    
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    {i18next.t("register", "Register")}
-                </Button>
-    
+                </Grid>    
             </form>
+            </CardBody>
+            </Card>
+            </Grid>
+            </GridContainer>
         );
     }else{
         return(

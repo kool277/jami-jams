@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function LanguagePicker() {
+export default function LanguagePicker(props) {
   const history = useHistory();
   const [language, setLanguage] = React.useState(i18next.language || window.localStorage.i18nextLng || "");
 
@@ -51,7 +51,7 @@ export default function LanguagePicker() {
   const handleChange = (value) => {
     setLanguage(value);
     changeLanguage(value);
-    history.push("/");
+    history.push(props.navigationTarget);
   };
 
   return (

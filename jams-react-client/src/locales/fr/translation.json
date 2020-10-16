@@ -170,7 +170,6 @@
     "search_groups": "Rechercher dans les groupes",
     "no_groups_found": "Aucun groupe trouvé",
     "blueprint": "Gabarit",
-    "admin_password": "Mot de passe administrateur",
     "subscription": "Souscription",
     "an_error_occured_while_getting_license_information": "Une erreur est survenue durant la récupération de l'information de souscription !",
     "subscription_code_is_required": "Veuillez entrer une license.",
@@ -229,5 +228,7 @@
     "create_administrator": "Créer un Administrateur",
     "paste_your_jams_enterprise_subscription_code_received_from_jami": "Coller votre code de souscription JAMS Entreprise émis par la boutique Jami. ",
     "blueprint_name": "Nom du gabarit",
-    "validate": "Valider"
+    "validate": "Valider",
+    "change_language": "Change language",
+    "general": "General"
 }
