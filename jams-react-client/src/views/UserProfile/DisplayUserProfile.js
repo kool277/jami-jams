@@ -6,8 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
@@ -29,18 +27,19 @@ import SmartphoneOutlinedIcon from "@material-ui/icons/SmartphoneOutlined";
 import LocalPrintshopOutlinedIcon from "@material-ui/icons/LocalPrintshopOutlined";
 import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
-import PermIdentityOutlinedIcon from "@material-ui/icons/PermIdentityOutlined";
+
 
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import DoneIcon from "@material-ui/icons/Done";
-import CancelIcon from "@material-ui/icons/Cancel";
 import CardAvatar from "components/Card/CardAvatar";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemText from "@material-ui/core/ListItemText";
+
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import auth from "auth.js";
 import configApiCall from "api.js";
@@ -118,11 +117,16 @@ const styles = (theme) => ({
     minWidth: "80vh",
     maxWidth: "80vh",
   },
-  footerActionButtons: {
-    [theme.breakpoints.down("sm")]: {
-      display: "flex",
-      flexDirection: "column",
+  footerActionButtons:{
+    display: "flex",
+    flexDirection: "row",
+    "& button": {
+      marginRight: "1rem"
     },
+  },
+  footerActionButtonsRight:{
+    display: "flex",
+    justifyContent: "flex-end",
   },
   userProfileHeader: {
     display: "flex",
@@ -142,9 +146,12 @@ const styles = (theme) => ({
     },
   },
   cardAvatarMobile: {
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("sm")]: {
       margin: "-50px 50px 0",
     },
+  },
+  loading: {
+    width: "100%",
   },
 });
 
@@ -158,11 +165,23 @@ export default function DisplayUserProfile(props) {
   const [open, setOpen] = React.useState(false);
   const [revokedUser, setRevokedUser] = React.useState("");
   const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
-
+  const [loading, setLoading] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
+  
   const [groups, setGroups] = React.useState([]);
   const [zeroGroup, setZeroGroup] = React.useState(false);
 
   useEffect(() => {
+    setLoading(true);
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress === 100) {
+          return 0;
+        }
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 500);
     const userData = {
       username: props.username,
     };
@@ -212,6 +231,7 @@ export default function DisplayUserProfile(props) {
                       });
                     }
                     setGroups(allGroups);
+                    setLoading(false);
                   })
                   .catch((error) => {
                     console.log(error);
@@ -252,6 +272,7 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
+                setLoading(false);
               })
               .catch((error) => {
                 console.log(error);
@@ -262,6 +283,9 @@ export default function DisplayUserProfile(props) {
           });
       }
     });
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   const getUserStatus = () => {
@@ -359,7 +383,15 @@ export default function DisplayUserProfile(props) {
       });
   };
 
+  
   return (
+  <div>
+      <div className={classes.loading}>
+        {loading && (
+          <LinearProgress variant="determinate" value={progress} />
+        )}
+      </div>
+
     <div>
       <Dialog
         open={open}
@@ -390,6 +422,7 @@ export default function DisplayUserProfile(props) {
         setChangePasswordOpen={setChangePasswordOpen}
         handleClosechangePassword={handleClosechangePassword}
       />
+      {!loading && (
       <GridContainer>
         <Grid item xs={12} sm={12} md={8}>
           <Card profile>
@@ -419,16 +452,6 @@ export default function DisplayUserProfile(props) {
                           {user.username}
                         </h3>
                         {getUserStatus()}
-                      </div>
-                      <div>
-                        {auth.hasAdminScope() && revoked === false && (
-                          <Button
-                            color="info"
-                            onClick={() => handleClickOpen(user.username)}
-                          >
-                            <DeleteIcon fontSize="small" /> {i18next.t("revoke_user", "Revoke user")}
-                          </Button>
-                        )}
                       </div>
                     </div>
                   </Grid>
@@ -537,29 +560,50 @@ export default function DisplayUserProfile(props) {
                 </Grid>
               </div>
             </CardBody>
-            <CardFooter className={classes.footerActionButtons}>
-              {auth.isLocalDirectory() && (
-                <Button
-                  color="info"
-                  onClick={() => props.setDisplayUser(false)}
-                >
-                  <EditIcon /> {i18next.t("edit_profile", "Edit Profile")}
-                </Button>
-              )}
-              {auth.isLocalDirectory() && auth.hasAdminScope() && (
-                <Button
-                  color="info"
-                  onClick={() => {
-                    setChangePasswordOpen(true);
-                  }}
-                >
-                  <VpnKeyIcon /> {i18next.t("change_password", "Change password")}
-                </Button>
-              )}
+            <CardFooter>
+              <Grid container className={classes.footerActionButtons}>
+                <Grid item >
+                  {auth.isLocalDirectory() && (
+                    <Button
+                      color="info"
+                      onClick={() => props.setDisplayUser(false)}
+                    >
+                      <EditIcon /> {i18next.t("edit_profile", "Edit Profile")}
+                    </Button>
+                  )}
+                  </Grid>
+                  <Grid item >
+                  {auth.isLocalDirectory() && auth.hasAdminScope() && (
+                    <Button
+                      color="info"
+                      onClick={() => {
+                        setChangePasswordOpen(true);
+                      }}
+                    >
+                      <VpnKeyIcon /> {i18next.t("change_password", "Change password")}
+                    </Button>
+                  )}
+                  </Grid>
+              </Grid>
+
+              <Grid container className={classes.footerActionButtonsRight}>
+                <Grid item>
+                {auth.hasAdminScope() && revoked === false && (
+                  <Button
+                    color="info"
+                    onClick={() => handleClickOpen(user.username)}
+                  >
+                    <DeleteIcon fontSize="small" /> {i18next.t("revoke_user", "Revoke user")}
+                  </Button>
+                )}
+                </Grid>
+              </Grid>
             </CardFooter>
           </Card>
         </Grid>
       </GridContainer>
+      )}
+    </div>
     </div>
   );
 }

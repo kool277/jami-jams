@@ -41,8 +41,9 @@ const cardStyle = {
     boxShadow: "none"
   },
   cardProfile: {
-    marginTop: "30px",
-    textAlign: "left"
+    marginTop: "50px",
+    textAlign: "left",
+    height: "calc(100% - 4em)"
   },
   cardChart: {
     "& p": {

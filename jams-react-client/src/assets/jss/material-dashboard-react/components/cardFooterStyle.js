@@ -1,6 +1,6 @@
 import { grayColor } from "assets/jss/material-dashboard-react.js";
 
-const cardFooterStyle = {
+const cardFooterStyle  = theme => ({
   cardFooter: {
     padding: "0",
     paddingTop: "10px",
@@ -10,7 +10,18 @@ const cardFooterStyle = {
     alignItems: "center",
     display: "flex",
     backgroundColor: "transparent",
-    border: "0"
+    border: "0",
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      flexDirection: "column",
+      "& div": {
+        display: "flex",
+        flexDirection: "column",
+        "& button": {
+          width: "100%"
+        },
+      },
+    },
   },
   cardFooterProfile: {
     marginTop: "-15px"
@@ -42,6 +53,6 @@ const cardFooterStyle = {
   cardFooterChart: {
     borderTop: "1px solid " + grayColor[10]
   }
-};
+});
 
 export default cardFooterStyle;

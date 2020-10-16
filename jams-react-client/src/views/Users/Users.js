@@ -71,6 +71,10 @@ const styles = {
     display: "flex",
     alignItems: "center",
   },
+  cardBodyContent: {
+
+    wordWrap: "break-word"
+  }  
 };
 const useStyles = makeStyles(styles);
 export default function Users(props) {
@@ -236,7 +240,7 @@ export default function Users(props) {
                     }}
                     inputProps={{
                       placeholder:
-                      i18next.t("search_users_using", "Search users using (username, name, phone, email, ...)"),
+                      i18next.t("search_users_using", "Search users using (username, first name, last name)"),
                       inputProps: {
                         "aria-label": i18next.t("search_users", "Search users"),
                       },
@@ -285,17 +289,19 @@ export default function Users(props) {
               .map((user) => (
                 <GridItem
                   xs={12}
-                  sm={12}
-                  md={2}
-                  wrap="nowrap"
+                  sm={6}
+                  md={3}
+                  lg={2}
+                  xl={2}
+                  
                   key={user.username}
                 >
                   <Card profile>
-                    <CardBody profile>
                       <a
                         href="#"
                         onClick={(e) => redirectToUserProfile(e, user.username)}
                       >
+                      <CardBody profile>
                         <CardAvatar profile>
                           <img
                             src={
@@ -307,34 +313,43 @@ export default function Users(props) {
                             alt="..."
                           />
                         </CardAvatar>
-                        <h4 className={classes.cardTitle}>
-                          {user.firstName != ""
-                            ? user.firstName
-                            : "No first name"}{" "}
-                          {user.lastName != "" ? user.lastName : "No last name"}
-                        </h4>
-                        <ul>
-                          <li>
-                            <img
-                              src={jami}
-                              width="20"
-                              alt="Jami"
-                              style={{ marginRight: "10px" }}
-                            />{" "}
-                            {user.username}
-                          </li>
-                          <li>
-                            <BusinessOutlinedIcon
-                              fontSize="small"
-                              style={{ marginRight: "10px" }}
-                            />{" "}
-                            {user.organization
-                              ? user.organization
-                              : "No organization"}
-                          </li>
-                        </ul>
+                        
+                        <GridContainer
+                            container
+                            direction="column"
+                            justify="flex-end"
+                            alignItems="flex-start"
+                          >
+                          <GridItem style={{ minHeight:"50px"}}>
+                              <h4 className={classes.cardTitle}>
+                              {`${user.firstName} ${user.lastName}`}
+                            </h4>
+                          </GridItem>
+                          <GridItem>
+                            <ul className={classes.cardBodyContent}>
+                            <li>
+                              <img
+                                src={jami}
+                                width="20px"
+                                alt="Jami"
+                                style={{ minWidth:"20px", marginRight: "10px" }}
+                              />{" "}
+                              {user.username}
+                            </li>
+                            <li>
+                              <BusinessOutlinedIcon
+                                fontSize="small"
+                                style={{ marginRight: "10px" }}
+                              />{" "}
+                              {user.organization
+                                ? user.organization
+                                : "No organization"}
+                            </li>
+                          </ul>
+                          </GridItem>
+                        </GridContainer>
+                        </CardBody>
                       </a>
-                    </CardBody>
                   </Card>
                 </GridItem>
               ))}

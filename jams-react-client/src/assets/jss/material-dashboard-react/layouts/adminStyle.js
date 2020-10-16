@@ -24,6 +24,9 @@ const appStyle = theme => ({
   },
   content: {
     marginTop: "0px",
+    [theme.breakpoints.down("md")]: {
+      marginTop: "30px",
+    },
     padding: "30px 15px",
     minHeight: "calc(100vh - 123px)"
   },

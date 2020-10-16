@@ -139,9 +139,12 @@ const styles = (theme) => ({
   },
   alignRight: {
     float: "right",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       display: "flex",
       flexDirection: "column",
+      "& button": {
+          width: "100%"
+      }
     },
   },
   button: {
@@ -190,6 +193,29 @@ const styles = (theme) => ({
       margin: "0 16px",
     },
   },
+  profileEditHeaderMobile: {
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
+    }
+  },
+  profileEditAvatarMobile: {
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      marginTop: 10
+    }
+  },
+  profileEditAvatarInputMobile: {
+    [theme.breakpoints.down("xs")]: {
+      display: "flex", 
+      flexDirection: "row",
+      justifyContent: "center", 
+      alignItems: "center"
+    }
+  }
 });
 
 const useStyles = makeStyles(styles);
@@ -534,7 +560,7 @@ export default function EditCreateUserProfile(props) {
             {({ isValid, dirty, handleSubmit, setFieldValue, values }) => (
               <form onSubmit={handleSubmit}>
                 <Card profile>
-                  <CardHeader color="info" stats icon>
+                  <CardHeader color="info" stats icon className={classes.profileEditHeaderMobile}>
                     <p className={classes.cardCategory}>
                       {createUser ? i18next.t("create_new_profile", "Create new profile") : i18next.t("edit_profile", "Edit profile")}
                     </p>
@@ -545,7 +571,7 @@ export default function EditCreateUserProfile(props) {
                     )}
                   </CardHeader>
                   <CardBody profile>
-                    <CardAvatar editProfile>
+                    <CardAvatar editProfile className={classes.profileEditAvatarMobile}>
                       <img
                         src={profilePicturePreview}
                         alt="..."
@@ -560,7 +586,7 @@ export default function EditCreateUserProfile(props) {
                     </CardAvatar>
                     <div className={classes.root}>
                       <Grid container spacing={5}>
-                        <Grid item xs={12} sm={12} md={12}>
+                        <Grid item xs={12} sm={12} md={12} className={classes.profileEditAvatarInputMobile} >
                           <input
                             accept="image/*"
                             className={classes.input}
