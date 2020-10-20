@@ -14,7 +14,7 @@ export default function AdStorageForm(props) {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
-        {i18next.t("active_directory_server_informations", "Active directory server informations")}
+        {i18next.t("active_directory_server_informations", "Active Directory server information")}
         </Typography>
       </Grid>
       <Grid item xs={6}>

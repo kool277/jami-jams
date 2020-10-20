@@ -82,7 +82,7 @@ define({ "api": [
     "version": "1.0.0",
     "type": "put",
     "url": "/api/auth/contacts",
-    "title": "Add a contact",
+    "title": "Add contact",
     "name": "putContact",
     "group": "Contacts",
     "parameter": {

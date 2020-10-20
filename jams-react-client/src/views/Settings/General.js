@@ -73,7 +73,7 @@ export default function General(props) {
     axios(configApiCall(api_path_put_update_user, "PUT", data, null))
       .then(() => {
         props.setSeverity("success");
-        props.setErrorMessage(i18next.t("admin_password_updated_successfully", "Admin password updated successfully!"));
+        props.setErrorMessage(i18next.t("admin_password_updated_successfully", "Administrator password successfully updated."));
         props.setError(true);
       })
       .catch((error) => {

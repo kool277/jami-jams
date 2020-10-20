@@ -258,7 +258,7 @@ export default function Users(props) {
         setOpenDrawer={setOpenDrawer}
         direction="right"
         addingToGroup={false}
-        placeholder={i18next.t("add_contact", "Add contact ...")}
+        placeholder={i18next.t("add_contact", "Add contact…")}
       />
       <Dialog
         open={open}
@@ -293,7 +293,7 @@ export default function Users(props) {
               setOpenDrawer(true);
             }}
           >
-            <AddCircleOutlineIcon /> {i18next.t("add_a_contact", "Add a contact")}
+            <AddCircleOutlineIcon /> {i18next.t("add_a_contact", "Add contact")}
           </Button>
           <div className={classes.searchWrapper}>
             <CustomInput
@@ -301,7 +301,7 @@ export default function Users(props) {
                 className: classes.margin + " " + classes.search,
               }}
               inputProps={{
-                placeholder: i18next.t("search_contacts_using", "Search contacts using (uri, firstname, lastname)"),
+                placeholder: i18next.t("search_contacts_using", "Search contact fields (URI, firstname, lastname)"),
                 inputProps: {
                   "aria-label": i18next.t("search_contacts", "Search contacts"),
                 },

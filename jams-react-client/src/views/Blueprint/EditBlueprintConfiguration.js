@@ -314,13 +314,13 @@ export default function EditBlueprintConfiguration(props) {
         setOpen(false);
         setSeverity("success");
         setOpen(true);
-        setMessage(i18next.t("updated_blueprint_configuration_successfully", "Updated blueprint configuration successfully !"));
+        setMessage(i18next.t("updated_blueprint_configuration_successfully", "Blueprint configuration successfully updated."));
       })
       .catch((error) => {
         setOpen(false);
         setSeverity("error");
         setOpen(true);
-        setMessage(i18next.t("error_updating_blueprint_configuration", "Error updating blueprint configuration ") + error + "!");
+        setMessage(i18next.t("error_updating_blueprint_configuration", "Error occurred while updating blueprint configuration.") + error + "!");
       });
   };
 
@@ -430,12 +430,12 @@ export default function EditBlueprintConfiguration(props) {
                         <FormControlLabel
                           value="defaultTurn"
                           control={<StyledRadio />}
-                          label={i18next.t("use_jami_default_turn_configuration", "Use Jami default Turn configuration")}
+                          label={i18next.t("use_jami_default_turn_configuration", "Use Jami default TURN configuration")}
                         />
                         <FormControlLabel
                           value="customTurn"
                           control={<StyledRadio />}
-                          label={i18next.t("use_a_custom_turn_configuration", "Use a custom Turn configuration")}
+                          label={i18next.t("use_a_custom_turn_configuration", "Use a custom TURN configuration")}
                         />
                         <FormGroup
                           row
@@ -551,7 +551,7 @@ export default function EditBlueprintConfiguration(props) {
                         <FormControlLabel
                           value="disabledTurn"
                           control={<StyledRadio />}
-                          label={i18next.t("disable_turn_configuration", "Disable Turn configuration")}
+                          label={i18next.t("disable_turn_configuration", "Disable TURN configuration")}
                         />
                       </RadioGroup>
                     </FormControl>

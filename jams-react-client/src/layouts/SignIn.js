@@ -100,7 +100,7 @@ export default function SignIn(props) {
       } else {
         setError(true);
         setErrorMessage(
-          i18next.t("login_failed", "Login failed check your credentials")
+          i18next.t("login_failed", "Login failed. Check your credentials.")
         );
       }
     });

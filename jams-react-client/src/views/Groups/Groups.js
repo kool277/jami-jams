@@ -421,7 +421,7 @@ export default function Groups() {
                     className: classes.margin + " " + classes.search,
                   }}
                   inputProps={{
-                    placeholder: i18next.t("search_groups_placeholder", "Search groups ..."),
+                    placeholder: i18next.t("search_groups_placeholder", "Search groups…"),
                     inputProps: {
                       "aria-label": i18next.t("search_groups", "Search groups"),
                     },

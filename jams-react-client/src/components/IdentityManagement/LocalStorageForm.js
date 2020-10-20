@@ -26,7 +26,7 @@ export default function LocalStorageForm(props) {
                     }
                     label={i18next.t("use_public_nameserver", "Use public nameserver")}
                     />
-                    <CustomPopupState message={i18next.t("check_box_register_usernames_on_jami_public_nameserver", "Check this box if you want to register your usernames on Jami's public nameserver.")}/>
+                    <CustomPopupState message={i18next.t("check_box_register_usernames_on_jami_public_nameserver", "Check this box if you want to register your usernames on Jami's public name server.")}/>
                 </Grid>
             </Grid>
     );

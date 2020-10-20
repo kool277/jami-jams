@@ -202,13 +202,13 @@ export default function EditBlueprintPermissions(props) {
         setOpen(false);
         setSeverity("success");
         setOpen(true);
-        setMessage(i18next.t("updated_blueprint_permissions_successfully", "Updated blueprint permissions successfully !"));
+        setMessage(i18next.t("updated_blueprint_permissions_successfully", "Blueprint permissions successfully updated."));
       })
       .catch((error) => {
         setOpen(false);
         setSeverity("error");
         setOpen(true);
-        setMessage(i18next.t("error_updating_blueprint_permissions", "Error updating blueprint permissions ") + error + "!");
+        setMessage(i18next.t("error_updating_blueprint_permissions", "Error occurred while updating blueprint permissions.") + error + "!");
       });
   };
 
@@ -259,7 +259,7 @@ export default function EditBlueprintPermissions(props) {
                             name="videoEnabled"
                           />
                         }
-                        label={i18next.t("allow_video_calls", "Allow videos calls")}
+                        label={i18next.t("allow_video_calls", "Allow video calls")}
                       />
                     </FormGroup>
                     <FormGroup row>
@@ -316,7 +316,7 @@ export default function EditBlueprintPermissions(props) {
                             name="peerDiscovery"
                           />
                         }
-                        label={i18next.t("allow_use_of_jami_in_local_lan", "Allow use of Jami in a local lan")}
+                        label={i18next.t("allow_use_of_jami_in_local_lan", "Allow Jami usage on the local LAN")}
                       />
                     </FormGroup>
                     <FormGroup row>

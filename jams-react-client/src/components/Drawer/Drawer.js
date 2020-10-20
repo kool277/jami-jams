@@ -324,7 +324,7 @@ export default function TemporaryDrawer(props) {
                 inputProps={{
                   placeholder: props.placeholder,
                   inputProps: {
-                    "aria-label": i18next.t("add_a_contact", "Add a contact"),
+                    "aria-label": i18next.t("add_a_contact", "Add contact"),
                   },
                   onKeyUp: handleSearchUsers,
                 }}

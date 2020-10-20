@@ -188,7 +188,7 @@ export default function ServerParameters(props) {
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
             {i18next.t("cors_domain_name", "CORS domain name")}
-              <CustomPopupState message={i18next.t("set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps", "Set the domain of the web client server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates.")} />
+              <CustomPopupState message={i18next.t("set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps", "Set the domain of the web client-server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates.")} />
             </Typography>
             <Typography variant="body1" gutterBottom>
             {i18next.t("domain_name_of_web_client_server", "The domain name of your web client server. Requires http:// or https://")}

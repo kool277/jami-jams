@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -13,20 +13,62 @@ import i18next from "i18next";
 
 import { useTranslation } from "react-i18next";
 
-const languages = [
-  {
-    value: "en",
-    label: "English",
-  },
-  {
-    value: "fr",
-    label: "Francais",
-  },
-  {
-    value: "es",
-    label: "Español",
-  },
-];
+// const languages = [
+//   {
+//     value: "sq_AL",
+//     label: "Albanian",
+//   },
+//   {
+//     value: "ar",
+//     label: "Arabic",
+//   },
+//   {
+//     value: "zh_TW",
+//     label: "Chinese (Taiwan)",
+//   },
+
+//   {
+//     value: "en",
+//     label: "English",
+//   },
+
+//   {
+//     value: "es",
+//     label: "Español",
+//   },
+//   {
+//     value: "fi",
+//     label: "Finnish",
+//   },
+//   {
+//     value: "fr",
+//     label: "Francais",
+//   },
+//   {
+//     value: "he",
+//     label: "Hebrew",
+//   },
+//   {
+//     value: "hu",
+//     label: "Hungarian",
+//   },
+//   {
+//     value: "ja",
+//     label: "Japanese",
+//   },
+//   {
+//     value: "oc",
+//     label: "Occitan",
+//   },
+//   {
+//     value: "pt_BR",
+//     label: "Portuguese",
+//   },
+//   {
+//     value: "ro_RO",
+//     label: "Romanian",
+//   },
+// ];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,18 +82,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LanguagePicker(props) {
   const history = useHistory();
-  const [language, setLanguage] = React.useState(i18next.language || window.localStorage.i18nextLng || "");
+  const [language, setLanguage] = React.useState(i18next.language || window.localStorage.i18nextLng || "en");
+  const [languages, setLanguages] = React.useState([]);
 
   const { i18n } = useTranslation();
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
+  useEffect(() => {
+    fetch("/available_languages.json").then(res => res.json()).then((result) => {
+      setLanguages(result.languages)
+    })
+  }, [language])
 
   const handleChange = (value) => {
     setLanguage(value);
-    changeLanguage(value);
-    history.push(props.navigationTarget);
+    i18n.changeLanguage(value).then(()=>{
+      history.push(props.navigationTarget);
+    })
   };
 
   return (
@@ -65,19 +111,19 @@ export default function LanguagePicker(props) {
             {...bindTrigger(popupState)}
           >
             {languages.map((option) => {
-              if (option.value === language) {
-                return option.label;
+              if (option.code === language) {
+                return option.name;
               }
             })}
           </Button>
           <Menu {...bindMenu(popupState)}>
             {languages.map((option) => (
               <MenuItem
-                key={option.value}
-                value={option.value}
-                onClick={() => handleChange(option.value)}
+                key={option.code}
+                value={option.code}
+                onClick={() => handleChange(option.code)}
               >
-                {option.label}
+                {option.name}
               </MenuItem>
             ))}
           </Menu>

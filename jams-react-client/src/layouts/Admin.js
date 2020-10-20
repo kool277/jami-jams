@@ -227,7 +227,7 @@ export default function Admin({ ...rest }) {
           setUpdating(true);
         })
         .catch((error) => {
-          setSnackbarMessage(i18next.t("error_while_attempting_update_jams", "Error while attempting to update JAMS: ") + error);
+          setSnackbarMessage(i18next.t("error_while_attempting_update_jams", "Error occurred while attempting to update JAMS:") + error);
         });
     }
   };

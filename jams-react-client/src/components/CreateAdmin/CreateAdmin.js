@@ -52,14 +52,14 @@ export default function CreateAdmin(props) {
     validationSchema: Yup.object({
       username: Yup.string()
         .max(60, i18next.t("must_be_60_characters_or_less", "Must be 60 characters or less"))
-        .required(i18next.t("username_is_required", "Username is required")),
+        .required(i18next.t("username_is_required", "Username is required.")),
       password: Yup.string()
         .max(50, i18next.t("must_be_50_characters_or_less", "Must be 50 characters or less"))
         .required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], i18next.t("password_must_match", "Passwords must match"))
         .max(50, i18next.t("must_be_50_characters_or_less", "Must be 50 characters or less"))
-        .required(i18next.t("password_confirmation_required", "Password confirmation is required")),
+        .required(i18next.t("password_confirmation_required", "Password confirmation is required.")),
     }),
 
     onSubmit: (values) => {
@@ -94,7 +94,7 @@ export default function CreateAdmin(props) {
   return (
     <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
       <Typography variant="h5" gutterBottom color="primary">
-        {i18next.t("create_administrator", "Create Administrator")}
+        {i18next.t("create_administrator", "Create administrator account")}
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>

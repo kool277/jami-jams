@@ -358,7 +358,7 @@ export default function Users(props) {
               <InfoIcon />
 
               <p style={{ marginLeft: "10px" }}>
-                  {i18next.t("no_users_found_matching", "No users found mathcing search value!")}
+                  {i18next.t("no_users_found_matching", "No users found matching search value!")}
               </p>
             </div>
           )}

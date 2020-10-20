@@ -353,7 +353,7 @@ export default function Blueprints() {
                       className: classes.margin + " " + classes.search,
                     }}
                     inputProps={{
-                      placeholder: i18next.t("search_blueprints_placeholder", "Search blueprints ..."),
+                      placeholder: i18next.t("search_blueprints_placeholder", "Search blueprints…"),
                       inputProps: {
                         "aria-label": i18next.t("search_blueprints", "Search blueprints"),
                       },
@@ -372,7 +372,7 @@ export default function Blueprints() {
             {zeroBlueprint ? (
               <div className={classes.blueprintsNotFound}>
                 <InfoIcon />
-                  <p style={{ marginLeft: "10px" }}>{i18next.t("no_blueprints_found", "No blueprints found.")}</p>
+                  <p style={{ marginLeft: "10px" }}>{i18next.t("no_blueprints_found", "No blueprints found")}</p>
               </div>
             ) : (
               blueprints.map((blueprint) => (

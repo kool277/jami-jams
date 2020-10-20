@@ -67,7 +67,7 @@ export default function Subscription(props) {
             subscriptionCode: '',
         },
         validationSchema: Yup.object({
-            subscriptionCode: Yup.string().required(i18next.t("subscription_code_is_required", "Subscription code is required")),
+            subscriptionCode: Yup.string().required(i18next.t("subscription_code_is_required", "Subscription code is required.")),
         }),
 
         onSubmit: values => {
@@ -82,7 +82,7 @@ export default function Subscription(props) {
         }
 
         axios(configApiCall(api_path_post_configuration_register_license, "POST", jsonData, null)).then(()=>{
-            props.setErrorMessage(i18next.t("license_registred_successfully", "Subscription registered successfully!"));
+            props.setErrorMessage(i18next.t("license_registred_successfully", "Subscription successfully registered."));
             props.setSeverity("success");
             props.setError(true);
         }).catch((error)=>{
