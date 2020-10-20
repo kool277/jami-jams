@@ -184,6 +184,9 @@ export default function PasswordDialog(props) {
                       </IconButton>
                     </div>
                   }
+                  handleChange={() => {}}
+                  onKeyUpError={false}
+                  onKeyUpErrorMessage=""
                 />
                 <FormikField
                   name="passwordConfirmation"
@@ -208,6 +211,9 @@ export default function PasswordDialog(props) {
                       )}
                     </IconButton>
                   }
+                  handleChange={() => {}}
+                  onKeyUpError={false}
+                  onKeyUpErrorMessage=""
                 />
               </DialogContent>
               <DialogActions>

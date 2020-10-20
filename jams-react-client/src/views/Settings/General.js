@@ -176,6 +176,9 @@ export default function General(props) {
                     )}
                   </IconButton>
                 }
+                handleChange={() => {}}
+                onKeyUpError={false}
+                onKeyUpErrorMessage=""
               />
               {touched.password && errors.password ? (
                 <span>{errors.password}</span>
@@ -204,6 +207,9 @@ export default function General(props) {
                     )}
                   </IconButton>
                 }
+                handleChange={() => {}}
+                onKeyUpError={false}
+                onKeyUpErrorMessage=""
               />
               {touched.confirmPassword && errors.confirmPassword ? (
                 <span>{errors.confirmPassword}</span>

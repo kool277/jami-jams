@@ -245,19 +245,7 @@ export default function EditCreateUserProfile(props) {
   const [aspect, setAspect] = React.useState(1);
   const [rotation, setRotation] = React.useState(0);
   const [passwordVisible, setPasswordVisible] = React.useState(false);
-
-  const passwordGenerator = () => {
-    return generator.generate({
-      length: 10,
-      uppercase: false,
-      numbers: true,
-      symbols: true,
-    });
-  };
-
-  const intialyGeneratedPassword = passwordGenerator();
-
-  const initialValues = {
+  const [initialValues, setInitialValues] = React.useState({
     username: "",
     password: intialyGeneratedPassword,
     confirmPassword: intialyGeneratedPassword,
@@ -271,7 +259,18 @@ export default function EditCreateUserProfile(props) {
     phoneNumberExtension: "",
     mobileNumber: "",
     jamiId: "",
+  });
+
+  const passwordGenerator = () => {
+    return generator.generate({
+      length: 10,
+      uppercase: false,
+      numbers: true,
+      symbols: true,
+    });
   };
+
+  const intialyGeneratedPassword = passwordGenerator();
 
   React.useEffect(() => {
     
@@ -297,11 +296,19 @@ export default function EditCreateUserProfile(props) {
       )
         .then((response) => {
           const user = response.data;
-          initialValues.username = user.username;
-          initialValues.firstName = user.firstName;
-          initialValues.lastName = user.lastName;
-          initialValues.email = user.email;
-          initialValues.profilePicture = user.profilePicture;
+          const values ={
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            profilePicture: user.profilePicture,
+            organization: user.organization,
+            faxNumber: user.faxNumber,
+            phoneNumber: user.phoneNumber,
+            phoneNumberExtension: user.phoneNumberExtension,
+            mobileNumber: user.mobileNumber,
+          }
+          setInitialValues(values);
           setProfilePicture(user.profilePicture);
           if (user.profilePicture != "") {
             setProfilePicturePreview(
@@ -310,12 +317,6 @@ export default function EditCreateUserProfile(props) {
           } else {
             setProfilePicturePreview(noProfilePicture);
           }
-
-          initialValues.organization = user.organization;
-          initialValues.faxNumber = user.faxNumber;
-          initialValues.phoneNumber = user.phoneNumber;
-          initialValues.phoneNumberExtension = user.phoneNumberExtension;
-          initialValues.mobileNumber = user.mobileNumber;
           setLoading(false);
         })
         .catch((error) => {
@@ -690,6 +691,9 @@ export default function EditCreateUserProfile(props) {
                               }
                               required
                               autoComplete="off"
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
                             />
                           </Grid>
                         )}
@@ -720,6 +724,9 @@ export default function EditCreateUserProfile(props) {
                               }
                               required
                               autoComplete="off"
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
                             />
                           </Grid>
                         )}
@@ -789,6 +796,9 @@ export default function EditCreateUserProfile(props) {
                                 <PersonIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                         <Grid item align="center" xs={12} sm={12} md={6}>
@@ -801,6 +811,9 @@ export default function EditCreateUserProfile(props) {
                                 <PersonOutlinedIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                         <Grid item align="center" xs={12} sm={12} md={6}>
@@ -813,6 +826,9 @@ export default function EditCreateUserProfile(props) {
                                 <AlternateEmailOutlinedIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                         <Grid item align="center" xs={12} sm={12} md={6}>
@@ -825,6 +841,9 @@ export default function EditCreateUserProfile(props) {
                                 <BusinessCenterOutlinedIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                         <Grid item align="center" xs={12} sm={12} md={6}>
@@ -837,6 +856,9 @@ export default function EditCreateUserProfile(props) {
                                 <LocalPrintshopOutlinedIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                         <Grid item align="center" xs={12} sm={12} md={6}>
@@ -849,6 +871,9 @@ export default function EditCreateUserProfile(props) {
                                 <PhoneInTalkOutlinedIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                         <Grid item align="center" xs={12} sm={12} md={6}>
@@ -861,6 +886,9 @@ export default function EditCreateUserProfile(props) {
                                 <PhoneForwardedOutlinedIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                         <Grid item align="center" xs={12} sm={12} md={6}>
@@ -873,6 +901,9 @@ export default function EditCreateUserProfile(props) {
                                 <SmartphoneOutlinedIcon />
                               </InputAdornment>
                             }
+                            handleChange={() => {}}
+                            onKeyUpError={false}
+                            onKeyUpErrorMessage=""
                           />
                         </Grid>
                       </Grid>
@@ -895,7 +926,7 @@ export default function EditCreateUserProfile(props) {
                     ) : (
                       <Button
                         type="submit"
-                        disabled={!isValid || !dirty}
+                        disabled={!isValid}
                         color="info"
                       >
                         {i18next.t("save_profile", "Save Profile")}
