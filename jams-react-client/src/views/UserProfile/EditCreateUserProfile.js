@@ -274,17 +274,18 @@ export default function EditCreateUserProfile(props) {
   };
 
   React.useEffect(() => {
-    setLoading(true);
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+    
     if (!createUser) {
+      setLoading(true);
+      const timer = setInterval(() => {
+        setProgress((oldProgress) => {
+          if (oldProgress === 100) {
+            return 0;
+          }
+          const diff = Math.random() * 10;
+          return Math.min(oldProgress + diff, 100);
+        });
+      }, 500);
       setUserName(props.username);
       axios(
         configApiCall(
@@ -320,10 +321,11 @@ export default function EditCreateUserProfile(props) {
         .catch((error) => {
           console.log("Error fetching user : " + props.username + " " + error);
         });
+
+      return () => {
+        clearInterval(timer);
+      };
     }
-    return () => {
-      clearInterval(timer);
-    };
   }, []);
 
   const resizeFile = (file, outputFormat) =>
