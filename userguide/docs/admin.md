@@ -1,14 +1,13 @@
 ## Troubleshooting and resetting
 
-If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your project root folder>/jams):
-
-```
-The internal jams folder: <your project root folder>/jams/jams
+If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your project root folder>/jams):    <pre>
+<b>The internal jams folder: <your project root folder>/jams/jams
 derby.log
 oauth.key
 oauth.pub
 config.json
-```
+</b></pre>
+
 
 This will reset the server to its original state and you will be able to run the configuration wizard again. Before performing this operation, please make sure to shutdown the server.
 
@@ -32,11 +31,8 @@ The following is an example map of how you could configure JAMS behind Nginx (th
 The IP 10.10.0.1 is random, and should be seen as an example.
 
 
-Typically you would add a new site called ``jams-site.conf`` to your nginx configurations which would contain the following entries if you wanted to place an SSL certificate at the Nginx level:
-
-
-```
-server {
+Typically you would add a new site called ``jams-site.conf`` to your nginx configurations which would contain the following entries if you wanted to place an SSL certificate at the Nginx level:    <pre>
+<b>server {
         listen 443 ssl;
         listen [::]:443 ssl;
         ssl on;
@@ -49,18 +45,15 @@ server {
                 proxy_set_header        X-Real-IP  $remote_addr;
                 proxy_set_header        Host $http_host;
         }
-}
-```
+}</b></pre>
 
 This is the preferred setup method by most admins, as local traffic is usually ran unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.
 
 
 ## Running JAMS as a Linux Service
 
-Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:
-
-```
-[Unit]
+Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:    <pre>
+<b>[Unit]
 Description=JAMS Server
 
 [Service]
@@ -70,6 +63,6 @@ ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.j
 
 [Install]
 WantedBy=multi-user.target
-```
+</b></pre>
 
 The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)

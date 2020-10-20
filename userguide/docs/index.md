@@ -4,7 +4,7 @@ JAMS is a server application used to enroll Jami clients into an Enterprise cont
 
 ## Obtaining JAMS
 
-The latest Beta build of JAMS can be downloaded at: ``https://git.jami.net/savoirfairelinux/jami-jams``
+The latest Beta build of JAMS can be downloaded at: **https://git.jami.net/savoirfairelinux/jami-jams**
 
 ## System Requirements
 
@@ -32,19 +32,16 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 ​    
 ## Getting Started
 
+
 1. Download the latest version of JAMS from: <https://jami.net/services/>
 
 2. Unpack the .tar file to a directory of your choice.
 
-3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:
+3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:    <pre>
+<b>openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem</b></pre>
 
-``openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem``
-
-**Current limitation:** JAMS does not support reading encrypted private keys which require a password unlock.
-
-4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:
-
-```java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY```
+4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:    <pre>
+<b>java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</b></pre>
 
 | Argument         | Details       |
 | ------------- |-------------  |
@@ -55,9 +52,12 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 <br/>
 An example of the command would be: 
 
-``java -jar jams-launcher 8080 server.pem server.key``
+<pre>
+<b>java -jar jams-launcher 8080 server.pem server.key</b></pre>
 
-Please note that any port above 1024 can be safely used to run JAMS.
+**Current limitations:** JAMS does not support reading encrypted private keys which require a password unlock.
+
+Please also note that any port above 1024 will safely run JAMS.
 
 
 ## Step 1: create your admininistrator account

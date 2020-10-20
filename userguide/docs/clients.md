@@ -24,7 +24,7 @@ Select the option **"Connect to a JAMS server"** which will lead you to the foll
     <img src="./img/client/windows/windows-step2.png" alt="Step 2" style="height:400px;width:500px"/>
 </p>
 
-The ```Jami Account Management Server URL``` in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
+The **Jami Account Management Server URL** in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
 
 ## Connect from a MacOS device
 
@@ -40,7 +40,7 @@ Select the option **"Connect to account manager"** which will lead you to the fo
     <img src="./img/client/macos/macos-step2.png" alt="Step 2" style="height:400px;width:500px"/>
 </p>
 
-The ```Jami Account Management Server URL``` in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
+The **Jami Account Management Server URL**```** in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
 
 ## Connect from an Android device
 
