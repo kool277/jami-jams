@@ -37,10 +37,12 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 
 2. Unpack the .tar file to a directory of your choice.
 
-3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:    <pre>
+3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:    
+<pre>
 <b>openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem</b></pre>
 
-4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:    <pre>
+4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:
+<pre>
 <b>java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</b></pre>
 
 | Argument         | Details       |
