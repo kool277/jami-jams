@@ -29,9 +29,9 @@ module.exports = {
     defaultValue: "__STRING_NOT_TRANSLATED__",
 
     resource: {
-      loadPath: "src/locales/{{lng}}/{{ns}}.json",
+      loadPath: "public/locales/{{lng}}/{{ns}}.json",
 
-      savePath: "src/locales/{{lng}}/{{ns}}.json",
+      savePath: "public/locales/{{lng}}/{{ns}}.json",
 
       jsonIndent: 4,
 
