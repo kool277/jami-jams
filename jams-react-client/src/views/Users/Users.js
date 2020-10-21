@@ -337,13 +337,11 @@ export default function Users(props) {
                               {user.username}
                             </li>
                             <li>
-                              <BusinessOutlinedIcon
+                              {user.organization && <BusinessOutlinedIcon
                                 fontSize="small"
                                 style={{ marginRight: "10px" }}
-                              />{" "}
-                              {user.organization
-                                ? user.organization
-                                : "No organization"}
+                              />}{" "}
+                              {user.organization}
                             </li>
                           </ul>
                           </GridItem>

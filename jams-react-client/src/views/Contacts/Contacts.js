@@ -368,9 +368,7 @@ export default function Users(props) {
                         fontSize="small"
                         style={{ marginRight: "10px" }}
                       />{" "}
-                      {contact.organization
-                        ? contact.organization
-                        : "No organization"}
+                      {contact.organization}
                     </li>
                   </ul>
                 </CardBody>
