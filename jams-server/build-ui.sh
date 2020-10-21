@@ -3,7 +3,6 @@
 cd ../jams-react-client || exit
 npm install
 npm run build
-cp -R src/locales public/
 #Now the UI is built we can exit and copy resource
 rm -rf ../jams-server/src/main/resources/webapp/*
 echo "Removed old webapp contents!"
