@@ -13,63 +13,6 @@ import i18next from "i18next";
 
 import { useTranslation } from "react-i18next";
 
-// const languages = [
-//   {
-//     value: "sq_AL",
-//     label: "Albanian",
-//   },
-//   {
-//     value: "ar",
-//     label: "Arabic",
-//   },
-//   {
-//     value: "zh_TW",
-//     label: "Chinese (Taiwan)",
-//   },
-
-//   {
-//     value: "en",
-//     label: "English",
-//   },
-
-//   {
-//     value: "es",
-//     label: "Español",
-//   },
-//   {
-//     value: "fi",
-//     label: "Finnish",
-//   },
-//   {
-//     value: "fr",
-//     label: "Francais",
-//   },
-//   {
-//     value: "he",
-//     label: "Hebrew",
-//   },
-//   {
-//     value: "hu",
-//     label: "Hungarian",
-//   },
-//   {
-//     value: "ja",
-//     label: "Japanese",
-//   },
-//   {
-//     value: "oc",
-//     label: "Occitan",
-//   },
-//   {
-//     value: "pt_BR",
-//     label: "Portuguese",
-//   },
-//   {
-//     value: "ro_RO",
-//     label: "Romanian",
-//   },
-// ];
-
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -83,13 +26,24 @@ const useStyles = makeStyles((theme) => ({
 export default function LanguagePicker(props) {
   const history = useHistory();
   const [language, setLanguage] = React.useState(i18next.language || window.localStorage.i18nextLng || "en");
-  const [languages, setLanguages] = React.useState([]);
+  const [languages, setLanguages] = React.useState([{ "code": "en", "name": "English"}]);
 
   const { i18n } = useTranslation();
 
   useEffect(() => {
     fetch("/available_languages.json").then(res => res.json()).then((result) => {
-      setLanguages(result.languages)
+      const response = result.languages;
+      let translates_languages = [];
+      
+      response.forEach((lang) =>
+      {
+        if(result.stats[lang.code]["translated"]["percentage"] > 0.01){
+          console.log(lang);
+          translates_languages.push(lang);
+        } 
+      })
+
+      setLanguages(translates_languages)
     })
   }, [language])
 
