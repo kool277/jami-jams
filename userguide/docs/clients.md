@@ -15,13 +15,13 @@ For the purposes of this tutorial, we assume that
 Open Jami, go to the login page. Click on "Advanced":
 
 <p align="center">
-    <img src="./img/client/windows/windows-step1.png" alt="Step 1" style="height:400px;width:500px"/>
+    <img src="./img/client/windows/windows-step1.png" alt="Step 1" style="height:1024;width:768"/>
 </p>
 
 Select the option **"Connect to a JAMS server"** which will lead you to the following screen:
  
 <p align="center">
-    <img src="./img/client/windows/windows-step2.png" alt="Step 2" style="height:400px;width:500px"/>
+    <img src="./img/client/windows/windows-step2.png" alt="Step 2" style="height:1024;width:768"/>
 </p>
 
 The **Jami Account Management Server URL** in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
@@ -31,16 +31,16 @@ The **Jami Account Management Server URL** in this case would be the DNS address
 Open Jami, go to the login page. Click on "Advanced":
 
 <p align="center">
-    <img src="./img/client/macos/macos-step1.png" alt="Step 1" style="height:400px;width:500px"/>
+    <img src="./img/client/macos/macos-step1.png" alt="Step 1" style="height:768;width:1024"/>
 </p>
 
 Select the option **"Connect to account manager"** which will lead you to the following screen:
  
 <p align="center">
-    <img src="./img/client/macos/macos-step2.png" alt="Step 2" style="height:400px;width:500px"/>
+    <img src="./img/client/macos/macos-step2.png" alt="Step 2" style="height:768;width:1024"/>
 </p>
 
-The **Jami Account Management Server URL**```** in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
+The **Jami Account Management Server URL** in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
 
 ## Connect from an Android device
 
@@ -59,9 +59,7 @@ Select the option **"Connect to management server"** which will lead you to the 
 The server in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
 
 ## Connect from an iOS device
-
 Open Jami, go to the login page.
-
 <p align="center">
     <img src="./img/client/ios/ios-step1.png" alt="Step 1" style="height:400px;width:200px"/>
 </p>

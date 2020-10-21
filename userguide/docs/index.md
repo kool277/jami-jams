@@ -4,7 +4,7 @@ JAMS is a server application used to enroll Jami clients into an Enterprise cont
 
 ## Obtaining JAMS
 
-The latest Beta build of JAMS can be downloaded at: **https://git.jami.net/savoirfairelinux/jami-jams**
+The latest Beta build of JAMS can be downloaded at: <https://git.jami.net/savoirfairelinux/jami-jams>
 
 ## System Requirements
 
@@ -37,13 +37,11 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 
 2. Unpack the .tar file to a directory of your choice.
 
-3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:    
-<pre>
-<b>openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem</b></pre>
+3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:    <pre>
+openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem</pre>
 
-4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:
-<pre>
-<b>java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</b></pre>
+4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:<pre>
+java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</pre>
 
 | Argument         | Details       |
 | ------------- |-------------  |
@@ -54,8 +52,7 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 <br/>
 An example of the command would be: 
 
-<pre>
-<b>java -jar jams-launcher 8080 server.pem server.key</b></pre>
+<pre>java -jar jams-launcher 8080 server.pem server.key</pre>
 
 **Current limitations:** JAMS does not support reading encrypted private keys which require a password unlock.
 
@@ -67,7 +64,7 @@ Please also note that any port above 1024 will safely run JAMS.
 This account will have administrative control and the rights to manage your users and group of Jami users.
 
 <p align="center">
-    <img src="img/step1.png" alt="Create an admin account" style="height:347px;width:381px" />
+    <img src="img/step1.png" alt="Create an admin account" style="height:768;width:1024" />
 </p>
 
 
