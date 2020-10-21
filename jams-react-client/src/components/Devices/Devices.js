@@ -78,6 +78,10 @@ export default function Devices(props) {
         }
     }
 
+    function getDeviceId(device) {
+        return device.deviceId;
+    }
+
     const handleClickEdit = (e, device) => {
         e.preventDefault();
         setOpenEdit(true);
@@ -174,6 +178,7 @@ export default function Devices(props) {
                 <TableHead>
                     <TableRow>
                         <TableCell>{i18next.t("device_name", "Device Name")}</TableCell>
+                        <TableCell>{i18next.t("device_id", "Device Id")}</TableCell>
                         <TableCell align="right">{i18next.t("status", "Status")}</TableCell>
                         <TableCell align="right">{i18next.t("actions", "Actions")}</TableCell>
                     </TableRow>
@@ -185,6 +190,7 @@ export default function Devices(props) {
                             <TableCell className={tableCellClasses}>
                                 {device.displayName}
                             </TableCell>
+                            <TableCell className={tableCellClasses}>{getDeviceId(device)}</TableCell>
                             <TableCell align="right" className={tableCellClasses}>{getDeviceStatus(device)}</TableCell>
                             {!(device.revoked) &&
                             <TableCell align="right" className={classes.tableActions}>

@@ -230,5 +230,6 @@
     "blueprint_name": "Nom du gabarit",
     "validate": "Valider",
     "change_language": "Change language",
-    "general": "General"
+    "general": "General",
+    "device_id": "Identifiant de l'appareil"
 }

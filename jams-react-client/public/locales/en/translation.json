@@ -230,5 +230,6 @@
     "blueprint_name": "Blueprint name",
     "validate": "Validate",
     "change_language": "Change language",
-    "general": "General"
+    "general": "General",
+    "device_id": "Device Id"
 }
