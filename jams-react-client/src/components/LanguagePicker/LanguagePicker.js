@@ -1,27 +1,14 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
 
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 
-import TranslateIcon from "@material-ui/icons/Translate";
-
 import i18next from "i18next";
 
 import { useTranslation } from "react-i18next";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "25ch",
-      backgrounColor: "white",
-    },
-  },
-}));
 
 export default function LanguagePicker(props) {
   const history = useHistory();

@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 
 export default function CustomPopupState(props) {
 
-    const [message, setMessage] = React.useState(props.message);
     return(
 <IconButton>
 
@@ -29,7 +28,7 @@ export default function CustomPopupState(props) {
             }}
         >
             <Box p={1}>
-        <Typography>{message}</Typography>
+        <Typography>{props.message}</Typography>
             </Box>
         </Popover>
         </div>

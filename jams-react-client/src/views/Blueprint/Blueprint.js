@@ -1,7 +1,4 @@
 import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-
 
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -71,10 +68,7 @@ const styles = {
   }
 };
 
-const useStyles = makeStyles(styles);
-
 export default function Blueprint(props) {
-  const classes = useStyles();
 
   const [value, setValue] = React.useState(0);
 

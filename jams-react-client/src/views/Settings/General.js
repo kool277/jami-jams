@@ -1,10 +1,8 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import FormikField from "components/FormikField/FormikField";
 import * as Yup from "yup";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -20,7 +18,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 
 import axios from "axios";
@@ -58,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function General(props) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [copied, setCopied] = React.useState(false);
   const [generated, setGenerated] = React.useState(false);

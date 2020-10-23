@@ -29,7 +29,6 @@ import auth from "auth.js";
 import { api_path_blueprints } from "globalUrls";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
 
 import LinearProgress from "@material-ui/core/LinearProgress";
 
@@ -290,7 +289,7 @@ export default function Blueprints() {
                 {disableCreate && blueprintName.length > 0 && (
                   <p>{i18next.t("blueprint_name_already_exists", "Blueprint name already exists!")}</p>
                 )}
-                {disableCreate && blueprintName.length == 0 && (
+                {disableCreate && blueprintName.length === 0 && (
                   <p>{i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}</p>
                 )}
               </DialogContentText>
@@ -376,7 +375,13 @@ export default function Blueprints() {
               </div>
             ) : (
               blueprints.map((blueprint) => (
-                <GridItem xs={12} sm={12} md={2} key={blueprint.name}>
+                <GridItem
+                xs={12}
+                sm={6}
+                md={3}
+                lg={2}
+                xl={2}
+                key={blueprint.name}>
                   <Card profile>
                       <a
                         href="#"

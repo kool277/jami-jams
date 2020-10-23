@@ -1,5 +1,4 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -93,7 +92,6 @@ function Alert(props) {
 
 export default function EditBlueprintPermissions(props) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
   const [publicInCalls, setPublicInCalls] = React.useState(true);
@@ -148,7 +146,7 @@ export default function EditBlueprintPermissions(props) {
             error
         );
       });
-  }, []);
+  }, [props.blueprintName]);
 
   const handleUpdatePermissions = (field, value) => {
     let data = {
@@ -177,14 +175,14 @@ export default function EditBlueprintPermissions(props) {
       data[field] = value;
     }
 
-    if (turnEnabled == undefined) {
+    if (turnEnabled === undefined) {
       delete data.turnEnabled;
       delete data.turnServer;
       delete data.turnServerUserName;
       delete data.turnServerPassword;
     }
 
-    if (proxyEnabled == undefined) {
+    if (proxyEnabled === undefined) {
       delete data.proxyEnabled;
       delete data.proxyServer;
       delete data.dhtProxyListUrl;

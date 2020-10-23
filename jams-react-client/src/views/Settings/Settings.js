@@ -1,6 +1,4 @@
 import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 // core components
 import General from "./General";
 import Subscription from "./Subscription";
@@ -75,10 +73,7 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
-
 export default function Settings(props) {
-  const classes = useStyles();
 
   const [value, setValue] = React.useState(0);
   const [error, setError] = React.useState(false);

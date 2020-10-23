@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 
 // core components
 import Grid from "@material-ui/core/Grid";
@@ -13,11 +12,8 @@ import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Slider from "@material-ui/core/Slider";
 import Typography from "@material-ui/core/Typography";
@@ -25,7 +21,6 @@ import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./cropImage";
@@ -225,7 +220,6 @@ const useStyles = makeStyles(styles);
 export default function EditCreateUserProfile(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [createUser, setCreateUser] = React.useState(props.createUser);
   const [copied, setCopied] = React.useState(false);
   const [generated, setGenerated] = React.useState(true);
   const [userExists, setUserExists] = React.useState(false);
@@ -242,9 +236,20 @@ export default function EditCreateUserProfile(props) {
   const [open, setOpen] = React.useState(false);
   const [crop, setCrop] = React.useState({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);
-  const [aspect, setAspect] = React.useState(1);
   const [rotation, setRotation] = React.useState(0);
   const [passwordVisible, setPasswordVisible] = React.useState(false);
+
+  const passwordGenerator = () => {
+    return generator.generate({
+      length: 10,
+      uppercase: false,
+      numbers: true,
+      symbols: true,
+    });
+  };
+
+  const intialyGeneratedPassword = passwordGenerator();
+
   const [initialValues, setInitialValues] = React.useState({
     username: "",
     password: intialyGeneratedPassword,
@@ -261,20 +266,9 @@ export default function EditCreateUserProfile(props) {
     jamiId: "",
   });
 
-  const passwordGenerator = () => {
-    return generator.generate({
-      length: 10,
-      uppercase: false,
-      numbers: true,
-      symbols: true,
-    });
-  };
-
-  const intialyGeneratedPassword = passwordGenerator();
-
   React.useEffect(() => {
     
-    if (!createUser) {
+    if (!props.createUser) {
       setLoading(true);
       const timer = setInterval(() => {
         setProgress((oldProgress) => {
@@ -310,7 +304,7 @@ export default function EditCreateUserProfile(props) {
           }
           setInitialValues(values);
           setProfilePicture(user.profilePicture);
-          if (user.profilePicture != "") {
+          if (user.profilePicture !== "") {
             setProfilePicturePreview(
               "data:image/png;base64, " + user.profilePicture
             );
@@ -327,7 +321,7 @@ export default function EditCreateUserProfile(props) {
         clearInterval(timer);
       };
     }
-  }, []);
+  }, [props.createUser, props.username]);
 
   const resizeFile = (file, outputFormat) =>
     new Promise((resolve) => {
@@ -386,9 +380,7 @@ export default function EditCreateUserProfile(props) {
       })
       .catch((error) => {
         console.log(
-          "Failed to create new user. This is either because the username is already in use" +
-            " on the public nameserver, or another unknown error has occurred. " +
-            "Please choose another one."
+          "Failed to create new user. This is either because the username is already in use on the public nameserver, or another unknown error has occurred. Please choose another one."
         );
       });
   };
@@ -429,7 +421,7 @@ export default function EditCreateUserProfile(props) {
 
   const handleFormikSubmit = (values) => {
     values.profilePicture = profilePicture;
-    if (createUser) {
+    if (props.createUser) {
       handleCreateUser(values);
     } else {
       handleUpdateUser(values);
@@ -476,10 +468,10 @@ export default function EditCreateUserProfile(props) {
       .max(32, i18next.t("maximum_32_characters", "Maximum 32 characters!"))
       .required(i18next.t("username_is_required", "Username is required!"))
       .matches(/^[A-Za-z_][A-Za-z0-9_]*$/, i18next.t("only_alphanumeric_characters", "Only alphanumeric characters!")),
-    password: createUser
+    password: props.createUser
       ? Yup.string().required(i18next.t("only_alphanumeric_characters", "Password is required!"))
       : null,
-    confirmPassword: createUser
+    confirmPassword: props.createUser
       ? Yup.string().oneOf([Yup.ref("password"), null], i18next.t("password_must_match", "Passwords must match"))
       : null,
     firstName: Yup.string().min(2, i18next.t("first_name_is_too_short", "First name is too short!")),
@@ -520,7 +512,7 @@ export default function EditCreateUserProfile(props) {
               crop={crop}
               rotation={rotation}
               zoom={zoom}
-              aspect={aspect}
+              aspect={1}
               onCropChange={setCrop}
               onRotationChange={setRotation}
               onCropComplete={onCropComplete}
@@ -587,9 +579,9 @@ export default function EditCreateUserProfile(props) {
                 <Card profile>
                   <CardHeader color="info" stats icon className={classes.profileEditHeaderMobile}>
                     <p className={classes.cardCategory}>
-                      {createUser ? i18next.t("create_new_profile", "Create new profile") : i18next.t("edit_profile", "Edit profile")}
+                      {props.createUser ? i18next.t("create_new_profile", "Create new profile") : i18next.t("edit_profile", "Edit profile")}
                     </p>
-                    {createUser ? (
+                    {props.createUser ? (
                       ""
                     ) : (
                       <h3 className={classes.cardTitle}>{userName}</h3>
@@ -631,7 +623,7 @@ export default function EditCreateUserProfile(props) {
                             {i18next.t("change_profile_image", "Change profile image")}
                           </label>
                         </Grid>
-                        {createUser && (
+                        {props.createUser && (
                           <Grid item xs={12} sm={12} md={6}>
                             <FormikField
                               name="username"
@@ -661,10 +653,10 @@ export default function EditCreateUserProfile(props) {
                             />
                           </Grid>
                         )}
-                        {createUser && (
+                        {props.createUser && (
                           <Grid item xs={12} sm={12} md={6}></Grid>
                         )}
-                        {createUser && (
+                        {props.createUser && (
                           <Grid item xs={12} sm={12} md={6}>
                             <FormikField
                               type={passwordVisible ? "text" : "password"}
@@ -697,7 +689,7 @@ export default function EditCreateUserProfile(props) {
                             />
                           </Grid>
                         )}
-                        {createUser && (
+                        {props.createUser && (
                           <Grid item xs={12} sm={12} md={6}>
                             <FormikField
                               type={passwordVisible ? "text" : "password"}
@@ -730,10 +722,10 @@ export default function EditCreateUserProfile(props) {
                             />
                           </Grid>
                         )}
-                        {createUser && (
+                        {props.createUser && (
                           <Grid item align="left" xs={12} sm={12} md={6}></Grid>
                         )}
-                        {createUser && (
+                        {props.createUser && (
                           <Grid item align="left" xs={12} sm={12} md={6}>
                             <Button
                               variant="contained"
@@ -910,12 +902,12 @@ export default function EditCreateUserProfile(props) {
                     </div>
                   </CardBody>
                   <CardFooter className={classes.alignRight}>
-                    {!createUser && (
+                    {!props.createUser && (
                       <Button color="info" onClick={handleCancelUpdate}>
                         {i18next.t("cancel", "Cancel")}
                       </Button>
                     )}
-                    {createUser ? (
+                    {props.createUser ? (
                       <Button
                         type="submit"
                         disabled={!isValid || !dirty || userExists}

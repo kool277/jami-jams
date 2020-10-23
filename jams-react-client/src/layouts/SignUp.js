@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import MuiAlert from "@material-ui/lab/Alert";
 import Paper from "@material-ui/core/Paper";
-import Button from "@material-ui/core/Button";
 
 import logo from "assets/img/logo-jams-blue.svg";
 
@@ -69,27 +68,26 @@ export default function SignUp(props) {
   const classes = useStyles();
   const [error, setError] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState("Test");
-  const [step, setStep] = React.useState(props.step);
 
   useEffect(() => {
     //request the server to check for the step to return
   });
 
   function returnStep() {
-    if (step === 0) {
+    if (props.step === 0) {
       return (
         <CreateAdmin setError={setError} setErrorMessage={setErrorMessage} />
       );
-    } else if (step === 1) {
+    } else if (props.step === 1) {
       return <CaSetup setError={setError} setErrorMessage={setErrorMessage} />;
-    } else if (step === 2) {
+    } else if (props.step === 2) {
       return (
         <IdentityManagement
           setError={setError}
           setErrorMessage={setErrorMessage}
         />
       );
-    } else if (step === 3) {
+    } else if (props.step === 3) {
       return (
         <ServerParameters
           setError={setError}
@@ -103,7 +101,7 @@ export default function SignUp(props) {
       <Paper className={classes.paper}>
         <CssBaseline />
         <img src={logo} className={classes.logo} alt="Logo Jami" />
-        <CustomizedSteppers step={step} />
+        <CustomizedSteppers step={props.step} />
         {error && errorMessage && (
           <Alert severity="error">{errorMessage}</Alert>
         )}

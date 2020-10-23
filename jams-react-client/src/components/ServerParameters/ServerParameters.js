@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { Formik, Field } from "formik";
+import { Formik } from "formik";
 
 import CustomPopupState from "../CustomPopupState/CustomPopupState";
 import Select from "@material-ui/core/Select";

@@ -1,6 +1,4 @@
 import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 // core components
 import Devices from "components/Devices/Devices.js";
 
@@ -53,32 +51,9 @@ function a11yProps(index) {
   };
 }
 
-const styles = {
-  cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
-    margin: "0",
-    fontSize: "14px",
-    marginTop: "0",
-    marginBottom: "0",
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none",
-  },
-};
-
-const useStyles = makeStyles(styles);
-
 export default function UserProfile(props) {
-  const classes = useStyles();
 
   const [value, setValue] = React.useState(0);
-  const [username, setUsername] = React.useState(props.username);
   const [displayUser, setDisplayUser] = React.useState(true);
 
   const handleChange = (event, newValue) => {
@@ -103,12 +78,12 @@ export default function UserProfile(props) {
       <TabPanel value={value} index={0}>
         {displayUser ? (
           <DisplayUserProfile
-            username={username}
+            username={props.username}
             setDisplayUser={setDisplayUser}
           />
         ) : (
           <EditCreateUserProfile
-            username={username}
+            username={props.username}
             createUser={false}
             setDisplayUser={setDisplayUser}
           />

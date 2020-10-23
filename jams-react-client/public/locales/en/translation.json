@@ -231,5 +231,8 @@
     "validate": "Validate",
     "change_language": "Change language",
     "general": "General",
-    "device_id": "Device Id"
+    "device_id": "Device Id",
+    "add_user_to_group": "Add user to group ...",
+    "add_user_to_a_group": "Add user to a group",
+    "remove_from_group": "Remove from group"
 }

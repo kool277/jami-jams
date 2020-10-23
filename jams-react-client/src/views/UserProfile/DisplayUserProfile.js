@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import classnames from "classnames";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -17,22 +19,29 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import GroupIcon from "@material-ui/icons/Group";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+
+import Table from "@material-ui/core/Table";
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from "@material-ui/core/TableRow";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
 
 import Grid from "@material-ui/core/Grid";
+import GridItem from "components/Grid/GridItem.js";
 import BusinessCenterOutlinedIcon from "@material-ui/icons/BusinessCenterOutlined";
 import AlternateEmailOutlinedIcon from "@material-ui/icons/AlternateEmailOutlined";
 import PhoneInTalkOutlinedIcon from "@material-ui/icons/PhoneInTalkOutlined";
 import SmartphoneOutlinedIcon from "@material-ui/icons/SmartphoneOutlined";
 import LocalPrintshopOutlinedIcon from "@material-ui/icons/LocalPrintshopOutlined";
 import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
-import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 
 
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
-import DoneIcon from "@material-ui/icons/Done";
 import CardAvatar from "components/Card/CardAvatar";
+import PersonIcon from "../../../node_modules/@material-ui/icons/Person";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -56,11 +65,11 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 import axios from "axios";
-import PersonIcon from "../../../node_modules/@material-ui/icons/Person";
 
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 import PasswordDialog from "components/PasswordDialog/PasswordDialog";
+
+import TemporaryDrawer from "components/Drawer/Drawer"
 
 import i18next from "i18next";
 
@@ -161,6 +170,7 @@ export default function DisplayUserProfile(props) {
   const classes = useStyles();
   const history = useHistory();
   const [user, setUser] = React.useState([]);
+  const [groupMemberships, setGroupMemberships] = React.useState([]);
   const [revoked, setRevoked] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [revokedUser, setRevokedUser] = React.useState("");
@@ -168,7 +178,78 @@ export default function DisplayUserProfile(props) {
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [groups, setGroups] = React.useState([]);
-  const [zeroGroup, setZeroGroup] = React.useState(false);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+
+  const searchGroups = (value) => {
+    if(value === "") value = "*";
+    axios(
+      configApiCall(
+        api_path_get_list_group + "?groupName=" + value,
+        "GET",
+        null,
+        null
+      )
+    )
+      .then((response) => {
+        if(response.data.length > 1) setGroups(response.data);
+        else setGroups([response.data])
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 401) {
+          auth.authenticated = false;
+          history.push("/");
+        }
+      });
+  }
+
+  const updateUserInGroup = (group) => {
+    axios(
+      configApiCall(
+        api_path_get_list_group + "?groupName=" + group,
+        "GET",
+        null,
+        null
+      )
+    ).then((response)=>{
+      
+      let url = "";
+      let oldGroup = response.data.name;
+      if (response.blueprint == null) {
+        url =
+          api_path_put_update_group +
+          "?groupName=" +
+          response.data.name +
+          "&newName=" +
+          response.data.name +
+          "&blueprintName=&groupMembers=" +
+          [props.username];
+      } else {
+        url =
+          api_path_put_update_group +
+          "?groupName=" +
+          response.data.name +
+          "&newName=" +
+          response.data.name +
+          "&blueprintName=" +
+          group.data.blueprint +
+          "&groupMembers=" +
+          [props.username];
+      }
+  
+      axios(configApiCall(url, "PUT", null, null))
+        .then(() => {
+          let newGroupMemberships = groupMemberships;
+          if(newGroupMemberships.includes(oldGroup)) newGroupMemberships.splice(newGroupMemberships.indexOf(oldGroup), 1);
+          else newGroupMemberships.push(oldGroup);
+          setGroupMemberships(newGroupMemberships);
+        })
+        .catch((error) => {
+          console.log("Error updating group: " + error);
+        });
+    }).catch((error)=>{console.log(error)})
+
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -202,43 +283,10 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
-                const groupMemberships = response.data.groupMemberships;
-                axios(
-                  configApiCall(
-                    api_path_get_list_group + "?groupName=*",
-                    "GET",
-                    null,
-                    null
-                  )
-                )
-                  .then((response) => {
-                    let allGroups = response.data;
-                    if (allGroups.length === 0) setZeroGroup(true);
-                    else {
-                      setZeroGroup(false);
-
-                      allGroups.forEach((group) => {
-                        group.actif = false;
-                      });
-
-                      allGroups.forEach((group) => {
-                        groupMemberships.forEach((userGroup) => {
-                          if (group.name === userGroup) {
-                            group.actif = true;
-                          }
-                        });
-                      });
-                    }
-                    setGroups(allGroups);
-                    setLoading(false);
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                    if (error.response.status === 401) {
-                      auth.authenticated = false;
-                      history.push("/");
-                    }
-                  });
+                if(response.data.groupMemberships == [""]) setGroupMemberships([])
+                else setGroupMemberships(response.data.groupMemberships)
+                searchGroups("*")
+                setLoading(false);
               })
               .catch((error) => {
                 console.log(error);
@@ -271,6 +319,7 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
+                setGroupMemberships(response.data.groupMemberships)
                 setLoading(false);
               })
               .catch((error) => {
@@ -342,46 +391,7 @@ export default function DisplayUserProfile(props) {
     setChangePasswordOpen(false);
   };
 
-  const updateUserGroup = (group) => {
-    const newGroups = groups;
-    newGroups.forEach((g) => {
-      if (g === group) {
-        if (group.actif) g.actif = false;
-        else g.actif = true;
-      }
-    });
-    let url = "";
-    if (group.blueprint == null) {
-      url =
-        api_path_put_update_group +
-        "?groupName=" +
-        group.name +
-        "&newName=" +
-        group.name +
-        "&blueprintName=&groupMembers=" +
-        [props.username];
-    } else {
-      url =
-        api_path_put_update_group +
-        "?groupName=" +
-        group.name +
-        "&newName=" +
-        group.name +
-        "&blueprintName=" +
-        group.blueprint +
-        "&groupMembers=" +
-        [props.username];
-    }
-
-    axios(configApiCall(url, "PUT", null, null))
-      .then(() => {
-        setGroups(newGroups);
-      })
-      .catch((error) => {
-        console.log("Error updating group: " + error);
-      });
-  };
-
+  const tableCellClasses = classnames(classes.tableCell);
   
   return (
     <div>
@@ -419,8 +429,19 @@ export default function DisplayUserProfile(props) {
           <LinearProgress variant="determinate" value={progress} />
         )}
       </div>
+      <TemporaryDrawer 
+          openDrawer={openDrawer} 
+          setOpenDrawer={setOpenDrawer} 
+          direction="right" 
+          placeholder={i18next.t("add_user_to_group", "Add user to group ...")} 
+          searchTargets={searchGroups} 
+          targets={groups}
+          addElementToTarget={updateUserInGroup}
+          targetName={props.username}
+          type="group"
+      />
       {!loading && (<GridContainer>
-        <Grid item xs={12} sm={12} md={8}>
+        <Grid item xs={12} sm={12} md={6}>
           <Card profile>
             <CardBody profile>
               <div className={classes.root}>
@@ -473,16 +494,6 @@ export default function DisplayUserProfile(props) {
                           <ListItemText primary={user.phoneNumber} />
                         </ListItem>
                       )}
-                      {user.email && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <AlternateEmailOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.email} />
-                        </ListItem>
-                      )}
                       {user.organization && (
                         <ListItem>
                           <ListItemAvatar>
@@ -494,10 +505,18 @@ export default function DisplayUserProfile(props) {
                         </ListItem>
                       )}
                     </List>
-                  </Grid>
 
-                  <Grid item xs={12} sm={12} md={6}>
                     <List dense={false}>
+                      {user.email && (
+                        <ListItem>
+                          <ListItemAvatar>
+                            <Avatar>
+                              <AlternateEmailOutlinedIcon />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={user.email} />
+                        </ListItem>
+                      )}
                       {user.phoneNumberExtension && (
                         <ListItem>
                           <ListItemAvatar>
@@ -526,29 +545,6 @@ export default function DisplayUserProfile(props) {
                             </Avatar>
                           </ListItemAvatar>
                           <ListItemText primary={user.faxNumber} />
-                        </ListItem>
-                      )}
-                      {auth.hasAdminScope() && !zeroGroup && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <GroupIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <div className={classes.groups}>
-                            {groups.map((group) => (
-                              <Chip
-                                style={{ flex: 1 }}
-                                label={group.name}
-                                variant="default"
-                                clickable
-                                size="medium"
-                                onClick={() => updateUserGroup(group)}
-                                color={group.actif ? "primary" : "default"}
-                                icon={group.actif ? <DoneIcon /> : ""}
-                              />
-                            ))}
-                          </div>
                         </ListItem>
                       )}
                     </List>
@@ -597,6 +593,31 @@ export default function DisplayUserProfile(props) {
             </CardFooter>
           </Card>
         </Grid>
+          {auth.hasAdminScope() && (
+            <GridItem xs={12} sm={12} md={12}>
+                <Button color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_user_to_a_group", "Add user to a group")}</Button>
+                <Table className={classes.table}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left">{i18next.t("group_name", "Group name")}</TableCell>
+                            <TableCell align="right">{i18next.t("action", "Action")}</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {groupMemberships.map(group =>
+                            <TableRow key={group} className={classes.tableRow}>
+                                <TableCell className={tableCellClasses}>
+                                    {group}
+                                </TableCell>
+                                <TableCell align="right" className={classes.tableActions}>
+                                    <Button color="primary" onClick={() => updateUserInGroup(group)}>{i18next.t("remove_from_group", "Remove from group")}</Button>
+                                </TableCell>
+                            </TableRow>
+                        ) }
+                    </TableBody>
+                </Table>
+            </GridItem>
+          )}
       </GridContainer>
       )}
     </div>

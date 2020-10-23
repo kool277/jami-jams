@@ -8,8 +8,7 @@ import {
     api_path_get_install_lastKnownStep,
     api_path_get_directories,
     api_path_get_subscription_status,
-    api_path_get_needs_update,
-    api_path_get_start_update
+    api_path_get_needs_update
 } from "globalUrls";
 
 class Auth {
@@ -56,9 +55,9 @@ class Auth {
     login(jsonData, cb) {
         this.deleteJWT()
         axios(configApiCall(api_path_post_auth_login, "POST", jsonData, null)).then((response) => {
-            if(response.status == 200){
+            if(response.status === 200){
                 this.setJWT(response.data['access_token']);
-                this.setScope(response.data["scope"] == "ADMIN" ? true : false);
+                this.setScope(response.data["scope"] === "ADMIN" ? true : false);
                 this.setUsername(jsonData.username);
                 this.authenticated = true;
             }
@@ -85,10 +84,10 @@ class Auth {
 
     checkDirectoryType(cb){
         axios(configApiCall(api_path_get_directories, "GET", null, null)).then((response) => {
-            if (response.data.length == 1) {
+            if (response.data.length === 1) {
                 this.setLocalDirectory(true);
             }
-            else if (response.data.length == 2){
+            else if (response.data.length === 2){
                 this.setLocalDirectory(false);
             }else{
                 console.log("Error getting on checkDirectoryType: Size of directory types is " + response.data.length);
@@ -102,12 +101,12 @@ class Auth {
 
     checkAdminAccountStatus(cb) {
         axios(configApiCall(api_path_post_install_admin, "GET", null, null)).then((response) => {
-            if (response['headers']['showlogin'] == "true") {
+            if (response['headers']['showlogin'] === "true") {
                 this.admin = true;
             }
             cb()
         }).catch((error) => {
-            if(error.response.status == 404){
+            if(error.response.status === 404){
                 this.admin = true;
             }
             else{
@@ -119,7 +118,7 @@ class Auth {
 
     isServerInstalled(cb) {
         axios(configApiCall(api_path_get_server_status, "GET", null, null)).then((response) => {                       
-            if (response.data['installed'] == 'true') {
+            if (response.data['installed'] === 'true') {
                 this.installed = true
                 console.log("Server is installed")
             } else {
@@ -143,7 +142,7 @@ class Auth {
                 this.authenticated = true;
                 cb()
             }).catch((error) => {
-                if(error.response.status == 401){
+                if(error.response.status === 401){
                     this.authenticated = false;
                     console.log("Error during API request on checkLastKnowStep not authenticated!");
                 }

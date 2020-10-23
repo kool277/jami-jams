@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import classnames from "classnames";
 
 // @material-ui/core components
@@ -26,8 +26,6 @@ import TableCell from "@material-ui/core/TableCell";
 
 import Select from "@material-ui/core/Select";
 
-import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
-
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
@@ -40,18 +38,22 @@ import configApiCall from "../../api"
 import {
     api_path_get_list_group,
     api_path_put_update_group,
-    api_path_blueprints,
-    api_path_get_auth_contacts
+    api_path_get_user_directory_search,
+    api_path_get_user_profile
 } from "../../globalUrls"
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import devicesStyle from "assets/jss/material-dashboard-react/components/devicesStyle.js";
+import Avatar from "@material-ui/core/Avatar";
+
+import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 import TemporaryDrawer from "components/Drawer/Drawer"
 import * as tool from "../../tools";
-import auth from 'auth.js'
 
 import i18next from "i18next";
+
+import auth from "auth.js";
 
 const useStyles = makeStyles((theme) => ({
     ...devicesStyle,
@@ -98,37 +100,74 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EditGroup(props) {
     const classes = useStyles();
+    const history = useHistory();
 
     const [name, setName] = React.useState(props.groupName);
     const [newName, setNewName] = React.useState(props.groupName);
     const [blueprint, setBlueprint] = React.useState(null);
     const [groupMembers, setGroupMembers] = React.useState([]);
     const [openDrawer, setOpenDrawer] = React.useState(false);
+    const [users, setUsers] = React.useState([]);
+
+    const getUserInfo = username => new Promise((resolve, reject) => {
+        axios(
+            configApiCall(
+              api_path_get_user_profile + username,
+              "GET",
+              null,
+              null
+            )
+          )
+            .then((response) => {
+                resolve(response.data);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    })
+
+    const getUsersInformation = userNames => {
+        userNames.forEach((username)=> {
+            getUserInfo(username).then((userInfo) => setGroupMembers(groupMembers.push(userInfo)))
+        })
+    }
 
     const getGroup = () => {
         axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
             let groups=response.data;
             if(groups.length > 1){
                 groups.map((group) => {
-                    if(group.name == props.groupName){
+                    if(group.name === props.groupName){
                         props.getBlueprintsOptions().forEach((blueprintOption) => {
                             if(blueprintOption.label === group["blueprint"]){
                                 console.log("Group option value : " + blueprintOption.value);
                                 setBlueprint(blueprintOption.value);
                             }
                         })
-                        setGroupMembers(group["groupMembers"]);
+                        
+                            getUserInfo(group["groupMembers"]).then((userInfo) => {
+                                let newGroupMembers = groupMembers;
+                                newGroupMembers.push(userInfo);
+                                setGroupMembers(newGroupMembers);
+                            })
                     }
                 })
             }
             else{
-                if(groups.name == props.groupName){
+                if(groups.name === props.groupName){
                     props.getBlueprintsOptions().forEach((blueprintOption) => {
                         if(blueprintOption.label === groups["blueprint"]){
                             setBlueprint(blueprintOption.value)
                         }
                     })
-                    setGroupMembers(groups.groupMembers)
+                    groups["groupMembers"].forEach((username)=> {
+                        getUserInfo(username).then((userInfo) => {
+                            let newGroupMembers = groupMembers;
+                            newGroupMembers.push(userInfo);
+                            setGroupMembers(newGroupMembers);
+                        })
+                    })
+ 
                 }
             }
 
@@ -155,6 +194,7 @@ export default function EditGroup(props) {
 
     React.useEffect(()=>{
         getGroup();
+        searchUsers();
     }, [])
 
     const handleUpdateGroup = (blueprintValue) => {
@@ -168,23 +208,47 @@ export default function EditGroup(props) {
 
         axios(configApiCall(url, 'PUT', null, null)).then((response) => {
             setNewName(name);
-            getGroup();
+            setBlueprint(blueprintValue);
         }).catch((error) => {
             console.log("Error updating group: " + error)
         })
     }
 
-    const removeUserFromGroup = (user) => {
+    const searchUsers = (value) => {
+        axios(
+          configApiCall(
+            api_path_get_user_directory_search,
+            "GET",
+            { queryString: value ? value : "*", page: "1" },
+            null
+          )
+        )
+          .then((response) => {
+            setUsers(response.data.profiles);
+          })
+          .catch((error) => {
+            console.log(error);
+            setUsers([]);
+            if (error.response.status === 401) {
+              auth.authenticated = false;
+              history.push("/");
+            }
+          });
+      };
 
+    const updateUserInGroup = (user) => {
         let url = '';
         if(blueprint == null){
-            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName=&groupMembers="+[user,];
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName=&groupMembers="+[user.username,];
         }else{
-            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.getBlueprintsOptions()[blueprint].label+"&groupMembers="+[user,];
+            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.getBlueprintsOptions()[blueprint].label+"&groupMembers="+[user.username,];
         }
 
         axios(configApiCall(url, 'PUT', null, null)).then((response) => {
-            getGroup()
+            let newGroupMembers = groupMembers;
+            if(newGroupMembers.includes(user)) newGroupMembers.splice(newGroupMembers.indexOf(user), 1);
+            else newGroupMembers.push(user);
+            setGroupMembers(newGroupMembers);
         }).catch((error) => {
             console.log("Error updating group: " + error)
         })
@@ -199,7 +263,17 @@ export default function EditGroup(props) {
 
     return(
         <div>
-            <TemporaryDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} direction="right" addingToGroup={true} placeholder="Add user ..." groupName={name === ''?props.groupName:name} blueprintLabel={ blueprint == null ? null : props.getBlueprintsOptions()[blueprint].label} getGroup={getGroup}/>
+            <TemporaryDrawer 
+                openDrawer={openDrawer} 
+                setOpenDrawer={setOpenDrawer} 
+                direction="right" 
+                placeholder={i18next.t("add_user_to_group", "Add user to group ...")} 
+                searchTargets={searchUsers} 
+                targets={users}
+                addElementToTarget={updateUserInGroup}
+                targetName={name}
+                type="user"
+            />
             <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>
                     <Card profile>
@@ -263,21 +337,41 @@ export default function EditGroup(props) {
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>{i18next.t("username", "Username")}</TableCell>
+                                <TableCell align="left"></TableCell>
+                                <TableCell align="left">{i18next.t("username", "Username")}</TableCell>
+                                <TableCell align="left">{i18next.t("first_name", "First name")}</TableCell>
+                                <TableCell align="left">{i18next.t("last_name", "Last name")}</TableCell>
                                 <TableCell align="right">{i18next.t("action", "Action")}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {groupMembers.map(user =>
-                                <TableRow key={user} className={classes.tableRow}>
+                            {groupMembers.map(user =>                       
+                                <TableRow key={user.username} className={classes.tableRow}>
+                                    <TableCell  className={tableCellClasses}>
+                                        <Avatar
+                                            style={{ marginRight: "10px" }}
+                                            alt={user.username}
+                                            src={
+                                                user.profilePicture
+                                                ? "data:image/png;base64, " + user.profilePicture
+                                                : noProfilePicture
+                                            }
+                                        />
+                                    </TableCell>
                                     <TableCell className={tableCellClasses}>
-                                        {user}
+                                        {user.username}
+                                    </TableCell>
+                                    <TableCell className={tableCellClasses}>
+                                        {user.firstName}
+                                    </TableCell>
+                                    <TableCell className={tableCellClasses}>
+                                        {user.lastName}
                                     </TableCell>
                                     <TableCell align="right" className={classes.tableActions}>
-                                        <Button color="primary" onClick={() => removeUserFromGroup(user)}>{i18next.t("remove_user", "Remove user")}</Button>
+                                        <Button color="primary" onClick={() => updateUserInGroup(user)}>{i18next.t("remove_user", "Remove user")}</Button>
                                     </TableCell>
                                 </TableRow>
-                            ) }
+                            )}
                         </TableBody>
                     </Table>
                 </GridItem>

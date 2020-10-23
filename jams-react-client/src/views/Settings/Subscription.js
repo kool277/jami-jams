@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from "react";
-import { useHistory } from "react-router-dom";
+import React, {useEffect} from "react";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
@@ -11,14 +10,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 
 import axios from 'axios';
 import configApiCall from '../../api'
 import { api_path_post_configuration_register_license } from '../../globalUrls'
-
-import auth from '../../auth'
 
 import i18next from "i18next";
 
@@ -44,14 +40,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Subscription(props) {
     const classes = useStyles();
-    const history = useHistory();
     const [activated, setActivated] = React.useState(false);
 
     useEffect(()=>{
         axios(configApiCall(api_path_post_configuration_register_license, "GET", null, null)).then((response)=>{
-            if(response.data["activated"] == true) setActivated(true);
+            if(response.data["activated"] === true) setActivated(true);
         }).catch((error)=>{
-            if(error.response.status == 500){
+            if(error.response.status === 500){
                 props.setErrorMessage(i18next.t("an_error_occured_while_getting_license_information", "An error occurred while getting subscription information!"));
                 props.setSeverity("error");
                 props.setError(true);
@@ -86,7 +81,7 @@ export default function Subscription(props) {
             props.setSeverity("success");
             props.setError(true);
         }).catch((error)=>{
-            if(error.response.status == 500){
+            if(error.response.status === 500){
                 props.setErrorMessage(i18next.t("a_generic_occured_while_trying_to_load_license_or_license_could_not_be_found", "A generic occurred while trying to load your subscription or your subscription could not be found!"));
                 props.setSeverity("error");
                 props.setError(true);

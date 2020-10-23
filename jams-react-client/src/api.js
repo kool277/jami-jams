@@ -19,41 +19,15 @@
  */
 
 import {
-  uri,
-  current_uri,
-  backend_address,
   url_path,
   url_port,
-  api_path_post_install_admin,
-  api_path_post_auth_login,
-  api_path_post_install_ca,
-  api_path_post_install_auth,
-  api_path_post_install_server,
-  api_path_get_install_lastKnownStep,
   api_path_get_auth_user_search,
   api_path_get_auth_devices,
   api_path_get_admin_devices,
-  api_path_delete_admin_user_revoke,
-  api_path_delete_auth_user_revoke,
-  api_path_delete_auth_device_revoke,
-  api_path_rename_device,
-  api_path_get_server_status,
-  api_path_get_post_configuration_auth_service,
-  api_path_get_post_configuration_global_settings,
   api_path_post_configuration_change_password,
-  api_path_post_configuration_register_license,
-  api_path_get_subscription_status,
-  api_path_get_directories,
-  api_path_get_needs_update,
-  api_path_get_start_update,
   api_path_post_create_user,
-  api_path_get_auth_user,
   api_path_post_update_user,
-  api_path_get_exists_user,
   api_path_get_user_directory_search,
-  api_path_post_create_user_profile,
-  api_path_put_update_user_profile,
-  api_path_get_user_search,
   api_path_blueprints,
 } from "globalUrls";
 
@@ -92,20 +66,20 @@ export default function configApiCall(
   // pass data in the header
   if (data) {
     if (
-      api_path == api_path_get_user_directory_search ||
-      api_path == api_path_get_auth_user_search ||
-      (api_path == api_path_post_create_user && request_type == "POST") ||
-      (api_path.includes(api_path_blueprints) && request_type == "POST") ||
-      api_path == api_path_post_update_user ||
-      api_path == api_path_get_auth_devices ||
-      api_path == api_path_get_admin_devices ||
-      api_path == api_path_post_configuration_change_password
+      api_path === api_path_get_user_directory_search ||
+      api_path === api_path_get_auth_user_search ||
+      (api_path === api_path_post_create_user && request_type === "POST") ||
+      (api_path.includes(api_path_blueprints) && request_type === "POST") ||
+      api_path === api_path_post_update_user ||
+      api_path === api_path_get_auth_devices ||
+      api_path === api_path_get_admin_devices ||
+      api_path === api_path_post_configuration_change_password
     )
       isSearch = true;
 
     // search dataType
     if (isSearch) {
-      if (request_type == "GET" || request_type == "DELETE") {
+      if (request_type === "GET" || request_type === "DELETE") {
         config["params"] = data;
       } else {
         config["data"] = data;

@@ -1,6 +1,4 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
-
 import clsx from "clsx";
 
 // @material-ui/core components
@@ -171,7 +169,6 @@ const StyledRadio = (props) => {
 
 export default function EditBlueprintConfiguration(props) {
   const classes = useStyles();
-  const history = useHistory();
 
   const [videoEnabled, setVideoEnabled] = React.useState(true);
   const [publicInCalls, setPublicInCalls] = React.useState(true);
@@ -250,7 +247,7 @@ export default function EditBlueprintConfiguration(props) {
             error
         );
       });
-  }, []);
+  }, [props.blueprintName, props.username]);
 
   const handleUpdateConfiguration = (field, value, selectedOptions = []) => {
     let data = {
@@ -287,17 +284,17 @@ export default function EditBlueprintConfiguration(props) {
         delete data.dhtProxyListUrl;
       }
 
-      if (selectedOption == "customTurn") {
+      if (selectedOption === "customTurn") {
         data.turnEnabled = true;
       }
-      if (selectedOption == "customDHTProxy") {
+      if (selectedOption === "customDHTProxy") {
         data.proxyEnabled = true;
       }
 
-      if (selectedOption == "disabledTurn") {
+      if (selectedOption === "disabledTurn") {
         data.turnEnabled = false;
       }
-      if (selectedOption == "disabledDHTProxy") {
+      if (selectedOption === "disabledDHTProxy") {
         data.proxyEnabled = false;
       }
     });
@@ -441,7 +438,7 @@ export default function EditBlueprintConfiguration(props) {
                           row
                           style={{
                             display:
-                              selectedTurnOption == "customTurn"
+                              selectedTurnOption === "customTurn"
                                 ? "block"
                                 : "none",
                           }}
@@ -473,7 +470,7 @@ export default function EditBlueprintConfiguration(props) {
                           row
                           style={{
                             display:
-                              selectedTurnOption == "customTurn"
+                              selectedTurnOption === "customTurn"
                                 ? "block"
                                 : "none",
                           }}
@@ -505,7 +502,7 @@ export default function EditBlueprintConfiguration(props) {
                           row
                           style={{
                             display:
-                              selectedTurnOption == "customTurn"
+                              selectedTurnOption === "customTurn"
                                 ? "block"
                                 : "none",
                           }}
@@ -582,7 +579,7 @@ export default function EditBlueprintConfiguration(props) {
                             size="large"
                             style={{
                               display:
-                                selectedDHTProxyOption == "customDHTProxy"
+                                selectedDHTProxyOption === "customDHTProxy"
                                   ? "block"
                                   : "none",
                             }}
@@ -615,7 +612,7 @@ export default function EditBlueprintConfiguration(props) {
                             size="large"
                             style={{
                               display:
-                                selectedDHTProxyOption == "customDHTProxy"
+                                selectedDHTProxyOption === "customDHTProxy"
                                   ? "block"
                                   : "none",
                             }}

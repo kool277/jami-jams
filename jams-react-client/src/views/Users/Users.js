@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import { Switch, Route, Redirect } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 import Pagination from "@material-ui/lab/Pagination";
 // core components
 import GridItem from "components/Grid/GridItem.js";
@@ -11,25 +9,19 @@ import GridContainer from "components/Grid/GridContainer.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
+
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import CardFooter from "components/Card/CardFooter.js";
+
 import UserProfile from "views/UserProfile/UserProfile.js";
-import Divider from "@material-ui/core/Divider";
-import PersonIcon from "@material-ui/icons/Person";
-import PermIdentityIcon from "@material-ui/icons/PermIdentity";
-import PhoneOutlinedIcon from "@material-ui/icons/PhoneOutlined";
 import InfoIcon from "@material-ui/icons/Info";
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
 import Search from "@material-ui/icons/Search";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from "auth.js";
 import { api_path_get_user_directory_search } from "globalUrls";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 import EditCreateUserProfile from "views/UserProfile/EditCreateUserProfile";
@@ -113,7 +105,7 @@ export default function Users(props) {
       )
     )
       .then((response) => {
-        if (response.status != 204) {
+        if (response.status !== 204) {
           setUsers(response.data.profiles);
 
           setNumberPages(response.data.numPages);
@@ -124,7 +116,7 @@ export default function Users(props) {
       })
       .catch((error) => {
         console.log(error);
-        if (error.response.status == 401) {
+        if (error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");
         }
@@ -144,15 +136,6 @@ export default function Users(props) {
     setLoading(true);
     setNoMatchFound(false);
     setUsers([]);
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
     axios(
       configApiCall(
         api_path_get_user_directory_search,
@@ -163,7 +146,7 @@ export default function Users(props) {
     )
       .then((response) => {
         setLoading(false);
-        if (response.status != 204) {
+        if (response.status !== 204) {
           setUsers(response.data.profiles);
           setNumberPages(response.data.numPages);
         } else {
@@ -175,7 +158,7 @@ export default function Users(props) {
         setUsers([]);
 
         setNoMatchFound(true);
-        if (error.response.status == 401) {
+        if (error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");
         }
@@ -193,13 +176,13 @@ export default function Users(props) {
   const handleChangePage = (e, page) => {
     searchUsers(searchValue, page);
   };
-  if (!auth.hasAdminScope() && auth.getUsername() != "") {
+  if (!auth.hasAdminScope() && auth.getUsername() !== "") {
     return (
       <div>
         <UserProfile username={auth.getUsername()} />
       </div>
     );
-  } else if (selectedProfile && auth.hasAdminScope() && selectedUsername != "") {
+  } else if (selectedProfile && auth.hasAdminScope() && selectedUsername !== "") {
     return (
       <div>
         <UserProfile username={selectedUsername} />

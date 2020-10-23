@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,6 +26,7 @@ import {
   api_path_delete_admin_contacts,
   api_path_get_ns_name_from_addr,
   api_path_get_user_profile,
+  api_path_get_user_directory_search
 } from "globalUrls";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -79,6 +80,7 @@ export default function Users(props) {
   const classes = useStyles();
   const history = useHistory();
   const [contacts, setContacts] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
   const [searchValue, setSearchValue] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -87,7 +89,30 @@ export default function Users(props) {
   const [removedContactName, setRemovedContactName] = React.useState();
   const [open, setOpen] = React.useState(false);
 
+  const searchContacts = (value) => {
+    axios(
+      configApiCall(
+        api_path_get_user_directory_search,
+        "GET",
+        { queryString: value ? value : "*", page: "1" },
+        null
+      )
+    )
+      .then((response) => {
+        setUsers(response.data.profiles);
+      })
+      .catch((error) => {
+        console.log(error);
+        setUsers([]);
+        if (error.response.status === 401) {
+          auth.authenticated = false;
+          history.push("/");
+        }
+      });
+  }
+
   const getAllContacts = () => {
+    
     if (auth.hasAdminScope()) {
       axios(
         configApiCall(
@@ -176,10 +201,51 @@ export default function Users(props) {
         })
         .catch((error) => {
           console.log(error);
-          if (error.response.status == 401) {
+          if (error.response.status === 401) {
             auth.authenticated = false;
             history.push("/");
           }
+        });
+    }
+  };
+
+  const addContactToUser = (value) => {
+
+    const data = {
+      owner: props.username,
+      uri: value.id,
+      displayName: `${value.firstName} ${value.lastName}`,
+      timestamp: "",
+      status: "",
+      banned: false,
+      confirmed: false,
+    };
+    if (auth.hasAdmin()) {
+      axios(
+        configApiCall(
+          api_path_get_admin_contacts + "?username=" + props.username,
+          "PUT",
+          data,
+          null
+        )
+      )
+        .then((response) => {
+          getAllContacts();
+          setOpenDrawer(false);
+        })
+        .catch((error) => {
+          console.log("Error adding user: " + error);
+          setOpenDrawer(false);
+        });
+    } else {
+      axios(configApiCall(api_path_get_auth_contacts, "PUT", data, null))
+        .then((response) => {
+          getAllContacts();
+          setOpenDrawer(false);
+        })
+        .catch((error) => {
+          console.log("Error adding user: " + error);
+          setOpenDrawer(false);
         });
     }
   };
@@ -195,6 +261,7 @@ export default function Users(props) {
         return Math.min(oldProgress + diff, 100);
       });
     }, 500);
+    searchContacts();
     getAllContacts();
     return () => {
       clearInterval(timer);
@@ -251,14 +318,16 @@ export default function Users(props) {
 
   return (
     <div>
-      <TemporaryDrawer
-        isAdmin={auth.hasAdminScope()}
-        username={props.username}
-        openDrawer={openDrawer}
-        setOpenDrawer={setOpenDrawer}
-        direction="right"
-        addingToGroup={false}
+      <TemporaryDrawer 
+        openDrawer={openDrawer} 
+        setOpenDrawer={setOpenDrawer} 
+        direction="right" 
         placeholder={i18next.t("add_contact", "Add contact…")}
+        searchTargets={searchContacts} 
+        targets={users}
+        addElementToTarget={addContactToUser}
+        targetName={props.username}
+        type="user"
       />
       <Dialog
         open={open}
@@ -348,10 +417,10 @@ export default function Users(props) {
                     />
                   </CardAvatar>
                   <h4 className={classes.cardTitle}>
-                    {contact.firstName != ""
+                    {contact.firstName !== ""
                       ? contact.firstName
                       : "No first name"}{" "}
-                    {contact.lastName != "" ? contact.lastName : "No last name"}
+                    {contact.lastName !== "" ? contact.lastName : "No last name"}
                   </h4>
                   <ul>
                     <li>
@@ -385,7 +454,7 @@ export default function Users(props) {
               </Card>
             </GridItem>
           ))}
-        {contacts == [] && props.username + i18next.t("has_no_contacts", " has no contacts")}
+        {contacts === [] && props.username + i18next.t("has_no_contacts", " has no contacts")}
       </GridContainer>
     </div>
   );

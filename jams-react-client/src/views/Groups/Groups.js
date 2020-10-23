@@ -15,7 +15,6 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 
 import IconButton from "@material-ui/core/IconButton";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import Search from "@material-ui/icons/Search";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
@@ -36,7 +35,6 @@ import {
 } from "globalUrls";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
 import EditGroup from "views/Groups/EditGroup";
 
 import FormControl from "@material-ui/core/FormControl";
@@ -137,22 +135,18 @@ export default function Groups() {
     history.push("/admin/groups");
   };
 
-  const loadBlueprints = () => {
-    axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
-      .then((response) => {
-        setBlueprints(response.data);
-        setSelectedBlueprint(getBlueprintsOptions()[0]);
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.status === 401) {
-          auth.authenticated = false;
-          history.push("/");
-        }
-        if (error.response.status === 500) {
-          setBlueprints([]);
-        }
+  const getBlueprintsOptions = () => {
+    let blueprintsOptions = [];
+    let index = 0;
+    if (blueprints.length === 0)
+      blueprintsOptions.push({ value: index, label: "No blueprint found" });
+    else {
+      blueprints.map((blueprint) => {
+        blueprintsOptions.push({ value: index, label: blueprint.name });
+        index += 1;
       });
+    }
+    return blueprintsOptions;
   };
 
   useEffect(() => {
@@ -177,6 +171,21 @@ export default function Groups() {
           setZeroGroup(false);
         }
         setGroups(allGroups);
+        axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
+        .then((response) => {
+          setBlueprints(response.data);
+          setSelectedBlueprint(getBlueprintsOptions()[0]);
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.status === 401) {
+            auth.authenticated = false;
+            history.push("/");
+          }
+          if (error.response.status === 500) {
+            setBlueprints([]);
+          }
+        });
         setLoading(false);
       })
       .catch((error) => {
@@ -186,11 +195,10 @@ export default function Groups() {
           history.push("/");
         }
       });
-    loadBlueprints();
     return () => {
       clearInterval(timer);
     };
-  }, [openCreate, openRemoveDialog]);
+  }, [openCreate, openRemoveDialog, history]);
 
   const [selectedGroup, setSelectedGroup] = useState(false);
 
@@ -260,20 +268,6 @@ export default function Groups() {
         setOpenCreate(false);
       });
     history.push("/admin/groups");
-  };
-
-  const getBlueprintsOptions = () => {
-    let blueprintsOptions = [];
-    let index = 0;
-    if (blueprints.length === 0)
-      blueprintsOptions.push({ value: index, label: "No blueprint found" });
-    else {
-      blueprints.map((blueprint) => {
-        blueprintsOptions.push({ value: index, label: blueprint.name });
-        index += 1;
-      });
-    }
-    return blueprintsOptions;
   };
 
   const blueprintsOptionsItems = tool.buildSelectMenuItems(
@@ -349,7 +343,7 @@ export default function Groups() {
                   {disableCreate && groupName.length > 0 && (
                     <p>{i18next.t("group_name_already_exists", "Group name already exists!")}</p>
                   )}
-                  {disableCreate && groupName.length == 0 && (
+                  {disableCreate && groupName.length === 0 && (
                     <p>{i18next.t("group_name_is_empty", "Group name is empty")}</p>
                   )}
                 </Grid>
@@ -453,7 +447,13 @@ export default function Groups() {
                 }
               })
               .map((group) => (
-                <GridItem xs={12} sm={12} md={2} key={group.name}>
+                <GridItem                  
+                  xs={12}
+                  sm={6}
+                  md={3}
+                  lg={2}
+                  xl={2} 
+                  key={group.name}>
                   <Card profile>
                       <a
                         href="#"

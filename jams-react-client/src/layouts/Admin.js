@@ -9,7 +9,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "components/Navbars/Navbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import Snackbar from "@material-ui/core/Snackbar";
 
 // @material-ui/icons
 import Person from "@material-ui/icons/Person";
@@ -31,21 +30,15 @@ import logo from "assets/img/logo-jams.svg";
 import auth from "auth";
 import configApiCall from "api.js";
 import {
-  api_path_get_start_update,
-  api_path_get_subscription_status,
+  api_path_get_start_update
 } from "globalUrls";
 
 import axios from "axios";
 
-import ReactDOM from "react-dom";
-import { ConfiguredRoute } from "../configured.route";
-import SignIn from "./SignIn";
-import { ProtectedRoute } from "../protected.route";
+
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
-import { Field, Formik } from "formik";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
-import TextField from "@material-ui/core/TextField/TextField";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
 import Button from "@material-ui/core/Button";
@@ -68,10 +61,6 @@ export default function Admin({ ...rest }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
-  const [signedUp, setSignedUp] = React.useState(false);
-  const [signedIn, setSignedIn] = React.useState(false);
-  const [token, setToken] = React.useState(false);
-  const [severity, setSeverity] = React.useState("success");
   const [openUpdate, setOpenUpdate] = React.useState(false);
   const [dialogMessage, setDialogMessage] = React.useState("");
   const [messageYes, setMessageYes] = React.useState("");
@@ -137,19 +126,6 @@ export default function Admin({ ...rest }) {
     </Switch>
   );
 
-  const handleImageClick = (image) => {
-    setImage(image);
-  };
-  const handleColorClick = (color) => {
-    setColor(color);
-  };
-  const handleFixedClick = () => {
-    if (fixedClasses === "dropdown") {
-      setFixedClasses("dropdown show");
-    } else {
-      setFixedClasses("dropdown");
-    }
-  };
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };

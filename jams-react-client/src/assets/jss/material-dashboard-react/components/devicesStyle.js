@@ -26,11 +26,11 @@ const tasksStyle = {
   },
   tableCell: {
     ...defaultFont,
-    padding: "8px",
     verticalAlign: "middle",
     border: "none",
     lineHeight: "1.42857143",
-    fontSize: "14px"
+    fontSize: "14px",
+    textAlign: "left"
   },
   tableCellRTL: {
     textAlign: "right"
