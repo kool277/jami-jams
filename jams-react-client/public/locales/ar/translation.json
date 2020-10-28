@@ -230,5 +230,9 @@
     "blueprint_name": "Blueprint name",
     "validate": "Validate",
     "change_language": "Change language",
-    "general": "General"
+    "general": "General",
+    "device_id": "Device Id",
+    "add_user_to_group": "Add user to group ...",
+    "add_user_to_a_group": "Add user to a group",
+    "remove_from_group": "Remove from group"
 }
