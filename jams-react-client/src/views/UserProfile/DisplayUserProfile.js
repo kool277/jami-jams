@@ -191,15 +191,21 @@ export default function DisplayUserProfile(props) {
       )
     )
       .then((response) => {
-        if(response.data.length > 1) setGroups(response.data);
-        else setGroups([response.data])
+        setGroups(response.data);
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response.status === 401) {
-          auth.authenticated = false;
-          history.push("/");
+        if (error.response) {
+          if (error.response.status === 401) {
+            auth.authenticated = false;
+            history.push("/");
+          }else {
+            setGroups([]);
+            console.log(error.response);
+          }
+        } else {
+          setGroups([]);
         }
+ 
       });
   }
 
@@ -215,7 +221,7 @@ export default function DisplayUserProfile(props) {
       
       let url = "";
       let oldGroup = response.data.name;
-      if (response.blueprint == null) {
+      if (response.data.blueprint == null) {
         url =
           api_path_put_update_group +
           "?groupName=" +
@@ -232,7 +238,7 @@ export default function DisplayUserProfile(props) {
           "&newName=" +
           response.data.name +
           "&blueprintName=" +
-          group.data.blueprint +
+          response.data.blueprint +
           "&groupMembers=" +
           [props.username];
       }
@@ -283,7 +289,9 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
-                if(response.data.groupMemberships == [""]) setGroupMemberships([])
+                if(response.data.groupMemberships.length === 1 && response.data.groupMemberships[0] === "") {
+                  setGroupMemberships([]);
+                }
                 else setGroupMemberships(response.data.groupMemberships)
                 searchGroups("*")
                 setLoading(false);
@@ -319,7 +327,10 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
-                setGroupMemberships(response.data.groupMemberships)
+                if(response.data.groupMemberships.length === 1 && response.data.groupMemberships[0] === "") {
+                  setGroupMemberships([]);
+                }
+                else setGroupMemberships(response.data.groupMemberships)
                 setLoading(false);
               })
               .catch((error) => {
@@ -604,7 +615,7 @@ export default function DisplayUserProfile(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {groupMemberships.map(group =>
+                        {groupMemberships !== [""] && groupMemberships.map(group =>
                             <TableRow key={group} className={classes.tableRow}>
                                 <TableCell className={tableCellClasses}>
                                     {group}

@@ -13,12 +13,18 @@ import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 import { debounce } from "lodash";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   list: {
     width: "100%",
+    [theme.breakpoints.up("xl")]: {
+      width: "400px",
+    }
   },
   fullList: {
     width: "100%",
+    [theme.breakpoints.up("xl")]: {
+      width: "400px",
+    }
   },
   search: {
     width: "100%",
@@ -27,19 +33,18 @@ const useStyles = makeStyles({
     marginLeft: "5px",
     marginRight: "5px",
   },
-});
+}));
 
 export default function TemporaryDrawer(props) {
   const classes = useStyles();
 
   useEffect(() => {
-      console.log(props.targets)
   }, []);
 
 
   const listUsers = () => (
     <List>
-      {props.type === "user" ? props.targets.map((target) => (
+      {props.type === "user" ? ( props.targets && props.targets.map((target) => (
         <ListItem
           button
           key={target.username}
@@ -67,7 +72,7 @@ export default function TemporaryDrawer(props) {
             }
           />
         </ListItem>
-      )) : props.targets.map((target) => (      
+      ))) : ( props.targets && props.targets.map((target) => (      
         <ListItem
           button
           key={target.name}
@@ -80,7 +85,7 @@ export default function TemporaryDrawer(props) {
             primary={target.name}
           />
         </ListItem>
-      ))}
+      )))}
     </List>
   );
 
