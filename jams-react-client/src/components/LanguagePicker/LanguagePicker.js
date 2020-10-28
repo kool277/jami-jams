@@ -13,14 +13,14 @@ import { useTranslation } from "react-i18next";
 export default function LanguagePicker(props) {
   const history = useHistory();
   const [language, setLanguage] = React.useState(i18next.language || window.localStorage.i18nextLng || "en");
-  const [languages, setLanguages] = React.useState([{ "code": "en", "name": "English"}]);
+  const [languages, setLanguages] = React.useState([]);
 
   const { i18n } = useTranslation();
 
   useEffect(() => {
     fetch("/available_languages.json").then(res => res.json()).then((result) => {
       const response = result.languages;
-      let translates_languages = [];
+      let translates_languages = [{ "code": "en", "name": "English"}];
       
       response.forEach((lang) =>
       {
