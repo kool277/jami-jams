@@ -114,29 +114,33 @@ export default function ServerParameters(props) {
   }
 
   function handleSubmit(values) {
-    let jsonData = {};
-    let re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
-    if (values.domain.match(re)) {
-      jsonData = {
-        serverDomain: values.domain,
-        crlLifetime: certificateRevocation.value,
-        deviceLifetime: deviceLifetime.value,
-        userLifetime: userAccountLifetime.value,
-        sipConfig: sipConfigurationTemplate,
-        signingAlgorithm: "SHA512WITHRSA",
-      };
-      axios(configApiCall(api_path_post_install_server, "POST", jsonData, null))
-        .then((response) => {
-          callBackServerParameters();
-        })
-        .catch((error) => {
-          console.log("Error installing server parameters: " + error);
-        });
-    } else {
-      props.setError(true);
-      props.setErrorMessage(i18next.t("please_enter_valid_cors_domain_url", "Please enter a valid CORS domain URL."));
-    }
-    // Check https://www.geeksforgeeks.org/file-uploading-in-react-js/ for the file upload
+      let jsonData = {};
+      let re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
+      let nohttpre = new RegExp(/^\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
+
+      if (values.domain.match(nohttpre))
+          values.domain = (window.location.protocol) + "//" + values.domain;
+
+      if (values.domain.match(re)) {
+          jsonData = {
+              serverDomain: values.domain,
+              crlLifetime: certificateRevocation.value,
+              deviceLifetime: deviceLifetime.value,
+              userLifetime: userAccountLifetime.value,
+              sipConfig: sipConfigurationTemplate,
+              signingAlgorithm: "SHA512WITHRSA",
+          };
+          axios(configApiCall(api_path_post_install_server, "POST", jsonData, null))
+              .then((response) => {
+                  callBackServerParameters();
+              })
+              .catch((error) => {
+                  console.log("Error installing server parameters: " + error);
+              });
+      } else {
+          props.setError(true);
+          props.setErrorMessage(i18next.t("please_enter_valid_cors_domain_url", "Please enter a valid CORS domain URL."));
+      }
   }
 
   const handleCertificateRevocationChange = (event) => {
@@ -191,7 +195,7 @@ export default function ServerParameters(props) {
               <CustomPopupState message={i18next.t("set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps", "Set the domain of the web client-server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates.")} />
             </Typography>
             <Typography variant="body1" gutterBottom>
-            {i18next.t("domain_name_of_web_client_server", "The domain name of your web client server. Requires http:// or https://")}
+            {i18next.t("domain_name_of_web_client_server", "The domain name of your web client server.")}
             </Typography>
             <TextField
               variant="outlined"
