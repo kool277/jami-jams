@@ -17,6 +17,13 @@ export default function LanguagePicker(props) {
 
   const { i18n } = useTranslation();
 
+  const handleChange = (value) => {
+    setLanguage(value);
+    i18n.changeLanguage(value).then(()=>{
+      history.push(props.navigationTarget);
+    })
+  };
+
   useEffect(() => {
     fetch("/available_languages.json").then(res => res.json()).then((result) => {
       const response = result.languages;
@@ -25,21 +32,24 @@ export default function LanguagePicker(props) {
       response.forEach((lang) =>
       {
         if(result.stats[lang.code]["translated"]["percentage"] > 0.01){
-          console.log(lang);
           translates_languages.push(lang);
         } 
       })
 
+      let exists = false;
+      translates_languages.map((option) => {
+        if (option.code === language) {
+          exists = true;
+        }
+      })
+      if (!exists ) {
+        setLanguage("en");
+        i18n.changeLanguage("en");
+      }
       setLanguages(translates_languages)
     })
-  }, [language])
 
-  const handleChange = (value) => {
-    setLanguage(value);
-    i18n.changeLanguage(value).then(()=>{
-      history.push(props.navigationTarget);
-    })
-  };
+  }, [language])
 
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">
