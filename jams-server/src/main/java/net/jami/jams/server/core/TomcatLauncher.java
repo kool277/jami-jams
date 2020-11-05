@@ -55,22 +55,23 @@ public class TomcatLauncher {
         this.startServer();
     }
 
-    //Swap connectors fix.
-    public void swapConnectors(){
-        if(getTomcat().getConnector().findSslHostConfigs() != null && getTomcat().getConnector().findSslHostConfigs().length > 0){
-            getTomcat().getConnector().findSslHostConfigs()[0].setTruststoreFile(System.getProperty("user.dir") + File.separator + "keystore.jks");
+    // Swap connectors fix.
+    public void swapConnectors() {
+        if (getTomcat().getConnector().findSslHostConfigs() != null
+                && getTomcat().getConnector().findSslHostConfigs().length > 0) {
+            getTomcat().getConnector().findSslHostConfigs()[0]
+                    .setTruststoreFile(System.getProperty("user.dir") + File.separator + "keystore.jks");
             getTomcat().getConnector().findSslHostConfigs()[0].setTruststorePassword("changeit");
             getTomcat().getConnector().findSslHostConfigs()[0].setCertificateVerification("optional");
             ((Http11NioProtocol) getTomcat().getConnector().getProtocolHandler()).reloadSslHostConfigs();
-        }
-        else{
+        } else {
             log.error("Could not reload SSL configuration because the server is not running over SSL!");
         }
     }
 
     public TomcatLauncher(int port, String certificateFile, String keyFile) {
-        if (!Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + certificateFile)) ||
-            !Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + keyFile))) {
+        if (!Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + certificateFile))
+                || !Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + keyFile))) {
             log.info("Could not find certificate or keyfile, starting in plain HTTP connector as fallback!");
             tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
             this.startServer();
@@ -78,9 +79,11 @@ public class TomcatLauncher {
         }
         if (Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks"))) {
             log.info("Found a valid trust store, injecting into tomcat!");
-            tomcat.getService().addConnector(TomcatConnectorFactory.getSSLConnectorWithTrustStore(certificateFile, keyFile, port));
+            tomcat.getService()
+                    .addConnector(TomcatConnectorFactory.getSSLConnectorWithTrustStore(certificateFile, keyFile, port));
         } else {
-            Connector connector = TomcatConnectorFactory.getSSLConnectorWithoutTrustStore(certificateFile, keyFile, port);
+            Connector connector = TomcatConnectorFactory.getSSLConnectorWithoutTrustStore(certificateFile, keyFile,
+                    port);
             tomcat.getService().addConnector(connector);
         }
         this.startServer();
@@ -94,7 +97,8 @@ public class TomcatLauncher {
         log.info("Serving application from: " + new File(System.getProperty("user.dir")).getAbsolutePath());
         WebResourceRoot resources = new StandardRoot(context);
         if (jarName.contains(".jar")) {
-            resources.addPreResources(new JarResourceSet(resources, "/WEB-INF/classes", jarName, "/net/jami/jams/server/servlets"));
+            resources.addPreResources(
+                    new JarResourceSet(resources, "/WEB-INF/classes", jarName, "/net/jami/jams/server/servlets"));
             resources.addPreResources(new JarResourceSet(resources, "/", jarName, "/webapp"));
         } else {
             log.info("WARNING: You are running from your local filesystem, this makes sense only for developers!");
@@ -104,16 +108,18 @@ public class TomcatLauncher {
                 basePath.append("/").append(paths[i]);
             }
             basePath.append("/jams-server");
-            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", basePath.toString() + "/target/classes/net/jami/jams/server/servlets", "/"));
-            resources.addPreResources(new DirResourceSet(resources, "/", basePath.toString() + "/target/classes", "/webapp"));
+            resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
+                    basePath.toString() + "/target/classes/net/jami/jams/server/servlets", "/"));
+            resources.addPreResources(
+                    new DirResourceSet(resources, "/", basePath.toString() + "/target/classes", "/webapp"));
         }
         context.setResources(resources);
-        //We always go to login by default.
+        // We always go to login by default.
         context.addWelcomeFile("index");
-        //Register error pages.
+        // Register error pages.
         ErrorPage notFound = new ErrorPage();
         notFound.setErrorCode(404);
-        notFound.setLocation("/index.html");
+        notFound.setLocation("/");
         ErrorPage genericError = new ErrorPage();
         genericError.setErrorCode(500);
         genericError.setLocation("/500");

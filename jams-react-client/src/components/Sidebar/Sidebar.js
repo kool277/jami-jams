@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
@@ -14,8 +14,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
 
 // core components
-import AdminNavbarLinks from "components/Navbars/AdminNavbarLinks.js";
-import RTLNavbarLinks from "components/Navbars/RTLNavbarLinks.js";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import UpdateIcon from "@material-ui/icons/Update";
 
@@ -40,11 +38,6 @@ export default function Sidebar(props) {
     });
   };
 
-  const handleListItemClick = (e, layout, path) => {
-    e.preventDefault();
-    history.push(layout + path.substring(0, 2));
-  };
-
   React.useEffect(() => {
     if (auth.isUpdateAvailable() && auth.hasAdminScope()) setOpen(true);
   }, [mainPanel]);
@@ -57,6 +50,8 @@ export default function Sidebar(props) {
   var links = (
     <List className={classes.list}>
       {routes.map((prop, key) => {
+        if( prop.admin && !auth.hasAdminScope()) return;
+        if( !prop.admin && auth.hasAdminScope() && prop.path === "/user/admin") return;
         var activePro = " ";
         var listItemClasses;
         if (prop.path === "/upgrade-to-pro") {
@@ -89,34 +84,35 @@ export default function Sidebar(props) {
               activeClassName="active"
               key={key}
             >
-              <ListItem
-                button
-                className={classes.itemLink + listItemClasses}
-                onClick={(e) => handleListItemClick(e, prop.layout, prop.path)}
-              >
-                {typeof prop.icon === "string" ? (
-                  <Icon
-                    className={classNames(classes.itemIcon, whiteFontClasses, {
-                      [classes.itemIconRTL]: props.rtlActive,
+              <Link to={`${prop.path}`}>
+                <ListItem
+                  button
+                  className={classes.itemLink + listItemClasses}
+                >
+                  {typeof prop.icon === "string" ? (
+                    <Icon
+                      className={classNames(classes.itemIcon, whiteFontClasses, {
+                        [classes.itemIconRTL]: props.rtlActive,
+                      })}
+                    >
+                      {prop.icon}
+                    </Icon>
+                  ) : (
+                    <prop.icon
+                      className={classNames(classes.itemIcon, whiteFontClasses, {
+                        [classes.itemIconRTL]: props.rtlActive,
+                      })}
+                    />
+                  )}
+                  <ListItemText
+                    primary={props.rtlActive ? prop.rtlName : prop.name}
+                    className={classNames(classes.itemText, whiteFontClasses, {
+                      [classes.itemTextRTL]: props.rtlActive,
                     })}
-                  >
-                    {prop.icon}
-                  </Icon>
-                ) : (
-                  <prop.icon
-                    className={classNames(classes.itemIcon, whiteFontClasses, {
-                      [classes.itemIconRTL]: props.rtlActive,
-                    })}
+                    disableTypography={true}
                   />
-                )}
-                <ListItemText
-                  primary={props.rtlActive ? prop.rtlName : prop.name}
-                  className={classNames(classes.itemText, whiteFontClasses, {
-                    [classes.itemTextRTL]: props.rtlActive,
-                  })}
-                  disableTypography={true}
-                />
-              </ListItem>
+                </ListItem>
+              </Link>
             </NavLink>
           </div>
         );
@@ -188,7 +184,6 @@ export default function Sidebar(props) {
         <div className={classes.logoImage}>
           <img src={logo} alt="logo" className={classes.img} />
         </div>
-        {/* {logoText} */}
       </a>
     </div>
   );
@@ -211,7 +206,6 @@ export default function Sidebar(props) {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
-            {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}
             {links}
             {bottomLinks}
           </div>

@@ -126,16 +126,41 @@ const styles = (theme) => ({
     minWidth: "80vh",
     maxWidth: "80vh",
   },
+  profileFooter: {
+    [theme.breakpoints.down("md")]: {
+      display: "flex",
+      flexDirection: "column",
+    }
+  },
   footerActionButtons:{
     display: "flex",
     flexDirection: "row",
+    alignItems: "end",
     "& button": {
       marginRight: "1rem"
     },
+    [theme.breakpoints.down("md")]: {
+      flexDirection: "column",
+      alignItems: "stretch",
+      "& button": {
+        marginRight: "0",
+        width: "100%"
+      },
+    }
   },
   footerActionButtonsRight:{
     display: "flex",
     justifyContent: "flex-end",
+    alignItems: "end",
+    [theme.breakpoints.down("md")]: {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "stretch",
+      "& button": {
+        marginRight: "0",
+        width: "100%"
+      },
+    }
   },
   userProfileHeader: {
     display: "flex",
@@ -155,8 +180,8 @@ const styles = (theme) => ({
     },
   },
   cardAvatarMobile: {
-    [theme.breakpoints.down("sm")]: {
-      margin: "-50px 50px 0",
+    [theme.breakpoints.down("md")]: {
+      textAlign: "center"
     },
   },
   loading: {
@@ -191,7 +216,19 @@ export default function DisplayUserProfile(props) {
       )
     )
       .then((response) => {
-        setGroups(response.data);
+        let availableGroups = [];
+        const groupResults = response.data;
+        groupResults.forEach((possibleGroup) =>{
+            let existingGroup = false;
+            groups.forEach((actualGroup)=>{
+              if(actualGroup === possibleGroup.name) {
+                existingGroup = true;
+                return;
+              }
+            })
+            if(!existingGroup) availableGroups.push(possibleGroup);
+        })
+        setGroups(availableGroups);
       })
       .catch((error) => {
         if (error.response) {
@@ -404,6 +441,16 @@ export default function DisplayUserProfile(props) {
 
   const tableCellClasses = classnames(classes.tableCell);
   
+  const canEdit = () => {
+    if(auth.isLocalDirectory()) {
+      if(!auth.hasAdminScope() && auth.getUsername() !== user.username) {
+        return false
+      }
+      return true;
+    }
+    else return false;
+  }
+
   return (
     <div>
       <Dialog
@@ -563,10 +610,10 @@ export default function DisplayUserProfile(props) {
                 </Grid>
               </div>
             </CardBody>
-            <CardFooter>
+            <CardFooter className={classes.profileFooter}>
               <Grid container className={classes.footerActionButtons}>
                 <Grid item >
-                  {auth.isLocalDirectory() && (
+                  {canEdit() && (
                     <Button
                       color="info"
                       onClick={() => props.setDisplayUser(false)}

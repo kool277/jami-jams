@@ -49,7 +49,7 @@ let ps;
 
 const useStyles = makeStyles(styles);
 
-export default function Admin({ ...rest }) {
+export default function Admin(props) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -69,11 +69,17 @@ export default function Admin({ ...rest }) {
   const [query, setQuery] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState("");
 
-  const routes = [
+  const Routes = [
+    {
+      path: `/user/${auth.getUsername()}`,
+      name: i18next.t("myprofile", "My profile"),
+      icon: Person,
+      component: Users,
+      layout: "/admin",
+    },
     {
       path: "/users",
       name: i18next.t("users", "Users"),
-      rtlName: "المستخدمون",
       icon: Person,
       component: Users,
       layout: "/admin",
@@ -81,56 +87,31 @@ export default function Admin({ ...rest }) {
     {
       path: "/groups",
       name: i18next.t("groups", "Groups"),
-      rtlName: "مجموعات",
       icon: Group,
       component: Groups,
       layout: "/admin",
+      admin: true
     },
     {
       path: "/blueprints",
       name: i18next.t("blueprints", "Blueprints"),
-      rtlName: "المخططات",
       icon: AllInbox,
       component: Blueprints,
       layout: "/admin",
+      admin: true
     },
     {
       path: "/settings",
       name: i18next.t("settings", "Settings"),
-      rtlName: "حضانة بيض",
       icon: SettingsIcon,
       component: Settings,
       layout: "/admin",
+      admin: true
     },
   ];
 
-  const switchRoutes = (
-    <Switch>
-      {routes.map((prop, key) => {
-        if (prop.layout === "/admin") {
-          return (
-            <Route
-              path={prop.layout + prop.path}
-              component={prop.component}
-              key={key}
-            />
-          );
-        }
-        return null;
-      })}
-      <Redirect from="/users" to="/admin/users" />
-      <Redirect from="/admin/u" to="/admin/users" />
-      <Redirect from="/admin/g" to="/admin/groups" />
-      <Redirect from="/admin/b" to="/admin/blueprints" />
-      <Redirect from="/admin/s" to="/admin/settings" />
-    </Switch>
-  );
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-  };
-  const getRoute = () => {
-    return window.location.pathname !== "/admin/maps";
   };
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -237,7 +218,7 @@ export default function Admin({ ...rest }) {
         </DialogActions>
       </Dialog>
       <Sidebar
-        routes={routes}
+        routes={Routes}
         logoText={"Jams"}
         logo={logo}
         image={image}
@@ -248,32 +229,15 @@ export default function Admin({ ...rest }) {
         updating={updating}
         snackbarMessage={snackbarMessage}
         setOpenUpdate={setOpenUpdate}
-        {...rest}
       />
 
       <div className={classes.mainPanel} ref={mainPanel}>
-        <Navbar
-          routes={routes}
-          handleDrawerToggle={handleDrawerToggle}
-          {...rest}
-        />
-        {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
-        {getRoute() ? (
-          <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
-          </div>
-        ) : (
-          <div className={classes.map}>{switchRoutes}</div>
-        )}
-        {getRoute() ? <Footer /> : null}
-        {/* <FixedPlugin
-          handleImageClick={handleImageClick}
-          handleColorClick={handleColorClick}
-          bgColor={color}
-          bgImage={image}
-          handleFixedClick={handleFixedClick}
-          fixedClasses={fixedClasses}
-        /> */}
+            <Navbar
+                routes={Routes}
+                handleDrawerToggle={handleDrawerToggle}
+            />
+            <div className={classes.map}>{props.component}</div>
+            <Footer />
       </div>
     </div>
   );

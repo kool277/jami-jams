@@ -29,58 +29,44 @@ import Blueprints from "views/Blueprints/Blueprints.js";
 import Settings from "views/Settings/Settings.js";
 // core components/views for RTL layout
 
-import "./i18n";
 import i18next from "i18next";
 
-const dashboardRoutes = [
-  {
-    path: "/users",
-    name: (
-      <Suspense fallback={<div>Loading...</div>}>
-        {i18next.t("users", "Users")}
-      </Suspense>
-    ),
-    rtlName: "المستخدمون",
-    icon: Person,
-    component: Users,
-    layout: "/admin",
-  },
-  {
-    path: "/groups",
-    name: (
-      <Suspense fallback={<div>Loading...</div>}>
-        {i18next.t("groups", "Groups")}
-      </Suspense>
-    ),
-    rtlName: "مجموعات",
-    icon: Group,
-    component: Groups,
-    layout: "/admin",
-  },
-  {
-    path: "/blueprints",
-    name: (
-      <Suspense fallback={<div>Loading...</div>}>
-        {i18next.t("blueprints", "Blueprints")}
-      </Suspense>
-    ),
-    rtlName: "المخططات",
-    icon: AllInbox,
-    component: Blueprints,
-    layout: "/admin",
-  },
-  {
-    path: "/settings",
-    name: (
-      <Suspense fallback={<div>Loading...</div>}>
-        {i18next.t("settings", "Settings")}
-      </Suspense>
-    ),
-    rtlName: "حضانة بيض",
-    icon: SettingsIcon,
-    component: Settings,
-    layout: "/admin",
-  },
-];
+export default function Routes() {
+  const dashboardRoutes = [
+    {
+      path: "/users",
+      name: i18next.t("users", "Users"),
+      rtlName: "المستخدمون",
+      icon: Person,
+      component: Users,
+      layout: "/admin",
+    },
+    {
+      path: "/groups",
+      name: i18next.t("groups", "Groups"),
+      rtlName: "مجموعات",
+      icon: Group,
+      component: Groups,
+      layout: "/admin",
+    },
+    {
+      path: "/blueprints",
+      name: i18next.t("blueprints", "Blueprints"),
+      rtlName: "المخططات",
+      icon: AllInbox,
+      component: Blueprints,
+      layout: "/admin",
+    },
+    {
+      path: "/settings",
+      name: i18next.t("settings", "Settings"),
+      rtlName: "حضانة بيض",
+      icon: SettingsIcon,
+      component: Settings,
+      layout: "/admin",
+    },
+  ];
 
-export default dashboardRoutes;
+  return dashboardRoutes;
+
+}

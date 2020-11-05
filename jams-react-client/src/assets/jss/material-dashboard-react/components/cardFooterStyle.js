@@ -7,7 +7,7 @@ const cardFooterStyle  = theme => ({
     margin: "0 15px 10px",
     borderRadius: "0",
     justifyContent: "space-between",
-    alignItems: "center",
+    // alignItems: "center",
     display: "flex",
     backgroundColor: "transparent",
     border: "0",

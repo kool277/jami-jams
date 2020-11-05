@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
 // @material-ui/core components
@@ -224,7 +224,16 @@ export default function EditGroup(props) {
           )
         )
           .then((response) => {
-            setUsers(response.data.profiles);
+            let profiles = [];
+            const profilesResults = response.data.profiles;
+            profilesResults.forEach((profile) =>{
+                let existingUser = false;
+                users.forEach((user)=>{
+                  if(profile.username === user.username) existingUser = true;
+                })
+                if(!existingUser) profiles.push(profile);
+            })
+            setUsers(profiles);
           })
           .catch((error) => {
             console.log(error);
@@ -348,24 +357,26 @@ export default function EditGroup(props) {
                             {groupMembers.map(user =>                       
                                 <TableRow key={user.username} className={classes.tableRow}>
                                     <TableCell  className={tableCellClasses}>
-                                        <Avatar
-                                            style={{ marginRight: "10px" }}
-                                            alt={user.username}
-                                            src={
-                                                user.profilePicture
-                                                ? "data:image/png;base64, " + user.profilePicture
-                                                : noProfilePicture
-                                            }
-                                        />
+                                        <Link to={`/user/${user.username}`}>
+                                            <Avatar
+                                                style={{ marginRight: "10px" }}
+                                                alt={user.username}
+                                                src={
+                                                    user.profilePicture
+                                                    ? "data:image/png;base64, " + user.profilePicture
+                                                    : noProfilePicture
+                                                }
+                                            />
+                                        </Link>
                                     </TableCell>
                                     <TableCell className={tableCellClasses}>
-                                        {user.username}
+                                        <Link to={`/user/${user.username}`}>{user.username}</Link>
                                     </TableCell>
                                     <TableCell className={tableCellClasses}>
-                                        {user.firstName}
+                                        <Link to={`/user/${user.username}`}>{user.firstName}</Link>
                                     </TableCell>
                                     <TableCell className={tableCellClasses}>
-                                        {user.lastName}
+                                        <Link to={`/user/${user.username}`}>{user.lastName}</Link>
                                     </TableCell>
                                     <TableCell align="right" className={classes.tableActions}>
                                         <Button color="primary" onClick={() => updateUserInGroup(user)}>{i18next.t("remove_user", "Remove user")}</Button>
@@ -378,4 +389,4 @@ export default function EditGroup(props) {
             </GridContainer>
         </div>
     );
-}
+}                        

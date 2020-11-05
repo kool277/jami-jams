@@ -132,7 +132,7 @@ export default function Groups() {
         setOpenRemoveDialog(false);
       });
 
-    history.push("/admin/groups");
+    history.push("/groups");
   };
 
   const getBlueprintsOptions = () => {
@@ -267,7 +267,7 @@ export default function Groups() {
         console.log("Error creating group: " + error);
         setOpenCreate(false);
       });
-    history.push("/admin/groups");
+    history.push(`/group/${groupName}`);
   };
 
   const blueprintsOptionsItems = tool.buildSelectMenuItems(

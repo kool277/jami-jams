@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -99,7 +99,18 @@ export default function Users(props) {
       )
     )
       .then((response) => {
-        setUsers(response.data.profiles);
+        let profiles = [];
+        const profilesResults = response.data.profiles;
+        profilesResults.forEach((profile) =>{
+          if(profile.username !== props.username) {
+            let existingContact = false;
+            contacts.forEach((contact)=>{
+              if(profile.username === contact.username) existingContact = true;
+            })
+            if(!existingContact) profiles.push(profile);
+          }
+        })
+        setUsers(profiles);
       })
       .catch((error) => {
         console.log(error);
@@ -261,8 +272,8 @@ export default function Users(props) {
         return Math.min(oldProgress + diff, 100);
       });
     }, 500);
-    searchContacts();
     getAllContacts();
+    searchContacts();
     return () => {
       clearInterval(timer);
     };
@@ -354,7 +365,7 @@ export default function Users(props) {
       </Dialog>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
-          <Button
+          {auth.hasAdminScope() && <Button
             variant="contained"
             color="primary"
             href="#contained-buttons"
@@ -363,7 +374,7 @@ export default function Users(props) {
             }}
           >
             <AddCircleOutlineIcon /> {i18next.t("add_a_contact", "Add contact")}
-          </Button>
+          </Button>}
           <div className={classes.searchWrapper}>
             <CustomInput
               formControlProps={{
@@ -387,12 +398,15 @@ export default function Users(props) {
         </GridItem>
         {contacts
           .filter((data) => {
-            if (searchValue == null) return data;
-            else if (
-              data.uri != null &&
-              data.uri.toLowerCase().includes(searchValue.toLowerCase())
-            ) {
-              return data;
+            if (searchValue === null) return data;
+            else {
+              if(typeof data.name !== "undefined" && typeof data.firstName !== "undefined" && typeof data.lastName !== "undefined" && typeof data.uri !== "undefined"){
+                return data.name.toLowerCase().includes(searchValue.toLowerCase()) ||  data.firstName.toLowerCase().includes(searchValue.toLowerCase()) || data.lastName.toLowerCase().includes(searchValue.toLowerCase()) || data.uri.toLowerCase().includes(searchValue.toLowerCase());
+              }
+              else {
+                return data;
+              }
+              
             }
           })
           .map((contact) => (
@@ -404,54 +418,53 @@ export default function Users(props) {
               key={contact.uri}
               style={{ display: contact.display }}
             >
-              <Card profile>
-                <CardBody profile>
-                  <CardAvatar profile>
-                    <img
-                      src={
-                        contact.profilePicture
-                          ? "data:image/png;base64, " + contact.profilePicture
-                          : noProfilePicture
-                      }
-                      alt="..."
-                    />
-                  </CardAvatar>
-                  <h4 className={classes.cardTitle}>
-                    {contact.firstName !== ""
-                      ? contact.firstName
-                      : "No first name"}{" "}
-                    {contact.lastName !== "" ? contact.lastName : "No last name"}
-                  </h4>
-                  <ul>
-                    <li>
+              {contact.name && <Card profile>
+                <a href={`/user/${contact.name}`}>
+                  <CardBody profile>
+                    <CardAvatar profile>
                       <img
-                        src={jami}
-                        width="20"
-                        alt="Jami"
-                        style={{ marginRight: "10px" }}
-                      />{" "}
-                      {contact.name ? contact.name : "No name"}
-                    </li>
-                    <li>
-                      <BusinessOutlinedIcon
-                        fontSize="small"
-                        style={{ marginRight: "10px" }}
-                      />{" "}
-                      {contact.organization}
-                    </li>
-                  </ul>
-                </CardBody>
-                <CardFooter>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => {
-                      handleRemoveContact(contact.uri, contact.name);
-                    }}
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
-                </CardFooter>
-              </Card>
+                        src={
+                          contact.profilePicture
+                            ? "data:image/png;base64, " + contact.profilePicture
+                            : noProfilePicture
+                        }
+                        alt="..."
+                      />
+                    </CardAvatar>
+                    <h4 className={classes.cardTitle}>
+                      {(contact.firstName || contact.lastName) &&`${contact.firstName} ${contact.lastName}`}
+                    </h4>
+                    <ul>
+                      <li>
+                        {contact.name && <img
+                          src={jami}
+                          width="20"
+                          alt="Jami"
+                          style={{ marginRight: "10px" }}
+                        />}
+                        {contact.name && ` ${contact.name}`}
+                      </li>
+                      <li>
+                        {contact.organization && <BusinessOutlinedIcon
+                          fontSize="small"
+                          style={{ marginRight: "10px" }}
+                        />}
+                        {contact.organization && ` ${contact.organization}`}
+                      </li>
+                    </ul>
+                  </CardBody>
+                  </a>
+                  <CardFooter>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => {
+                        handleRemoveContact(contact.uri, contact.name);
+                      }}
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  </CardFooter>
+              </Card>}
             </GridItem>
           ))}
         {contacts === [] && props.username + i18next.t("has_no_contacts", " has no contacts")}

@@ -99,6 +99,7 @@ export default function Settings(props) {
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
+            style={{ margin: "0.7rem"}}
           >
             <Tab label={i18next.t("general", "General")} {...a11yProps(0)} />
             <Tab label={i18next.t("subscription", "Subscription")} {...a11yProps(1)} />

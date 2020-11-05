@@ -360,7 +360,7 @@ export default function EditCreateUserProfile(props) {
   const handleUserProfileCreation = (data) => {
     axios(configApiCall(api_path_post_create_user_profile, "POST", data, null))
       .then(() => {
-        history.push("/");
+        history.push(`/user/${data.username}`);
       })
       .catch((error) => {
         console.log("Error creating user profile: " + error);

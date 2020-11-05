@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -125,12 +126,7 @@ export default function Users(props) {
       clearInterval(timer);
     };
   }, []);
-  const [selectedProfile, setSelectedProfile] = useState(false);
-  const redirectToUserProfile = (e, username) => {
-    e.preventDefault();
-    setSelectedProfile(true);
-    setSelectedUsername(username);
-  };
+
   const searchUsers = (value, page = "1") => {
     setSelectedPage(page);
     setLoading(true);
@@ -176,175 +172,148 @@ export default function Users(props) {
   const handleChangePage = (e, page) => {
     searchUsers(searchValue, page);
   };
-  if (!auth.hasAdminScope() && auth.getUsername() !== "") {
-    return (
-      <div>
-        <UserProfile username={auth.getUsername()} />
-      </div>
-    );
-  } else if (selectedProfile && auth.hasAdminScope() && selectedUsername !== "") {
-    return (
-      <div>
-        <UserProfile username={selectedUsername} />
-      </div>
-    );
-  } else if (createUser) {
-    return (
-      <EditCreateUserProfile
-        createUser={createUser}
-        setCreateUser={setCreateUser}
-        setError={props.setError}
-        setErrorMessage={props.setErrorMessage}
-        setSeverity={props.setSeverity}
-      />
-    );
-  } else {
-    return (
-      <div>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={12}>
-            {auth.isLocalDirectory() && (
+  return (
+    <div>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          {auth.isLocalDirectory() && auth.hasAdminScope() && (
+            <Link to={"/createuser"}>
               <Button
                 variant="contained"
                 color="primary"
-                href="#contained-buttons"
-                onClick={(e) => setCreateUser(true)}
               >
                 <AddCircleOutlineIcon />{" "}
                 {i18next.t("create_user", "Create user")}
               </Button>
-            )}
-            <GridContainer>
-              <GridItem xs={12} sm={12} md={6}>
-                {!noUsersFound && (
-                  <CustomInput
-                    formControlProps={{
-                      className: classes.margin + " " + classes.search,
-                    }}
-                    inputProps={{
-                      placeholder:
-                      i18next.t("search_users_using", "Search users using (username, first name, last name)"),
-                      inputProps: {
-                        "aria-label": i18next.t("search_users", "Search users"),
-                      },
-                      onKeyUp: handleSearchUsers,
-                    }}
-                  />
-                )}
-                {!noUsersFound && <Search />}
-              </GridItem>
-              <GridItem xs={12} sm={12} md={6}>
-                {!noUsersFound && (
-                  <Pagination
-                    count={numberPages}
-                    page={selectedPage}
-                    onChange={handleChangePage}
-                  />
-                )}
-              </GridItem>
-            </GridContainer>
-
-            <div className={classes.loading}>
-              {loading && (
-                <LinearProgress variant="determinate" value={progress} />
+            </Link>
+          )}
+          <GridContainer>
+            <GridItem xs={12} sm={12} md={6}>
+              {!noUsersFound && (
+                <CustomInput
+                  formControlProps={{
+                    className: classes.margin + " " + classes.search,
+                  }}
+                  inputProps={{
+                    placeholder:
+                    i18next.t("search_users_using", "Search users using (username, first name, last name)"),
+                    inputProps: {
+                      "aria-label": i18next.t("search_users", "Search users"),
+                    },
+                    onKeyUp: handleSearchUsers,
+                  }}
+                />
               )}
-            </div>
+              {!noUsersFound && <Search />}
+            </GridItem>
+            <GridItem xs={12} sm={12} md={6}>
+              {!noUsersFound && (
+                <Pagination
+                  count={numberPages}
+                  page={selectedPage}
+                  onChange={handleChangePage}
+                />
+              )}
+            </GridItem>
+          </GridContainer>
 
-            {noUsersFound && (
-              <div className={classes.usersNotFound}>
-                <InfoIcon />
-
-            <p style={{ marginLeft: "10px" }}>{i18next.t("no_users_found", "No users found")}</p>
-              </div>
+          <div className={classes.loading}>
+            {loading && (
+              <LinearProgress variant="determinate" value={progress} />
             )}
-          </GridItem>
-          {(!noUsersFound || !noMatchFound) &&
-            users
-              .sort(function (a, b) {
-                if (a.username < b.username) {
-                  return -1;
-                }
-                if (a.username > b.username) {
-                  return 1;
-                }
-                return 0;
-              })
-              .map((user) => (
-                <GridItem
-                  xs={12}
-                  sm={6}
-                  md={3}
-                  lg={2}
-                  xl={2}
-                  
-                  key={user.username}
-                >
-                  <Card profile>
-                      <a
-                        href="#"
-                        onClick={(e) => redirectToUserProfile(e, user.username)}
-                      >
-                      <CardBody profile>
-                        <CardAvatar profile>
-                          <img
-                            src={
-                              user.profilePicture
-                                ? "data:image/png;base64, " +
-                                  user.profilePicture
-                                : noProfilePicture
-                            }
-                            alt="..."
-                          />
-                        </CardAvatar>
-                        
-                        <GridContainer
-                            container
-                            direction="column"
-                            justify="flex-end"
-                            alignItems="flex-start"
-                          >
-                          <GridItem style={{ minHeight:"50px"}}>
-                              <h4 className={classes.cardTitle}>
-                              {`${user.firstName} ${user.lastName}`}
-                            </h4>
-                          </GridItem>
-                          <GridItem>
-                            <ul className={classes.cardBodyContent}>
-                            <li>
-                              <img
-                                src={jami}
-                                width="20px"
-                                alt="Jami"
-                                style={{ minWidth:"20px", marginRight: "10px" }}
-                              />{" "}
-                              {user.username}
-                            </li>
-                            <li>
-                              {user.organization && <BusinessOutlinedIcon
-                                fontSize="small"
-                                style={{ marginRight: "10px" }}
-                              />}{" "}
-                              {user.organization}
-                            </li>
-                          </ul>
-                          </GridItem>
-                        </GridContainer>
-                        </CardBody>
-                      </a>
-                  </Card>
-                </GridItem>
-              ))}
-          {noMatchFound && (
+          </div>
+
+          {noUsersFound && (
             <div className={classes.usersNotFound}>
               <InfoIcon />
 
-              <p style={{ marginLeft: "10px" }}>
-                  {i18next.t("no_users_found_matching", "No users found matching search value!")}
-              </p>
+          <p style={{ marginLeft: "10px" }}>{i18next.t("no_users_found", "No users found")}</p>
             </div>
           )}
-        </GridContainer>
-      </div>
-    );
-  }
+        </GridItem>
+        {(!noUsersFound || !noMatchFound) &&
+          users
+            .sort(function (a, b) {
+              if (a.username < b.username) {
+                return -1;
+              }
+              if (a.username > b.username) {
+                return 1;
+              }
+              return 0;
+            })
+            .map((user) => (
+              <GridItem
+                xs={12}
+                sm={6}
+                md={3}
+                lg={2}
+                xl={2}
+                
+                key={user.username}
+              >
+                <Card profile >
+                  <Link to={`/user/${user.username}`}>
+                    <CardBody profile>
+                      <CardAvatar profile>
+                        <img
+                          src={
+                            user.profilePicture
+                              ? "data:image/png;base64, " +
+                                user.profilePicture
+                              : noProfilePicture
+                          }
+                          alt="..."
+                        />
+                      </CardAvatar>
+                      
+                      <GridContainer
+                          container
+                          direction="column"
+                          justify="flex-end"
+                          alignItems="flex-start"
+                        >
+                        <GridItem style={{ minHeight:"50px"}}>
+                            <h4 className={classes.cardTitle}>
+                            {`${user.firstName} ${user.lastName}`}
+                          </h4>
+                        </GridItem>
+                        <GridItem>
+                          <ul className={classes.cardBodyContent}>
+                          <li>
+                            <img
+                              src={jami}
+                              width="20px"
+                              alt="Jami"
+                              style={{ minWidth:"20px", marginRight: "10px" }}
+                            />{" "}
+                            {user.username}
+                          </li>
+                          <li>
+                            {user.organization && <BusinessOutlinedIcon
+                              fontSize="small"
+                              style={{ marginRight: "10px" }}
+                            />}{" "}
+                            {user.organization}
+                          </li>
+                        </ul>
+                        </GridItem>
+                      </GridContainer>
+                      </CardBody>
+                    </Link>
+                </Card>
+              </GridItem>
+            ))}
+        {noMatchFound && (
+          <div className={classes.usersNotFound}>
+            <InfoIcon />
+
+            <p style={{ marginLeft: "10px" }}>
+                {i18next.t("no_users_found_matching", "No users found matching search value!")}
+            </p>
+          </div>
+        )}
+      </GridContainer>
+    </div>
+  );
 }

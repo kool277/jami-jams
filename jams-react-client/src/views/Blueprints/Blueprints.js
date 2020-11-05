@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -207,7 +207,7 @@ export default function Blueprints() {
         setOpen(false);
         console.log("Could not create " + blueprintName + " " + error);
       });
-    history.push("/admin/blueprints");
+    history.push(`/blueprint/${blueprintName}`);
   };
 
   const handleRemoveBlueprint = (blueprintRemovedName) => {
@@ -232,199 +232,179 @@ export default function Blueprints() {
         console.log("Could not create " + removedBlueprint + " " + error);
         setOpenRemoveDialog(false);
       });
-    history.push("/admin/blueprints");
+    history.push("/blueprints");
   };
 
-  if (!auth.hasAdminScope()) {
-    return (
-      <div>
-        <h4>
-        {i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")}
-        </h4>
-      </div>
-    );
-  } else {
-    if (selectedBlueprint) {
-      return (
-        <div>
-          <Blueprint blueprintName={selectedBlueprintName} />
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Dialog
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-            {i18next.t("create_blueprint", "Create blueprint")}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                <FormControl
-                  className={classes.margin}
-                  size="large"
-                  error={blueprintNameExits}
-                >
-                  <InputLabel htmlFor="blueprintName">
-                  {i18next.t("blueprint_name", "Blueprint name")}
-                  </InputLabel>
-                  <Input
-                    id="blueprintName"
-                    placeholder={i18next.t("blueprint_name", "Blueprint name")}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <AllInbox />
-                      </InputAdornment>
-                    }
-                    onChange={(e) => {
-                      setBlueprintName(e.target.value);
-                      initCheckBlueprintNameExists(e.target.value);
-                    }}
-                  />
-                </FormControl>
-                {disableCreate && blueprintName.length > 0 && (
-                  <p>{i18next.t("blueprint_name_already_exists", "Blueprint name already exists!")}</p>
-                )}
-                {disableCreate && blueprintName.length === 0 && (
-                  <p>{i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}</p>
-                )}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="info">
-                Cancel
-              </Button>
-              <Button
-                onClick={handleCreateBlueprint}
-                color="primary"
-                disabled={disableCreate}
-                autoFocus
-              >
-                Create
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Dialog
-            open={openRemoveDialog}
-            onClose={() => setOpenRemoveDialog(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-            {i18next.t("remove_blueprint", "Remove blueprint")}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-              {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")}{" "}
-                <strong>{removedBlueprint}</strong> ?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => setOpenRemoveDialog(false)}
-                color="primary"
-              >
-                {i18next.t("cancel", "Cancel")}
-              </Button>
-              <Button onClick={removeBlueprint} color="info" autoFocus>
-              {i18next.t("remove", "Remove")}
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={12}>
-              <Button
-                variant="contained"
-                color="primary"
-                href="#contained-buttons"
-                onClick={(e) => setOpen(true)}
-              >
-                <AddCircleOutlineIcon /> {i18next.t("create_blueprint", "Create blueprint")}
-              </Button>
-              <div className={classes.searchWrapper}>
-                {!zeroBlueprint && (
-                  <CustomInput
-                    formControlProps={{
-                      className: classes.margin + " " + classes.search,
-                    }}
-                    inputProps={{
-                      placeholder: i18next.t("search_blueprints_placeholder", "Search blueprints…"),
-                      inputProps: {
-                        "aria-label": i18next.t("search_blueprints", "Search blueprints"),
-                      },
-                      onKeyUp: (e) => setSearchValue(e.target.value),
-                    }}
-                  />
-                )}
-                {!zeroBlueprint && <Search />}
-                <div className={classes.loading}>
-                  {loading && (
-                    <LinearProgress variant="determinate" value={progress} />
-                  )}
-                </div>
-              </div>
-            </GridItem>
-            {zeroBlueprint ? (
-              <div className={classes.blueprintsNotFound}>
-                <InfoIcon />
-                  <p style={{ marginLeft: "10px" }}>{i18next.t("no_blueprints_found", "No blueprints found")}</p>
-              </div>
-            ) : (
-              blueprints.map((blueprint) => (
-                <GridItem
-                xs={12}
-                sm={6}
-                md={3}
-                lg={2}
-                xl={2}
-                key={blueprint.name}>
-                  <Card profile>
-                      <a
-                        href="#"
-                        onClick={(e) => redirectToBlueprint(e, blueprint.name)}
-                      >
-                      <CardBody profile>
-                        <h3 className={classes.cardTitle}>
-                          {blueprint.name
-                            ? blueprint.name
-                            : i18next.t("no_blueprint_name", "No blueprint name")}
-                        </h3>
-                        <strong>Description:</strong>
-                        <p>{i18next.t("no_description", "No description")}</p>
-                        <ul>
-                          <li>
-                            <GroupIcon
-                              fontSize="small"
-                              style={{ marginRight: "10px" }}
-                            />{" "}
-                            {blueprint.usersCount
-                              ? blueprint.usersCount + " user(s)"
-                              : i18next.t("no_users_count", "No users count")}
-                          </li>
-                        </ul>
-                        </CardBody>
-                      </a>
-                    <CardFooter>
-                      <IconButton
-                        color="secondary"
-                        onClick={() => {
-                          handleRemoveBlueprint(blueprint.name);
-                        }}
-                      >
-                        <DeleteOutlineIcon />
-                      </IconButton>
-                    </CardFooter>
-                  </Card>
-                </GridItem>
-              ))
+
+  return (
+    <div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+        {i18next.t("create_blueprint", "Create blueprint")}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <FormControl
+              className={classes.margin}
+              size="large"
+              error={blueprintNameExits}
+            >
+              <InputLabel htmlFor="blueprintName">
+              {i18next.t("blueprint_name", "Blueprint name")}
+              </InputLabel>
+              <Input
+                id="blueprintName"
+                placeholder={i18next.t("blueprint_name", "Blueprint name")}
+                startAdornment={
+                  <InputAdornment position="start">
+                    <AllInbox />
+                  </InputAdornment>
+                }
+                onChange={(e) => {
+                  setBlueprintName(e.target.value);
+                  initCheckBlueprintNameExists(e.target.value);
+                }}
+              />
+            </FormControl>
+            {disableCreate && blueprintName.length > 0 && (
+              <p>{i18next.t("blueprint_name_already_exists", "Blueprint name already exists!")}</p>
             )}
-          </GridContainer>
-        </div>
-      );
-    }
-  }
+            {disableCreate && blueprintName.length === 0 && (
+              <p>{i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}</p>
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="info">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleCreateBlueprint}
+            color="primary"
+            disabled={disableCreate}
+            autoFocus
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openRemoveDialog}
+        onClose={() => setOpenRemoveDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+        {i18next.t("remove_blueprint", "Remove blueprint")}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")}{" "}
+            <strong>{removedBlueprint}</strong> ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpenRemoveDialog(false)}
+            color="primary"
+          >
+            {i18next.t("cancel", "Cancel")}
+          </Button>
+          <Button onClick={removeBlueprint} color="info" autoFocus>
+          {i18next.t("remove", "Remove")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            href="#contained-buttons"
+            onClick={(e) => setOpen(true)}
+          >
+            <AddCircleOutlineIcon /> {i18next.t("create_blueprint", "Create blueprint")}
+          </Button>
+          <div className={classes.searchWrapper}>
+            {!zeroBlueprint && (
+              <CustomInput
+                formControlProps={{
+                  className: classes.margin + " " + classes.search,
+                }}
+                inputProps={{
+                  placeholder: i18next.t("search_blueprints_placeholder", "Search blueprints…"),
+                  inputProps: {
+                    "aria-label": i18next.t("search_blueprints", "Search blueprints"),
+                  },
+                  onKeyUp: (e) => setSearchValue(e.target.value),
+                }}
+              />
+            )}
+            {!zeroBlueprint && <Search />}
+            <div className={classes.loading}>
+              {loading && (
+                <LinearProgress variant="determinate" value={progress} />
+              )}
+            </div>
+          </div>
+        </GridItem>
+        {zeroBlueprint ? (
+          <div className={classes.blueprintsNotFound}>
+            <InfoIcon />
+              <p style={{ marginLeft: "10px" }}>{i18next.t("no_blueprints_found", "No blueprints found")}</p>
+          </div>
+        ) : (
+          blueprints.map((blueprint) => (
+            <GridItem
+            xs={12}
+            sm={6}
+            md={3}
+            lg={2}
+            xl={2}
+            key={blueprint.name}>
+              <Card profile>
+                <Link to={`/blueprint/${blueprint.name}`}>
+                  <CardBody profile>
+                    <h3 className={classes.cardTitle}>
+                      {blueprint.name
+                        ? blueprint.name
+                        : i18next.t("no_blueprint_name", "No blueprint name")}
+                    </h3>
+                    <strong>Description:</strong>
+                    <p>{i18next.t("no_description", "No description")}</p>
+                    <ul>
+                      <li>
+                        <GroupIcon
+                          fontSize="small"
+                          style={{ marginRight: "10px" }}
+                        />{" "}
+                        {blueprint.usersCount
+                          ? blueprint.usersCount + " user(s)"
+                          : i18next.t("no_users_count", "No users count")}
+                      </li>
+                    </ul>
+                    </CardBody>
+                  </Link>
+                <CardFooter>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => {
+                      handleRemoveBlueprint(blueprint.name);
+                    }}
+                  >
+                    <DeleteOutlineIcon />
+                  </IconButton>
+                </CardFooter>
+              </Card>
+            </GridItem>
+          ))
+        )}
+      </GridContainer>
+    </div>
+  );
 }

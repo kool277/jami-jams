@@ -109,7 +109,7 @@ export default function ServerParameters(props) {
     auth.admin = true;
     window.localStorage.setItem('scope', 'true');
     auth.checkDirectoryType(() => {
-      history.push("/admin/users");
+      history.push("/users");
     });
   }
 

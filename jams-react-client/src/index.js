@@ -24,8 +24,15 @@ import { ConfiguredRoute } from "configured.route";
 import auth from "./auth";
 
 // core components
-import Admin from "layouts/Admin.js";
-import RTL from "layouts/RTL.js";
+import UsersRoute from "routes/UsersRoute.js";
+import UserRoute from "routes/UserRoute.js";
+import CreateUserRoute from "routes/CreateUserRoute.js";
+import GroupsRoute from "routes/GroupsRoute.js";
+import GroupRoute from "routes/GroupRoute.js";
+import BlueprintsRoute from "routes/BlueprintsRoute.js";
+import BlueprintRoute from "routes/BlueprintRoute.js";
+import SettingsRoute from  "routes/SettingsRoute.js";
+
 import SignIn from "layouts/SignIn.js";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
@@ -41,8 +48,14 @@ auth.isServerInstalled(() => {
           <Router history={hist}>
             <Switch>
               <ConfiguredRoute path="/signin" component={SignIn} />
-              <ProtectedRoute path="/admin" component={Admin} />
-              {/*<Route path="/rtl" component={RTL} />*/}
+              <ProtectedRoute path="/users" component={UsersRoute} />
+              <ProtectedRoute path="/user/:username" component={UserRoute} />
+              <ProtectedRoute path="/createuser" component={CreateUserRoute} />
+              <ProtectedRoute path="/groups" component={GroupsRoute} />
+              {/* <ProtectedRoute path="/group/:groupname" component={GroupRoute} /> */}
+              <ProtectedRoute path="/blueprints" component={BlueprintsRoute} />
+              <ProtectedRoute path="/blueprint/:blueprintname" component={BlueprintRoute} />
+              <ProtectedRoute path="/settings" component={SettingsRoute} />
               <Redirect from="/" to="/signin" />
             </Switch>
           </Router>

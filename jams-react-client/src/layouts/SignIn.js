@@ -74,7 +74,11 @@ export default function SignIn(props) {
 
   React.useEffect(() => {
     if (auth.isAuthenticated() && auth.isInstalled()) {
-      history.push("/admin/users");
+      if(auth.hasAdminScope())
+        history.push("/users");
+      else {
+        history.push(`/user/${auth.getUsername()}`);
+      }
     }
   });
 
@@ -88,7 +92,11 @@ export default function SignIn(props) {
         auth.checkLastKnownStep(() => {
           auth.checkDirectoryType(() => {
             if (auth.isInstalled) {
-              history.push("/admin/users");
+              if(auth.hasAdminScope())
+                history.push("/users");
+              else {
+                history.push(`/user/${auth.getUsername()}`);
+              }
             } else {
               history.push("/");
             }
