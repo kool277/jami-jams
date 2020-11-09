@@ -234,5 +234,6 @@
     "device_id": "ID-ul aparatului",
     "add_user_to_group": "Adaugă un utilizator la grup...",
     "add_user_to_a_group": "Adaugă un utilizator la un grup",
-    "remove_from_group": "Elimină din grup"
+    "remove_from_group": "Elimină din grup",
+    "myprofile": "My profile"
 }

@@ -74,7 +74,7 @@
     "global_parameters_cover_general_configuration_of_servers_engine": "Les paramètres globaux couvrent la configuration générale du serveur",
     "cors_domain_name": "Nom de domaine du CORS",
     "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps": "Définissez le domaine du serveur client Web pour qu'il se connecte au tableau de bord d'administration JAMS et aux comptes Jami. Il est également utilisé pour définir où les clients doivent télécharger les CRL et soumettre des requêtes OCSP. Dans le cas où vous exécutez une instance proxy (par exemple JAMS derrière IIS), assurez-vous de définir ce champ correctement, sinon les appareils ne pourront pas télécharger les CRL ou valider les certificats.",
-    "domain_name_of_web_client_server": "Le nom de domaine du client web de votre serveur. Utilisez le préfixe http:// ou https://",
+    "domain_name_of_web_client_server": "Le nom de domaine du client web de votre serveur.",
     "domain": "Domaine",
     "certificate_revocation_list_lifetime": "Durée de vie de la liste de révocation des certificats",
     "set_liftetime_crl_list_certificates_revoked": "Fixer la durée de vie du LCR  (liste des certificats révoqués) qui contient la liste des certificats qui ont été révoqués avant leur date d'expiration prévue.",

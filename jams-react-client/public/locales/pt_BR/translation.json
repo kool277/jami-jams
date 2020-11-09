@@ -46,7 +46,7 @@
     "certificate_authority_setup": "Configuração de Autoridade Certificadora",
     "server_parameters": "Parâmetros de Servidor",
     "choose_a_country": "Escolha um país",
-    "active_directory_server_informations": "Active Directory server information",
+    "active_directory_server_informations": "Informações do servidor Active Directory",
     "port": "Porta",
     "host": "Servidor central",
     "admin_username": "Nome de usuário de Admin",
@@ -56,7 +56,7 @@
     "ldap_server_information": "Informações do Servidor LDAP",
     "server_address": "Endereço de Servidor",
     "administrator_username": "Nome de usuário do administrador",
-    "base_dn_please_use_ldap_convention": "Base DN (Please use LDAP convention)",
+    "base_dn_please_use_ldap_convention": "DN de base (use a convenção LDAP)",
     "field_ldap_structure_contains_username": "Este é o campo em sua estrutura LDAP que contém o nome de usuário.",
     "use_public_nameserver": "Use o servidor de nomes públicos",
     "check_box_register_usernames_on_jami_public_nameserver": "Marque esta caixa se você quiser registrar seus nomes de usuário no servidor de nomes públicos de Jami.",
@@ -148,7 +148,7 @@
     "no_blueprints_found": "Nenhum projecto encontrado",
     "no_blueprint_name": "Sem nome de projecto",
     "no_description": "Sem descrição",
-    "no_users_count": "No users count",
+    "no_users_count": "Sem contagem de usuários",
     "add_contact": "Adicionar um contato…",
     "remove_contact": "Excluir um contato",
     "are_you_sure_you_want_to_remove": "Tem certeza de que quer excluir",
@@ -234,5 +234,6 @@
     "device_id": "Id de dispositivo",
     "add_user_to_group": "Adicionar usuário ao grupo ...",
     "add_user_to_a_group": "Adicionar usuário a um grupo",
-    "remove_from_group": "Excluir do grupo"
+    "remove_from_group": "Excluir do grupo",
+    "myprofile": "My profile"
 }
