@@ -26,7 +26,7 @@ import Settings from "views/Settings/Settings.js";
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import bgImage from "assets/img/sidebar-2.jpg";
-import logo from "assets/img/logo-jams.svg";
+import logo from "assets/img/jams_logo_white_no_gnu_package.svg";
 
 import auth from "auth";
 import configApiCall from "api.js";

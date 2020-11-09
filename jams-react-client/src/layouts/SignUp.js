@@ -8,7 +8,7 @@ import Container from "@material-ui/core/Container";
 import MuiAlert from "@material-ui/lab/Alert";
 import Paper from "@material-ui/core/Paper";
 
-import logo from "assets/img/logo-jams-blue.svg";
+import logo from "assets/img/jams_logo.svg";
 
 import CustomizedSteppers from "components/CustomizedSteppers/CustomizedSteppers";
 import CreateAdmin from "components/CreateAdmin/CreateAdmin";

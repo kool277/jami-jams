@@ -39,7 +39,7 @@ public class ServerStatusServlet extends HttpServlet {
     @Override
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        HashMap<String,String> statusInfo = new HashMap<>();
+       HashMap<String,String> statusInfo = new HashMap<>();
         statusInfo.put("installed",String.valueOf(Server.isInstalled.get()));
         resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
     }

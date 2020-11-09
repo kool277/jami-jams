@@ -16,7 +16,7 @@ import LanguagePicker from "../components/LanguagePicker/LanguagePicker";
 
 import i18next from "i18next";
 
-import logo from "assets/img/logo-jams-blue.svg";
+import logo from "assets/img/jams_logo.svg";
 import * as Yup from "yup";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
