@@ -44,6 +44,9 @@ const styles = (theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
+  whiteButtonText: {
+    color: "white",
+  }
 });
 
 const useStyles = makeStyles(styles);
@@ -267,6 +270,7 @@ export default function PasswordDialog(props) {
                       type="submit"
                       disable={!isValid && !dirty}
                       color="info"
+                      className={classes.whiteButtonText}
                       autoFocus
                     >
                       Update password

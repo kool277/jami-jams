@@ -78,6 +78,9 @@ const styles = {
     display: "flex",
     alignItems: "center",
   },
+  whiteButtonText: {
+    color: "white",
+  }
 };
 
 const useStyles = makeStyles(styles);
@@ -280,7 +283,7 @@ export default function Blueprints() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="info">
+          <Button onClick={handleClose} color="info" className={classes.whiteButtonText}>
             Cancel
           </Button>
           <Button

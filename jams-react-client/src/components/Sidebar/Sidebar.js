@@ -47,8 +47,19 @@ export default function Sidebar(props) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
   }
   const { color, logo, image, logoText, routes } = props;
+
+  var brand = (
+    <Link to={"/"}>
+      <img src={logo} alt="logo" className={classes.img} />
+    </Link>
+  );
+
   var links = (
     <List className={classes.list}>
+      <ListItem
+        className={classes.itemLink}
+      >{brand}</ListItem>
+      <div className={classes.itemLinkSeparator}><hr/></div>
       {routes.map((prop, key) => {
         if( prop.admin && !auth.hasAdminScope()) return;
         if( !prop.admin && auth.hasAdminScope() && prop.path === "/user/admin") return;
@@ -172,21 +183,6 @@ export default function Sidebar(props) {
     </List>
   );
 
-  var brand = (
-    <div className={classes.logo}>
-      <a
-        href="/"
-        className={classNames(classes.logoLink, {
-          [classes.logoLinkRTL]: props.rtlActive,
-        })}
-        target="_blank"
-      >
-        <div className={classes.logoImage}>
-          <img src={logo} alt="logo" className={classes.img} />
-        </div>
-      </a>
-    </div>
-  );
   return (
     <div>
       <Hidden mdUp implementation="css">
@@ -204,7 +200,6 @@ export default function Sidebar(props) {
             keepMounted: true, // Better open performance on mobile.
           }}
         >
-          {brand}
           <div className={classes.sidebarWrapper}>
             {links}
             {bottomLinks}
@@ -228,7 +223,6 @@ export default function Sidebar(props) {
             }),
           }}
         >
-          {brand}
           <div className={classes.sidebarWrapper}>{links}</div>
           <div className={classes.sidebarWrapper}>{bottomLinks}</div>
           {image !== undefined ? (

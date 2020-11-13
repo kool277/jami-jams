@@ -62,18 +62,7 @@ const sidebarStyle = theme => ({
   },
   logo: {
     position: "relative",
-    padding: "20px 35px",
-    zIndex: "4",
-    "&:after": {
-      content: '""',
-      position: "absolute",
-      bottom: "0",
-
-      height: "1px",
-      right: "15px",
-      width: "calc(100% - 30px)",
-      backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)"
-    }
+    textAlign: "center",
   },
   logoLink: {
     ...defaultFont,
@@ -101,11 +90,15 @@ const sidebarStyle = theme => ({
     marginRight: "15px"
   },
   img: {
-    width: "180px",
-    top: "10px",
-    position: "absolute",
+    width: "100%",
     verticalAlign: "middle",
     border: "0"
+  },
+  itemLinkSeparator: {
+    "& > hr": {
+      width: "75%",
+      opacity: "50%"
+    }
   },
   background: {
     position: "absolute",
@@ -129,7 +122,6 @@ const sidebarStyle = theme => ({
     }
   },
   list: {
-    marginTop: "20px",
     paddingLeft: "0",
     paddingTop: "0",
     paddingBottom: "0",

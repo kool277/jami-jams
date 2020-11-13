@@ -239,7 +239,7 @@ export default function Devices(props) {
             <Dialog open={openEdit} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-edit-dialog-title">{i18next.t("update_device_information", "Update Device Information")}</DialogTitle>
                 <Formik initialValues={{
-                    displayName: '',
+                    displayName: selectedDevice.displayName,
                 }}
                 >
                     {({ errors, touched, validateField}) => (
@@ -255,7 +255,7 @@ export default function Devices(props) {
                                                 label={i18next.t("device_display_name", "Device Display Name")}
                                                 fullWidth
                                                 onChange={setDisplayName(field.value)}
-                                                helperText={(errors.displayName && touched.displayName) && errors.displayName}
+                                                helperText={(errors.displayName && touched.displayName) && errors.displayName}                                                
                                                 {...field}
                                             />
                                         </div>

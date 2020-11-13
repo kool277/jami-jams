@@ -212,6 +212,9 @@ const styles = (theme) => ({
       justifyContent: "center", 
       alignItems: "center"
     }
+  },
+  whiteButtonText: {
+    color: "white",
   }
 });
 
@@ -557,7 +560,7 @@ export default function EditCreateUserProfile(props) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cropProfilePicture} color="info" autoFocus>
+          <Button onClick={cropProfilePicture} color="info" className={classes.whiteButtonText} autoFocus>
             {i18next.t("validate", "Validate")}
           </Button>
         </DialogActions>
@@ -903,7 +906,11 @@ export default function EditCreateUserProfile(props) {
                   </CardBody>
                   <CardFooter className={classes.alignRight}>
                     {!props.createUser && (
-                      <Button color="info" onClick={handleCancelUpdate}>
+                      <Button 
+                        color="info"
+                        className={classes.whiteButtonText}
+                        onClick={handleCancelUpdate}
+                      >
                         {i18next.t("cancel", "Cancel")}
                       </Button>
                     )}
@@ -912,6 +919,7 @@ export default function EditCreateUserProfile(props) {
                         type="submit"
                         disabled={!isValid || !dirty || userExists}
                         color="info"
+                        className={classes.whiteButtonText}
                       >
                         {i18next.t("create_profile", "Create Profile")}
                       </Button>
@@ -920,6 +928,7 @@ export default function EditCreateUserProfile(props) {
                         type="submit"
                         disabled={!isValid}
                         color="info"
+                        className={classes.whiteButtonText}
                       >
                         {i18next.t("save_profile", "Save Profile")}
                       </Button>

@@ -69,7 +69,6 @@ export default function UserProfile(props) {
           value={value}
           onChange={handleChange}
           aria-label="simple tabs example"
-          style={{ margin: "0.7rem"}}
         >
           <Tab label={i18next.t("profile", "Profile")} {...a11yProps(0)} />
           <Tab label={i18next.t("devices", "Devices")} {...a11yProps(1)} />

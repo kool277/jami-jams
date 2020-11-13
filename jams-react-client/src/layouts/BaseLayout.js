@@ -236,7 +236,9 @@ export default function Admin(props) {
                 routes={Routes}
                 handleDrawerToggle={handleDrawerToggle}
             />
-            <div className={classes.map}>{props.component}</div>
+            <div className={classes.map}>
+              {props.component}
+            </div>
             <Footer />
       </div>
     </div>

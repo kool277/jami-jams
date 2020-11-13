@@ -32,7 +32,8 @@ const appStyle = theme => ({
   },
   container,
   map: {
-    marginTop: "0px"
+    marginTop: "0px",
+    minHeight: "calc(100vh - 63px)"
   }
 });
 

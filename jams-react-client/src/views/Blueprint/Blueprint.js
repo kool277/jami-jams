@@ -78,7 +78,7 @@ export default function Blueprint(props) {
   return (
     <div>
       <AppBar position="static" style={{ background: infoColor[0] }}>
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example" style={{ margin: "0.7rem"}}>
+        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label={i18next.t("permissions", "Permissions")} {...a11yProps(0)} />
           <Tab label={i18next.t("configuration", "Configuration")} {...a11yProps(1)} />
         </Tabs>

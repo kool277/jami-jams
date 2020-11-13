@@ -187,6 +187,9 @@ const styles = (theme) => ({
   loading: {
     width: "100%",
   },
+  whiteButtonText: {
+    color: "white",
+  }
 });
 
 const useStyles = makeStyles(styles);
@@ -471,7 +474,7 @@ export default function DisplayUserProfile(props) {
           <Button onClick={handleClose} color="primary">
             {i18next.t("cancel", "Cancel")}
           </Button>
-          <Button onClick={revokeUser} color="info" autoFocus>
+          <Button onClick={revokeUser} color="info" className={classes.whiteButtonText} autoFocus>
             {i18next.t("revoke", "Revoke")}
           </Button>
         </DialogActions>
@@ -616,6 +619,7 @@ export default function DisplayUserProfile(props) {
                   {canEdit() && (
                     <Button
                       color="info"
+                      className={classes.whiteButtonText}
                       onClick={() => props.setDisplayUser(false)}
                     >
                       <EditIcon /> {i18next.t("edit_profile", "Edit Profile")}
@@ -626,6 +630,7 @@ export default function DisplayUserProfile(props) {
                   {auth.isLocalDirectory() && auth.hasAdminScope() && (
                     <Button
                       color="info"
+                      className={classes.whiteButtonText}
                       onClick={() => {
                         setChangePasswordOpen(true);
                       }}
@@ -641,6 +646,7 @@ export default function DisplayUserProfile(props) {
                 {auth.hasAdminScope() && revoked === false && (
                   <Button
                     color="info"
+                    className={classes.whiteButtonText}
                     onClick={() => handleClickOpen(user.username)}
                   >
                     <DeleteIcon fontSize="small" /> {i18next.t("revoke_user", "Revoke user")}

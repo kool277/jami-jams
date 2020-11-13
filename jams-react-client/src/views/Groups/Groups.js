@@ -84,6 +84,9 @@ const styles = {
     display: "flex",
     alignItems: "center",
   },
+  whiteButtonText: {
+    color: "white",
+  }
 };
 
 const useStyles = makeStyles(styles);
@@ -362,7 +365,7 @@ export default function Groups() {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseCreate} color="info">
+            <Button onClick={handleCloseCreate} color="info" className={classes.whiteButtonText}>
               Cancel
             </Button>
             <Button
