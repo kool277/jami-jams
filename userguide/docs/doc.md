@@ -207,7 +207,7 @@ recommend users to place it behind Nginx or a similar web server which proxies r
 The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxying solution):
 
 <p align="center">
-    <img src="./img/map.png" alt="Create an admin account" style="height:250px;width:600px"/>
+    <img src="img/map.png" alt="Create an admin account" style="height:250px;width:600px"/>
 </p>
 
 The IP 10.10.0.1 is random, and should be seen as an example.
@@ -272,13 +272,13 @@ For the purposes of this tutorial, we assume that
 Open Jami, go to the login page. Click on "Advanced":
 
 <p align="center">
-    <img src="./img/client/windows/windows-step1.png" alt="Step 1" style="height:400px;width:700px"/>
+    <img src="img/client/windows/windows-step1.png" alt="Step 1" style="height:400px;width:700px"/>
 </p>
 
 Select the option **"Connect to a JAMS server"** which will lead you to the following screen:
  
 <p align="center">
-    <img src="./img/client/windows/windows-step2.png" alt="Step 2" style="height:400px;width:700px"/>
+    <img src="img/client/windows/windows-step2.png" alt="Step 2" style="height:400px;width:700px"/>
 </p>
 
 The ```Jami Account Management Server URL``` in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
@@ -288,13 +288,13 @@ The ```Jami Account Management Server URL``` in this case would be the DNS addre
 Open Jami, go to the login page. Click on "Advanced":
 
 <p align="center">
-    <img src="./img/client/macos/macos-step1.png" alt="Step 1" style="height:400px;width:444px"/>
+    <img src="img/client/macos/macos-step1.png" alt="Step 1" style="height:400px;width:444px"/>
 </p>
 
 Select the option **"Connect to account manager"** which will lead you to the following screen:
  
 <p align="center">
-    <img src="./img/client/macos/macos-step2.png" alt="Step 2" style="height:400px;width:700px"/>
+    <img src="img/client/macos/macos-step2.png" alt="Step 2" style="height:400px;width:700px"/>
 </p>
 
 The ```Jami Account Management Server URL``` in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
@@ -304,13 +304,13 @@ The ```Jami Account Management Server URL``` in this case would be the DNS addre
 Open Jami, go to the login page.
 
 <p align="center">
-    <img src="./img/client/android/android-step1.png" alt="Step 1" style="height:400px;width:200px"/>
+    <img src="img/client/android/android-step1.png" alt="Step 1" style="height:400px;width:200px"/>
 </p>
 
 Select the option **"Connect to management server"** which will lead you to the following screen:
 
 <p align="center">
-    <img src="./img/client/android/android-step2.png" alt="Step 2" style="height:400px;width:200px"/>
+    <img src="img/client/android/android-step2.png" alt="Step 2" style="height:400px;width:200px"/>
 </p>
 
 The server in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
@@ -320,13 +320,13 @@ The server in this case would be the DNS address of your server and the username
 Open Jami, go to the login page.
 
 <p align="center">
-    <img src="./img/client/ios/ios-step1.png" alt="Step 1" style="height:400px;width:200px"/>
+    <img src="img/client/ios/ios-step1.png" alt="Step 1" style="height:400px;width:200px"/>
 </p>
 
 Select the option **"Connect to account manager"** which will lead you to the following screen:
 
 <p align="center">
-    <img src="./img/client/ios/ios-step2.png" alt="Step 2" style="height:400px;width:200px"/>
+    <img src="img/client/ios/ios-step2.png" alt="Step 2" style="height:400px;width:200px"/>
 </p>
 
 The server in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
