@@ -25,12 +25,10 @@ const headerStyle = (theme) => ({
     [theme.breakpoints.up("md")]: {
       display: "none",
     },
-    paddingTop: "10px",
     zIndex: "1029",
     color: grayColor[7],
     border: "0",
     borderRadius: "3px",
-    padding: "10px 0",
     transition: "all 150ms ease 0s",
     minHeight: "50px",
     display: "block",
