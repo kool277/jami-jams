@@ -25,7 +25,7 @@ recommend users to place it behind Nginx or a similar web server which proxies r
 The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxying solution):
 
 <p align="center">
-    <img src="./img/map.png" alt="Create an admin account" style="height:250px;width:600px"/>
+    <img src="../img/map.png" alt="Create an admin account" style="height:250px;width:600px"/>
 </p>
 
 The IP 10.10.0.1 is random, and should be seen as an example.
@@ -69,19 +69,19 @@ The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (howev
 
 ## Running JAMS as Windows Service
 
-# Download and install JAMS
+### Download and install JAMS
 
 Visit https://jami.net/services/ and downalod JAMS.
 
 Extract JAMS to c:\jams
 
-# Download and install JDK 11 
+### Download and install JDK 11 
 
 Download JDK 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (choose the conresponding architecture of your VM)
 
 Install it using the install wizard.
 
-# Download openssl to generate a key and a certificate
+### Download openssl to generate a key and a certificate
 
 Download OpenSSL from https://kb.firedaemon.com/support/solutions/articles/4000121705 (or choose another source https://wiki.openssl.org/index.php/Binaries)
 
@@ -89,6 +89,8 @@ Once downloaded extract it to c:\openssl then create a folder bin inside c:\open
 
 Create a new file inside bin named openssl.cnf (make sure that the file extension is .cnd and not .cnd.txt) and copy past the following default configuration http://www.flatmtn.com/article/setting-openssl-create-certificates.html
 
+<pre>
+<b>
 #
 # OpenSSL configuration file.
 #
@@ -147,7 +149,7 @@ commonName_max				= 64
  
 # Default values for the above, for consistency and less typing.
 # Variable name				Value
-#------------------------	  ------------------------------
+------------------------	  ------------------------------
 0.organizationName_default		= My Company
 localityName_default			= My Town
 stateOrProvinceName_default		= State or Providence
@@ -161,11 +163,13 @@ authorityKeyIdentifier			= keyid:always,issuer:always
 [ v3_req ]
 basicConstraints			= CA:FALSE
 subjectKeyIdentifier			= hash
+</b>
+</pre>
 
-# Add OpenSSL to Sytem Environment variables
+### Add OpenSSL to Sytem Environment variables
 Go to Edit the system environment variables -> Environment Variables, then in System variables edit Path and add c:\openssl\
 
-# Configure OpenSSL
+### Configure OpenSSL
 Execute the following command to set the path to OpenSSL configuration.
 
 set OPENSSL_CONF=c:\openssl\bin\openssl.cnf
@@ -178,6 +182,8 @@ Follow the wizard.
 
 Once the key and certificate are generated execute the dir command you should see an output like this:
 
+<pre>
+<b>
 c:\jams>dir
  Volume in drive C has no label.
  Volume Serial Number is BC94-9EF2
@@ -194,6 +200,8 @@ c:\jams>dir
 2020-10-22  04:05 PM         2,047,932 userguide.pdf
                5 File(s)     40,650,898 bytes
                3 Dir(s)  93,365,936,128 bytes free
+</b>
+</pre>
 
 Now execute the following command tot start JAMS
 
@@ -203,7 +211,7 @@ Open a navigator on the server and visite https://localhost:443 or https://local
 
 Click CTRL + C to close the application
 
-# Expose your localhost to the internet
+### Expose your localhost to the internet
 
 Click on Windows ans search for Windows Defender Firewall with Advanced Security.
 
@@ -229,26 +237,29 @@ Name you Rule JAMS Outbound and click Finish.
 
 You are all set. You can now visit you application trought the server domain name or ip address on port 443 or 8443.
 
-# Create a JAMS Windows Service (Embed Tomcat Server Windows Service) to start JAMS with the server
+### Create a JAMS Windows Service (Embed Tomcat Server Windows Service) to start JAMS with the server
 
-In order to create a JAMS Windows Service you can use the tool NSSM provided on http://nssm.cc/download (https://github.com/kirillkovalenko/nssm)
+In order to create a JAMS Windows Service you can use the tool NSSM provided on http://nssm.cc/download [https://github.com/kirillkovalenko/nssm](https://github.com/kirillkovalenko/nssm)
 
 Once downloaded open a command prompt and change directory to nssm-2.24\win64 then execute:
 
+<pre>
 nssm.exe install JAMS
-
+</pre>
 A GUI interface will open.
 
-In the Path field specify the path to the Java executable example "C:\Program Files\Common Files\Oracle\Java\javapath\java.exe".
+In the Path field specify the path to the Java executable example:
+<pre>"C:\Program Files\Common Files\Oracle\Java\javapath\java.exe".</pre>
 
-In the Startup directory put the "C:\jams" installation folder path.
+In the Startup directory put the <pre>"C:\jams" installation folder path.</pre>
 
 In the last field Arguments add the following arguments:
-
+<pre>
 -classpath "c:\jams" -jar jams-launcher.jar PORT_NUMBER server.pem server.key
+</pre>
 
 where PORT_NUMBER is the port number you want to use to serve the application example 443 or 8443
 
 Now your JAMS application will start with the server.
 
-Source: https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4
+Source: [https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4](https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4)

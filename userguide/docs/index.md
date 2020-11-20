@@ -4,7 +4,7 @@ JAMS is a server application used to enroll Jami clients into an Enterprise cont
 
 ## Obtaining JAMS
 
-The latest Beta build of JAMS can be downloaded at: <https://git.jami.net/savoirfairelinux/jami-jams>
+The latest Beta build of JAMS can be downloaded at: ``https://git.jami.net/savoirfairelinux/jami-jams``
 
 ## System Requirements
 
@@ -26,22 +26,25 @@ In order to be completely secure, JAMS does not generate certificates for device
 The diagram below shows the entire process of how a device enrolls with JAMS:
 
 <p align="center">
-    <img src="img/device_enroll.png" alt="Device Enrollement"  style="height:250px;width:400px" />
+    <img src="../img/device_enroll.png" alt="Device Enrollement"  style="height:250px;width:400px" />
 </p>
 
 ​    
 ## Getting Started
 
-
 1. Download the latest version of JAMS from: <https://jami.net/services/>
 
 2. Unpack the .tar file to a directory of your choice.
 
-3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:    <pre>
-openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem</pre>
+3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:
 
-4. Launch your JAMS instance. Navigate to the directory where you have extracted the JAMS package and execute the following command:<pre>
-java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</pre>
+``openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem``
+
+**Current limitation:** JAMS does not support reading encrypted private keys which require a password unlock.
+
+4. Navigate to the directory where you have extracted the JAMS package and execute the following command:
+
+```java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY```
 
 | Argument         | Details       |
 | ------------- |-------------  |
@@ -52,19 +55,16 @@ java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</pre>
 <br/>
 An example of the command would be: 
 
-<pre>java -jar jams-launcher 8080 server.pem server.key</pre>
+``java -jar jams-launcher 443 server.pem server.key``
 
-**Current limitations:** JAMS does not support reading encrypted private keys which require a password unlock.
-
-Please also note that any port above 1024 will safely run JAMS.
-
+Please note that any port above 1024 can be safely used to run JAMS.
 
 ## Step 1: create your admininistrator account
 
 This account will have administrative control and the rights to manage your users and group of Jami users.
 
 <p align="center">
-    <img src="img/step1.png" alt="Create an admin account" style="height:768;width:1024" />
+    <img src="../img/step1.png" alt="Create an admin account" />
 </p>
 
 
@@ -75,8 +75,8 @@ The second step is to define your Certification Authority.
 **Important:** a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by godaddy, letsencrypt, etc... ) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.
 
 <p align="center">
-    <img src="img/step2-1.png" alt="Create an admin account" style="height:470px;width:265px" />
-    <img src="img/step2-2.png" alt="Create an admin account" style="height:309px;width:247px" />
+    <img src="../img/step2-1.png" alt="Create an admin account" />
+    <img src="../img/step2-2.png" alt="Create an admin account" />
 </p>
 
 
@@ -101,7 +101,7 @@ JAMS supports 3 different sources for the authentication of users:
 If your company provides you with LDAP directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.
 
 <p align="center">
-    <img src="img/ldap.png" style="height:478px;width:250px" />
+    <img src="../img/ldap.png" />
 </p>
 
 Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:
@@ -124,7 +124,7 @@ If your company provides you with Active Directory for user management, you will
 
 
 <p align="center">
-    <img src="img/ad.png"style="height:439px;width:240px" />
+    <img src="../img/ad.png" />
 </p>
 
 Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:
@@ -145,7 +145,7 @@ Your admin should provide you most of this information but we do provide a detai
 The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from the JAMS interface.
 
 <p align="center">
-    <img src="img/local.png" style="height:307px;width:244px" />
+    <img src="../img/local.png" />
 </p>
 
 **Advanced settings:** by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.
@@ -155,7 +155,7 @@ If you want your users to be searchable by external users and allow them to comm
 ## Step 4: setup the server parameters
 
 <p align="center">
-    <img src="img/step4.png" style="height:452px;width:239px" />
+    <img src="../img/step4.png" />
 </p>
 
 | Parameter         | Details       |
@@ -174,7 +174,7 @@ Click on "Set Server Parameters" to finalize the configuration.
 You will be redirected to the JAMS interface.
 
 <p align="center">
-    <img src="img/jams-dashboard.png" style="height:233px;width:457px" />
+    <img src="../img/jams-dashboard.png" />
 </p>
 
 If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization shoud be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User"

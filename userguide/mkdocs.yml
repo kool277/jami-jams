@@ -1,4 +1,7 @@
 site_name: Jams User Guide
+nav:
+  - Admin: admin.md
+  - Clients: clients.md
 plugins:
-    - search
-    - mkpdfs
+  - search
+  - mkpdfs
