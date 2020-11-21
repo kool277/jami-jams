@@ -25,7 +25,7 @@ recommend users to place it behind Nginx or a similar web server which proxies r
 The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxying solution):
 
 <p align="center">
-    <img src="../img/map.png" alt="Create an admin account" style="height:250px;width:600px"/>
+    <img src="../img/map.png" alt="Create an admin account" style="height:400px;"/>
 </p>
 
 The IP 10.10.0.1 is random, and should be seen as an example.
