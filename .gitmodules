@@ -1,0 +1,3 @@
+[submodule "userguide/userguide/src/mkpdfs-mkdocs-plugin"]
+	path = userguide/userguide/src/mkpdfs-mkdocs-plugin
+	url = https://github.com/jwaschkau/mkpdfs-mkdocs-plugin.git
