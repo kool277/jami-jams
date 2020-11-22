@@ -91,7 +91,7 @@ target/
 testdb/
 tomcat.*/
 /jams
-userguide/site
+#userguide/site
 versions.json
 
 # React client

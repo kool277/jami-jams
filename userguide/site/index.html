@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="None" name="description"/>
+<link href="img/favicon.ico" rel="shortcut icon"/>
+<title>Jams User Guide</title>
+<link href="css/bootstrap.min.css" rel="stylesheet"/>
+<link href="css/font-awesome.min.css" rel="stylesheet"/>
+<link href="css/base.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet"/>
+<script defer="" src="js/jquery-1.10.2.min.js"></script>
+<script defer="" src="js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class="homepage">
+<div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+<div class="container">
+<a class="navbar-brand" href=".">Jams User Guide</a>
+<!-- Expander button -->
+<button class="navbar-toggler" data-target="#navbar-collapse" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<!-- Expanded navigation -->
+<div class="navbar-collapse collapse" id="navbar-collapse">
+<!-- Main navigation -->
+<ul class="nav navbar-nav">
+<li class="navitem active">
+<a class="nav-link" href=".">Home</a>
+</li>
+<li class="navitem">
+<a class="nav-link" href="admin/">Admin</a>
+</li>
+<li class="navitem">
+<a class="nav-link" href="clients/">Clients</a>
+</li>
+</ul>
+<ul class="nav navbar-nav ml-auto">
+<li class="nav-item">
+<a class="nav-link" data-target="#mkdocs_search_modal" data-toggle="modal" href="#">
+<i class="fa fa-search"></i> Search
+                            </a>
+</li>
+<li class="nav-item">
+<a class="nav-link disabled" rel="prev">
+<i class="fa fa-arrow-left"></i> Previous
+                                </a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="admin/" rel="next">
+                                    Next <i class="fa fa-arrow-right"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="container">
+<div class="row">
+<div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+<div class="navbar-header">
+<button class="navbar-toggler collapsed" data-target="#toc-collapse" data-toggle="collapse" title="Table of Contents" type="button">
+<span class="fa fa-angle-down"></span>
+</button>
+</div>
+<div class="navbar-collapse collapse card bg-secondary" id="toc-collapse">
+<ul class="nav flex-column">
+<li class="nav-item" data-level="1"><a class="nav-link" href="#getting-started">Getting Started</a>
+<ul class="nav flex-column">
+<li class="nav-item" data-level="2"><a class="nav-link" href="#obtaining-jams">Obtaining JAMS</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#system-requirements">System Requirements</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#jams-concepts">JAMS Concepts</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#getting-started_1">Getting Started</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#step-1-create-your-admininistrator-account">Step 1: create your admininistrator account</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#step-2-setup-the-certification-authority">Step 2: setup the Certification Authority</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#step-3-setup-the-user-database">Step 3: setup the user database</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#step-4-setup-the-server-parameters">Step 4: setup the server parameters</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div></div>
+<div class="col-md-9" role="main"><a class="md-content__icon pdf-download-btn" download href="pdf/combined.pdf" title="Download"><i class="fa fas fa-download"></i><small> PDF</small></a>
+<h1 id="getting-started">Getting Started</h1>
+<p>JAMS is a server application used to enroll Jami clients into an Enterprise context. Currently, JAMS supports 3 sources for user authentication: LDAP, Active Directory and an embedded database.</p>
+<h2 id="obtaining-jams">Obtaining JAMS</h2>
+<p>The latest Beta build of JAMS can be downloaded at: <code>https://git.jami.net/savoirfairelinux/jami-jams</code></p>
+<h2 id="system-requirements">System Requirements</h2>
+<ul>
+<li>Windows, Linux or Mac OS operating system</li>
+<li>Java 11 or higher</li>
+<li>4 GB RAM</li>
+<li>1 CPU </li>
+</ul>
+<h2 id="jams-concepts">JAMS Concepts</h2>
+<p>JAMS was built with security in mind, therefore it is intimately related to the X509 certificate management workflows. </p>
+<p>The central concepts which are used in JAMS are the Certification Authority (CA) and the Certificate Signing Requests (CSR).</p>
+<p>In the JAMS paradigm, a device (Jami client) requests a certificate to the server then presents it to other devices to be recognized as a valid member of the organization. Therefore, JAMS must be provided with a certificate authority in order to work properly.</p>
+<p>In order to be completely secure, JAMS does not generate certificates for devices, but instead issues certificates based on a certificate signing request sent to it by the device, therefore removing the need to send a private key over the wire.</p>
+<p>The diagram below shows the entire process of how a device enrolls with JAMS:</p>
+<p align="center">
+<img alt="Device Enrollement" src="img/device_enroll.png" style="height:400px;"/>
+</p>
+<p>​    </p>
+<h2 id="getting-started_1">Getting Started</h2>
+<ol>
+<li>
+<p>Download the latest version of JAMS from: <a href="https://jami.net/services/">https://jami.net/services/</a></p>
+</li>
+<li>
+<p>Unpack the .tar file to a directory of your choice.</p>
+</li>
+<li>
+<p>It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:</p>
+</li>
+</ol>
+<p><code>openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem</code></p>
+<p><strong>Current limitation:</strong> JAMS does not support reading encrypted private keys which require a password unlock.</p>
+<ol>
+<li>Navigate to the directory where you have extracted the JAMS package and execute the following command:</li>
+</ol>
+<p><code>java -jar jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</code></p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PORT</strong></td>
+<td>The TCP port on which you want JAMS to listen for incoming connections</td>
+</tr>
+<tr>
+<td><strong>SSL_CERTIFICATE</strong></td>
+<td>The location of the PEM-formatted SSL Certificate file</td>
+</tr>
+<tr>
+<td><strong>SSL_CERTIFICATE_KEY</strong></td>
+<td>The location of the PEM-formatted key file which is used with the SSL Certificate file from above</td>
+</tr>
+</tbody>
+</table>
+<p><br/>
+An example of the command would be: </p>
+<p><code>java -jar jams-launcher 443 server.pem server.key</code></p>
+<p>Please note that any port above 1024 can be safely used to run JAMS.</p>
+<h2 id="step-1-create-your-admininistrator-account">Step 1: create your admininistrator account</h2>
+<p>This account will have administrative control and the rights to manage your users and group of Jami users.</p>
+<p align="center">
+<img alt="Create an admin account" src="img/step1.png" style="height:400px;"/>
+</p>
+<h2 id="step-2-setup-the-certification-authority">Step 2: setup the Certification Authority</h2>
+<p>The second step is to define your Certification Authority. </p>
+<p><strong>Important:</strong> a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by godaddy, letsencrypt, etc... ) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.</p>
+<p align="center">
+<img alt="Create an admin account" src="img/step2-1.png" style="height:400px;"/>
+<img alt="Create an admin account" src="img/step2-2.png" style="height:400px;"/>
+</p>
+<p>This certificate will be used to sign the enrollement requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
+articles to get familiar with the processes and practices which surround it:</p>
+<p><a href="https://www.securew2.com/blog/public-key-infrastructure-explained/">https://www.securew2.com/blog/public-key-infrastructure-explained/</a>
+<a href="https://cheapsslsecurity.com/blog/understanding-the-role-of-certificate-authorities-in-pki/">https://cheapsslsecurity.com/blog/understanding-the-role-of-certificate-authorities-in-pki/</a> </p>
+<h2 id="step-3-setup-the-user-database">Step 3: setup the user database</h2>
+<p>JAMS supports 3 different sources for the authentication of users:</p>
+<ul>
+<li>LDAP-compatible directory (such as OpenLDAP)</li>
+<li>Microsoft Active Directory</li>
+<li>Local embedded database</li>
+</ul>
+<p><br/></p>
+<h3 id="option-1-ldap-authentication">Option 1: LDAP authentication</h3>
+<p>If your company provides you with LDAP directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.</p>
+<p align="center">
+<img src="img/ldap.png" style="height:400px;"/>
+</p>
+<p>Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Use StartTLS</strong></td>
+<td>Your LDAP server can be configured to use either TLS/STARTTLS or PLAIN sockets, if STARTTLS is used you should mark this as true</td>
+</tr>
+<tr>
+<td><strong>Server Address</strong></td>
+<td>The address of your server with respect to the JAMS server, your LDAP does not need to be publicly accessible but should be accessible to JAMS. You should have either <code>ldap://</code> or <code>ldaps://</code> preceding the address.</td>
+</tr>
+<tr>
+<td><strong>Port</strong></td>
+<td>The port on which the LDAP server is listening for requests (usually 389 for PLAIN/STARTTLS and 636 for SSL/TLS)</td>
+</tr>
+<tr>
+<td><strong>Administrator Username</strong></td>
+<td>This is <strong>NOT</strong> the LDAP's administration account credentials, but the credentials of the account which has Read permissions to the LDAP database in order to lookup users. The format is generally <code>cn=bot,ou=robots,dc=domain,dc=org</code></td>
+</tr>
+<tr>
+<td><strong>Password</strong></td>
+<td>The password used by the account above.</td>
+</tr>
+<tr>
+<td><strong>BaseDN</strong></td>
+<td>The base realm where the users accounts are located, in most cases it is <code>ou=users,dc=company,dc=org</code></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<h3 id="option-2-microsoft-active-directory">Option 2: Microsoft Active Directory</h3>
+<p>If your company provides you with Active Directory for user management, you will need to know its access information and an automated account which has read-only rights to do use look-ups.</p>
+<p align="center">
+<img src="img/ad.png" style="height:400px;"/>
+</p>
+<p>Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Port</strong></td>
+<td>The port on which Active Directory is listening (generally it is either 389 or 636)</td>
+</tr>
+<tr>
+<td><strong>Host</strong></td>
+<td>The address of your server with respect to the JAMS server, your Active Directory does not need to be publicly accessible but should be accessible to JAMS.</td>
+</tr>
+<tr>
+<td><strong>Administrator Username</strong></td>
+<td>This is <strong>NOT</strong> the Active Directory's administration account credentials, but the credentials of the account which has Read permissions to the Active Directory database in order to lookup users. The format is generally <code>cn=bot,ou=robots,dc=domain,dc=net</code></td>
+</tr>
+<tr>
+<td><strong>Password</strong></td>
+<td>The password used by the account above.</td>
+</tr>
+<tr>
+<td><strong>Use SSL</strong></td>
+<td>Whenever this server uses SSL for data transmission</td>
+</tr>
+<tr>
+<td><strong>Domain Name</strong></td>
+<td>This is the legacy-formatted Windows Domain Name (i.e. <code>WINDOMAIN</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<h3 id="option-3-local-embedded-database">Option 3: local embedded database</h3>
+<p>The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from the JAMS interface.</p>
+<p align="center">
+<img src="img/local.png" style="height:400px;"/>
+</p>
+<p><strong>Advanced settings:</strong> by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.</p>
+<p>If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option,</p>
+<h2 id="step-4-setup-the-server-parameters">Step 4: setup the server parameters</h2>
+<p align="center">
+<img src="img/step4.png" style="height:400px;"/>
+</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CORS Domain Name</strong></td>
+<td>The domain on which the JAMS client and administration UI will be running.</td>
+</tr>
+<tr>
+<td><strong>Certificate Revocation List Lifetime</strong></td>
+<td>The frequency at which the CRL is updated in memory</td>
+</tr>
+<tr>
+<td><strong>Device Lifetime</strong></td>
+<td>How long a device's certificate is valid before being considered stale and requiring re-enrollement</td>
+</tr>
+<tr>
+<td><strong>User Account Lifetime</strong></td>
+<td>How long a user account is valid before being considered stale and requiring re-enrollement</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important</strong> The <em>CORS Domain Name</em> corresponds to the web address used to access the Web UI. By default, it is set to the same URL as the one where you deploy JAMS. Only set a different URL if the Web UI has a different URL to the one where JAMS is deployed.</p>
+<p><br/></p>
+<p>Click on "Set Server Parameters" to finalize the configuration.
+You will be redirected to the JAMS interface.</p>
+<p align="center">
+<img src="img/jams-dashboard.png" style="height:400px;"/>
+</p>
+<p>If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization shoud be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User"</p></div>
+</div>
+</div>
+<footer class="col-md-12">
+<hr/>
+<p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+</footer>
+<script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+<script defer="" src="js/base.js"></script>
+<script defer="" src="search/main.js"></script>
+<div aria-hidden="true" aria-labelledby="searchModalLabel" class="modal" id="mkdocs_search_modal" role="dialog" tabindex="-1">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header">
+<h4 class="modal-title" id="searchModalLabel">Search</h4>
+<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body">
+<p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+<form>
+<div class="form-group">
+<input class="form-control" id="mkdocs-search-query" placeholder="Search..." title="Type search term here" type="search"/>
+</div>
+</form>
+<div id="mkdocs-search-results"></div>
+</div>
+<div class="modal-footer">
+</div>
+</div>
+</div>
+</div><div aria-hidden="true" aria-labelledby="keyboardModalLabel" class="modal" id="mkdocs_keyboard_modal" role="dialog" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+<button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body">
+<table class="table">
+<thead>
+<tr>
+<th style="width: 20%;">Keys</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="help shortcut"><kbd>?</kbd></td>
+<td>Open this help</td>
+</tr>
+<tr>
+<td class="next shortcut"><kbd>n</kbd></td>
+<td>Next page</td>
+</tr>
+<tr>
+<td class="prev shortcut"><kbd>p</kbd></td>
+<td>Previous page</td>
+</tr>
+<tr>
+<td class="search shortcut"><kbd>s</kbd></td>
+<td>Search</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="modal-footer">
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+<!--
+MkDocs version : 1.1.2
+Build Date UTC : 2020-11-22 01:04:58.475709+00:00
+-->
