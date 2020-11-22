@@ -1,20 +1,6 @@
-## Troubleshooting and resetting
-
-If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your project root folder>/jams):    <pre>
-<b>The internal jams folder: <your project root folder>/jams/jams
-derby.log
-oauth.key
-oauth.pub
-config.json
-</b></pre>
-
-
-This will reset the server to its original state and you will be able to run the configuration wizard again. Before performing this operation, please make sure to shutdown the server.
-
 # Admin Guide
 
-By default JAMS runs an embedded tomcat server visible on port 8080, however this is not practical for many reasons. This guide is designed
-to help you setup Jams to run in a production environment.
+By default JAMS runs an embedded tomcat server visible on port 8080, however this is not practical for many reasons. This guide is designed to help you setup Jams to run in a production environment.
 
 
 ## JAMS & Nginx
@@ -49,23 +35,18 @@ Typically you would add a new site called ``jams-site.conf`` to your nginx confi
 
 This is the preferred setup method by most admins, as local traffic is usually ran unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.
 
+## Troubleshooting and resetting
 
-## Running JAMS as a Linux Service
-
-Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:    <pre>
-<b>[Unit]
-Description=JAMS Server
-
-[Service]
-Type=simple
-WorkingDirectory=[DIRECTORY WHERE JAMS WAS UNZIPPED]
-ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY
-
-[Install]
-WantedBy=multi-user.target
+If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your project root folder>/jams):    <pre>
+<b>The internal jams folder: <your project root folder>/jams/jams
+derby.log
+oauth.key
+oauth.pub
+config.json
 </b></pre>
 
-The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)
+
+This will reset the server to its original state and you will be able to run the configuration wizard again. Before performing this operation, please make sure to shutdown the server.
 
 ## Running JAMS as Windows Service
 
@@ -263,3 +244,20 @@ where PORT_NUMBER is the port number you want to use to serve the application ex
 Now your JAMS application will start with the server.
 
 Source: [https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4](https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4)
+
+## Running JAMS as a Linux Service
+
+Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:    
+<b>[Unit]
+Description=JAMS Server
+
+[Service]
+Type=simple
+WorkingDirectory=[DIRECTORY WHERE JAMS WAS UNZIPPED]
+ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY
+
+[Install]
+WantedBy=multi-user.target
+</b>
+
+The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)

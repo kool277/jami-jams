@@ -68,21 +68,21 @@
 </div>
 <div class="navbar-collapse collapse card bg-secondary" id="toc-collapse">
 <ul class="nav flex-column">
-<li class="nav-item" data-level="2"><a class="nav-link" href="#troubleshooting-and-resetting">Troubleshooting and resetting</a>
-<ul class="nav flex-column">
-</ul>
-</li>
 <li class="nav-item" data-level="1"><a class="nav-link" href="#admin-guide">Admin Guide</a>
 <ul class="nav flex-column">
 <li class="nav-item" data-level="2"><a class="nav-link" href="#jams-nginx">JAMS &amp; Nginx</a>
 <ul class="nav flex-column">
 </ul>
 </li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#running-jams-as-a-linux-service">Running JAMS as a Linux Service</a>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#troubleshooting-and-resetting">Troubleshooting and resetting</a>
 <ul class="nav flex-column">
 </ul>
 </li>
 <li class="nav-item" data-level="2"><a class="nav-link" href="#running-jams-as-windows-service">Running JAMS as Windows Service</a>
+<ul class="nav flex-column">
+</ul>
+</li>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#running-jams-as-a-linux-service">Running JAMS as a Linux Service</a>
 <ul class="nav flex-column">
 </ul>
 </li>
@@ -92,18 +92,8 @@
 </div>
 </div></div>
 <div class="col-md-9" role="main"><a class="md-content__icon pdf-download-btn" download href="../pdf/combined.pdf" title="Download"><i class="fa fas fa-download"></i><small> PDF</small></a>
-<h2 id="troubleshooting-and-resetting">Troubleshooting and resetting</h2>
-<p>If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your folder="" project="" root="">/jams):    <pre>
-<b>The internal jams folder: <your folder="" project="" root="">/jams/jams
-derby.log
-oauth.key
-oauth.pub
-config.json
-</your></b></pre></your></p>
-<p>This will reset the server to its original state and you will be able to run the configuration wizard again. Before performing this operation, please make sure to shutdown the server.</p>
 <h1 id="admin-guide">Admin Guide</h1>
-<p>By default JAMS runs an embedded tomcat server visible on port 8080, however this is not practical for many reasons. This guide is designed
-to help you setup Jams to run in a production environment.</p>
+<p>By default JAMS runs an embedded tomcat server visible on port 8080, however this is not practical for many reasons. This guide is designed to help you setup Jams to run in a production environment.</p>
 <h2 id="jams-nginx">JAMS &amp; Nginx</h2>
 <p>It is generally not recommended to expose JAMS directly to the outside world and while it is required to run JAMS in SSL mode, we usually
 recommend users to place it behind Nginx or a similar web server which proxies requests between the outside world and Jams.</p>
@@ -128,18 +118,15 @@ recommend users to place it behind Nginx or a similar web server which proxies r
         }
 }</b></pre></p>
 <p>This is the preferred setup method by most admins, as local traffic is usually ran unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.</p>
-<h2 id="running-jams-as-a-linux-service">Running JAMS as a Linux Service</h2>
-<p>Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:    <pre>
-<b>[Unit]
-Description=JAMS Server</b></pre></p>
-<p>[Service]
-Type=simple
-WorkingDirectory=[DIRECTORY WHERE JAMS WAS UNZIPPED]
-ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</p>
-<p>[Install]
-WantedBy=multi-user.target
-</p></div></div></div></body></html>
-<p>The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)</p>
+<h2 id="troubleshooting-and-resetting">Troubleshooting and resetting</h2>
+<p>If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your folder="" project="" root="">/jams):    <pre>
+<b>The internal jams folder: <your folder="" project="" root="">/jams/jams
+derby.log
+oauth.key
+oauth.pub
+config.json
+</your></b></pre></your></p>
+<p>This will reset the server to its original state and you will be able to run the configuration wizard again. Before performing this operation, please make sure to shutdown the server.</p>
 <h2 id="running-jams-as-windows-service">Running JAMS as Windows Service</h2>
 <h3 id="download-and-install-jams">Download and install JAMS</h3>
 <p>Visit https://jami.net/services/ and downalod JAMS.</p>
@@ -290,6 +277,18 @@ nssm.exe install JAMS
 <p>where PORT_NUMBER is the port number you want to use to serve the application example 443 or 8443</p>
 <p>Now your JAMS application will start with the server.</p>
 <p>Source: <a href="https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4">https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4</a></p>
+<h2 id="running-jams-as-a-linux-service">Running JAMS as a Linux Service</h2>
+<p>Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:  <br/>
+<b>[Unit]
+Description=JAMS Server</b></p>
+<p>[Service]
+Type=simple
+WorkingDirectory=[DIRECTORY WHERE JAMS WAS UNZIPPED]
+ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</p>
+<p>[Install]
+WantedBy=multi-user.target
+</p></div></div></div></body></html>
+<p>The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)</p>
 
 
 <footer class="col-md-12">
