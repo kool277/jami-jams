@@ -78,7 +78,6 @@ public class DirectoryEntryServlet extends HttpServlet {
         userProfile.setFaxNumber(obj.get("faxNumber").toString());
         userProfile.setMobileNumber(obj.get("mobileNumber").toString());
         userProfile.setId(obj.get("jamiId").toString());
-        userProfile.setGroupMemberships(new ArrayList<>());
 
         userAuthenticationModule.getAuthSources().get(new AuthModuleKey(realm, AuthenticationSourceType.LOCAL))
             .setUserProfile(userProfile);
@@ -112,7 +111,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         if (callingUser.getAccessLevel() == AccessLevel.ADMIN || (callingUser.getAccessLevel() == AccessLevel.USER && callingUser.getUsername().equals(targetUser.getUsername()))) {
             select = new StatementList();
             select.addStatement(new StatementElement("username", "=", userProfile.getUsername(), ""));
-            if (dataStore.updateUserProfile(userProfile) && dataStore.updateUserGroupMappings(userProfile))
+            if (dataStore.updateUserProfile(userProfile))
                 resp.setStatus(200);
             else
                 resp.sendError(500, "Could not update the users's profile information");

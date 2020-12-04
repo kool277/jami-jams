@@ -17,9 +17,11 @@ const api_path_delete_auth_user_revoke = "/api/auth/user";
 const api_path_delete_admin_device_revoke = "/api/admin/device";
 const api_path_delete_auth_device_revoke = "/api/auth/device";
 const api_path_rename_device = "/api/auth/device";
-const api_path_get_list_group = "/api/admin/group";
-const api_path_delete_group = "/api/admin/group";
-const api_path_put_update_group = "/api/admin/group";
+const api_path_get_list_group = "/api/admin/groups";
+const api_path_post_create_group = "/api/admin/group";
+const api_path_delete_group = "/api/admin/group/";
+const api_path_put_update_group = "/api/admin/group/";
+const api_path_get_group = "/api/admin/group/";
 const api_path_get_server_status = "/api/info";
 const api_path_get_post_configuration_auth_service =
   "/api/configuration/authservice";
@@ -31,7 +33,6 @@ const api_path_get_subscription_status = "/api/admin/subscription";
 const api_path_get_directories = "/api/auth/directories";
 const api_path_get_needs_update = "/api/admin/update";
 const api_path_get_start_update = "/api/admin/update";
-const api_path_post_create_group = "/api/admin/group";
 const api_path_post_create_user = "/api/admin/user";
 const api_path_put_update_user = "/api/admin/user";
 const api_path_get_auth_user = "/api/auth/user";
@@ -50,6 +51,10 @@ const api_path_blueprints = "/api/admin/policy";
 const api_path_get_user_profile = "/api/auth/userprofile/";
 const api_path_get_ns_name_from_addr = "/api/nameserver/addr/";
 const api_path_get_ns_addr_from_name = "/api/nameserver/name/";
+const api_path_get_group_members = "/api/admin/group/members/";
+const api_path_post_group_member = "/api/admin/group/members/";
+const api_path_delete_group_member = "/api/admin/group/members/";
+const api_path_get_admin_user_groups = "/api/admin/user/groups/";
 
 module.exports = {
   uri,
@@ -98,8 +103,13 @@ module.exports = {
   api_path_get_list_group,
   api_path_post_create_group,
   api_path_put_update_group,
+  api_path_get_group,
   api_path_blueprints,
   api_path_get_user_profile,
   api_path_get_ns_name_from_addr,
   api_path_get_ns_addr_from_name,
+  api_path_get_group_members,
+  api_path_post_group_member,
+  api_path_delete_group_member,
+  api_path_get_admin_user_groups
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -32,6 +32,7 @@ import {
   api_path_get_list_group,
   api_path_delete_group,
   api_path_blueprints,
+  api_path_get_group_members
 } from "globalUrls";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -86,6 +87,9 @@ const styles = {
   },
   whiteButtonText: {
     color: "white",
+  },
+  inputBottomMargin: {
+    marginBottom: "1rem"
   }
 };
 
@@ -95,9 +99,8 @@ export default function Groups() {
   const classes = useStyles();
   const history = useHistory();
   const [groups, setGroups] = React.useState([]);
-  const [selectedGroupName, setSelectedGroupName] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [zeroGroup, setZeroGroup] = React.useState(true);
+  const [zeroGroup, setZeroGroup] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [searchValue, setSearchValue] = React.useState(null);
 
@@ -107,31 +110,34 @@ export default function Groups() {
   const [groupName, setGroupName] = React.useState("");
   const [groupNameExits, setGroupNameExits] = React.useState(false);
 
-  const [removedGroup, setRemovedGroup] = React.useState();
+  const [removedGroup, setRemovedGroup] = React.useState({
+    "id": 0,
+    "name": "groupeName"
+  });
   const [openRemoveDialog, setOpenRemoveDialog] = React.useState();
 
   const [disableCreate, setDisableCreate] = React.useState(true);
 
-  const handleRemoveGroup = (groupRemovedName) => {
-    setRemovedGroup(groupRemovedName);
+  const handleRemoveGroup = (group) => {
+    setRemovedGroup(group);
     setOpenRemoveDialog(true);
   };
 
   const removeGroup = () => {
     axios(
       configApiCall(
-        api_path_delete_group + "?groupName=" + removedGroup,
+        api_path_delete_group + removedGroup.id,
         "DELETE",
         null,
         null
       )
     )
       .then((response) => {
-        console.log("Successfully deleted " + removedGroup);
+        console.log("Successfully deleted " + removedGroup.name);
         setOpenRemoveDialog(false);
       })
       .catch((error) => {
-        console.log("Could not delete " + removedGroup + " " + error);
+        console.log("Could not delete " + removedGroup.name + " " + error);
         setOpenRemoveDialog(false);
       });
 
@@ -152,6 +158,24 @@ export default function Groups() {
     return blueprintsOptions;
   };
 
+  const getBlueprints = () => {
+    axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
+    .then((response) => {
+      setBlueprints(response.data);
+      setSelectedBlueprint(getBlueprintsOptions()[0]);
+    })
+    .catch((error) => {
+      console.log(error);
+      if (error.response.status === 401) {
+        auth.authenticated = false;
+        history.push("/");
+      }
+      if (error.response.status === 500) {
+        setBlueprints([]);
+      }
+    });
+  }
+
   useEffect(() => {
     setLoading(true);
     const timer = setInterval(() => {
@@ -165,30 +189,26 @@ export default function Groups() {
     }, 500);
 
     axios(
-      configApiCall(api_path_get_list_group + "?groupName=*", "GET", null, null)
+      configApiCall(api_path_get_list_group, "GET", null, null)
     )
       .then((response) => {
         let allGroups = response.data;
-        if (allGroups.length === 0) setZeroGroup(true);
-        else {
-          setZeroGroup(false);
-        }
-        setGroups(allGroups);
-        axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
-        .then((response) => {
-          setBlueprints(response.data);
-          setSelectedBlueprint(getBlueprintsOptions()[0]);
+
+        allGroups.forEach((group)=> {
+          axios(configApiCall(api_path_get_group_members + group.id, 'GET', null, null)).then((response) => {
+            group["groupMembersLength"] = response.data.length;
+          }).catch((error) => {
+            if (error.response.status === 401) {
+              auth.authenticated = false;
+              history.push("/");
+            }
+            if (error.response.status === 404) {
+              group["groupMembersLength"] = 0;
+            }
+          });
         })
-        .catch((error) => {
-          console.log(error);
-          if (error.response.status === 401) {
-            auth.authenticated = false;
-            history.push("/");
-          }
-          if (error.response.status === 500) {
-            setBlueprints([]);
-          }
-        });
+        setGroups(allGroups);
+        getBlueprints();
         setLoading(false);
       })
       .catch((error) => {
@@ -197,19 +217,15 @@ export default function Groups() {
           auth.authenticated = false;
           history.push("/");
         }
+        if (error.response.status === 404){
+          getBlueprints();
+          setZeroGroup(true);
+        }
       });
     return () => {
       clearInterval(timer);
     };
   }, [openCreate, openRemoveDialog, history]);
-
-  const [selectedGroup, setSelectedGroup] = useState(false);
-
-  const redirectToGroup = (e, name) => {
-    e.preventDefault();
-    setSelectedGroup(true);
-    setSelectedGroupName(name);
-  };
 
   const handleCheckGroupNameExists = (searchGroupNameValue) => {
     setDisableCreate(true);
@@ -222,8 +238,15 @@ export default function Groups() {
       )
     )
       .then((response) => {
-        setDisableCreate(true);
-        setGroupNameExits(true);
+        let allGroups = response.data;
+        setDisableCreate(false);
+        setGroupNameExits(false);
+        allGroups.forEach((group) => {
+          if(searchGroupNameValue === group.name){
+            setDisableCreate(true);
+            setGroupNameExits(true);
+          }
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -262,15 +285,15 @@ export default function Groups() {
         null
       )
     )
-      .then(() => {
+      .then((response) => {
         console.log("Successfully  created " + groupName);
         setOpenCreate(false);
+        history.push(`/group/${response.data.id}`);
       })
       .catch((error) => {
-        console.log("Error creating group: " + error);
+        alert("Error creating group: " + error);
         setOpenCreate(false);
       });
-    history.push(`/group/${groupName}`);
   };
 
   const blueprintsOptionsItems = tool.buildSelectMenuItems(
@@ -294,22 +317,8 @@ export default function Groups() {
         </h4>
       </div>
     );
-  } else if (selectedGroup && auth.hasAdminScope()) {
-    return (
-      <div>
-        <EditGroup
-          groupName={selectedGroupName}
-          initCheckGroupNameExists={initCheckGroupNameExists}
-          groupNameExits={groupNameExits}
-          blueprintsOptionsItems={blueprintsOptionsItems}
-          handleBlueprintsChange={handleBlueprintsChange}
-          getBlueprintsOptions={getBlueprintsOptions}
-          blueprints={blueprints}
-          disableCreate={disableCreate}
-        />
-      </div>
-    );
-  } else {
+  } 
+  else {
     return (
       <div>
         <Dialog
@@ -351,6 +360,7 @@ export default function Groups() {
                   )}
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>
+                  <InputLabel className={classes.inputBottomMargin} htmlFor="blueprint">{i18next.t("select_blueprint", "Select a blueprint")}</InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     fullWidth
@@ -387,7 +397,7 @@ export default function Groups() {
           <DialogTitle id="alert-dialog-title">{i18next.t("remove_group", "Remove group")}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")} <strong>{removedGroup}</strong> ?
+            {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")} <strong>{removedGroup.name}</strong> ?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -428,7 +438,7 @@ export default function Groups() {
               )}
               {!zeroGroup && <Search />}
               <div className={classes.loading}>
-                {loading && (
+                {!zeroGroup  && loading && (
                   <LinearProgress variant="determinate" value={progress} />
                 )}
               </div>
@@ -438,7 +448,7 @@ export default function Groups() {
             <div className={classes.groupsNotFound}>
               <InfoIcon /> <p style={{ marginLeft: "10px" }}>{i18next.t("no_groups_found", "No groups Found")}</p>
             </div>
-          ) : groups.length >= 1 ? (
+          ) : (
             groups
               .filter((data) => {
                 if (searchValue === null) {
@@ -458,10 +468,7 @@ export default function Groups() {
                   xl={2} 
                   key={group.name}>
                   <Card profile>
-                      <a
-                        href="#"
-                        onClick={(e) => redirectToGroup(e, group.name)}
-                      >
+                    <Link to={`/group/${group.id}`}>
                       <CardBody profile>
                         <h3 className={classes.cardTitle}>{group.name}</h3>
                         <ul>
@@ -471,7 +478,7 @@ export default function Groups() {
                               style={{ marginRight: "10px" }}
                             />
                             <strong style={{ marginRight: "5px" }}>
-                              {group.groupMembers.length}
+                              {group.groupMembersLength}
                             </strong>
                             {i18next.t("users", "users")}
                           </li>
@@ -487,12 +494,12 @@ export default function Groups() {
                           </li>
                         </ul>
                       </CardBody>
-                    </a>
+                    </Link>
                     <CardFooter>
                       <IconButton
                         color="secondary"
                         onClick={() => {
-                          handleRemoveGroup(group.name);
+                          handleRemoveGroup(group);
                         }}
                       >
                         <DeleteOutlineIcon />
@@ -501,51 +508,6 @@ export default function Groups() {
                   </Card>
                 </GridItem>
               ))
-          ) : (
-            <GridItem xs={12} sm={12} md={2} key={groups.name}>
-              <Card profile>
-
-                <a href="#" onClick={(e) => redirectToGroup(e, groups.name)}>
-                <CardBody profile>
-                    <h3 className={classes.cardTitle}>{groups.name}</h3>
-                    <ul>
-                      <li>
-                        <PersonIcon
-                          fontSize="small"
-                          style={{ marginRight: "10px" }}
-                        />
-                        <strong style={{ marginRight: "5px" }}>
-                          {typeof groups.groupMembers !== "undefined"
-                            ? groups.groupMembers
-                            : 0}
-                        </strong>
-                        {i18next.t("users", "users")}
-                      </li>
-                      <li>
-                        <MailOutlineIcon
-                          fontSize="small"
-                          style={{ marginRight: "10px" }}
-                        />
-                        <strong style={{ marginRight: "5px" }}>
-                          {i18next.t("blueprint", "Blueprint")}
-                        </strong>
-                        {selectedBlueprint.label}
-                      </li>
-                    </ul>
-                    </CardBody>
-                  </a>
-                <CardFooter>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => {
-                      handleRemoveGroup(groups.name);
-                    }}
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
-                </CardFooter>
-              </Card>
-            </GridItem>
           )}
         </GridContainer>
       </div>

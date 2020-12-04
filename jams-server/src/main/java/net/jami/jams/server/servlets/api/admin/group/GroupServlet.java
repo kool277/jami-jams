@@ -13,66 +13,41 @@ import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Group;
-import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
-import net.jami.jams.server.core.workflows.AddUserToGroupFlow;
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static net.jami.jams.server.Server.dataStore;
-import static net.jami.jams.server.Server.userAuthenticationModule;
 
-@WebServlet("/api/admin/group")
+@WebServlet("/api/admin/group/*")
 @Slf4j
 public class GroupServlet extends HttpServlet {
+
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        List<Group> groups = new ArrayList<>();
         Group singleGroup = null;
+        String id = req.getPathInfo().replace("/","");
 
-        if (!req.getParameter("groupName").equals("*")) {
-            StatementList statementList = new StatementList();
-            StatementElement st = new StatementElement("name", "=", req.getParameter("groupName"), "");
+        StatementList statementList = new StatementList();
+        StatementElement st = new StatementElement("id", "=", id, "");
 
-            statementList.addStatement(st);
+        statementList.addStatement(st);
+        if (!dataStore.getGroupDao().getObjects(statementList).isEmpty())
             singleGroup = dataStore.getGroupDao().getObjects(statementList).get(0);
-        } else {
-            groups = dataStore.getGroupDao().getObjects(null);
-        }
 
         if (singleGroup != null) {
-            Group finalSingleGroup = singleGroup;
-            List<UserProfile> profiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
-                    profile.getGroupMemberships().contains(finalSingleGroup.getName())).collect(Collectors.toList());
-
-            profiles.forEach(profile ->
-                    finalSingleGroup.getGroupMembers().add(profile.getUsername()));
-
-            resp.getOutputStream().write(JsonStream.serialize(finalSingleGroup).getBytes());
-            resp.setStatus(200);
-        }
-        if (!groups.isEmpty()) {
-            List<UserProfile> profiles = dataStore.getUserProfileDao().getObjects(null);
-            for (Group group: groups) {
-                for (UserProfile p: profiles) {
-                    if (p.getGroupMemberships().contains(group.getName()))
-                        group.getGroupMembers().add(p.getUsername());
-                }
-            }
-
-            resp.getOutputStream().write(JsonStream.serialize(groups).getBytes());
+            resp.getOutputStream().write(JsonStream.serialize(singleGroup).getBytes());
             resp.setStatus(200);
         }
         else {
-            log.info("No existing groups were found.");
-            resp.setStatus(200);
+            log.info("No group with this id was found!" );
+            resp.setStatus(404);
         }
     }
 
@@ -80,122 +55,51 @@ public class GroupServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String name = req.getParameter("groupName");
-        String newName = req.getParameter("newName");
-        String blueprint = req.getParameter("blueprintName");
-        StatementList statementList = new StatementList();
-        StatementElement st = new StatementElement("name", "=", name, "");
 
-        statementList.addStatement(st);
-        Group targetGroup = dataStore.getGroupDao().getObjects(statementList).get(0);
-        List<UserProfile> profiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
-                profile.getGroupMemberships().contains(targetGroup.getName())).collect(Collectors.toList());
+        String id = req.getPathInfo().replace("/","");
 
-        profiles.forEach(profile ->
-                targetGroup.getGroupMembers().add(profile.getUsername()));
+        final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
 
-        String groupMembers = req.getParameter("groupMembers");
-
-        // if the username sent isn't already part of the group members, then we add it
-        if (!targetGroup.getGroupMembers().contains(groupMembers)) {
-            AddUserToGroupFlow.addUserToGroup(name, req.getParameter("groupMembers"));
-        } else {
-            // otherwise remove the group from the user's memberships.
-            statementList = new StatementList();
-            st = new StatementElement("username", "=", groupMembers, "");
-            statementList.addStatement(st);
-
-            UserProfile targetProfile = dataStore.getUserProfileDao().getObjects(statementList).get(0);
-            UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
-            mapping.removeGroup(name);
-
-            StatementList update = new StatementList();
-            StatementElement st0 = new StatementElement("groups", "=", mapping.getGroups(), "");
-            update.addStatement(st0);
-            StatementList constraint = new StatementList();
-            StatementElement st1 = new StatementElement("username", "=", mapping.getUsername(), "");
-            constraint.addStatement(st1);
-
-            // update user mappings
-            dataStore.getUserGroupMappingsDao().updateObject(update, constraint);
-
-            List<String> groups = targetProfile.getGroupMemberships();
-            groups.remove(name);
-            // TODO: LDAP/AD handling
-            dataStore.updateUserProfile(targetProfile);
-        }
+        String name = obj.getString("name");
+        String blueprint = obj.getString("blueprint");
 
         StatementList update = new StatementList();
-        StatementElement st0;
 
-        if (newName != null)
-            st0 = new StatementElement("name", "=", newName, "");
-        else
-            st0 = new StatementElement("name", "=", name, "");
-
-        StatementElement st1 = new StatementElement("blueprint", "=", blueprint, "");
+        StatementElement st0 = new StatementElement("id", "=", id, "");
         update.addStatement(st0);
+
+        StatementElement st1 = new StatementElement("name", "=", name, "");
         update.addStatement(st1);
+
+        StatementElement st2 = new StatementElement("blueprint", "=", blueprint, "");
+        update.addStatement(st2);
+
         StatementList constraint = new StatementList();
-        StatementElement st2 = new StatementElement("name", "=", name, "");
-        constraint.addStatement(st2);
 
         if (dataStore.getGroupDao().updateObject(update, constraint)) resp.setStatus(200);
-        else resp.sendError(500, "could not update the group's name!");
-    }
-
-    @Override
-    @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
-    @JsonContent
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Group group = new Group();
-        group.setName(req.getParameter("name"));
-        group.setBlueprint(req.getParameter("blueprintName"));
-        group.setGroupMembers(new ArrayList<String>());
-        if (dataStore.getGroupDao().storeObject(group))
-            resp.setStatus(200);
-        else
-            resp.sendError(500, "Could not create a group successfully!");
+        else resp.sendError(500, "Could not update group!");
     }
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String id = req.getPathInfo().replace("/","");
 
-        StatementElement statementElement = new StatementElement("name", "=", req.getParameter("groupName"), "");
+        StatementElement statementElement = new StatementElement("id", "=", id, "");
+
         StatementList constraint = new StatementList();
         constraint.addStatement(statementElement);
         if (dataStore.getGroupDao().deleteObject(constraint)) {
-            // if deletion was successful, cascade the deletion onto the users
-            List<UserProfile> validProfiles = dataStore.getUserProfileDao().getObjects(null).stream().filter(profile ->
-                    profile.getGroupMemberships().remove(req.getParameter("groupName"))).collect(Collectors.toList());
-
-            validProfiles.parallelStream().forEach(profile -> {
-
-                StatementList statementList = new StatementList();
-                StatementElement st = new StatementElement("username", "=", profile.getUsername(), "");
-                statementList.addStatement(st);
-
-                UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
-                mapping.removeGroup(req.getParameter("groupName"));
-
-                StatementList update = new StatementList();
-                StatementElement st0 = new StatementElement("groups", "=", mapping.getGroups(), "");
-                update.addStatement(st0);
-                StatementList constraint2 = new StatementList();
-                StatementElement st1 = new StatementElement("username", "=", mapping.getUsername(), "");
-                constraint2.addStatement(st1);
-
-                // update user mappings
-                dataStore.getUserGroupMappingsDao().updateObject(update, constraint2);
-
-                // then update the profile itself
-                dataStore.updateUserProfile(profile);
-            });
-
-
-            resp.setStatus(200);
+            StatementElement statementElement1 = new StatementElement("username", "=", "*", "");
+            StatementElement statementElement2 = new StatementElement("groupId", "=", id, "");
+            StatementList constraintMapping = new StatementList();
+            constraintMapping.addStatement(statementElement1);
+            constraintMapping.addStatement(statementElement2);
+            if (dataStore.getUserGroupMappingsDao().deleteObject(constraintMapping))
+                resp.setStatus(200);
+            else
+                resp.sendError(500, "Could not delete the group mappings successfully!");
         }
         else {
             resp.sendError(500, "Could not delete the group successfully!");

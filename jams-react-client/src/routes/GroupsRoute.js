@@ -1,10 +1,9 @@
 import React from "react";
 
+import ListLayout from "layouts/ListLayout.js";
 import Groups from "views/Groups/Groups.js";
 
-import ListLayout from "layouts/ListLayout.js";
-
-export default function UsersRoute () {
+export default function GroupsRoute () {
     return (
         <ListLayout component={<Groups />} />
     )

@@ -16,35 +16,17 @@ import java.sql.ResultSet;
 public class UserGroupMapping implements DatabaseObject {
 
     private String username;
-    private String groups;
+    private String groupId;
 
     public UserGroupMapping(ResultSet rs) throws Exception {
         this.username = rs.getString("username");
-        this.groups = rs.getString("groups");
-    }
-
-    public void addGroup(String s) {
-        if (this.groups.equals(""))
-            this.groups = s;
-        else
-            this.groups = this.groups.concat("," + s);
-    }
-
-    public void removeGroup(String s) {
-        if (this.groups.contains(s) ) {
-            if (this.groups.contains(",")) {
-                this.groups = this.groups.replace(s + ",", "");
-                this.groups = this.groups.replace("," + s, "");
-            }
-            else
-                this.groups = "";
-        }
+        this.groupId = rs.getString("groupId");
     }
 
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
         ps.setString(1, username);
-        ps.setString(2, groups);
+        ps.setString(2, groupId);
         return ps;
     }
 

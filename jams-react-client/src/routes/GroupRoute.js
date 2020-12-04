@@ -1,11 +1,10 @@
 import React from "react";
 
+import ListLayout from "layouts/ListLayout.js";
 import EditGroup from "views/Groups/EditGroup.js";
 
-import BaseLayout from "layouts/BaseLayout.js";
-
-export default function UsersRoute (props) {
+export default function GroupRoute (props) {
     return (
-        <BaseLayout component={<EditGroup groupName={props.match.params.groupname} />} />
+        <ListLayout component={<EditGroup groupid={props.match.params.groupid} />} />
     )
 }

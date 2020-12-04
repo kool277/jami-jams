@@ -32,6 +32,8 @@ import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
 import net.jami.jams.common.objects.user.*;
 import net.jami.jams.dht.DeviceReceiptGenerator;
+import net.jami.jams.common.objects.user.Group;
+
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -70,57 +72,40 @@ public class RegisterDeviceFlow {
             }
             dataStore.getDeviceDao().storeObject(device);
 
+            Group group = new Group();
+
             statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
             if (dataStore.getUserGroupMappingsDao().getObjects(statementList) != null && !dataStore.getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
                 UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
-                List<String> list = new ArrayList<>();
-                if (mapping.getUsername().equals(userProfile.getUsername())) {
-                    String[] splits = mapping.getGroups().split(",");
-
-                    for (int i = 0; i < splits.length; i++)
-                        list.add(splits[i]);
-                }
-                if (!list.isEmpty())
-                    userProfile.setGroupMemberships(list);
+                statementList = new StatementList();
+                statementList.addStatement(new StatementElement("id", "=", mapping.getGroupId(), ""));
+                group =  dataStore.getGroupDao().getObjects(statementList).get(0);
             }
 
-            // Now we build this response out.
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
-            if (userProfile.getGroupMemberships() != null) {
-                userProfile.getGroupMemberships().forEach(e -> {
-                    if (!e.equals("")) {
-                        StatementElement st = new StatementElement("name", "=", e, "");
-                        StatementList statementList1 = new StatementList();
-                        statementList1.addStatement(st);
-
-                        Group group = dataStore.getGroupDao().getObjects(statementList1).get(0);
-                        String policyName = group.getBlueprint();
-                        if (group != null && policyName != null) {
-                            StatementElement st2 = new StatementElement("name", "=", policyName, "");
-                            StatementList statementList2 = new StatementList();
-                            statementList2.addStatement((st2));
-                            try {
-                                Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
-                                response.setPolicyData(policy.getPolicyData());
-                            } catch (Exception e1) {
-                                log.warn("No policy available for user - not adding a policy component to response");
-                            }
-                        }
-                    }
-                });
+            if (!group.isEmpty() && group.hasBlueprint()) {
+                StatementElement st2 = new StatementElement("name", "=", group.getBlueprint(), "");
+                StatementList statementList2 = new StatementList();
+                statementList2.addStatement((st2));
+                try {
+                    Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
+                    response.setPolicyData(policy.getPolicyData());
+                } catch (Exception e1) {
+                    log.warn("No policy available for user - not adding a policy component to response");
+                }
             }
-            // We need to set the device receipt....
+            // Device receipt
             String[] devReceipt = DeviceReceiptGenerator.generateReceipt(user.getPrivateKey(),
                     user.getCertificate().getPublicKey(), device.getCertificate().getPublicKey(), user.getEthAddress());
             response.setDeviceReceipt(devReceipt[0]);
             response.setReceiptSignature(devReceipt[1]);
             response.setDisplayName(userProfile.getFirstName() + " " + userProfile.getLastName());
-            // We need to set
+
             response.setNameServer(nameServer.getURI());
             if (userProfile.getProfilePicture() != null)
                 response.setUserPhoto(userProfile.getProfilePicture());
-            // Finally we set the certificate chain.
+            // Chain certificate
             response.setCertificateChain(new X509Certificate[] { certificateAuthority.getCA(), user.getCertificate(),
                     device.getCertificate() });
             return response;

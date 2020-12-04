@@ -51,7 +51,6 @@ public class UserProfileServlet extends HttpServlet {
             if (v.getUserProfile(username) != null)
                 profile[0] = v.getUserProfile(username);
         });
-        dataStore.updateUserGroupMappings(profile[0]);
 
         if (profile[0] != null) {
             resp.getOutputStream().write(JsonStream.serialize(profile[0]).getBytes());

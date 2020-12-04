@@ -144,27 +144,6 @@ public class DataStore implements AuthenticationSource {
         return userProfileDao.storeObject(userProfile);
     }
 
-    public boolean updateUserGroupMappings (UserProfile userProfile) {
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username", "=", userProfile.getUsername(), ""));
-        if (getUserGroupMappingsDao().getObjects(statementList) != null && !getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
-            UserGroupMapping mapping = getUserGroupMappingsDao().getObjects(statementList).get(0);
-            List<String> list = new ArrayList<>();
-            if (mapping.getUsername().equals(userProfile.getUsername())) {
-                String[] splits = mapping.getGroups().split(",");
-
-                for (int i = 0; i < splits.length; i++)
-                    list.add(splits[i]);
-            }
-            if (!list.isEmpty())
-                userProfile.setGroupMemberships(list);
-
-            return (updateUserProfile(userProfile));
-        }
-
-        return true;
-    }
-
     public boolean updateUserProfile(UserProfile userProfile){
 
         StatementList update = new StatementList();
@@ -178,18 +157,6 @@ public class DataStore implements AuthenticationSource {
         update.addStatement(new StatementElement("phoneNumberExtension","=",userProfile.getPhoneNumberExtension(),""));
         update.addStatement(new StatementElement("faxNumber","=",userProfile.getFaxNumber(),""));
         update.addStatement(new StatementElement("mobileNumber","=",userProfile.getMobileNumber(),""));
-        if (userProfile.getGroupMemberships() != null && !userProfile.getGroupMemberships().isEmpty()) {
-            String groups = "";
-            for (String s: userProfile.getGroupMemberships()) {
-                if (groups.equals(""))
-                    groups = s;
-                else
-                    groups = groups.concat("," + s);
-            }
-            update.addStatement(new StatementElement("groupMemberships","=", groups ,""));
-        } else
-            update.addStatement(new StatementElement("groupMemberships","=", "" ,""));
-
 
         return userProfileDao.updateObject(update, null);
     }

@@ -1,3 +1,3 @@
 CREATE TABLE usergroupmappings (username varchar(255),
-groupMemberships CLOB,
+groups varchar(5000),
 PRIMARY KEY (username));

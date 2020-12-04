@@ -17,20 +17,21 @@ import java.util.List;
 @Getter
 @Setter
 public class Group implements DatabaseObject {
+    private String id;
     private String name;
     private String blueprint;
-    private List<String> groupMembers;
 
     public Group(ResultSet rs) throws SQLException {
+        this.id = rs.getString("id");
         this.name = rs.getString("name");
         this.blueprint = rs.getString("blueprint");
-        this.groupMembers = new ArrayList<>();
     }
 
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws SQLException {
-        ps.setString(1, name);
-        ps.setString(2, blueprint);
+        ps.setString(1, id);
+        ps.setString(2, name);
+        ps.setString(3, blueprint);
         return ps;
     }
 
@@ -42,5 +43,15 @@ public class Group implements DatabaseObject {
     @Override
     public PreparedStatement getUpdate(PreparedStatement ps) throws Exception {
         return null;
+    }
+
+    public boolean isEmpty() {
+        if(this.id == null && this.name  == null) return true;
+        return false;
+    }
+
+    public boolean hasBlueprint() {
+        if(this.blueprint == null || this.blueprint.equals("")) return false;
+        return true;
     }
 }

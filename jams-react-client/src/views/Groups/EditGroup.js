@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
@@ -23,6 +23,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
+import InputLabel from "@material-ui/core/InputLabel";
+
 
 import Select from "@material-ui/core/Select";
 
@@ -37,9 +39,14 @@ import axios from "axios"
 import configApiCall from "../../api"
 import {
     api_path_get_list_group,
+    api_path_get_group,
     api_path_put_update_group,
     api_path_get_user_directory_search,
-    api_path_get_user_profile
+    api_path_get_user_profile,
+    api_path_blueprints,
+    api_path_get_group_members,
+    api_path_post_group_member,
+    api_path_delete_group_member
 } from "../../globalUrls"
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
@@ -54,6 +61,8 @@ import * as tool from "../../tools";
 import i18next from "i18next";
 
 import auth from "auth.js";
+
+import { debounce } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
     ...devicesStyle,
@@ -95,6 +104,9 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: '60vh',
         minWidth: '80vh',
         maxWidth: '80vh'
+    },
+    inputBottomMargin: {
+      marginBottom: "1rem"
     }
 }));
 
@@ -102,11 +114,16 @@ export default function EditGroup(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const [name, setName] = React.useState(props.groupName);
-    const [newName, setNewName] = React.useState(props.groupName);
-    const [blueprint, setBlueprint] = React.useState(null);
+    const [name, setName] = React.useState("");
+    const [newName, setNewName] = React.useState("");
+    const [blueprints, setBlueprints] = React.useState([]);
+    const [selectedBlueprint, setSelectedBlueprint] = React.useState({
+        value: 0,
+        label: "No blueprint",
+      });
     const [groupMembers, setGroupMembers] = React.useState([]);
     const [openDrawer, setOpenDrawer] = React.useState(false);
+    const [groupNameExits, setGroupNameExits] = React.useState(false);
     const [users, setUsers] = React.useState([]);
 
     const getUserInfo = username => new Promise((resolve, reject) => {
@@ -126,89 +143,91 @@ export default function EditGroup(props) {
             });
     })
 
-    const getUsersInformation = userNames => {
-        userNames.forEach((username)=> {
-            getUserInfo(username).then((userInfo) => setGroupMembers(groupMembers.push(userInfo)))
-        })
-    }
-
     const getGroup = () => {
-        axios(configApiCall(api_path_get_list_group+"?groupName="+props.groupName, 'GET', null, null)).then((response) => {
-            let groups=response.data;
-            if(groups.length > 1){
-                groups.map((group) => {
-                    if(group.name === props.groupName){
-                        props.getBlueprintsOptions().forEach((blueprintOption) => {
-                            if(blueprintOption.label === group["blueprint"]){
-                                console.log("Group option value : " + blueprintOption.value);
-                                setBlueprint(blueprintOption.value);
-                            }
-                        })
-                        
-                            getUserInfo(group["groupMembers"]).then((userInfo) => {
-                                let newGroupMembers = groupMembers;
-                                newGroupMembers.push(userInfo);
-                                setGroupMembers(newGroupMembers);
-                            })
-                    }
+        axios(configApiCall(api_path_get_group + props.groupid, 'GET', null, null)).then((response) => {
+            let group = response.data;
+
+            axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
+            .then((response) => {
+                setBlueprints(response.data);
+                let index = 0;
+                response.data.map((blueprint) => {
+                    if(blueprint.name == group["blueprint"])
+                        setSelectedBlueprint({ value: index, label: blueprint.name });
+                    index += 1;
+                });
+            })
+            .catch((error) => {
+              console.log(error);
+              if (error.response.status === 401) {
+                auth.authenticated = false;
+                history.push("/");
+              }
+              if (error.response.status === 500) {
+                setBlueprints([]);
+              }
+            });
+
+            axios(configApiCall(api_path_get_group_members + props.groupid, 'GET', null, null)).then((response) => {
+                let members = response.data;
+                members.forEach((member) => {
+                    getUserInfo(member.username).then((userInfo) => {
+                        let newGroupMembers = groupMembers;
+                        newGroupMembers.push(userInfo);
+                        setGroupMembers(newGroupMembers);
+
+                        //This state update is added to force the groupMembers to displayed on first page loading
+                        setOpenDrawer(true);
+                        setOpenDrawer(false);
+                    })
                 })
-            }
-            else{
-                if(groups.name === props.groupName){
-                    props.getBlueprintsOptions().forEach((blueprintOption) => {
-                        if(blueprintOption.label === groups["blueprint"]){
-                            setBlueprint(blueprintOption.value)
-                        }
-                    })
-                    groups["groupMembers"].forEach((username)=> {
-                        getUserInfo(username).then((userInfo) => {
-                            let newGroupMembers = groupMembers;
-                            newGroupMembers.push(userInfo);
-                            setGroupMembers(newGroupMembers);
-                        })
-                    })
- 
+            }).catch((error) => {
+                if (error.response.status === 404) {
+                    setGroupMembers([]);
                 }
-            }
+                else
+                    console.log(error);
+            })
+
+
+            setName(group.name);
+            setNewName(group.name);
 
         }).catch((error) => {
-            console.log("Error fetching group members of: " + props.groupName + " " + error)
+            console.log("Error fetching group members of: " + props.name + " " + error)
         })
     }
 
-    const getGroupsOptions = () => {
-        let blueprintsOptions = []
-        let index = 0
-        if(props.blueprints.length === 0)
-            blueprintsOptions.push({value: index, label: "No blueprint found"})
+    const getBlueprintsOptions = (inputs) => {
+        let blueprintsOptions = [];
+        let index = 0;
+        if (blueprints.length === 0)
+          blueprintsOptions.push({ value: index, label: "No blueprint found" });
         else {
-            props.blueprints.map((blueprintElement) => {
-                blueprintsOptions.push({value: index, label: blueprintElement.name});
-                index += 1
-            })
+          blueprints.map((blueprint) => {
+            blueprintsOptions.push({ value: index, label: blueprint.name });
+            index += 1;
+          });
         }
-        return blueprintsOptions
-    }
+        return blueprintsOptions;
+      };
 
-    const blueprintsOptionsItems = tool.buildSelectMenuItems(getGroupsOptions());
+    const blueprintsOptionsItems = tool.buildSelectMenuItems(getBlueprintsOptions(blueprints));
 
     React.useEffect(()=>{
         getGroup();
         searchUsers();
     }, [])
 
-    const handleUpdateGroup = (blueprintValue) => {
+    const updateGroup = (blueprintValue) => {
 
-        let url = '';
-        if(blueprintValue == null){
-            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+name+"&blueprintName=&groupMembers=";
-        }else{
-            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+name+"&blueprintName="+props.getBlueprintsOptions()[blueprintValue].label+"&groupMembers=";
+        let data = {
+            "name": newName,
+            "blueprint": blueprintValue ? blueprintValue : selectedBlueprint.label
         }
 
-        axios(configApiCall(url, 'PUT', null, null)).then((response) => {
-            setNewName(name);
-            setBlueprint(blueprintValue);
+        axios(configApiCall(api_path_put_update_group + props.groupid, 'PUT', data, null)).then((response) => {
+            setName(newName);
         }).catch((error) => {
             console.log("Error updating group: " + error)
         })
@@ -245,28 +264,82 @@ export default function EditGroup(props) {
           });
       };
 
-    const updateUserInGroup = (user) => {
-        let url = '';
-        if(blueprint == null){
-            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName=&groupMembers="+[user.username,];
-        }else{
-            url = api_path_put_update_group+"?groupName="+props.groupName+"&newName="+props.groupName+"&blueprintName="+props.getBlueprintsOptions()[blueprint].label+"&groupMembers="+[user.username,];
+    const addUserInGroup = (user) => {
+        let data = {
+            "username": user.username
         }
-
-        axios(configApiCall(url, 'PUT', null, null)).then((response) => {
+        axios(configApiCall(api_path_post_group_member + props.groupid, 'POST', data, null)).then((response) => {
             let newGroupMembers = groupMembers;
-            if(newGroupMembers.includes(user)) newGroupMembers.splice(newGroupMembers.indexOf(user), 1);
-            else newGroupMembers.push(user);
+            newGroupMembers.push(user);
             setGroupMembers(newGroupMembers);
+
+            //This state update is added to force the groupMembers to refreshed displayed
+            setOpenDrawer(true);
+            setOpenDrawer(false);
+        }).catch((error) => {
+            if (error.response.status === 409) {
+                alert(`${user.username} is already part of ${name}`);
+            }
+            else
+                console.log("Error updating group: " + error)
+        })
+    }
+
+    const deleteUserFromGroup = (user) => {
+        let data = {
+            "username": user.username
+        }
+        axios(configApiCall(api_path_delete_group_member + props.groupid, 'DELETE', data, null)).then((response) => {
+            let newGroupMembers = groupMembers;
+            newGroupMembers.splice(newGroupMembers.indexOf(user), 1);
+            setGroupMembers(newGroupMembers);
+            
+            //This state update is added to force the groupMembers to refreshed displayed
+            setOpenDrawer(true);
+            setOpenDrawer(false);
         }).catch((error) => {
             console.log("Error updating group: " + error)
         })
     }
 
-    const handleBlueprintsChange = (blueprintValue) => {
-        setBlueprint(blueprintValue)
-        handleUpdateGroup(blueprintValue)
+    const handleBlueprintsChange = (e) => {
+        updateGroup(getBlueprintsOptions()[e.target.value].label !== "No blueprint found" ? getBlueprintsOptions()[e.target.value].label : "");
+        setSelectedBlueprint(getBlueprintsOptions()[e.target.value]);
     }
+
+    const initCheckGroupNameExists = useCallback(
+        debounce(
+          (searchGroupNameValue) =>
+            handleCheckGroupNameExists(searchGroupNameValue),
+          500
+        ),
+        []
+      );
+
+
+    const handleCheckGroupNameExists = (searchGroupNameValue) => {
+
+        axios(
+          configApiCall(
+            api_path_get_list_group + "?groupName=" + searchGroupNameValue,
+            "GET",
+            null,
+            null
+          )
+        )
+          .then((response) => {
+            setGroupNameExits(false);
+            response.data.forEach((group) => {
+              if(searchGroupNameValue === group.name){
+                setGroupNameExits(true);
+              }
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            setGroupNameExits(false);
+          });
+      };
 
     const tableCellClasses = classnames(classes.tableCell);
 
@@ -279,7 +352,7 @@ export default function EditGroup(props) {
                 placeholder={i18next.t("add_user_to_group", "Add user to group ...")} 
                 searchTargets={searchUsers} 
                 targets={users}
-                addElementToTarget={updateUserInGroup}
+                addElementToTarget={addUserInGroup}
                 targetName={name}
                 type="user"
             />
@@ -290,50 +363,51 @@ export default function EditGroup(props) {
                             <CardIcon color="info">
                                 <EditIcon />
                             </CardIcon>
-                                <p className={classes.cardCategory}>{i18next.t("edit_group", "Edit group")}</p>
-                            <h3 className={classes.cardTitle}>{newName}</h3>
+                            <p className={classes.cardCategory}>{i18next.t("edit_group", "Edit group")}</p>
+                            <h3 className={classes.cardTitle}>{name}</h3>
                         </CardHeader>
                         <CardBody profile>
                             <div className={classes.root}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={12} md={12}>
-                                        <FormControl className={classes.margin} size="medium" error={props.groupNameExits}>
+                                        <FormControl className={classes.margin} size="medium" error={groupNameExits}>
                                             <Input
                                                 id="name"
-                                                placeholder={props.groupName}
+                                                placeholder={name}
                                                 startAdornment={
                                                     <InputAdornment position="start">
                                                         <PeopleOutlineIcon />
                                                     </InputAdornment>
                                                 }
                                                 endAdornment={
-                                                    <IconButton color="primary" aria-label="upload picture" component="span"
+                                                    <IconButton color="primary" aria-label="update name" component="span"
                                                         onClick={() => {
-                                                            handleUpdateGroup(blueprint);
+                                                            updateGroup();
                                                         }} 
-                                                        disabled={props.groupNameExits}
+                                                        disabled={groupNameExits || name == newName}
                                                     >
                                                         <SaveIcon />
                                                     </IconButton>
                                                 }
                                                 onChange={e => {
-                                                    setName(e.target.value);
-                                                    props.initCheckGroupNameExists(e.target.value)
+                                                    setNewName(e.target.value);
+                                                    initCheckGroupNameExists(e.target.value)
                                                 }}
                                             />
                                         </FormControl>                                        
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12}>
+                                        <InputLabel className={classes.inputBottomMargin} htmlFor="blueprint">{i18next.t("select_blueprint", "Select a blueprint")}</InputLabel>
                                         <FormControl className={classes.margin} fullWidth>
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 fullWidth
-                                                value={blueprint}
-                                                onChange={(e) => handleBlueprintsChange(e.target.value)}
+                                                value={selectedBlueprint.value}
+                                                onChange={handleBlueprintsChange}
                                                 variant="outlined"
                                                 children={blueprintsOptionsItems}
-                                                disabled={props.blueprints.length === 0}
-                                            />
+                                                disabled={blueprints.length === 0}
+                                            /> 
                                         </FormControl>
                                     </Grid>
                                 </Grid>
@@ -342,7 +416,7 @@ export default function EditGroup(props) {
                     </Card>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={12}>
-                    <Button color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_user_to", "Add user to")} {props.groupName}</Button>
+                    <Button color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_user_to", "Add user to")} {name}</Button>
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
@@ -379,7 +453,7 @@ export default function EditGroup(props) {
                                         <Link to={`/user/${user.username}`}>{user.lastName}</Link>
                                     </TableCell>
                                     <TableCell align="right" className={classes.tableActions}>
-                                        <Button color="primary" onClick={() => updateUserInGroup(user)}>{i18next.t("remove_user", "Remove user")}</Button>
+                                        <Button color="primary" onClick={() => deleteUserFromGroup(user)}>{i18next.t("remove_user", "Remove user")}</Button>
                                     </TableCell>
                                 </TableRow>
                             )}

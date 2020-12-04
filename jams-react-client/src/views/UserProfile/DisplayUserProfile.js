@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
 // @material-ui/core components
@@ -58,7 +58,10 @@ import {
   api_path_get_user_profile,
   api_path_delete_admin_user_revoke,
   api_path_get_list_group,
-  api_path_put_update_group,
+  api_path_get_group,
+  api_path_post_group_member,
+  api_path_get_admin_user_groups,
+  api_path_delete_group_member
 } from "globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
@@ -249,50 +252,49 @@ export default function DisplayUserProfile(props) {
       });
   }
 
-  const updateUserInGroup = (group) => {
+  const removeUserFromGroup = (group) => {
+
+    let data = {
+      "username": props.username
+    }
+
     axios(
       configApiCall(
-        api_path_get_list_group + "?groupName=" + group,
-        "GET",
-        null,
+        api_path_delete_group_member + group.groupId,
+        "DELETE",
+        data,
         null
       )
     ).then((response)=>{
-      
-      let url = "";
-      let oldGroup = response.data.name;
-      if (response.data.blueprint == null) {
-        url =
-          api_path_put_update_group +
-          "?groupName=" +
-          response.data.name +
-          "&newName=" +
-          response.data.name +
-          "&blueprintName=&groupMembers=" +
-          [props.username];
-      } else {
-        url =
-          api_path_put_update_group +
-          "?groupName=" +
-          response.data.name +
-          "&newName=" +
-          response.data.name +
-          "&blueprintName=" +
-          response.data.blueprint +
-          "&groupMembers=" +
-          [props.username];
-      }
-  
-      axios(configApiCall(url, "PUT", null, null))
-        .then(() => {
-          let newGroupMemberships = groupMemberships;
-          if(newGroupMemberships.includes(oldGroup)) newGroupMemberships.splice(newGroupMemberships.indexOf(oldGroup), 1);
-          else newGroupMemberships.push(oldGroup);
-          setGroupMemberships(newGroupMemberships);
-        })
-        .catch((error) => {
-          console.log("Error updating group: " + error);
-        });
+        let newGroupMemberships = groupMemberships;
+        newGroupMemberships.splice(newGroupMemberships.indexOf(group), 1);
+        setGroupMemberships(newGroupMemberships);
+    }).catch((error)=>{console.log(error)})
+
+  };
+
+  const addUserToGroup = (group) => {
+
+    let data = {
+      "username": props.username
+    }
+
+    axios(
+      configApiCall(
+        api_path_post_group_member + group.id,
+        "POST",
+        data,
+        null
+      )
+    ).then((response)=>{      
+        let newGroupMemberships = groupMemberships;
+        newGroupMemberships.push(
+          {
+            "groupId": group.id,
+            "name": group.name
+          }
+        );
+        setGroupMemberships(newGroupMemberships);
     }).catch((error)=>{console.log(error)})
 
   };
@@ -329,10 +331,28 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
-                if(response.data.groupMemberships.length === 1 && response.data.groupMemberships[0] === "") {
-                  setGroupMemberships([]);
-                }
-                else setGroupMemberships(response.data.groupMemberships)
+                axios(configApiCall(api_path_get_admin_user_groups + props.username,
+                  "GET",
+                  null,
+                  null
+                )).then((userGroups) => {
+                  let userGroupsData = userGroups.data;
+                  userGroupsData.forEach((group) => {
+                    axios(configApiCall(api_path_get_group + group.groupId, 'GET', null, null)).then((groupInfo) =>{
+                      group["name"] = groupInfo.data.name;
+                    });
+                  });
+                  setGroupMemberships(userGroupsData);
+                }).catch((error) => {
+                  console.log(error);
+                  if (error.response.status === 401) {
+                    auth.authenticated = false;
+                    history.push("/");
+                  }
+                  if (error.response.status === 404) {
+                    setGroupMemberships([]);
+                  }
+                })
                 searchGroups("*")
                 setLoading(false);
               })
@@ -367,10 +387,28 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
-                if(response.data.groupMemberships.length === 1 && response.data.groupMemberships[0] === "") {
-                  setGroupMemberships([]);
-                }
-                else setGroupMemberships(response.data.groupMemberships)
+                axios(configApiCall(api_path_get_admin_user_groups + props.username,
+                  "GET",
+                  null,
+                  null
+                )).then((userGroups) => {
+                  let userGroupsData = userGroups.data;
+                  userGroupsData.forEach((group) => {
+                    axios(configApiCall(api_path_get_group + group.groupId, 'GET', null, null)).then((groupInfo) =>{
+                      group["name"] = groupInfo.data.name;
+                    });
+                  });
+                  setGroupMemberships(userGroupsData);
+                }).catch((error) => {
+                  console.log(error);
+                  if (error.response.status === 401) {
+                    auth.authenticated = false;
+                    history.push("/");
+                  }
+                  if (error.response.status === 404) {
+                    setGroupMemberships([]);
+                  }
+                })
                 setLoading(false);
               })
               .catch((error) => {
@@ -497,7 +535,7 @@ export default function DisplayUserProfile(props) {
           placeholder={i18next.t("add_user_to_group", "Add user to group ...")} 
           searchTargets={searchGroups} 
           targets={groups}
-          addElementToTarget={updateUserInGroup}
+          addElementToTarget={addUserToGroup}
           targetName={props.username}
           type="group"
       />
@@ -668,13 +706,15 @@ export default function DisplayUserProfile(props) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {groupMemberships !== [""] && groupMemberships.map(group =>
+                        {groupMemberships !== [] && groupMemberships.map(group =>
                             <TableRow key={group} className={classes.tableRow}>
                                 <TableCell className={tableCellClasses}>
-                                    {group}
+                                  <Link to={`/group/${group.groupId}`}>
+                                    {group.name}
+                                  </Link>
                                 </TableCell>
                                 <TableCell align="right" className={classes.tableActions}>
-                                    <Button color="primary" onClick={() => updateUserInGroup(group)}>{i18next.t("remove_from_group", "Remove from group")}</Button>
+                                    <Button color="primary" onClick={() => removeUserFromGroup(group)}>{i18next.t("remove_from_group", "Remove from group")}</Button>
                                 </TableCell>
                             </TableRow>
                         ) }

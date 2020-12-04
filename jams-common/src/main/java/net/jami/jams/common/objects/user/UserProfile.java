@@ -75,7 +75,6 @@ public class UserProfile implements DatabaseObject {
     private String faxNumber;
     private String mobileNumber;
     private String id;
-    private List<String> groupMemberships;
 
     public UserProfile(ResultSet rs) throws Exception {
         this.username = rs.getString("username");
@@ -88,7 +87,6 @@ public class UserProfile implements DatabaseObject {
         this.phoneNumberExtension = rs.getString("phoneNumberExtension");
         this.faxNumber = rs.getString("faxNumber");
         this.mobileNumber = rs.getString("mobileNumber");
-        this.groupMemberships = new ArrayList<>(Arrays.asList(rs.getString("groupMemberships").split(",")));
     }
 
     @JsonIgnore
@@ -130,10 +128,6 @@ public class UserProfile implements DatabaseObject {
         ps.setString(8, phoneNumberExtension);
         ps.setString(9, faxNumber);
         ps.setString(10, mobileNumber);
-        if (!groupMemberships.isEmpty())
-            ps.setString(11, JsonStream.serialize(groupMemberships));
-        else
-            ps.setString(11, "");
         return ps;
     }
 
@@ -176,8 +170,6 @@ public class UserProfile implements DatabaseObject {
             this.faxNumber = "";
         if (this.mobileNumber == null)
             this.mobileNumber = "";
-        if (this.groupMemberships == null)
-            this.groupMemberships = new ArrayList<>();
     }
 
 }

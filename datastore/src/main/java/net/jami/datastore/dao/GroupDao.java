@@ -22,7 +22,7 @@ public class GroupDao extends AbstractDao<Group>{
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try{
             PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO groups " +
-                    "(name, blueprint) VALUES (?, ?)");
+                    "(id, name, blueprint) VALUES (?, ?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         }
@@ -38,17 +38,17 @@ public class GroupDao extends AbstractDao<Group>{
     @Override
     public boolean updateObject(StatementList update, StatementList constraints) {
 
-        String name = update.getStatements().get(0).getValue();
-        String blueprint = update.getStatements().get(1).getValue();
-        String oldName = constraints.getStatements().get(0).getValue();
+        String id = update.getStatements().get(0).getValue();
+        String name = update.getStatements().get(1).getValue();
+        String blueprint = update.getStatements().get(2).getValue();
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try{
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE groups SET name = ?, blueprint = ? WHERE name = ?");
+            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE groups SET name = ?, blueprint = ? WHERE id = ?");
             ps.setString(1, name);
             ps.setString(2, blueprint);
-            ps.setString(3, oldName);
+            ps.setString(3, id);
             return ps.executeUpdate() != 0;
         }
         catch (SQLException e){
@@ -63,12 +63,12 @@ public class GroupDao extends AbstractDao<Group>{
     @Override
     public boolean deleteObject(StatementList constraints) {
 
-        String name = constraints.getStatements().get(0).getValue();
+        String id = constraints.getStatements().get(0).getValue();
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("DELETE FROM groups WHERE name = ?");
-            ps.setString(1, name);
+            PreparedStatement ps = connection.getConnection().prepareStatement("DELETE FROM groups WHERE id = ?");
+            ps.setString(1, id);
             return ps.executeUpdate() != 0;
         } catch (SQLException e){
             log.error("An error has occurred while trying to delete a group: " + e.toString());

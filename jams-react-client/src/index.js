@@ -52,7 +52,7 @@ auth.isServerInstalled(() => {
               <ProtectedRoute path="/user/:username" component={UserRoute} />
               <ProtectedRoute path="/createuser" component={CreateUserRoute} />
               <ProtectedRoute path="/groups" component={GroupsRoute} />
-              {/* <ProtectedRoute path="/group/:groupname" component={GroupRoute} /> */}
+              <ProtectedRoute path="/group/:groupid" component={GroupRoute} />
               <ProtectedRoute path="/blueprints" component={BlueprintsRoute} />
               <ProtectedRoute path="/blueprint/:blueprintname" component={BlueprintRoute} />
               <ProtectedRoute path="/settings" component={SettingsRoute} />
