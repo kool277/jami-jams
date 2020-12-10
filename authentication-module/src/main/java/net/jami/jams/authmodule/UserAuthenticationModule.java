@@ -142,6 +142,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
             if((user.getUserType() == AuthenticationSourceType.LOCAL)) hashPass = PasswordUtil.hashPassword(password, Base64.decodeBase64(user.getSalt()));
+            else hashPass = password;
+
             if(hashPass != null && authenticationSources.get(new AuthModuleKey(user.getRealm(),user.getUserType()))
                     .authenticate(username,hashPass))
                 return tokenController.getToken(user,null);

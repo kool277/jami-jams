@@ -81,12 +81,11 @@ public class DeviceServlet extends HttpServlet {
         statementList.addStatement(st1);
         statementList.addStatement(st2);
         Device device = dataStore.getDeviceDao().getObjects(statementList).get(0);
-        if(certificateAuthority.getLatestCRL().get() !=  null) {
+        if(certificateAuthority.getLatestCRL().get() !=  null)
             device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
-        }
-        else{
+        else
             device.setRevoked(false);
-        }
+
         resp.getOutputStream().write(JsonStream.serialize(device).getBytes());
     }
 
