@@ -56,9 +56,12 @@ public class ApiFilter implements Filter {
         } else {
             boolean authsuccess = false;
             boolean isLogin = false;
+            boolean isOCSPCheck = false;
+
             if (request.getServletPath().contains("login")) isLogin = true;
+            else if (request.getServletPath().contains("ocsp")) isOCSPCheck = true;
             else authsuccess = doAuthCheck(request);
-            if (authsuccess || isLogin) {
+            if (authsuccess || isLogin || isOCSPCheck) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {
                 TomcatCustomErrorHandler.sendCustomError(response,401,"You are not authenticated!");
