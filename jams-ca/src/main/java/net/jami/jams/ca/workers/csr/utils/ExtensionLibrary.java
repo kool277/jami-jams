@@ -56,7 +56,7 @@ public class ExtensionLibrary {
         //Pre-Define the AIA Point
         AccessDescription accessDescription = new AccessDescription(
                 AccessDescription.id_ad_ocsp,
-                new GeneralName(SCHEMA, JamsCA.serverDomain + "/api/auth/ocsp")
+                new GeneralName(SCHEMA, JamsCA.serverDomain + "/api/ocsp")
         );
 
         //CA Extensions.
