@@ -92,15 +92,18 @@
 </div>
 </div></div>
 <div class="col-md-9" role="main"><a class="md-content__icon pdf-download-btn" download href="../pdf/combined.pdf" title="Download"><i class="fa fas fa-download"></i><small> PDF</small></a>
+<style type="text/css">
+img{
+height:400px;
+}
+</style>
 <h1 id="admin-guide">Admin Guide</h1>
 <p>By default JAMS runs an embedded tomcat server visible on port 8080, however this is not practical for many reasons. This guide is designed to help you setup Jams to run in a production environment.</p>
 <h2 id="jams-nginx">JAMS &amp; Nginx</h2>
 <p>It is generally not recommended to expose JAMS directly to the outside world and while it is required to run JAMS in SSL mode, we usually
 recommend users to place it behind Nginx or a similar web server which proxies requests between the outside world and Jams.</p>
 <p>The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxying solution):</p>
-<p align="center">
-<img alt="Create an admin account" src="../img/map.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/map.png" title="Create an admin account"/></p>
 <p>The IP 10.10.0.1 is random, and should be seen as an example.</p>
 <p>Typically you would add a new site called <code>jams-site.conf</code> to your nginx configurations which would contain the following entries if you wanted to place an SSL certificate at the Nginx level:    <pre>
 <b>server {
@@ -288,7 +291,7 @@ ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.j
 <p>[Install]
 WantedBy=multi-user.target
 </p></div></div></div></body></html>
-<p>The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)</p>
+The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)
 
 
 <footer class="col-md-12">

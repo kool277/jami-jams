@@ -1,3 +1,9 @@
+<style type='text/css'>
+img{
+height:400px;
+}
+</style>
+
 # Getting Started
 
 JAMS is a server application used to enroll Jami clients into an Enterprise context. Currently, JAMS supports 3 sources for user authentication: LDAP, Active Directory and an embedded database.
@@ -25,9 +31,9 @@ In order to be completely secure, JAMS does not generate certificates for device
 
 The diagram below shows the entire process of how a device enrolls with JAMS:
 
-<p align="center">
-    <img src="img/device_enroll.png" alt="Device Enrollement"  style="height:400px;" />
-</p>
+![alt text][deviceenrollement]
+
+[deviceenrollement]: https://static.savoirfairelinux.com/img/jams/device_enroll.png "Device Enrollement" 
 
 ​    
 ## Getting Started
@@ -63,10 +69,9 @@ Please note that any port above 1024 can be safely used to run JAMS.
 
 This account will have administrative control and the rights to manage your users and group of Jami users.
 
-<p align="center">
-    <img src="img/step1.png" alt="Create an admin account" style="height:400px;"/>
-</p>
+![alt text][step1]
 
+[step1]: https://static.savoirfairelinux.com/img/jams/step1.png "Create an admin account"
 
 ## Step 2: setup the Certification Authority
 
@@ -74,10 +79,13 @@ The second step is to define your Certification Authority.
 
 **Important:** a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by godaddy, letsencrypt, etc... ) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.
 
-<p align="center">
-    <img src="img/step2-1.png" alt="Create an admin account" style="height:400px;"/>
-    <img src="img/step2-2.png" alt="Create an admin account" style="height:400px;"/>
-</p>
+![alt text][step1-1]
+
+[step1-1]: https://static.savoirfairelinux.com/img/jams/step2-1.png "Certification Authority Create"
+
+![alt text][step1-2]
+
+[step1-2]: https://static.savoirfairelinux.com/img/jams/step2-2.png "Certification Authority Import"
 
 
 This certificate will be used to sign the enrollement requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
@@ -100,9 +108,9 @@ JAMS supports 3 different sources for the authentication of users:
 
 If your company provides you with LDAP directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.
 
-<p align="center">
-    <img src="img/ldap.png" style="height:400px;"/>
-</p>
+![alt text][ldap]
+
+[ldap]: https://static.savoirfairelinux.com/img/jams/ldap.png "LDAP"
 
 Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:
 
@@ -122,10 +130,9 @@ Your admin should provide you most of this information but we do provide a detai
 
 If your company provides you with Active Directory for user management, you will need to know its access information and an automated account which has read-only rights to do use look-ups.
 
+![alt text][ad]
 
-<p align="center">
-    <img src="img/ad.png" style="height:400px;"/>
-</p>
+[ad]: https://static.savoirfairelinux.com/img/jams/ad.png "AD"
 
 Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:
 
@@ -144,9 +151,9 @@ Your admin should provide you most of this information but we do provide a detai
 
 The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from the JAMS interface.
 
-<p align="center">
-    <img src="img/local.png" style="height:400px;"/>
-</p>
+![alt text][local]
+
+[local]: https://static.savoirfairelinux.com/img/jams/local.png "Local"
 
 **Advanced settings:** by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.
 
@@ -154,9 +161,9 @@ If you want your users to be searchable by external users and allow them to comm
 
 ## Step 4: setup the server parameters
 
-<p align="center">
-    <img src="img/step4.png" style="height:400px;"/>
-</p>
+![alt text][step4]
+
+[step4]: https://static.savoirfairelinux.com/img/jams/step4.png "Setup server parameters"
 
 | Parameter         | Details       |
 | ------------- |-------------  |
@@ -173,8 +180,8 @@ If you want your users to be searchable by external users and allow them to comm
 Click on "Set Server Parameters" to finalize the configuration.
 You will be redirected to the JAMS interface.
 
-<p align="center">
-    <img src="img/jams-dashboard.png" style="height:400px;"/>
-</p>
+![alt text][jamsdashboard]
+
+[jamsdashboard]: https://static.savoirfairelinux.com/img/jams/jams-dashboard.png "Jams dashboard"
 
 If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization shoud be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User"

@@ -1,3 +1,9 @@
+<style type='text/css'>
+img{
+height:400px;
+}
+</style>
+
 # Admin Guide
 
 By default JAMS runs an embedded tomcat server visible on port 8080, however this is not practical for many reasons. This guide is designed to help you setup Jams to run in a production environment.
@@ -10,9 +16,10 @@ recommend users to place it behind Nginx or a similar web server which proxies r
 
 The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxying solution):
 
-<p align="center">
-    <img src="../img/map.png" alt="Create an admin account" style="height:400px;"/>
-</p>
+
+![alt text][map]
+
+[map]: https://static.savoirfairelinux.com/img/jams/map.png "Create an admin account"
 
 The IP 10.10.0.1 is random, and should be seen as an example.
 
@@ -259,5 +266,4 @@ ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.j
 [Install]
 WantedBy=multi-user.target
 </b>
-
 The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)

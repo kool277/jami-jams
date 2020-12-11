@@ -109,6 +109,11 @@
 </div>
 </div></div>
 <div class="col-md-9" role="main"><a class="md-content__icon pdf-download-btn" download href="pdf/combined.pdf" title="Download"><i class="fa fas fa-download"></i><small> PDF</small></a>
+<style type="text/css">
+img{
+height:400px;
+}
+</style>
 <h1 id="getting-started">Getting Started</h1>
 <p>JAMS is a server application used to enroll Jami clients into an Enterprise context. Currently, JAMS supports 3 sources for user authentication: LDAP, Active Directory and an embedded database.</p>
 <h2 id="obtaining-jams">Obtaining JAMS</h2>
@@ -126,9 +131,7 @@
 <p>In the JAMS paradigm, a device (Jami client) requests a certificate to the server then presents it to other devices to be recognized as a valid member of the organization. Therefore, JAMS must be provided with a certificate authority in order to work properly.</p>
 <p>In order to be completely secure, JAMS does not generate certificates for devices, but instead issues certificates based on a certificate signing request sent to it by the device, therefore removing the need to send a private key over the wire.</p>
 <p>The diagram below shows the entire process of how a device enrolls with JAMS:</p>
-<p align="center">
-<img alt="Device Enrollement" src="img/device_enroll.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/device_enroll.png" title="Device Enrollement"/></p>
 <p>​    </p>
 <h2 id="getting-started_1">Getting Started</h2>
 <ol>
@@ -176,16 +179,12 @@ An example of the command would be: </p>
 <p>Please note that any port above 1024 can be safely used to run JAMS.</p>
 <h2 id="step-1-create-your-admininistrator-account">Step 1: create your admininistrator account</h2>
 <p>This account will have administrative control and the rights to manage your users and group of Jami users.</p>
-<p align="center">
-<img alt="Create an admin account" src="img/step1.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step1.png" title="Create an admin account"/></p>
 <h2 id="step-2-setup-the-certification-authority">Step 2: setup the Certification Authority</h2>
 <p>The second step is to define your Certification Authority. </p>
 <p><strong>Important:</strong> a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by godaddy, letsencrypt, etc... ) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.</p>
-<p align="center">
-<img alt="Create an admin account" src="img/step2-1.png" style="height:400px;"/>
-<img alt="Create an admin account" src="img/step2-2.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step2-1.png" title="Certification Authority Create"/></p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step2-2.png" title="Certification Authority Import"/></p>
 <p>This certificate will be used to sign the enrollement requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
 articles to get familiar with the processes and practices which surround it:</p>
 <p><a href="https://www.securew2.com/blog/public-key-infrastructure-explained/">https://www.securew2.com/blog/public-key-infrastructure-explained/</a>
@@ -200,9 +199,7 @@ articles to get familiar with the processes and practices which surround it:</p>
 <p><br/></p>
 <h3 id="option-1-ldap-authentication">Option 1: LDAP authentication</h3>
 <p>If your company provides you with LDAP directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.</p>
-<p align="center">
-<img src="img/ldap.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/ldap.png" title="LDAP"/></p>
 <p>Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:</p>
 <table>
 <thead>
@@ -241,9 +238,7 @@ articles to get familiar with the processes and practices which surround it:</p>
 <p><br/></p>
 <h3 id="option-2-microsoft-active-directory">Option 2: Microsoft Active Directory</h3>
 <p>If your company provides you with Active Directory for user management, you will need to know its access information and an automated account which has read-only rights to do use look-ups.</p>
-<p align="center">
-<img src="img/ad.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/ad.png" title="AD"/></p>
 <p>Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:</p>
 <table>
 <thead>
@@ -282,15 +277,11 @@ articles to get familiar with the processes and practices which surround it:</p>
 <p><br/></p>
 <h3 id="option-3-local-embedded-database">Option 3: local embedded database</h3>
 <p>The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from the JAMS interface.</p>
-<p align="center">
-<img src="img/local.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/local.png" title="Local"/></p>
 <p><strong>Advanced settings:</strong> by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.</p>
 <p>If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option,</p>
 <h2 id="step-4-setup-the-server-parameters">Step 4: setup the server parameters</h2>
-<p align="center">
-<img src="img/step4.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step4.png" title="Setup server parameters"/></p>
 <table>
 <thead>
 <tr>
@@ -321,9 +312,7 @@ articles to get familiar with the processes and practices which surround it:</p>
 <p><br/></p>
 <p>Click on "Set Server Parameters" to finalize the configuration.
 You will be redirected to the JAMS interface.</p>
-<p align="center">
-<img src="img/jams-dashboard.png" style="height:400px;"/>
-</p>
+<p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/jams-dashboard.png" title="Jams dashboard"/></p>
 <p>If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization shoud be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User"</p></div>
 </div>
 </div>
@@ -404,5 +393,5 @@ You will be redirected to the JAMS interface.</p>
 </html>
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2020-11-22 01:43:55.216806+00:00
+Build Date UTC : 2020-12-11 17:41:14.704504+00:00
 -->
