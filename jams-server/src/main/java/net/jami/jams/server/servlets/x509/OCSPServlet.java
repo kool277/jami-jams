@@ -32,6 +32,7 @@ import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.ocsp.CertificateID;
 import org.bouncycastle.cert.ocsp.OCSPReq;
@@ -52,35 +53,16 @@ public class OCSPServlet extends HttpServlet {
         resp.setContentType("application/ocsp-response");
         byte[] content = new byte[Integer.parseInt(req.getHeader("Content-Length"))];
         try {
-            for(int i=0;i<content.length;i++){
+            for(int i=0;i<content.length;i++)
                 req.getInputStream().read(content);
-            }
-            JcaDigestCalculatorProviderBuilder digestCalculatorProviderBuilder = new JcaDigestCalculatorProviderBuilder();
-            DigestCalculatorProvider digestCalculatorProvider = digestCalculatorProviderBuilder.build();
-            DigestCalculator digestCalculator = digestCalculatorProvider.get(CertificateID.HASH_SHA1);
-            // Generate the id for the certificate we are looking for
-            X509Certificate targetCert = X509Utils.getCertificateFromPEMString(new String(content));
 
-            if (targetCert != null) {
-                CertificateID id = new CertificateID(digestCalculator,
-                        new JcaX509CertificateHolder(JamsCA.CA.getCertificate()), targetCert.getSerialNumber());
+            OCSPReq ocspReq = new OCSPReq(content);
+            OCSPResp response = JamsCA.getOCSPResponse(ocspReq);
+            if (response != null) {
+                byte[] respBytes = response.getEncoded();
+                resp.getOutputStream().write(respBytes);
+            } else resp.setStatus(404);
 
-                // basic request generation with nonce
-                OCSPReqBuilder gen = new OCSPReqBuilder();
-                gen.addRequest(id);
-
-                // create details for nonce extension
-                String nonce = String.valueOf(System.nanoTime());
-                Extension ext = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, new DEROctetString(new DEROctetString(nonce.getBytes()).getEncoded()));
-                gen.setRequestExtensions(new Extensions(new Extension[]{ext}));
-                OCSPReq ocspReq = gen.build();
-                OCSPResp response = JamsCA.getOCSPResponse(ocspReq, targetCert);
-
-                if (response != null) {
-                    byte[] respBytes = response.getEncoded();
-                    resp.getOutputStream().write(respBytes);
-                } else resp.setStatus(404);
-            }
         }
         catch (Exception e) {
             resp.sendError(404, "Could not find the requested certificate!");

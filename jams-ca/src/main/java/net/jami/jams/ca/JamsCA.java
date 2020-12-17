@@ -35,6 +35,7 @@ import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.serialization.JsoniterRegistry;
 import org.bouncycastle.cert.X509CRLHolder;
+import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPReq;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.jcajce.provider.asymmetric.X509;
@@ -129,8 +130,8 @@ public class JamsCA implements CertificateAuthority {
         }
     }
 
-    public static OCSPResp getOCSPResponse(OCSPReq ocspRequest, X509Certificate cert) {
-        return ocspWorker.getOCSPResponse(ocspRequest, cert);
+    public static OCSPResp getOCSPResponse(OCSPReq ocspRequest) throws OCSPException {
+        return ocspWorker.getOCSPResponse(ocspRequest);
     }
 
     @Override

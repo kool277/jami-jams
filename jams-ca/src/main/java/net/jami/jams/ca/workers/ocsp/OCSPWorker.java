@@ -23,6 +23,7 @@
 package net.jami.jams.ca.workers.ocsp;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.X509Worker;
 import net.jami.jams.ca.workers.crl.CRLWorker;
 import net.jami.jams.common.cryptoengineapi.ocsp.CertificateStatus;
@@ -54,6 +55,7 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -83,19 +85,20 @@ public class OCSPWorker extends X509Worker<String> {
         log.info("Instantiated OCSP Worker...");
     }
 
-    public OCSPResp getOCSPResponse(OCSPReq ocspRequest, X509Certificate cert) {
-        try{
-            OCSPResp resp = validateRequest(ocspRequest);
-            if(resp != null) return resp; //this means the request is invalid and we should notify the client.
+    public OCSPResp getOCSPResponse(OCSPReq ocspRequest) throws OCSPException {
+        try {
+            if(validateRequest(ocspRequest) != null) throw new OCSPException("Request is not valid"); //this means the request is invalid and we should notify the client.
             //If the request was valid, we move on to other things.
             BasicOCSPRespBuilder responseBuilder = new BasicOCSPRespBuilder(responderID);
+            // Add appropriate extensions
             Collection<Extension> responseExtensions = new ArrayList<>();
+            // nonce
             Extension nonceExtension = ocspRequest.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
             if (nonceExtension != null) responseExtensions.add(nonceExtension);
             Extension[] extensions = responseExtensions.toArray(new Extension[responseExtensions.size()]);
             responseBuilder.setResponseExtensions(new Extensions(extensions));
             for (Req request : ocspRequest.getRequestList()) {
-                addResponse(responseBuilder, request, cert);
+                addResponse(responseBuilder, request);
             }
             BasicOCSPResp basicResponse = responseBuilder.build(
                     contentSigner,
@@ -119,31 +122,22 @@ public class OCSPWorker extends X509Worker<String> {
     }
 
 
-    private CertificateSummary getCertificateSummary(BigInteger serial, X509Certificate cert) {
+    private CertificateSummary getCertificateSummary(BigInteger serial) {
         X509CRLEntryHolder x509CRLEntryHolder = crlWorker.getExistingCRL().get().getRevokedCertificate(serial);
-        LocalDateTime expirationTime = LocalDateTime.ofInstant(cert.getNotAfter().toInstant(), ZoneId.systemDefault());
-
 
         if(x509CRLEntryHolder != null) return CertificateSummary.newBuilder()
                 .withStatus(CertificateStatus.REVOKED)
                 .withSerialNumber(serial)
                 .withRevocationTime(LocalDateTime.ofInstant(x509CRLEntryHolder.getRevocationDate().toInstant(), ZoneId.systemDefault()))
                 .build();
-        else if (expirationTime.isBefore(LocalDateTime.now())) {
-             return CertificateSummary.newBuilder()
-                    .withStatus(CertificateStatus.EXPIRED)
-                    .withSerialNumber(serial)
-                    .withExpirationTime(expirationTime)
-                    .build();
-        }
-        else return CertificateSummary.newBuilder()
+        return CertificateSummary.newBuilder()
                     .withStatus(CertificateStatus.VALID)
                     .withSerialNumber(serial)
                     .build();
     }
 
 
-    private void addResponse(BasicOCSPRespBuilder responseBuilder, Req request, X509Certificate cert) throws OCSPException{
+    private void addResponse(BasicOCSPRespBuilder responseBuilder, Req request) throws OCSPException{
         CertificateID certificateID = request.getCertID();
         // Build Extensions
         Extensions extensions = new Extensions(new Extension[]{});
@@ -153,7 +147,7 @@ public class OCSPWorker extends X509Worker<String> {
             if (nonceExtension != null) extensions = new Extensions(nonceExtension);
         }
         responseBuilder.addResponse(certificateID,
-                OCSPCertificateStatusMapper.getStatus(getCertificateSummary(request.getCertID().getSerialNumber(), cert)),
+                OCSPCertificateStatusMapper.getStatus(getCertificateSummary(request.getCertID().getSerialNumber())),
                 new Date(),
                 new Date(new Date().getTime() + crlLifetime),
                 extensions);
