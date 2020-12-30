@@ -148,10 +148,10 @@ export default function Users(props) {
                 null
               )
             ).then((response) => {
-              contact.name = response.data.name;
+              contact.username = response.data.name;
               axios(
                 configApiCall(
-                  api_path_get_user_profile + contact.name,
+                  api_path_get_user_profile + contact.username,
                   "GET",
                   null,
                   null
@@ -191,10 +191,10 @@ export default function Users(props) {
                 null
               )
             ).then((response) => {
-              contact.name = response.data.name;
+              contact.username = response.data.name;
               axios(
                 configApiCall(
-                  api_path_get_user_profile + contact.name,
+                  api_path_get_user_profile + contact.username,
                   "GET",
                   null,
                   null
@@ -336,6 +336,7 @@ export default function Users(props) {
         placeholder={i18next.t("add_contact", "Add contact…")}
         searchTargets={searchContacts} 
         targets={users}
+        existingTargets={contacts}
         addElementToTarget={addContactToUser}
         targetName={props.username}
         type="user"
@@ -418,8 +419,8 @@ export default function Users(props) {
               key={contact.uri}
               style={{ display: contact.display }}
             >
-              {contact.name && <Card profile>
-                <a href={`/user/${contact.name}`}>
+              {contact.username && <Card profile>
+                <a href={`/user/${contact.username}`}>
                   <CardBody profile>
                     <CardAvatar profile>
                       <img
@@ -436,13 +437,13 @@ export default function Users(props) {
                     </h4>
                     <ul>
                       <li>
-                        {contact.name && <img
+                        {contact.username && <img
                           src={jami}
                           width="20"
                           alt="Jami"
                           style={{ marginRight: "10px" }}
                         />}
-                        {contact.name && ` ${contact.name}`}
+                        {contact.username && ` ${contact.username}`}
                       </li>
                       <li>
                         {contact.organization && <BusinessOutlinedIcon
@@ -458,7 +459,7 @@ export default function Users(props) {
                     <IconButton
                       color="secondary"
                       onClick={() => {
-                        handleRemoveContact(contact.uri, contact.name);
+                        handleRemoveContact(contact.uri, contact.username);
                       }}
                     >
                       <DeleteOutlineIcon />

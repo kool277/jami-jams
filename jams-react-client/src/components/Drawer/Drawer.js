@@ -44,7 +44,7 @@ export default function TemporaryDrawer(props) {
 
   const listUsers = () => (
     <List>
-      {props.type === "user" ? ( props.targets && props.targets.map((target) => (
+      {props.type === "user" ? ( props.targets && props.targets.filter((target) => !props.existingTargets.some(t => target.username == t.username)).map((target) => (
         <ListItem
           button
           key={target.username}
@@ -72,7 +72,7 @@ export default function TemporaryDrawer(props) {
             }
           />
         </ListItem>
-      ))) : ( props.targets && props.targets.map((target) => (      
+      ))) : ( props.targets && props.targets.filter((target) => !props.existingTargets.some(t => target.name == t.name)).map((target) => (      
         <ListItem
           button
           key={target.name}

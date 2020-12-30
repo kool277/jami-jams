@@ -352,6 +352,7 @@ export default function EditGroup(props) {
                 placeholder={i18next.t("add_user_to_group", "Add user to group ...")} 
                 searchTargets={searchUsers} 
                 targets={users}
+                existingTargets={groupMembers}
                 addElementToTarget={addUserInGroup}
                 targetName={name}
                 type="user"

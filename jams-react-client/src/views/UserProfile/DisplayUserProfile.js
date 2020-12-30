@@ -535,6 +535,7 @@ export default function DisplayUserProfile(props) {
           placeholder={i18next.t("add_user_to_group", "Add user to group ...")} 
           searchTargets={searchGroups} 
           targets={groups}
+          existingTargets={groupMemberships}
           addElementToTarget={addUserToGroup}
           targetName={props.username}
           type="group"

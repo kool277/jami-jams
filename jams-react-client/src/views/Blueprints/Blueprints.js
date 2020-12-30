@@ -188,6 +188,7 @@ export default function Blueprints() {
       accountDiscovery: true,
       accountPublish: true,
       rendezVous: false,
+      defaultModerators: "",
       upnpEnabled: true,
     };
 

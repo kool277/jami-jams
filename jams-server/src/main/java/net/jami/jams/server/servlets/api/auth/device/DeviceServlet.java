@@ -193,6 +193,10 @@ public class DeviceServlet extends HttpServlet {
                 obj.add("Account.displayName", obj.get("displayName"));
                 obj.remove("displayName");
             }
+            if (obj.get("defaultModerators") != null) {
+                obj.add("Account.defaultModerators", obj.get("defaultModerators"));
+                obj.remove("defaultModerators");
+            }
 
             resp.getOutputStream().write((obj.toString()).getBytes());
         }

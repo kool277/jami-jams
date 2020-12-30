@@ -236,5 +236,8 @@
     "add_user_to_a_group": "Ajouter l'utilisateur à un groupe",
     "remove_from_group": "Retirer du groupe",
     "myprofile": "Mon profil",
-    "select_blueprint": "Select a blueprint"
+    "select_blueprint": "Select a blueprint",
+    "add_moderator_to_blueprint": "Add moderator to blueprint ...",
+    "add_moderator_to": "Add moderator to",
+    "remove_moderator": "Remove moderator"
 }
