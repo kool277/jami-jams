@@ -235,5 +235,6 @@
     "add_user_to_group": "Aggiungi utente al gruppo...",
     "add_user_to_a_group": "Aggiungi utente ad un gruppo",
     "remove_from_group": "Rimuovi dal gruppo",
-    "myprofile": "Il mio profilo"
+    "myprofile": "Il mio profilo",
+    "select_blueprint": "Select a blueprint"
 }

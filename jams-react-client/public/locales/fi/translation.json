@@ -235,5 +235,6 @@
     "add_user_to_group": "Lisää käyttäjiä ryhmään ...",
     "add_user_to_a_group": "Lisää käyttäjä ryhmään",
     "remove_from_group": "Poista ryhmästä",
-    "myprofile": "Minun profiili"
+    "myprofile": "Minun profiili",
+    "select_blueprint": "Select a blueprint"
 }
