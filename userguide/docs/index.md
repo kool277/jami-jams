@@ -42,9 +42,29 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 
 2. Unpack the .tar file to a directory of your choice.
 
-3. It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:
+3. It is mandatory to run JAMS using a secure SSL connection.
 
-``openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem``
+You must have a domain name in order to request a key and a certificate.
+
+Once you have purchased you domain name and pointed it to you server you can proceed to the next step.
+
+You can purchase a pair of key certificate from any online provider such as Godaddy, OVH, Hostgator, etc. We recommand getting a free pair using Let's encrypt.
+
+In order to generate a pair of key certificate you can use Certbot using instructions in the following page https://certbot.eff.org/.
+
+You can choose the web server software and operating system to get specific instructions.
+
+Here is an example for an Nginx web server on Ubuntu 20.04: https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx
+
+Install Certbot using snap: sudo snap install --classic certbot
+
+Ensure that the cerbot command can be run: sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+In order to get a certificate execute: sudo certbot certonly and follow instrcuctions.
+
+The Certificate and Key are generated in a specific folder, please see the output from Certbot to locate them.
+
+We need to copy them in the current folder where our jams-launcher.jar file is located.
 
 **Current limitation:** JAMS does not support reading encrypted private keys which require a password unlock.
 
