@@ -63,6 +63,10 @@ public class UpdateDownloader {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             trustStore.load(null, null);
             trustStore.setCertificateEntry("ca", certificate);
+
+            is = UpdateDownloader.class.getClassLoader().getResourceAsStream("oem/update.crt");
+            certificate = X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
+            trustStore.setCertificateEntry("update",certificate);
         }
         catch (Exception e){
             log.info("Could not load SFL's CA - this should not happen! detailed error: {}",e.getMessage());

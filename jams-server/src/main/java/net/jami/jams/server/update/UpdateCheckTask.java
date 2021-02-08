@@ -63,6 +63,11 @@ public class UpdateCheckTask extends TimerTask {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             trustStore.load(null, null);
             trustStore.setCertificateEntry("ca",certificate);
+
+            is = UpdateCheckTask.class.getClassLoader().getResourceAsStream("oem/update.crt");
+            certificate = X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
+            trustStore.setCertificateEntry("update",certificate);
+
             //Inject the SSL Connection here for a first time.
             sslContext = SSLContexts.custom().loadTrustMaterial(trustStore, null).build();
 
