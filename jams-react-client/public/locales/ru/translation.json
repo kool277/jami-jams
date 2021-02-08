@@ -5,7 +5,7 @@
     "continue": "Продолжить",
     "users": "Пользователи",
     "groups": "Группы",
-    "blueprints": "Blueprints",
+    "blueprints": "Чертежи",
     "settings": "Настройки",
     "Logout": "Выйти из аккаунта",
     "create_user": "Создать пользователя",
@@ -15,7 +15,7 @@
     "state_is_required": "Требуется область",
     "city_is_required": "Требуется город",
     "organization_is_required": "Требуется организация",
-    "organization_unit_is_required": "Organization unit is required.",
+    "organization_unit_is_required": "Требуется организационная единица.",
     "country_is_required": "Требуется страна",
     "certificate_file_is_required": "Требуется файл сертификата.",
     "private_key_file_is_required": "Требуется файл закрытого ключа.",
@@ -29,7 +29,7 @@
     "state": "Страна",
     "cistatety": "Город",
     "organization": "Организация",
-    "organization_unit": "Organization Unit",
+    "organization_unit": "Организационная единица",
     "generate_self_signed_certificate_authority": "Генерировать самоподписанный центр сертификации",
     "select_option_setting_up_certificate_authority": "Выберите параметр для настройки центра сертификации, который будет использоваться для подписи всех учетных записей Jami, созданных на этом экземпляре JAMS.",
     "import_certificate_authority": "Импорт центра сертификации",
@@ -169,7 +169,7 @@
     "search_groups_placeholder": "Поиск групп...",
     "search_groups": "Поиск групп",
     "no_groups_found": "Группы не найдены",
-    "blueprint": "Blueprint",
+    "blueprint": "Чертеж",
     "subscription": "Подписка",
     "an_error_occured_while_getting_license_information": "Произошла ошибка при получении информации о подписке!",
     "subscription_code_is_required": "Требуется код подписки.",
@@ -236,5 +236,5 @@
     "add_user_to_a_group": "Добавить пользователя в группу",
     "remove_from_group": "Удалить из группы",
     "myprofile": "Мой профиль",
-    "select_blueprint": "Select a blueprint"
+    "select_blueprint": "Выберите чертеж"
 }
