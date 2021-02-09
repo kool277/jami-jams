@@ -15,7 +15,7 @@ export default function CustomPopupState(props) {
 <PopupState variant="popover" popupId="demo-popup-popover">
     {(popupState) => (
         <div>
-        <InfoIcon color="primary" fontSize="small" {...bindTrigger(popupState)} />
+        <InfoIcon color="disabled" fontSize="small" {...bindTrigger(popupState)} />
         <Popover
             {...bindPopover(popupState)}
             anchorOrigin={{

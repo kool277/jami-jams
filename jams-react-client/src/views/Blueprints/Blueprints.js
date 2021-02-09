@@ -18,6 +18,7 @@ import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
 import GroupIcon from "@material-ui/icons/Group";
+import PersonIcon from '@material-ui/icons/Person';
 import Search from "@material-ui/icons/Search";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import InfoIcon from "@material-ui/icons/Info";
@@ -379,17 +380,16 @@ export default function Blueprints() {
                         ? blueprint.name
                         : i18next.t("no_blueprint_name", "No blueprint name")}
                     </h3>
-                    <strong>Description:</strong>
-                    <p>{i18next.t("no_description", "No description")}</p>
                     <ul>
                       <li>
-                        <GroupIcon
+                        {JSON.parse(blueprint.policyData).rendezVous == true ? (<p><GroupIcon
                           fontSize="small"
                           style={{ marginRight: "10px" }}
-                        />{" "}
-                        {blueprint.usersCount
-                          ? blueprint.usersCount + " user(s)"
-                          : i18next.t("no_users_count", "No users count")}
+                        />{i18next.t("rendezvous", "Rendezvous")}</p>) : <p><PersonIcon
+                        fontSize="small"
+                        style={{ marginRight: "10px" }}
+                      />{i18next.t("standalone", "Standalone")}</p>
+                        }
                       </li>
                     </ul>
                     </CardBody>

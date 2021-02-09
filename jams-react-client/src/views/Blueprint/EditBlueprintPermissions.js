@@ -15,6 +15,7 @@ import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormLabel from "@material-ui/core/FormLabel";
 import Button from "components/CustomButtons/Button.js";
 
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -53,6 +54,10 @@ import MuiAlert from "@material-ui/lab/Alert";
 import i18next from "i18next";
 
 import auth from "auth.js";
+
+import CustomPopupState from "../../components/CustomPopupState/CustomPopupState";
+
+import Switch from "@material-ui/core/Switch";
 
 const styles = (theme) => ({
   ...dashboardStyle,
@@ -353,6 +358,9 @@ export default function EditBlueprintPermissions(props) {
               <div className={classes.root}>
                 <Grid container spacing={5}>
                   <Grid item xs={12} sm={12} md={12}>
+                  <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <FormLabel component="legend">Call parameters</FormLabel>
                     <FormGroup row>
                       <FormControlLabel
                         control={
@@ -371,6 +379,7 @@ export default function EditBlueprintPermissions(props) {
                         }
                         label={i18next.t("allow_video_calls", "Allow video calls")}
                       />
+                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_allow_video_calls_info", "If this option is disabled, only audio calls will be allowed.")} />
                     </FormGroup>
                     <FormGroup row>
                       <FormControlLabel
@@ -390,6 +399,7 @@ export default function EditBlueprintPermissions(props) {
                         }
                         label={i18next.t("allow_incoming_calls_from_unknown_contacts", "Allow incoming calls from unknown contacts")}
                       />
+                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_contacts_info", "If this option is disabled, only contacts from your list will be allowed to contact you.")} />
                     </FormGroup>
                     <FormGroup row>
                       <FormControlLabel
@@ -409,7 +419,11 @@ export default function EditBlueprintPermissions(props) {
                         }
                         label={i18next.t("auto_answer_calss", "Auto answer calls")}
                       />
+                      <CustomPopupState message={i18next.t("auto_answer_calls_info", "If this option is enabled, incomming calls will be automaticly answered. This option can be usefull if you want for example to monitor your house or a particular room when you are away from home.")} />
                     </FormGroup>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12}>
+                    <FormLabel component="legend">Local LAN</FormLabel>
                     <FormGroup row>
                       <FormControlLabel
                         control={
@@ -428,11 +442,26 @@ export default function EditBlueprintPermissions(props) {
                         }
                         label={i18next.t("allow_use_of_jami_in_local_lan", "Allow Jami usage on the local LAN")}
                       />
+                      <CustomPopupState message={i18next.t("local_lan_info", "If this option is enabled, you will be able to communicate with connected contacts on you local lan, even if your lan is disconnected from internet.")} />
                     </FormGroup>
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12}>
+
+                  </Grid>
+                </Grid>
+                </Grid>
+                </Grid>
+              </div>
+            </CardBody>
+          </Card>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={12}>
+                    <h3>Rendezvous mode</h3>
+
+                      <FormGroup row>
+                        <FormControlLabel
+                          control={
+                            <Switch
                             checked={rendezVous}
                             color="primary"
                             onChange={(e) => {
@@ -443,19 +472,15 @@ export default function EditBlueprintPermissions(props) {
                               );
                             }}
                             name="rendezVous"
+                            inputProps={{ "aria-label": "secondary checkbox" }}
                           />
-                        }
-                        label={i18next.t("convert_your_account_into_a_rendezvous_point", "Activate this account into rendezvous mode")}
-                      />
-                    </FormGroup>
-                  </Grid>
-                </Grid>
-              </div>
-            </CardBody>
-          </Card>
-        </GridItem>
-        <GridItem xs={12} sm={12} md={12}>
-                    <Button color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_moderator_to", "Add moderator to")} {props.blueprintName}</Button>
+                          }
+                          label={i18next.t("convert_your_account_into_a_rendezvous_point", "Activate this account into rendezvous mode")}
+                        />
+                        <CustomPopupState message={i18next.t("rendezvous_info", "If this option is enabled, incomming calls will automaticly be added to a conference room.")}/>
+                        <Button disabled={!rendezVous} color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_moderator_to", "Add moderator to")} {props.blueprintName}</Button>
+                        <CustomPopupState message={i18next.t("rendezvous_moderators_info", "Moderators are people allowed to manage rendezvous points and conferences even if they are not hosted on their devices.")} />
+                        </FormGroup>
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
@@ -492,7 +517,7 @@ export default function EditBlueprintPermissions(props) {
                                         <Link to={`/user/${user.username}`}>{user.lastName}</Link>
                                     </TableCell>
                                     <TableCell align="right" className={classes.tableActions}>
-                                        <Button color="primary" onClick={() => removeModeratorFromBlueprint(user)}>{i18next.t("remove_moderator", "Remove moderator")}</Button>
+                                        <Button disabled={!rendezVous} color="primary" onClick={() => removeModeratorFromBlueprint(user)}>{i18next.t("remove_moderator", "Remove moderator")}</Button>
                                     </TableCell>
                                 </TableRow>
                             )}

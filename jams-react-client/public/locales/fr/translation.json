@@ -147,8 +147,6 @@
     "search_blueprints": "Rechercher un gabarit",
     "no_blueprints_found": "Aucun gabarit trouvé",
     "no_blueprint_name": "Aucun nom disponible",
-    "no_description": "Aucune description disponible",
-    "no_users_count": "Aucun utilisateur",
     "add_contact": "Ajouter un contact...",
     "remove_contact": "Supprimer le contact",
     "are_you_sure_you_want_to_remove": "Êtes-vous certain de vouloir supprimer",
@@ -239,5 +237,13 @@
     "select_blueprint": "Select a blueprint",
     "add_moderator_to_blueprint": "Add moderator to blueprint ...",
     "add_moderator_to": "Add moderator to",
-    "remove_moderator": "Remove moderator"
+    "remove_moderator": "Remove moderator",
+    "rendezvous": "Rendezvous",
+    "standalone": "Standalone",
+    "allow_incoming_calls_from_unknown_allow_video_calls_info": "If this option is disabled, only audio calls will be allowed.",
+    "allow_incoming_calls_from_unknown_contacts_info": "If this option is disabled, only contacts from your list will be allowed to contact you.",
+    "auto_answer_calls_info": "If this option is enabled, incomming calls will be automaticly answered. This option can be usefull if you want for example to monitor your house or a particular room when you are away from home.",
+    "local_lan_info": "If this option is enabled, you will be able to communicate with connected contacts on you local lan, even if your lan is disconnected from internet.",
+    "rendezvous_info": "If this option is enabled, incomming calls will automaticly be added to a conference room.",
+    "rendezvous_moderators_info": "Moderators are people allowed to manage rendezvous points and conferences even if they are not hosted on their devices."
 }
