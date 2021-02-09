@@ -30,6 +30,8 @@ import i18next from "i18next";
 
 import LanguagePicker from "../../components/LanguagePicker/LanguagePicker";
 
+const pjson = require('../../../package.json');
+
 let generator = require("generate-password");
 
 const useStyles = makeStyles((theme) => ({
@@ -159,7 +161,7 @@ export default function General(props) {
                     <VpnKeyIcon />
                   </InputAdornment>
                 }
-                endAdornment={
+                endAdornment={            
                   <IconButton
                     aria-label="toggle password visibility"
                     onMouseDown={handleMouseDownPassword}
@@ -264,6 +266,9 @@ export default function General(props) {
               >
                 {i18next.t("change_admin_password", "Change administrator password")}
               </Button>
+            </Grid>
+            <Grid item lg={6}>
+                Version {pjson.version.slice(0, 3)}
             </Grid>
           </Grid>
 

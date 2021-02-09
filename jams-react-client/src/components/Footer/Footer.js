@@ -8,6 +8,8 @@ import List from "@material-ui/core/List";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/footerStyle.js";
 
+const pjson = require('../../../package.json');
+
 const useStyles = makeStyles(styles);
 
 export default function Footer(props) {
@@ -17,6 +19,7 @@ export default function Footer(props) {
       <div className={classes.container}>
         <p className={classes.right}>
           <span>
+            JAMS Version {pjson.version.slice(0, 3)} -
             &copy; {1900 + new Date().getYear()}{" "}
             <a
               href="https://savoirfairelinux.com"
