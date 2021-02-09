@@ -299,16 +299,11 @@ export default function EditBlueprintPermissions(props) {
   };
 
   const addModeratorToBlueprint = (user) => {
-    if(defaultModerators.includes(user.id)){
-      alert(`${user.username} is already a moderator of ${props.blueprintName}`);
-    }
-    else {
       handleUpdatePermissions("defaultModerators", defaultModerators + user.id + "/");
       setDefaultModerators(defaultModerators + user.id + "/");
       let newBlueprintModerators = blueprintModerators;
       newBlueprintModerators.push(user);
       setBlueprintModerators(newBlueprintModerators);
-    }
   }
 
   const removeModeratorFromBlueprint = (user) => {
