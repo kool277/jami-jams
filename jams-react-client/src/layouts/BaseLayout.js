@@ -206,7 +206,7 @@ export default function Admin(props) {
           <Button
             onClick={(e) => {
               if (auth.isActivated()) handleUpdate();
-              else window.location.href = "https://staging.jami.biz/";
+              else window.location.href = "https://jami.biz/";
             }}
             color="primary"
           >
