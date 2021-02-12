@@ -147,8 +147,6 @@
     "search_blueprints": "Căutare proiecte",
     "no_blueprints_found": "N-au fost găsite proiecte",
     "no_blueprint_name": "Niciun nume de proiect",
-    "no_description": "Fără descriere",
-    "no_users_count": "Fără utilizatori",
     "add_contact": "Adaugă contactul...",
     "remove_contact": "Elimină contactul",
     "are_you_sure_you_want_to_remove": "Sigur vrei să elimini",
@@ -236,5 +234,16 @@
     "add_user_to_a_group": "Adaugă un utilizator la un grup",
     "remove_from_group": "Elimină din grup",
     "myprofile": "Profilul meu",
-    "select_blueprint": "Alege un proiect"
+    "select_blueprint": "Alege un proiect",
+    "add_moderator_to_blueprint": "Add moderator to blueprint ...",
+    "add_moderator_to": "Add moderator to",
+    "remove_moderator": "Remove moderator",
+    "rendezvous": "Rendezvous",
+    "standalone": "Standalone",
+    "allow_incoming_calls_from_unknown_allow_video_calls_info": "If this option is disabled, only audio calls will be allowed.",
+    "allow_incoming_calls_from_unknown_contacts_info": "If this option is disabled, only contacts from your list will be allowed to contact you.",
+    "auto_answer_calls_info": "If this option is enabled, incomming calls will be automaticly answered. This option can be usefull if you want for example to monitor your house or a particular room when you are away from home.",
+    "local_lan_info": "If this option is enabled, you will be able to communicate with connected contacts on you local lan, even if your lan is disconnected from internet.",
+    "rendezvous_info": "If this option is enabled, incomming calls will automaticly be added to a conference room.",
+    "rendezvous_moderators_info": "Moderators are people allowed to manage rendezvous points and conferences even if they are not hosted on their devices."
 }
