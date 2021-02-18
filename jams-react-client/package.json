@@ -1,6 +1,6 @@
 {
   "name": "jams-jami-client",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "Jams client for managing user's devices",
   "private": false,
   "main": "dist/index.js",

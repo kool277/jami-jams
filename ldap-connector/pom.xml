@@ -32,7 +32,7 @@
         <dependency>
             <groupId>net.jami</groupId>
             <artifactId>jams-server</artifactId>
-            <version>2.2</version>
+            <version>3.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
