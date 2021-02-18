@@ -59,7 +59,7 @@ This will reset the server to its original state and you will be able to run the
 
 ### Download and install JAMS
 
-Visit https://jami.net/services/ and downalod JAMS.
+Visit [https://jami.biz/](https://jami.biz/) and downalod JAMS.
 
 Extract JAMS to c:\jams
 

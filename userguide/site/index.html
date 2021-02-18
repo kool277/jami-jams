@@ -117,7 +117,8 @@ height:400px;
 <h1 id="getting-started">Getting Started</h1>
 <p>JAMS is a server application used to enroll Jami clients into an Enterprise context. Currently, JAMS supports 3 sources for user authentication: LDAP, Active Directory and an embedded database.</p>
 <h2 id="obtaining-jams">Obtaining JAMS</h2>
-<p>The latest Beta build of JAMS can be downloaded at: <code>https://git.jami.net/savoirfairelinux/jami-jams</code></p>
+<p>The latest version of JAMS can be downloaded at: <a href="https://jami.biz/">https://jami.biz/</a>
+The source code is available at <a href="https://git.jami.net/savoirfairelinux/jami-jams">https://git.jami.net/savoirfairelinux/jami-jams</a></p>
 <h2 id="system-requirements">System Requirements</h2>
 <ul>
 <li>Windows, Linux or Mac OS operating system</li>
@@ -136,16 +137,26 @@ height:400px;
 <h2 id="getting-started_1">Getting Started</h2>
 <ol>
 <li>
-<p>Download the latest version of JAMS from: <a href="https://jami.net/services/">https://jami.net/services/</a></p>
+<p>Download the latest version of JAMS from: <a href="https://jami.biz/">https://jami.biz/</a></p>
 </li>
 <li>
 <p>Unpack the .tar file to a directory of your choice.</p>
 </li>
 <li>
-<p>It is mandatory to run JAMS using a secure SSL connection. To request your SSL certificate files using OpenSSL and generate a pair of PEM and KEY, enter the following command:</p>
+<p>It is mandatory to run JAMS using a secure SSL connection.</p>
 </li>
 </ol>
-<p><code>openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem</code></p>
+<p>You must have a domain name in order to request a key and a certificate.</p>
+<p>Once you have purchased you domain name and pointed it to you server you can proceed to the next step.</p>
+<p>You can purchase a pair of key certificate from any online provider such as Godaddy, OVH, Hostgator, etc. We recommand getting a free pair using Let's encrypt.</p>
+<p>In order to generate a pair of key certificate you can use Certbot using instructions in the following page https://certbot.eff.org/.</p>
+<p>You can choose the web server software and operating system to get specific instructions.</p>
+<p>Here is an example for an Nginx web server on Ubuntu 20.04: https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx</p>
+<p>Install Certbot using snap: sudo snap install --classic certbot</p>
+<p>Ensure that the cerbot command can be run: sudo ln -s /snap/bin/certbot /usr/bin/certbot</p>
+<p>In order to get a certificate execute: sudo certbot certonly and follow instrcuctions.</p>
+<p>The Certificate and Key are generated in a specific folder, please see the output from Certbot to locate them.</p>
+<p>We need to copy them in the current folder where our jams-launcher.jar file is located.</p>
 <p><strong>Current limitation:</strong> JAMS does not support reading encrypted private keys which require a password unlock.</p>
 <ol>
 <li>Navigate to the directory where you have extracted the JAMS package and execute the following command:</li>
@@ -393,5 +404,5 @@ You will be redirected to the JAMS interface.</p>
 </html>
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2020-12-11 17:41:14.704504+00:00
+Build Date UTC : 2021-02-18 22:13:12.355629+00:00
 -->

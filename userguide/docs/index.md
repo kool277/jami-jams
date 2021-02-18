@@ -10,7 +10,8 @@ JAMS is a server application used to enroll Jami clients into an Enterprise cont
 
 ## Obtaining JAMS
 
-The latest Beta build of JAMS can be downloaded at: ``https://git.jami.net/savoirfairelinux/jami-jams``
+The latest version of JAMS can be downloaded at: [https://jami.biz/](https://jami.biz/)
+The source code is available at [https://git.jami.net/savoirfairelinux/jami-jams](https://git.jami.net/savoirfairelinux/jami-jams)
 
 ## System Requirements
 
@@ -38,7 +39,7 @@ The diagram below shows the entire process of how a device enrolls with JAMS:
 ​    
 ## Getting Started
 
-1. Download the latest version of JAMS from: <https://jami.net/services/>
+1. Download the latest version of JAMS from: [https://jami.biz/](https://jami.biz/)
 
 2. Unpack the .tar file to a directory of your choice.
 
