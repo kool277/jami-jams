@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 // core components
 import Devices from "components/Devices/Devices.js";
 
@@ -17,6 +18,8 @@ import { infoColor } from "assets/jss/material-dashboard-react.js";
 import DisplayUserProfile from "./DisplayUserProfile";
 
 import i18next from "i18next";
+
+import auth from "auth.js";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,6 +55,7 @@ function a11yProps(index) {
 }
 
 export default function UserProfile(props) {
+  const history = useHistory();
 
   const [value, setValue] = React.useState(0);
   const [displayUser, setDisplayUser] = React.useState(true);
@@ -60,7 +64,11 @@ export default function UserProfile(props) {
     setValue(newValue);
   };
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    if(props.username === "null") {
+      history.push("/");
+    }
+  }, []);
 
   return (
     <div>
