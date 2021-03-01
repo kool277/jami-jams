@@ -75,7 +75,7 @@ public class JamsCA implements CertificateAuthority {
     public void init(String settings, SystemAccount ca, SystemAccount ocsp) {
         CertificateAuthorityConfig config = JsonIterator.deserialize(settings, CertificateAuthorityConfig.class);
         CA = ca;
-        OCSP = ocsp;
+        OCSP = ca;
         serverDomain = config.getServerDomain();
         signingAlgorithm = config.getSigningAlgorithm();
         crlLifetime = config.getCrlLifetime();
