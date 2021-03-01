@@ -56,6 +56,7 @@ public class DeviceRegistrationResponse {
     private Boolean peerDiscovery;
     private Boolean upnpEnabled;
     private Boolean rendezVous;
+    private String defaultModerators;
 
     public void setCertificateChain(X509Certificate[] certificateChain){
         StringBuilder stringBuilder = new StringBuilder();
@@ -84,6 +85,7 @@ public class DeviceRegistrationResponse {
         this.peerDiscovery = policy.getPeerDiscovery();
         this.upnpEnabled = policy.getUpnpEnabled();
         this.rendezVous = policy.getRendezVous();
+        this.defaultModerators = policy.getDefaultModerators();
     }
 
 

@@ -22,4 +22,5 @@ public class PolicyData {
     private Boolean peerDiscovery;
     private Boolean upnpEnabled;
     private Boolean rendezVous;
+    private String defaultModerators;
 }
