@@ -50,22 +50,23 @@ public class OCSPServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("application/ocsp-response");
-        byte[] content = new byte[Integer.parseInt(req.getHeader("Content-Length"))];
-        try {
-            for(int i=0;i<content.length;i++)
-                req.getInputStream().read(content);
-
-            OCSPReq ocspReq = new OCSPReq(content);
-            OCSPResp response = JamsCA.getOCSPResponse(ocspReq);
-            if (response != null) {
-                byte[] respBytes = response.getEncoded();
-                resp.getOutputStream().write(respBytes);
-            } else resp.setStatus(404);
-
-        }
-        catch (Exception e) {
-            resp.sendError(404, "Could not find the requested certificate!");
-        }
+        resp.sendError(404);
+//        resp.setContentType("application/ocsp-response");
+//        byte[] content = new byte[Integer.parseInt(req.getHeader("Content-Length"))];
+//        try {
+//            for(int i=0;i<content.length;i++)
+//                req.getInputStream().read(content);
+//
+//            OCSPReq ocspReq = new OCSPReq(content);
+//            OCSPResp response = JamsCA.getOCSPResponse(ocspReq);
+//            if (response != null) {
+//                byte[] respBytes = response.getEncoded();
+//                resp.getOutputStream().write(respBytes);
+//            } else resp.setStatus(404);
+//
+//        }
+//        catch (Exception e) {
+//            resp.sendError(404, "Could not find the requested certificate!");
+//        }
     }
 }
