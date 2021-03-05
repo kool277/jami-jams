@@ -103,14 +103,27 @@ public class UpdateDownloader {
 
         // temp folder for safe download and integrity check
         File tmpFolder = new File(System.getProperty("user.dir") + "/tmp/");
-        if(!tmpFolder.mkdirs()){
-            log.error("Could not create temporary folder to store the update files!");
-            return false;
-        }
 
+        if(!tmpFolder.exists()){
+            try {
+                tmpFolder.mkdirs();
+            } catch (Exception e) {
+                log.error("Error creating folder:" + e);
+                return false;
+            }
+        }
 
         files.forEach((k, v) -> {
             try {
+                File tmpFile = new File( System.getProperty("user.dir") + "/tmp/" + v.getFileName());
+                if(tmpFile.exists()){
+
+                    try{
+                        tmpFile.delete();
+                    } catch (Exception e) {
+                        log.warn("Error deleting file: " + v.getFileName() + " with error " + e);
+                    }
+                }
                 HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
                 HttpResponse httpResponse = httpClient.execute(new HttpGet(UPDATE_SERVER_URL + "/updates/" + v.getFileName()));
                 if (httpResponse.getStatusLine().getStatusCode() != 200) return;
