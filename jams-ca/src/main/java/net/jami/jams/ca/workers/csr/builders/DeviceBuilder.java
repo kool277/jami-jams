@@ -29,12 +29,18 @@ import net.jami.jams.ca.workers.csr.utils.ExtensionLibrary;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.User;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
+
+import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.x509.AccessDescription;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.Extension;
 
 import static net.jami.jams.ca.workers.csr.CertificateWorker.SHIFT;
 
@@ -54,6 +60,22 @@ public class DeviceBuilder {
                     device.getCertificationRequest().getSubject(),
                     device.getCertificationRequest().getSubjectPublicKeyInfo()
             );
+
+            /*
+            *
+            * This extension library configuration is done at this point in order to add the issuer id (here the jami Id)
+            * to the certificate to help retrieve the device certificate issuer in more suitable manner during the call to the OCSP endpoint
+            *
+            * */
+
+            //Pre-Define the AIA Point
+            AccessDescription accessDescription = new AccessDescription(
+                    AccessDescription.id_ad_ocsp,
+                    new GeneralName(GeneralName.uniformResourceIdentifier, JamsCA.serverDomain + "/api/ocsp/"  + user.getJamiId())
+            );
+
+            ExtensionLibrary.deviceExtensions.getExtensions().add(new Object[]{Extension.authorityInfoAccess, false, new AuthorityInformationAccess(accessDescription)});
+
             device.setCertificate(CertificateSigner.signCertificate(user.getPrivateKey(),builder, ExtensionLibrary.deviceExtensions));
             boolean deviceIdDetected = false;
             for(int i=0; i < device.getCertificationRequest().getSubject().getRDNs().length;i++) {

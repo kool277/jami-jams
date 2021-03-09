@@ -23,12 +23,13 @@
 package net.jami.jams.ca.workers.ocsp;
 
 import lombok.extern.slf4j.Slf4j;
-import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.X509Worker;
 import net.jami.jams.ca.workers.crl.CRLWorker;
 import net.jami.jams.common.cryptoengineapi.ocsp.CertificateStatus;
 import net.jami.jams.common.cryptoengineapi.ocsp.CertificateSummary;
 import net.jami.jams.common.cryptoengineapi.ocsp.OCSPCertificateStatusMapper;
+import net.jami.jams.common.objects.devices.Device;
+import net.jami.jams.common.objects.user.User;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
@@ -36,15 +37,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CRLEntryHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.BasicOCSPRespBuilder;
-import org.bouncycastle.cert.ocsp.CertificateID;
-import org.bouncycastle.cert.ocsp.OCSPException;
-import org.bouncycastle.cert.ocsp.OCSPReq;
-import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPRespBuilder;
-import org.bouncycastle.cert.ocsp.Req;
-import org.bouncycastle.cert.ocsp.RespID;
+import org.bouncycastle.cert.ocsp.*;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DigestCalculatorProvider;
@@ -55,16 +48,13 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import static net.jami.jams.ca.JamsCA.CA;
-import static net.jami.jams.ca.JamsCA.OCSP;
-import static net.jami.jams.ca.JamsCA.crlLifetime;
+import static net.jami.jams.ca.JamsCA.*;
 
 @Slf4j
 public class OCSPWorker extends X509Worker<String> {
@@ -81,11 +71,11 @@ public class OCSPWorker extends X509Worker<String> {
         DigestCalculatorProvider digestCalculatorProvider = new JcaDigestCalculatorProviderBuilder().setProvider("BC").build();
         // only SHA-1 is supported for responder IDs.
         this.responderID = new RespID(SubjectPublicKeyInfo.getInstance(CA.getCertificate().getPublicKey().getEncoded()), digestCalculatorProvider.get(new DefaultDigestAlgorithmIdentifierFinder().find ("SHA-1")));
-        this.contentSigner = new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build(OCSP.getPrivateKey());
+        this.contentSigner = new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build(CA.getPrivateKey());
         log.info("Instantiated OCSP Worker...");
     }
 
-    public OCSPResp getOCSPResponse(OCSPReq ocspRequest) throws OCSPException {
+    public OCSPResp getOCSPResponse(OCSPReq ocspRequest, X509Certificate certificate, PrivateKey privateKey, Boolean unknown) throws OCSPException {
         try {
             if(validateRequest(ocspRequest) != null) throw new OCSPException("Request is not valid"); //this means the request is invalid and we should notify the client.
             //If the request was valid, we move on to other things.
@@ -97,12 +87,13 @@ public class OCSPWorker extends X509Worker<String> {
             if (nonceExtension != null) responseExtensions.add(nonceExtension);
             Extension[] extensions = responseExtensions.toArray(new Extension[responseExtensions.size()]);
             responseBuilder.setResponseExtensions(new Extensions(extensions));
-            for (Req request : ocspRequest.getRequestList()) {
-                addResponse(responseBuilder, request);
-            }
+
+            for (Req request : ocspRequest.getRequestList())
+                addResponse(responseBuilder, request, unknown);
+
             BasicOCSPResp basicResponse = responseBuilder.build(
-                    contentSigner,
-                    new X509CertificateHolder[]{new JcaX509CertificateHolder(OCSP.getCertificate())},
+                    new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build(privateKey),
+                    new X509CertificateHolder[]{new JcaX509CertificateHolder(certificate)},
                     new Date()
             );
             return new OCSPRespBuilder().build(OCSPRespBuilder.SUCCESSFUL, basicResponse);
@@ -122,7 +113,15 @@ public class OCSPWorker extends X509Worker<String> {
     }
 
 
-    private CertificateSummary getCertificateSummary(BigInteger serial) {
+    private CertificateSummary getCertificateSummary(BigInteger serial, Boolean unknown) {
+
+        if(unknown) {
+            return CertificateSummary.newBuilder()
+                    .withStatus(CertificateStatus.UNKNOWN)
+                    .withSerialNumber(serial)
+                    .build();
+        }
+
         X509CRLEntryHolder x509CRLEntryHolder = crlWorker.getExistingCRL().get().getRevokedCertificate(serial);
 
         if(x509CRLEntryHolder != null) return CertificateSummary.newBuilder()
@@ -137,7 +136,7 @@ public class OCSPWorker extends X509Worker<String> {
     }
 
 
-    private void addResponse(BasicOCSPRespBuilder responseBuilder, Req request) throws OCSPException{
+    private void addResponse(BasicOCSPRespBuilder responseBuilder, Req request, Boolean unknown) throws OCSPException{
         CertificateID certificateID = request.getCertID();
         // Build Extensions
         Extensions extensions = new Extensions(new Extension[]{});
@@ -147,7 +146,7 @@ public class OCSPWorker extends X509Worker<String> {
             if (nonceExtension != null) extensions = new Extensions(nonceExtension);
         }
         responseBuilder.addResponse(certificateID,
-                OCSPCertificateStatusMapper.getStatus(getCertificateSummary(request.getCertID().getSerialNumber())),
+                OCSPCertificateStatusMapper.getStatus(getCertificateSummary(request.getCertID().getSerialNumber(), unknown)),
                 new Date(),
                 new Date(new Date().getTime() + crlLifetime),
                 extensions);

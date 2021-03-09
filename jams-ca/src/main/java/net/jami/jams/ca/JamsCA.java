@@ -41,6 +41,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.jcajce.provider.asymmetric.X509;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
@@ -130,8 +131,8 @@ public class JamsCA implements CertificateAuthority {
         }
     }
 
-    public static OCSPResp getOCSPResponse(OCSPReq ocspRequest) throws OCSPException {
-        return ocspWorker.getOCSPResponse(ocspRequest);
+    public static OCSPResp getOCSPResponse(OCSPReq ocspRequest, X509Certificate certificate, PrivateKey privateKey, Boolean unknown) throws OCSPException {
+        return ocspWorker.getOCSPResponse(ocspRequest, certificate, privateKey, unknown);
     }
 
     @Override
