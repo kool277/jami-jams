@@ -30,8 +30,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
+
+import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.Server.dataStore;
+import net.jami.jams.common.objects.user.User;
+
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
@@ -73,6 +80,14 @@ public class LoginServlet extends HttpServlet {
             LoginRequest object = JsonIterator.deserialize(req.getInputStream().readAllBytes(), LoginRequest.class);
             if (object.getUsername() != null && object.getPassword() != null) {
                 res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());
+                StatementList statementList = new StatementList();
+                StatementElement statementElement = new StatementElement("username", "=", object.getUsername(), "");
+                statementList.addStatement(statementElement);
+                User user =  dataStore.getUserDao().getObjects(statementList).get(0);
+                if(certificateAuthority.getLatestCRL().get() != null) {
+                    if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
+                        TomcatCustomErrorHandler.sendCustomError(resp, 401, "Invalid credentials provided!");
+                }
             }
         }
         if (res == null)
