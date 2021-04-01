@@ -85,7 +85,7 @@ public class LoginServlet extends HttpServlet {
                 statementList.addStatement(statementElement);
                 User user =  dataStore.getUserDao().getObjects(statementList).get(0);
                 if(certificateAuthority.getLatestCRL().get() != null) {
-                    if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
+                    if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
                         TomcatCustomErrorHandler.sendCustomError(resp, 401, "Invalid credentials provided!");
                 }
             }

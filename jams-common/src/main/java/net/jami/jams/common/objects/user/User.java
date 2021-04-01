@@ -88,6 +88,10 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
         return ethKey;
     }
 
+    public String getAccessLevelName() {
+        return this.accessLevel.name();
+    }
+
     @Override
     public void setKey(String key) {
         this.ethKey = key;
