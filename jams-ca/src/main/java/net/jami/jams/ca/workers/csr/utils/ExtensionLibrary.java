@@ -78,6 +78,7 @@ public class ExtensionLibrary {
         deviceExtensions.getExtensions().add(new Object[]{Extension.basicConstraints, true, new BasicConstraints(false)});
         deviceExtensions.getExtensions().add(new Object[]{Extension.keyUsage, false, new KeyUsage(KeyUsage.digitalSignature | KeyUsage.dataEncipherment | KeyUsage.keyAgreement | KeyUsage.nonRepudiation)});
         deviceExtensions.getExtensions().add(new Object[]{Extension.cRLDistributionPoints, false, new CRLDistPoint(distPoints)});
+        deviceExtensions.getExtensions().add(new Object[]{Extension.authorityInfoAccess, false, new AuthorityInformationAccess(accessDescription)});
     }
 
 

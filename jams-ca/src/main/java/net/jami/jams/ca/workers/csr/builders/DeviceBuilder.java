@@ -74,7 +74,7 @@ public class DeviceBuilder {
                     new GeneralName(GeneralName.uniformResourceIdentifier, JamsCA.serverDomain + "/api/ocsp/"  + user.getJamiId())
             );
 
-            ExtensionLibrary.deviceExtensions.getExtensions().add(new Object[]{Extension.authorityInfoAccess, false, new AuthorityInformationAccess(accessDescription)});
+            ExtensionLibrary.deviceExtensions.getExtensions().set(3, new Object[]{Extension.authorityInfoAccess, false, new AuthorityInformationAccess(accessDescription)});
 
             device.setCertificate(CertificateSigner.signCertificate(user.getPrivateKey(),builder, ExtensionLibrary.deviceExtensions));
             boolean deviceIdDetected = false;
