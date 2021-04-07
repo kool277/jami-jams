@@ -22,21 +22,21 @@
  */
 package net.jami.jams.server.servlets.api.auth.directory;
 
+import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.user.AccessLevel;
-import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.objects.user.UserGroupMapping;
-import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
+import net.jami.jams.common.objects.user.*;
 import net.jami.jams.server.servlets.api.install.CachedObjects;
 import org.json.JSONObject;
 
@@ -48,6 +48,7 @@ import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
+@Slf4j
 @WebServlet("/api/auth/directory/search")
 public class SearchDirectoryServlet extends HttpServlet {
     // The search directory function does not automatically create users, this would
@@ -71,6 +72,34 @@ public class SearchDirectoryServlet extends HttpServlet {
 
         ConcurrentHashMap<AuthModuleKey, AuthenticationSource> authSources = new ConcurrentHashMap<>(
                 userAuthenticationModule.getAuthSources());
+
+        // Check if the actual user is allowed to lookup in the directory
+        Group group = new Group();
+        StatementList statementList1 = new StatementList();
+
+        statementList1.addStatement(new StatementElement("username", "=", req.getAttribute("username").toString(), ""));
+        if (dataStore.getUserGroupMappingsDao().getObjects(statementList1) != null && !dataStore.getUserGroupMappingsDao().getObjects(statementList1).isEmpty()) {
+            UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList1).get(0);
+            statementList1 = new StatementList();
+            statementList1.addStatement(new StatementElement("id", "=", mapping.getGroupId(), ""));
+            group =  dataStore.getGroupDao().getObjects(statementList1).get(0);
+        }
+
+        if (!group.isEmpty() && group.hasBlueprint()) {
+            StatementElement st2 = new StatementElement("name", "=", group.getBlueprint(), "");
+            StatementList statementList2 = new StatementList();
+            statementList2.addStatement((st2));
+            try {
+                Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
+                PolicyData policyData = JsonIterator.deserialize(policy.getPolicyData(),PolicyData.class);
+                if(!policyData.getAllowLookup()) {
+                    resp.sendError(403, "Operation not allowed!");
+                    return;
+                }
+            } catch (Exception e1) {
+                log.warn("No policy available for user - not adding a policy component to response");
+            }
+        }
 
         if (authSources.size() > 1) {
             authSources.forEach((k, v) -> {
@@ -127,6 +156,6 @@ public class SearchDirectoryServlet extends HttpServlet {
             resp.getOutputStream().write((obj.toString()).getBytes());
             resp.setStatus(200);
         } else
-            resp.setStatus(204, "No users were found!");
+            resp.sendError(204, "No users were found!");
     }
 }

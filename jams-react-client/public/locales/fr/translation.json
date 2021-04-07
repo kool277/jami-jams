@@ -245,5 +245,6 @@
     "auto_answer_calls_info": "Si activé, les appels entrants seront automatiquement décrochés. Cette option peut être utile si vous souhaitez, par exemple, surveiller votre maison ou une pièce en particulier pendant votre absence",
     "local_lan_info": "Si activé, il sera possible de communiquer avec les personnes connectées sur votre réseau local, même si ce dernier est isolé d'internet",
     "rendezvous_info": "Si activé, les appels entrants sont automatiquement ajoutés à une salle de conférence",
-    "rendezvous_moderators_info": "Les modérateurs sont les personnes autorisées à administrer le point de rendez-vous et les conférences hébergées depuis ce compte"
+    "rendezvous_moderators_info": "Les modérateurs sont les personnes autorisées à administrer le point de rendez-vous et les conférences hébergées depuis ce compte",
+    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
 }

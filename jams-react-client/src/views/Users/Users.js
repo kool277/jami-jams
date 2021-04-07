@@ -116,7 +116,7 @@ export default function Users(props) {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        setLoading(false);
         if (error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");
@@ -150,10 +150,9 @@ export default function Users(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
         setUsers([]);
-
         setNoMatchFound(true);
+        setLoading(false);
         if (error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");

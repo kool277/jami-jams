@@ -23,4 +23,5 @@ public class PolicyData {
     private Boolean upnpEnabled;
     private Boolean rendezVous;
     private String defaultModerators;
+    private Boolean allowLookup;
 }

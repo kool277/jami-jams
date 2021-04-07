@@ -191,6 +191,7 @@ export default function Blueprints() {
       rendezVous: false,
       defaultModerators: "",
       upnpEnabled: true,
+      allowLookup: true,
     };
 
     axios(

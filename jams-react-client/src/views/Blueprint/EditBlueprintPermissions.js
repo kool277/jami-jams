@@ -146,6 +146,8 @@ export default function EditBlueprintPermissions(props) {
   const [proxyServer, setProxyServer] = React.useState("dhtproxy.jami.net");
   const [dhtProxyListUrl, setDhtProxyListUrl] = React.useState("");
 
+  const [allowLookup, setAllowLookup] = React.useState(true);
+
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState(false);
   const [severity, setSeverity] = React.useState("success");
@@ -207,7 +209,8 @@ export default function EditBlueprintPermissions(props) {
         setTurnServerPassword(policyData["turnServerPassword"]);
         setProxyEnabled(policyData["proxyEnabled"]);
         setProxyServer(policyData["proxyServer"]);
-        setDhtProxyListUrl(policyData["dhtProxyListUrl"]);
+        setDhtProxyListUrl();
+        setAllowLookup(policyData["autoAnswer"]);
 
         policyData["defaultModerators"].split("/").forEach((id) => {
           if(id !== "undefined" && id !== ""){
@@ -254,6 +257,7 @@ export default function EditBlueprintPermissions(props) {
       proxyEnabled: proxyEnabled,
       proxyServer: proxyServer,
       dhtProxyListUrl: dhtProxyListUrl,
+      allowLookup: allowLookup,
     };
 
     if (field === "peerDiscovery") {
@@ -446,9 +450,32 @@ export default function EditBlueprintPermissions(props) {
                     </FormGroup>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12}>
+                    <FormLabel component="legend">Allow Lookup</FormLabel>
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={allowLookup}
+                            color="primary"
+                            onChange={(e) => {
+                              setAllowLookup(e.target.checked);
+                              handleUpdatePermissions(
+                                "allowLookup",
+                                e.target.checked
+                              );
+                            }}
+                            name="allowLookup"
+                          />
+                        }
+                        label={i18next.t("allow_jami_user_to_search_for_other_contacts", "Allow Jami user to search for other contacts")}
+                      />
+                      <CustomPopupState message={i18next.t("local_lan_info", "If this option is enabled, users will be able to search for other contacts and add them.")} />
+                    </FormGroup>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12}>
 
+                    </Grid>
                   </Grid>
-                </Grid>
                 </Grid>
                 </Grid>
               </div>
