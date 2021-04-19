@@ -240,10 +240,10 @@
     "remove_moderator": "Remover moderador",
     "rendezvous": "Ponto de encontro",
     "standalone": "Suporte",
-    "allow_incoming_calls_from_unknown_allow_video_calls_info": "If this option is disabled, only audio calls will be allowed.",
-    "allow_incoming_calls_from_unknown_contacts_info": "If this option is disabled, only contacts from your list will be allowed to contact you.",
-    "auto_answer_calls_info": "If this option is enabled, incomming calls will be automaticly answered. This option can be usefull if you want for example to monitor your house or a particular room when you are away from home.",
-    "local_lan_info": "If this option is enabled, you will be able to communicate with connected contacts on you local lan, even if your lan is disconnected from internet.",
-    "rendezvous_info": "If this option is enabled, incomming calls will automaticly be added to a conference room.",
-    "rendezvous_moderators_info": "Moderators are people allowed to manage rendezvous points and conferences even if they are not hosted on their devices."
+    "allow_incoming_calls_from_unknown_allow_video_calls_info": "Se esta opção for desabilitada, apenas chamadas de áudio serão permitidas.",
+    "allow_incoming_calls_from_unknown_contacts_info": "Se esta opção for desativada, apenas os contatos da sua lista terão permissão para contatá-lo.",
+    "auto_answer_calls_info": "Se esta opção for ativada, as chamadas recebidas serão atendidas automaticamente. Esta opção pode ser útil se você quiser, por exemplo, monitorar sua casa ou um cômodo específico quando estiver longe de casa.",
+    "local_lan_info": "Se esta opção estiver habilitada, você poderá se comunicar com os contatos conectados em sua LAN local, mesmo se sua LAN estiver desconectada da Internet.",
+    "rendezvous_info": "Se esta opção for ativada, as chamadas recebidas serão adicionadas automaticamente a uma sala de conferência.",
+    "rendezvous_moderators_info": "Moderadores são pessoas com permissão para gerenciar pontos de encontro e conferências, mesmo que não estejam hospedados em seus dispositivos."
 }
