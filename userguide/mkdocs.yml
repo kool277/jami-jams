@@ -5,4 +5,7 @@ nav:
   - Clients: clients.md
 plugins:
   - search
-  - mkpdfs
+  - mkpdfs:
+      company: Savoir-faire Linux
+      author: Savoir-faire Linux
+      toc_title: Table of content

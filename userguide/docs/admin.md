@@ -14,7 +14,7 @@ By default JAMS runs an embedded tomcat server visible on port 8080, however thi
 It is generally not recommended to expose JAMS directly to the outside world and while it is required to run JAMS in SSL mode, we usually
 recommend users to place it behind Nginx or a similar web server which proxies requests between the outside world and Jams.
 
-The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxying solution):
+The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxy solution):
 
 
 ![alt text][map]
@@ -40,7 +40,7 @@ Typically you would add a new site called ``jams-site.conf`` to your nginx confi
         }
 }</b></pre>
 
-This is the preferred setup method by most admins, as local traffic is usually ran unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.
+This is the preferred setup method by most admins, as local traffic is usually run unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.
 
 ## Troubleshooting and resetting
 
@@ -59,13 +59,13 @@ This will reset the server to its original state and you will be able to run the
 
 ### Download and install JAMS
 
-Visit [https://jami.biz/](https://jami.biz/) and downalod JAMS.
+Visit [https://jami.biz/](https://jami.biz/) and download JAMS.
 
 Extract JAMS to c:\jams
 
 ### Download and install JDK 11 
 
-Download JDK 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (choose the conresponding architecture of your VM)
+Download JDK 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (choose the corresponding architecture of your VM)
 
 Install it using the install wizard.
 
@@ -154,7 +154,7 @@ subjectKeyIdentifier			= hash
 </b>
 </pre>
 
-### Add OpenSSL to Sytem Environment variables
+### Add OpenSSL to System Environment variables
 Go to Edit the system environment variables -> Environment Variables, then in System variables edit Path and add c:\openssl\
 
 ### Configure OpenSSL
@@ -197,7 +197,7 @@ java -jar jams-launcher.jar PORT_NUMBER (eg. 8443 or 443) server.pem server.key
 
 Open a navigator on the server and visite https://localhost:443 or https://localhost:8443 to validate that it's working.
 
-Click CTRL + C to close the application
+Type CTRL + C to close the application
 
 ### Expose your localhost to the internet
 
@@ -223,7 +223,7 @@ Leave all of Domain Private and Public select and click next.
 
 Name you Rule JAMS Outbound and click Finish.
 
-You are all set. You can now visit you application trought the server domain name or ip address on port 443 or 8443.
+You are all set. You can now visit your application through the server domain name or IP address on port 443 or 8443.
 
 ### Create a JAMS Windows Service (Embed Tomcat Server Windows Service) to start JAMS with the server
 

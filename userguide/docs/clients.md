@@ -48,20 +48,20 @@ Select the option **"Connect to a JAMS server"** which will lead you to the foll
 
 The **Jami Account Management Server URL** in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
 
-## Connect from a MacOS device
+## Connect from a macOS device
 
 Open Jami, go to the login page. Click on "Advanced":
 
 ![alt text][macosstep1]
 
-[macosstep1]: https://static.savoirfairelinux.com/img/jams/client/macos/macos-step1.png "MacOS step 1"
+[macosstep1]: https://static.savoirfairelinux.com/img/jams/client/macos/macos-step1.png "macOS step 1"
 
 
 Select the option **"Connect to account manager"** which will lead you to the following screen:
 
 ![alt text][macosstep2]
 
-[macosstep2]: https://static.savoirfairelinux.com/img/jams/client/macos/macos-step2.png "MacOS step 2"
+[macosstep2]: https://static.savoirfairelinux.com/img/jams/client/macos/macos-step2.png "macOS step 2"
 
 The **Jami Account Management Server URL** in this case would be the DNS address of your server and the username and password which correspond to your account. If you have configured the server with an LDAP/AD backend, it would be your LDAP/AD username and password.
 

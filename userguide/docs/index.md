@@ -49,7 +49,7 @@ You must have a domain name in order to request a key and a certificate.
 
 Once you have purchased you domain name and pointed it to you server you can proceed to the next step.
 
-You can purchase a pair of key certificate from any online provider such as Godaddy, OVH, Hostgator, etc. We recommand getting a free pair using Let's encrypt.
+You can purchase a pair of key certificate from any online provider such as GoDaddy, OVH, HostGator , etc. We recommend getting a free pair using Let's encrypt.
 
 In order to generate a pair of key certificate you can use Certbot using instructions in the following page https://certbot.eff.org/.
 
@@ -61,7 +61,7 @@ Install Certbot using snap: sudo snap install --classic certbot
 
 Ensure that the cerbot command can be run: sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
-In order to get a certificate execute: sudo certbot certonly and follow instrcuctions.
+In order to get a certificate execute: sudo certbot certonly and follow instructions.
 
 The Certificate and Key are generated in a specific folder, please see the output from Certbot to locate them.
 
@@ -86,7 +86,7 @@ An example of the command would be:
 
 Please note that any port above 1024 can be safely used to run JAMS.
 
-## Step 1: create your admininistrator account
+## Step 1: create your administrator account
 
 This account will have administrative control and the rights to manage your users and group of Jami users.
 
@@ -98,7 +98,7 @@ This account will have administrative control and the rights to manage your user
 
 The second step is to define your Certification Authority. 
 
-**Important:** a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by godaddy, letsencrypt, etc... ) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.
+**Important:** a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by GoDaddy, Let’s Encrypt, etc…) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.
 
 ![alt text][step1-1]
 
@@ -109,7 +109,7 @@ The second step is to define your Certification Authority.
 [step1-2]: https://static.savoirfairelinux.com/img/jams/step2-2.png "Certification Authority Import"
 
 
-This certificate will be used to sign the enrollement requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
+This certificate will be used to sign the enrollment requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
 articles to get familiar with the processes and practices which surround it:
 
 <https://www.securew2.com/blog/public-key-infrastructure-explained/>
@@ -127,7 +127,7 @@ JAMS supports 3 different sources for the authentication of users:
 
 ### Option 1: LDAP authentication
 
-If your company provides you with LDAP directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.
+If your company provides you with LDAP directory for user management, you will need to know its access information and an automated account which has read-only rights to do use look-ups.
 
 ![alt text][ldap]
 
@@ -178,7 +178,7 @@ The local database does not require any additional configuration, everything in 
 
 **Advanced settings:** by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.
 
-If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option,
+If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option.
 
 ## Step 4: setup the server parameters
 
@@ -190,8 +190,8 @@ If you want your users to be searchable by external users and allow them to comm
 | ------------- |-------------  |
 | **CORS Domain Name**      | The domain on which the JAMS client and administration UI will be running. |
 | **Certificate Revocation List Lifetime**     | The frequency at which the CRL is updated in memory |
-| **Device Lifetime** | How long a device's certificate is valid before being considered stale and requiring re-enrollement      |
-| **User Account Lifetime** | How long a user account is valid before being considered stale and requiring re-enrollement  |
+| **Device Lifetime** | How long a device's certificate is valid before being considered stale and requiring re-enrollment      |
+| **User Account Lifetime** | How long a user account is valid before being considered stale and requiring re-enrollment  |
 
 
 **Important** The *CORS Domain Name* corresponds to the web address used to access the Web UI. By default, it is set to the same URL as the one where you deploy JAMS. Only set a different URL if the Web UI has a different URL to the one where JAMS is deployed.
@@ -205,4 +205,4 @@ You will be redirected to the JAMS interface.
 
 [jamsdashboard]: https://static.savoirfairelinux.com/img/jams/jams-dashboard.png "Jams dashboard"
 
-If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization shoud be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User"
+If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization should be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User".

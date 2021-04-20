@@ -102,7 +102,7 @@ height:400px;
 <h2 id="jams-nginx">JAMS &amp; Nginx</h2>
 <p>It is generally not recommended to expose JAMS directly to the outside world and while it is required to run JAMS in SSL mode, we usually
 recommend users to place it behind Nginx or a similar web server which proxies requests between the outside world and Jams.</p>
-<p>The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxying solution):</p>
+<p>The following is an example map of how you could configure JAMS behind Nginx (the process would be similar if you wanted to use any other type of proxy solution):</p>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/map.png" title="Create an admin account"/></p>
 <p>The IP 10.10.0.1 is random, and should be seen as an example.</p>
 <p>Typically you would add a new site called <code>jams-site.conf</code> to your nginx configurations which would contain the following entries if you wanted to place an SSL certificate at the Nginx level:    <pre>
@@ -120,7 +120,7 @@ recommend users to place it behind Nginx or a similar web server which proxies r
                 proxy_set_header        Host $http_host;
         }
 }</b></pre></p>
-<p>This is the preferred setup method by most admins, as local traffic is usually ran unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.</p>
+<p>This is the preferred setup method by most admins, as local traffic is usually run unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.</p>
 <h2 id="troubleshooting-and-resetting">Troubleshooting and resetting</h2>
 <p>If you ever need to restart from 0 (i.e. reset everything and drop existing data) you can do so by deleting the following files in the distribution folder (<your folder="" project="" root="">/jams):    <pre>
 <b>The internal jams folder: <your folder="" project="" root="">/jams/jams
@@ -132,10 +132,10 @@ config.json
 <p>This will reset the server to its original state and you will be able to run the configuration wizard again. Before performing this operation, please make sure to shutdown the server.</p>
 <h2 id="running-jams-as-windows-service">Running JAMS as Windows Service</h2>
 <h3 id="download-and-install-jams">Download and install JAMS</h3>
-<p>Visit <a href="https://jami.biz/">https://jami.biz/</a> and downalod JAMS.</p>
+<p>Visit <a href="https://jami.biz/">https://jami.biz/</a> and download JAMS.</p>
 <p>Extract JAMS to c:\jams</p>
 <h3 id="download-and-install-jdk-11">Download and install JDK 11</h3>
-<p>Download JDK 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (choose the conresponding architecture of your VM)</p>
+<p>Download JDK 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (choose the corresponding architecture of your VM)</p>
 <p>Install it using the install wizard.</p>
 <h3 id="download-openssl-to-generate-a-key-and-a-certificate">Download openssl to generate a key and a certificate</h3>
 <p>Download OpenSSL from https://kb.firedaemon.com/support/solutions/articles/4000121705 (or choose another source https://wiki.openssl.org/index.php/Binaries)</p>
@@ -217,7 +217,7 @@ basicConstraints            = CA:FALSE
 subjectKeyIdentifier            = hash
 </b>
 </pre>
-<h3 id="add-openssl-to-sytem-environment-variables">Add OpenSSL to Sytem Environment variables</h3>
+<h3 id="add-openssl-to-system-environment-variables">Add OpenSSL to System Environment variables</h3>
 <p>Go to Edit the system environment variables -&gt; Environment Variables, then in System variables edit Path and add c:\openssl\</p>
 <h3 id="configure-openssl">Configure OpenSSL</h3>
 <p>Execute the following command to set the path to OpenSSL configuration.</p>
@@ -249,7 +249,7 @@ c:\jams&gt;dir
 <p>Now execute the following command tot start JAMS</p>
 <p>java -jar jams-launcher.jar PORT_NUMBER (eg. 8443 or 443) server.pem server.key</p>
 <p>Open a navigator on the server and visite https://localhost:443 or https://localhost:8443 to validate that it's working.</p>
-<p>Click CTRL + C to close the application</p>
+<p>Type CTRL + C to close the application</p>
 <h3 id="expose-your-localhost-to-the-internet">Expose your localhost to the internet</h3>
 <p>Click on Windows ans search for Windows Defender Firewall with Advanced Security.</p>
 <p>Right click on Inbound Rules and click on New Rule...</p>
@@ -262,7 +262,7 @@ c:\jams&gt;dir
 <p>Click next and select Allow the connection and click next.</p>
 <p>Leave all of Domain Private and Public select and click next.</p>
 <p>Name you Rule JAMS Outbound and click Finish.</p>
-<p>You are all set. You can now visit you application trought the server domain name or ip address on port 443 or 8443.</p>
+<p>You are all set. You can now visit your application through the server domain name or IP address on port 443 or 8443.</p>
 <h3 id="create-a-jams-windows-service-embed-tomcat-server-windows-service-to-start-jams-with-the-server">Create a JAMS Windows Service (Embed Tomcat Server Windows Service) to start JAMS with the server</h3>
 <p>In order to create a JAMS Windows Service you can use the tool NSSM provided on http://nssm.cc/download <a href="https://github.com/kirillkovalenko/nssm">https://github.com/kirillkovalenko/nssm</a></p>
 <p>Once downloaded open a command prompt and change directory to nssm-2.24\win64 then execute:</p>
@@ -270,13 +270,13 @@ c:\jams&gt;dir
 nssm.exe install JAMS
 </pre>
 <p>A GUI interface will open.</p>
-<p>In the Path field specify the path to the Java executable example:
-<pre>"C:\Program Files\Common Files\Oracle\Java\javapath\java.exe".</pre></p>
+<p>In the Path field specify the path to the Java executable example:</p>
+<pre>"C:\Program Files\Common Files\Oracle\Java\javapath\java.exe".</pre>
 <p>In the Startup directory put the <pre>"C:\jams" installation folder path.</pre></p>
-<p>In the last field Arguments add the following arguments:
+<p>In the last field Arguments add the following arguments:</p>
 <pre>
 -classpath "c:\jams" -jar jams-launcher.jar PORT_NUMBER server.pem server.key
-</pre></p>
+</pre>
 <p>where PORT_NUMBER is the port number you want to use to serve the application example 443 or 8443</p>
 <p>Now your JAMS application will start with the server.</p>
 <p>Source: <a href="https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4">https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-exe-1b7b179053e4</a></p>
@@ -290,10 +290,10 @@ WorkingDirectory=[DIRECTORY WHERE JAMS WAS UNZIPPED]
 ExecStart=/usr/bin/java -jar [DIRECTORY WHERE JAMS WAS UNZIPPED]/jams-launcher.jar PORT SSL_CERTIFICATE SSL_CERTIFICATE_KEY</p>
 <p>[Install]
 WantedBy=multi-user.target
-</p></div></div></div></body></html>
-The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)
 
-
+The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (however, PORT can be used alone whereas the SSL_CERTIFICATE comes in pair with SSL_CERTIFICATE_KEY)</p></div>
+</div>
+</div>
 <footer class="col-md-12">
 <hr/>
 <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
@@ -367,5 +367,5 @@ The parameters PORT, SSL_CERTIFICATE and SSL_CERTIFICATE_KEY are optional (howev
 </div>
 </div>
 </div>
-
-
+</body>
+</html>

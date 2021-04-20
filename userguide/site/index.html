@@ -87,7 +87,7 @@
 <ul class="nav flex-column">
 </ul>
 </li>
-<li class="nav-item" data-level="2"><a class="nav-link" href="#step-1-create-your-admininistrator-account">Step 1: create your admininistrator account</a>
+<li class="nav-item" data-level="2"><a class="nav-link" href="#step-1-create-your-administrator-account">Step 1: create your administrator account</a>
 <ul class="nav flex-column">
 </ul>
 </li>
@@ -148,13 +148,13 @@ The source code is available at <a href="https://git.jami.net/savoirfairelinux/j
 </ol>
 <p>You must have a domain name in order to request a key and a certificate.</p>
 <p>Once you have purchased you domain name and pointed it to you server you can proceed to the next step.</p>
-<p>You can purchase a pair of key certificate from any online provider such as Godaddy, OVH, Hostgator, etc. We recommand getting a free pair using Let's encrypt.</p>
+<p>You can purchase a pair of key certificate from any online provider such as GoDaddy, OVH, HostGator , etc. We recommend getting a free pair using Let's encrypt.</p>
 <p>In order to generate a pair of key certificate you can use Certbot using instructions in the following page https://certbot.eff.org/.</p>
 <p>You can choose the web server software and operating system to get specific instructions.</p>
 <p>Here is an example for an Nginx web server on Ubuntu 20.04: https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx</p>
 <p>Install Certbot using snap: sudo snap install --classic certbot</p>
 <p>Ensure that the cerbot command can be run: sudo ln -s /snap/bin/certbot /usr/bin/certbot</p>
-<p>In order to get a certificate execute: sudo certbot certonly and follow instrcuctions.</p>
+<p>In order to get a certificate execute: sudo certbot certonly and follow instructions.</p>
 <p>The Certificate and Key are generated in a specific folder, please see the output from Certbot to locate them.</p>
 <p>We need to copy them in the current folder where our jams-launcher.jar file is located.</p>
 <p><strong>Current limitation:</strong> JAMS does not support reading encrypted private keys which require a password unlock.</p>
@@ -188,15 +188,15 @@ The source code is available at <a href="https://git.jami.net/savoirfairelinux/j
 An example of the command would be: </p>
 <p><code>java -jar jams-launcher 443 server.pem server.key</code></p>
 <p>Please note that any port above 1024 can be safely used to run JAMS.</p>
-<h2 id="step-1-create-your-admininistrator-account">Step 1: create your admininistrator account</h2>
+<h2 id="step-1-create-your-administrator-account">Step 1: create your administrator account</h2>
 <p>This account will have administrative control and the rights to manage your users and group of Jami users.</p>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step1.png" title="Create an admin account"/></p>
 <h2 id="step-2-setup-the-certification-authority">Step 2: setup the Certification Authority</h2>
 <p>The second step is to define your Certification Authority. </p>
-<p><strong>Important:</strong> a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by godaddy, letsencrypt, etc... ) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.</p>
+<p><strong>Important:</strong> a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by GoDaddy, Let’s Encrypt, etc…) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.</p>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step2-1.png" title="Certification Authority Create"/></p>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step2-2.png" title="Certification Authority Import"/></p>
-<p>This certificate will be used to sign the enrollement requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
+<p>This certificate will be used to sign the enrollment requests which come from Jami devices. If you are not familiar with the X509 standard, we highly recommend you read the following
 articles to get familiar with the processes and practices which surround it:</p>
 <p><a href="https://www.securew2.com/blog/public-key-infrastructure-explained/">https://www.securew2.com/blog/public-key-infrastructure-explained/</a>
 <a href="https://cheapsslsecurity.com/blog/understanding-the-role-of-certificate-authorities-in-pki/">https://cheapsslsecurity.com/blog/understanding-the-role-of-certificate-authorities-in-pki/</a> </p>
@@ -209,7 +209,7 @@ articles to get familiar with the processes and practices which surround it:</p>
 </ul>
 <p><br/></p>
 <h3 id="option-1-ldap-authentication">Option 1: LDAP authentication</h3>
-<p>If your company provides you with LDAP directory for user management, you will need to know its access information and a automated account which has read-only rights to do use look-ups.</p>
+<p>If your company provides you with LDAP directory for user management, you will need to know its access information and an automated account which has read-only rights to do use look-ups.</p>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/ldap.png" title="LDAP"/></p>
 <p>Your admin should provide you most of this information but we do provide a detailed overview over each field in case you need some extra help:</p>
 <table>
@@ -290,7 +290,7 @@ articles to get familiar with the processes and practices which surround it:</p>
 <p>The local database does not require any additional configuration, everything in the process is automated. This option allows you to create Jami users on the fly directly from the JAMS interface.</p>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/local.png" title="Local"/></p>
 <p><strong>Advanced settings:</strong> by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.</p>
-<p>If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option,</p>
+<p>If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option.</p>
 <h2 id="step-4-setup-the-server-parameters">Step 4: setup the server parameters</h2>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/step4.png" title="Setup server parameters"/></p>
 <table>
@@ -311,11 +311,11 @@ articles to get familiar with the processes and practices which surround it:</p>
 </tr>
 <tr>
 <td><strong>Device Lifetime</strong></td>
-<td>How long a device's certificate is valid before being considered stale and requiring re-enrollement</td>
+<td>How long a device's certificate is valid before being considered stale and requiring re-enrollment</td>
 </tr>
 <tr>
 <td><strong>User Account Lifetime</strong></td>
-<td>How long a user account is valid before being considered stale and requiring re-enrollement</td>
+<td>How long a user account is valid before being considered stale and requiring re-enrollment</td>
 </tr>
 </tbody>
 </table>
@@ -324,7 +324,7 @@ articles to get familiar with the processes and practices which surround it:</p>
 <p>Click on "Set Server Parameters" to finalize the configuration.
 You will be redirected to the JAMS interface.</p>
 <p><img alt="alt text" src="https://static.savoirfairelinux.com/img/jams/jams-dashboard.png" title="Jams dashboard"/></p>
-<p>If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization shoud be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User"</p></div>
+<p>If you have configured JAMS with your LDAP or Active Directory, the list of users should of your organization should be visible in JAMS. If you have selected the local embedded database, you can now start creating new users by clicking on "Create User".</p></div>
 </div>
 </div>
 <footer class="col-md-12">
@@ -404,5 +404,5 @@ You will be redirected to the JAMS interface.</p>
 </html>
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2021-02-18 22:13:12.355629+00:00
+Build Date UTC : 2021-04-20 13:35:56.860377+00:00
 -->
