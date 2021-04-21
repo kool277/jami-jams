@@ -28,11 +28,16 @@ import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.dao.StatementElement;
+import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
 import java.util.Date;
 
-import static net.jami.jams.server.Server.userAuthenticationModule;
+import static net.jami.jams.server.Server.*;
+import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 
 @Slf4j
@@ -77,6 +82,14 @@ public class FilterUtils {
                             .replace("Bearer", ""));
                         break;
                     default:
+                        return false;
+                }
+                StatementList statementList = new StatementList();
+                StatementElement statementElement = new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
+                statementList.addStatement(statementElement);
+                User user =  dataStore.getUserDao().getObjects(statementList).get(0);
+                if(certificateAuthority.getLatestCRL().get() != null) {
+                    if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
                         return false;
                 }
                 JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
