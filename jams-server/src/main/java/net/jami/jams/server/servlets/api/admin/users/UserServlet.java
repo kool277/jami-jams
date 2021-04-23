@@ -39,9 +39,13 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 import org.apache.commons.codec.binary.Base64;
 import org.json.JSONObject;
+import java.util.List;
+import net.jami.jams.common.objects.devices.Device;
+import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
         
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
         
 import static net.jami.jams.server.Server.certificateAuthority;
@@ -153,8 +157,20 @@ public class UserServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        DeviceRevocationResponse devResponse = RevokeUserFlow.revokeUser(req.getParameter("username"));
-        if(devResponse != null && devResponse.isSuccess()) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        AtomicReference<DeviceRevocationResponse> devResponse = new AtomicReference<>(RevokeUserFlow.revokeUser(req.getParameter("username")));
+        StatementList statementList = new StatementList();
+        StatementElement st1 = new StatementElement("owner","=",req.getParameter("username"),"");
+        statementList.addStatement(st1);
+        List<Device> devices = dataStore.getDeviceDao().getObjects(statementList);
+        if(certificateAuthority.getLatestCRL() != null) {
+            devices.forEach(device -> {
+                if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) == null)
+                    devResponse.set(RevokeDeviceFlow.revokeDevice(req.getParameter("username").toString(), device.getDeviceId()));
+            });
+        }
+        if(devResponse.get() != null && devResponse.get().isSuccess()){
+            resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        }
         else resp.sendError(500,"An exception has occurred while trying to revoke a user!");
     }
 }
