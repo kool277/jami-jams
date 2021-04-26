@@ -245,5 +245,6 @@
     "auto_answer_calls_info": "Nëse aktivizohet kjo mundësi, thirrjeve ardhëse do t’u përgjigjet automatikisht. Kjo mundësi mund të jetë e dobishme, nëse doni, për shembull, të mbikëqyrni shtëpinë tuaj ose një dhomë të veçantë, kur jeni larg shtëpisë.",
     "local_lan_info": "Nëse kjo mundësi aktivizohet, do të jeni në gjendje të komunikoni me kontaktet e lidhur në rrjetin tuaj vendor, edhe nëse LAN-i juaj është i shkëputur nga interneti.",
     "rendezvous_info": "Nëse aktivizohet kjo mundësi, thirrjet ardhëse do të shtohen automatikisht te një dhomë konferencash.",
-    "rendezvous_moderators_info": "Moderatorët janë persona të lejuar të administrojnë pika takimesh dhe konferenca, edhe pse këto nuk janë të strehuara në pajisjet e tyre."
+    "rendezvous_moderators_info": "Moderatorët janë persona të lejuar të administrojnë pika takimesh dhe konferenca, edhe pse këto nuk janë të strehuara në pajisjet e tyre.",
+    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
 }

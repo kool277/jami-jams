@@ -245,5 +245,6 @@
     "auto_answer_calls_info": "Si habilita esta opción, las llamadas entrantes serán respondidas automáticamente. Útil si, por ejemplo, quiere monitorear su casa o una habitación en particular cuando no se encuentra en casa.",
     "local_lan_info": "Si habilita esta opción, podrá comunicarse con los contactos que estén en su red LAN, incluso si no está conectada a internet.",
     "rendezvous_info": "Si habilita esta opción, las llamadas entrantes serán automáticamente añadidas a una sala de conferencias.",
-    "rendezvous_moderators_info": "Los moderadores son personas autorizadas a administrar puntos de encuentro y conferencias incluso si no fueron creadas desde sus dispositivos."
+    "rendezvous_moderators_info": "Los moderadores son personas autorizadas a administrar puntos de encuentro y conferencias incluso si no fueron creadas desde sus dispositivos.",
+    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
 }

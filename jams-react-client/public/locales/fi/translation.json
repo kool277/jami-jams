@@ -245,5 +245,6 @@
     "auto_answer_calls_info": "Jos tämä asetus on käytössä, puheluihin vastataan automaattisesti. Tämä voi olla hyödyllinen, jos haluat esimerkiksi seurata vaikka tiettyä huonetta, kun olet poissa kotoa.",
     "local_lan_info": "Jos tämä asetus on käytössä, voit keskustella pallisessa lähiverkossa sinun yhteystiedoissa olevien kanssa, vaikka lähiverkkosi olisi katkaistu Internetistä.",
     "rendezvous_info": "Jos tämä asetus on käytössä, saapuvat puhelut lisätään automaattisesti neuvotteluhuoneeseen.",
-    "rendezvous_moderators_info": "Valvojat ovat ihmisiä, jotka saavat hallinnoida kohtaamispaikkoja ja kokouksia, vaikka niitä ei isännöidä heidän laitteillaan."
+    "rendezvous_moderators_info": "Valvojat ovat ihmisiä, jotka saavat hallinnoida kohtaamispaikkoja ja kokouksia, vaikka niitä ei isännöidä heidän laitteillaan.",
+    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
 }

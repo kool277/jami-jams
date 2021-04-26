@@ -245,5 +245,6 @@
     "auto_answer_calls_info": "If this option is enabled, incomming calls will be automaticly answered. This option can be usefull if you want for example to monitor your house or a particular room when you are away from home.",
     "local_lan_info": "If this option is enabled, you will be able to communicate with connected contacts on you local lan, even if your lan is disconnected from internet.",
     "rendezvous_info": "If this option is enabled, incomming calls will automaticly be added to a conference room.",
-    "rendezvous_moderators_info": "Moderators are people allowed to manage rendezvous points and conferences even if they are not hosted on their devices."
+    "rendezvous_moderators_info": "Moderators are people allowed to manage rendezvous points and conferences even if they are not hosted on their devices.",
+    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
 }

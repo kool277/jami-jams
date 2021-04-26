@@ -245,5 +245,6 @@
     "auto_answer_calls_info": "Se esta opção for ativada, as chamadas recebidas serão atendidas automaticamente. Esta opção pode ser útil se você quiser, por exemplo, monitorar sua casa ou um cômodo específico quando estiver longe de casa.",
     "local_lan_info": "Se esta opção estiver habilitada, você poderá se comunicar com os contatos conectados em sua LAN local, mesmo se sua LAN estiver desconectada da Internet.",
     "rendezvous_info": "Se esta opção for ativada, as chamadas recebidas serão adicionadas automaticamente a uma sala de conferência.",
-    "rendezvous_moderators_info": "Moderadores são pessoas com permissão para gerenciar pontos de encontro e conferências, mesmo que não estejam hospedados em seus dispositivos."
+    "rendezvous_moderators_info": "Moderadores são pessoas com permissão para gerenciar pontos de encontro e conferências, mesmo que não estejam hospedados em seus dispositivos.",
+    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
 }
