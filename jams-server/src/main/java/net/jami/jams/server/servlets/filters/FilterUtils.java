@@ -88,8 +88,8 @@ public class FilterUtils {
                 StatementElement statementElement = new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
                 statementList.addStatement(statementElement);
                 User user =  dataStore.getUserDao().getObjects(statementList).get(0);
-                if(certificateAuthority.getLatestCRL().get() != null) {
-                    if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
+                if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get() != null) {
+                    if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
                         return false;
                 }
                 JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
