@@ -27,7 +27,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       {new Date().getFullYear() + " "}
-      <Link color="info" href="https://savoirfairelinux.com">
+      <Link href="https://savoirfairelinux.com">
         Savoir-faire Linux Inc.
       </Link>{" "}
       {"."}
@@ -77,7 +77,9 @@ export default function SignIn(props) {
       if(auth.hasAdminScope())
         history.push("/users");
       else {
-        history.push(`/user/${auth.getUsername()}`);
+        if(auth.getUsername() !== null) {
+          history.push(`/user/${auth.getUsername()}`);
+        }  
       }
     }
   });
@@ -95,7 +97,9 @@ export default function SignIn(props) {
               if(auth.hasAdminScope())
                 history.push("/users");
               else {
-                history.push(`/user/${auth.getUsername()}`);
+                if(auth.getUsername() !== null) {
+                  history.push(`/user/${auth.getUsername()}`);
+                }       
               }
             } else {
               history.push("/");
