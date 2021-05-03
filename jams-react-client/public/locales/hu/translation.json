@@ -246,5 +246,5 @@
     "local_lan_info": "Ha ez a választási lehetőség engedélyezve van, akkor képes lesz kommunikálni a helyi hálózaton lévő csatlakoztatott kapcsolatokkal még akkor is, ha a hálózata le van választva az internetről.",
     "rendezvous_info": "Ha ez a választási lehetőség engedélyezve van, akkor a beérkező hívások automatikusan hozzáadódnak egy konferenciateremhez. ",
     "rendezvous_moderators_info": "A moderátorok olyan emberek, akiknek megengedett, hogy kezelhetik a találkozási pontokat és konferenciákat még akkor is, ha nem az eszközeiken működtetik őket.",
-    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
+    "allow_jami_user_to_search_for_other_contacts": "Engedje meg, hogy a Jami felhasználó más névjegyeket keressen"
 }

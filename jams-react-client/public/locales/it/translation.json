@@ -246,5 +246,5 @@
     "local_lan_info": "Se questa opzione è abilitata, sarai in grado di comunicare con i contatti connessi sulla tua lan locale, anche se la tua lan è scollegata da Internet.",
     "rendezvous_info": "Se questa opzione è abilitata, le chiamate in arrivo verranno automaticamente aggiunte a una sala conferenze.",
     "rendezvous_moderators_info": "I moderatori sono le persone autorizzate a gestire i punti di incontro e le conferenze anche se non sono ospitati sui loro dispositivi.",
-    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
+    "allow_jami_user_to_search_for_other_contacts": "Consenti all'utente Jami di cercare altri contatti"
 }

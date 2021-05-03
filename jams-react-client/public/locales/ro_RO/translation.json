@@ -246,5 +246,5 @@
     "local_lan_info": "Dacă această opțiune e activată, vei putea comunica cu persoanele conectate la rețeaua ta locală, chiar dacă rețeaua ta e deconectată de la internet.",
     "rendezvous_info": "Dacă această opțiune e activată, apelurile primite vor fi adăugate automat la o sală de conferințe.",
     "rendezvous_moderators_info": "Moderatorii sînt persoane cărora li se permite să gestioneze locurile de întîlnire și conferințele chiar dacă nu sînt găzduite pe aparatele lor.",
-    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
+    "allow_jami_user_to_search_for_other_contacts": "Permite utilizatorului Jami să caute alte contacte"
 }
