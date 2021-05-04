@@ -93,7 +93,7 @@ export default function SignIn(props) {
       if (auth.authenticated && auth.access_token !== "") {
         auth.checkLastKnownStep(() => {
           auth.checkDirectoryType(() => {
-            if (auth.isInstalled) {
+            if (auth.isServerInstalled()) {
               if(auth.hasAdminScope())
                 history.push("/users");
               else {

@@ -63,6 +63,9 @@ class Auth {
             }
             cb()
         }).catch((error) => {
+            this.setJWT("");
+            this.setUsername("");
+            this.authenticated = false;
             cb(error)
         });
     }
@@ -116,7 +119,7 @@ class Auth {
         });
     }
 
-    isServerInstalled(cb) {
+    checkServerInstalled(cb) {
         axios(configApiCall(api_path_get_server_status, "GET", null, null)).then((response) => {                       
             if (response.data['installed'] === 'true') {
                 this.installed = true
@@ -193,6 +196,10 @@ class Auth {
 
     isActivated() {
         return this.activated;
+    }
+
+    isServerInstalled() {
+        return this.installed;
     }
 
     isUpdateAvailable() {

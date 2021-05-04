@@ -40,7 +40,7 @@ import "assets/css/material-dashboard-react.css?v=1.9.0";
 import "./i18n";
 
 const hist = createBrowserHistory();
-auth.isServerInstalled(() => {
+auth.checkServerInstalled(() => {
   auth.checkAdminAccountStatus(() => {
     auth.checkLastKnownStep(() => {
       ReactDOM.render(

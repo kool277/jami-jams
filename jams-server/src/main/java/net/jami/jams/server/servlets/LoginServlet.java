@@ -42,6 +42,9 @@ import net.jami.jams.common.objects.user.User;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processX509Auth;
@@ -83,10 +86,12 @@ public class LoginServlet extends HttpServlet {
                 StatementList statementList = new StatementList();
                 StatementElement statementElement = new StatementElement("username", "=", object.getUsername(), "");
                 statementList.addStatement(statementElement);
-                User user =  dataStore.getUserDao().getObjects(statementList).get(0);
-                if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get() != null) {
-                    if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
-                        TomcatCustomErrorHandler.sendCustomError(resp, 401, "Invalid credentials provided!");
+                List<User> users = dataStore.getUserDao().getObjects(statementList);
+                if( users.size() !=0 &&
+                        certificateAuthority.getLatestCRL().get() != null &&
+                        !users.get(0).getAccessLevelName().equals("ADMIN") &&
+                        certificateAuthority.getLatestCRL().get().getRevokedCertificate(users.get(0).getCertificate().getSerialNumber()) != null) {
+                    TomcatCustomErrorHandler.sendCustomError(resp, 401, "Invalid credentials provided!");
                 }
             }
         }
