@@ -210,7 +210,7 @@ export default function EditBlueprintPermissions(props) {
         setProxyEnabled(policyData["proxyEnabled"]);
         setProxyServer(policyData["proxyServer"]);
         setDhtProxyListUrl();
-        setAllowLookup(policyData["autoAnswer"]);
+        setAllowLookup(policyData["allowLookup"]);
 
         policyData["defaultModerators"].split("/").forEach((id) => {
           if(id !== "undefined" && id !== ""){

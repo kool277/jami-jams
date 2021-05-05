@@ -72,6 +72,9 @@ const styles = {
   loading: {
     width: "100%",
   },
+  actionButtons: {
+    height: "3em",
+  }
 };
 
 const useStyles = makeStyles(styles);
@@ -88,6 +91,7 @@ export default function Users(props) {
   const [removedContact, setRemovedContact] = React.useState();
   const [removedContactName, setRemovedContactName] = React.useState();
   const [open, setOpen] = React.useState(false);
+  const [allowedToAdd, setAllowedToAdd] = React.useState(true);
 
   const searchContacts = (value) => {
     axios(
@@ -118,6 +122,8 @@ export default function Users(props) {
         if (error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");
+        }else if(error.response.status === 403){
+          setAllowedToAdd(false);
         }
       });
   }
@@ -366,7 +372,8 @@ export default function Users(props) {
       </Dialog>
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
-          {auth.hasAdminScope() && <Button
+          <div className={classes.actionButtons}>
+          {allowedToAdd && <Button
             variant="contained"
             color="primary"
             href="#contained-buttons"
@@ -376,6 +383,7 @@ export default function Users(props) {
           >
             <AddCircleOutlineIcon /> {i18next.t("add_a_contact", "Add contact")}
           </Button>}
+          </div>
           <div className={classes.searchWrapper}>
             <CustomInput
               formControlProps={{
