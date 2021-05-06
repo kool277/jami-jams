@@ -58,6 +58,7 @@ public class NameServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         NameLookupResponse nameLookupResponse = nameServer.getAddressFromName(req.getPathInfo().replace("/",""));
+        resp.setContentType("application/json;charset=UTF-8");
         if(nameLookupResponse == null) TomcatCustomErrorHandler.sendCustomError(resp,404,"name not found");
         else resp.getOutputStream().write(JsonStream.serialize(nameLookupResponse).getBytes());
     }

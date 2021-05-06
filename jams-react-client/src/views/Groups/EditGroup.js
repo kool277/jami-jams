@@ -158,10 +158,9 @@ export default function EditGroup(props) {
                 });
             })
             .catch((error) => {
-              console.log(error);
               if (error.response.status === 401) {
                 auth.authenticated = false;
-                history.push("/");
+                history.push("/signin");
               }
               if (error.response.status === 500) {
                 setBlueprints([]);
@@ -185,8 +184,10 @@ export default function EditGroup(props) {
                 if (error.response.status === 404) {
                     setGroupMembers([]);
                 }
-                else
-                    console.log(error);
+                if (error.response.status === 401) {
+                    auth.authenticated = false;
+                    history.push("/signin");
+                }
             })
 
 
@@ -255,11 +256,10 @@ export default function EditGroup(props) {
             setUsers(profiles);
           })
           .catch((error) => {
-            console.log(error);
             setUsers([]);
             if (error.response.status === 401) {
               auth.authenticated = false;
-              history.push("/");
+              history.push("/signin");
             }
           });
       };
@@ -336,7 +336,6 @@ export default function EditGroup(props) {
             });
           })
           .catch((error) => {
-            console.log(error);
             setGroupNameExits(false);
           });
       };

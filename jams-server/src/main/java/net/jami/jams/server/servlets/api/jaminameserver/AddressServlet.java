@@ -63,6 +63,7 @@ public class AddressServlet extends HttpServlet {
         JSONObject obj = new JSONObject();
         obj.put("name", username);
 
+        resp.setContentType("application/json;charset=UTF-8");
         if (username == null) TomcatCustomErrorHandler.sendCustomError(resp,404,"Address not found!");
         else resp.getWriter().write(obj.toString());
     }

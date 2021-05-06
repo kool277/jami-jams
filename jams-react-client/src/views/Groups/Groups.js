@@ -165,10 +165,9 @@ export default function Groups() {
       setSelectedBlueprint(getBlueprintsOptions()[0]);
     })
     .catch((error) => {
-      console.log(error);
       if (error.response.status === 401) {
         auth.authenticated = false;
-        history.push("/");
+        history.push("/signin");
       }
       if (error.response.status === 500) {
         setBlueprints([]);
@@ -212,10 +211,9 @@ export default function Groups() {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         if (error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/");
+          history.push("/signin");
         }
         if (error.response.status === 404){
           getBlueprints();
@@ -249,7 +247,6 @@ export default function Groups() {
         });
       })
       .catch((error) => {
-        console.log(error);
         setDisableCreate(false);
         setGroupNameExits(false);
       });

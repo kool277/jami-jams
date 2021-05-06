@@ -119,7 +119,7 @@ export default function Users(props) {
         setLoading(false);
         if (error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/");
+          history.push("/signin");
         }
       });
     return () => {
@@ -155,7 +155,7 @@ export default function Users(props) {
         setLoading(false);
         if (error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/");
+          history.push("/signin");
         }
       });
   };

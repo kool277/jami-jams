@@ -117,11 +117,10 @@ export default function Users(props) {
         setUsers(profiles);
       })
       .catch((error) => {
-        console.log(error);
         setUsers([]);
         if (error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/");
+          history.push("/signin");
         }else if(error.response.status === 403){
           setAllowedToAdd(false);
         }
@@ -174,7 +173,6 @@ export default function Users(props) {
           setLoading(false);
         })
         .catch((error) => {
-          console.log(error);
           if (error.response.status === 401) {
             auth.authenticated = false;
             history.push("/");
@@ -217,10 +215,9 @@ export default function Users(props) {
           setLoading(false);
         })
         .catch((error) => {
-          console.log(error);
           if (error.response.status === 401) {
             auth.authenticated = false;
-            history.push("/");
+            history.push("/signin");
           }
         });
     }

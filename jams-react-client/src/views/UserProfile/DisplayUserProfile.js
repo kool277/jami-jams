@@ -243,7 +243,6 @@ export default function DisplayUserProfile(props) {
             history.push("/");
           }else {
             setGroups([]);
-            console.log(error.response);
           }
         } else {
           setGroups([]);
@@ -344,10 +343,9 @@ export default function DisplayUserProfile(props) {
                   });
                   setGroupMemberships(userGroupsData);
                 }).catch((error) => {
-                  console.log(error);
                   if (error.response.status === 401) {
                     auth.authenticated = false;
-                    history.push("/");
+                    history.push("/signin");
                   }
                   if (error.response.status === 404) {
                     setGroupMemberships([]);
@@ -357,11 +355,17 @@ export default function DisplayUserProfile(props) {
                 setLoading(false);
               })
               .catch((error) => {
-                console.log(error);
+                if (error.response.status === 401) {
+                  auth.authenticated = false;
+                  history.push("/signin");
+                }
               });
           })
           .catch((error) => {
-            console.log(error);
+            if (error.response.status === 401) {
+              auth.authenticated = false;
+              history.push("/signin");
+            }
           });
       } else {
         axios(
@@ -400,10 +404,9 @@ export default function DisplayUserProfile(props) {
                   });
                   setGroupMemberships(userGroupsData);
                 }).catch((error) => {
-                  console.log(error);
                   if (error.response.status === 401) {
                     auth.authenticated = false;
-                    history.push("/");
+                    history.push("/signin");
                   }
                   if (error.response.status === 404) {
                     setGroupMemberships([]);
@@ -412,11 +415,17 @@ export default function DisplayUserProfile(props) {
                 setLoading(false);
               })
               .catch((error) => {
-                console.log(error);
+                if (error.response.status === 401) {
+                  auth.authenticated = false;
+                  history.push("/signin");
+                }
               });
           })
           .catch((error) => {
-            console.log(error);
+            if (error.response.status === 401) {
+              auth.authenticated = false;
+              history.push("/signin");
+            }
           });
       }
     });

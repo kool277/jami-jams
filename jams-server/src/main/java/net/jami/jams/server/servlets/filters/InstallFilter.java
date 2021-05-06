@@ -46,6 +46,7 @@ public class InstallFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+        response.setContentType("application/json;charset=UTF-8");
         if(Server.isInstalled.get()){
             TomcatCustomErrorHandler.sendCustomError(response,404,"The server is already installed");
         }

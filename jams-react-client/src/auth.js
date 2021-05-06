@@ -130,14 +130,15 @@ class Auth {
             }
             cb()
         }).catch((error) => {
-            console.log("Error during API request on checkServerIsInstalled: " + error);
+            if (error.response.status === 401) {
+                this.authenticated = false;
+            }
         });
     }
 
     checkLastKnownStep(cb) {
         if(this.installed){
             this.authenticated = true
-            console.log("Auth: Server is already installed")
             cb()
         }else{
             axios(configApiCall(api_path_get_install_lastKnownStep, 'GET', null, null)).then((response) => {
@@ -147,10 +148,6 @@ class Auth {
             }).catch((error) => {
                 if(error.response.status === 401){
                     this.authenticated = false;
-                    console.log("Error during API request on checkLastKnowStep not authenticated!");
-                }
-                else{
-                    console.log("Error during API request on checkLastKnowStep: " + error);
                 }
                 cb()
             })
@@ -169,7 +166,6 @@ class Auth {
                 this.authenticated = true
                 cb()
             }).catch((error) => {
-                console.log("Error during API request on checkLastKnownStep: " + error);
                 cb()
             })
         }
@@ -188,7 +184,6 @@ class Auth {
                 this.authenticated = true
                 cb()
             }).catch((error) => {
-                console.log("Error during API request on checkLastKnownStep: " + error);
                 cb()
             })
         }

@@ -127,7 +127,6 @@ export default function Blueprints() {
       })
       .catch((error) => {
         setBlueprints([]);
-        console.log(error);
         if (error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");
@@ -159,7 +158,6 @@ export default function Blueprints() {
         setBlueprintNameExits(true);
       })
       .catch((error) => {
-        console.log(error);
         setDisableCreate(false);
         setBlueprintNameExits(false);
       });

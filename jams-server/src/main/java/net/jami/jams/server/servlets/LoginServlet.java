@@ -95,6 +95,7 @@ public class LoginServlet extends HttpServlet {
                 }
             }
         }
+        resp.setContentType("application/json;charset=UTF-8");
         if (res == null)
             TomcatCustomErrorHandler.sendCustomError(resp, 401, "Invalid credentials provided!");
         else
