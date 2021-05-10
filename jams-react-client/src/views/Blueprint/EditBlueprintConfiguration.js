@@ -394,7 +394,7 @@ export default function EditBlueprintConfiguration(props) {
               <div className={classes.root}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">UPnP <CustomPopupState message="UPnP allows networked devices to seamlessly discover each other's presence on the network and establish communications." /></FormLabel>
+                    <FormLabel component="legend">UPnP <CustomPopupState message={i18next.t("upnp_custom_popup", "UPnP allows Jami to automatically open network ports to establish peer-to-peer communications.")} /></FormLabel>
                     <FormControlLabel
                       control={
                         <Switch
@@ -417,7 +417,7 @@ export default function EditBlueprintConfiguration(props) {
                   </Grid>
                   <Grid item xs={12} sm={12} md={12}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">TURN <CustomPopupState message="TURN is a protocol that assists your devices in traversing NATs (Network address translators) or firewalls." /></FormLabel>
+                      <FormLabel component="legend">TURN <CustomPopupState message={i18next.t("turn_server_configuration_popup", "Configure a TURN server to establish a connection when peer-to-peer communication is not possible")} /></FormLabel>
                       <RadioGroup
                         value={selectedTurnOption}
                         aria-label="gender"
@@ -556,7 +556,7 @@ export default function EditBlueprintConfiguration(props) {
                   <Grid item xs={12} sm={12} md={4}></Grid>
                   <Grid item xs={12} sm={12} md={12}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">DHT Proxy <CustomPopupState message="Configure custom settings for a given Distributed Hash Table (DHT) proxy server." /></FormLabel>
+                      <FormLabel component="legend">DHT Proxy <CustomPopupState message={i18next.t("dht_configuration_popup", "Configure the DHT proxy server used by this account")} /></FormLabel>
                       <RadioGroup
                         value={selectedDHTProxyOption}
                         aria-label="gender"

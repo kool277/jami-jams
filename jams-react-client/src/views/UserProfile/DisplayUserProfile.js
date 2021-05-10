@@ -670,7 +670,7 @@ export default function DisplayUserProfile(props) {
                       className={classes.whiteButtonText}
                       onClick={() => props.setDisplayUser(false)}
                     >
-                      <EditIcon /> {i18next.t("edit_profile", "Edit Profile")}
+                      <EditIcon /> {i18next.t("edit_profile", "Edit profile")}
                     </Button>
                   )}
                   </Grid>

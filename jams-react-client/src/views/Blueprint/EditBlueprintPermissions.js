@@ -382,7 +382,7 @@ export default function EditBlueprintPermissions(props) {
                         }
                         label={i18next.t("allow_video_calls", "Allow video calls")}
                       />
-                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_allow_video_calls_info", "If this option is disabled, only audio calls will be allowed.")} />
+                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_allow_video_calls_info", "If this option is disabled, only audio calls are allowed.")} />
                     </FormGroup>
                     <FormGroup row>
                       <FormControlLabel
@@ -402,7 +402,7 @@ export default function EditBlueprintPermissions(props) {
                         }
                         label={i18next.t("allow_incoming_calls_from_unknown_contacts", "Allow incoming calls from unknown contacts")}
                       />
-                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_contacts_info", "If this option is disabled, only contacts from your list will be allowed to contact you.")} />
+                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_contacts_info", "If this option is disabled, only contacts from your list can contact you.")} />
                     </FormGroup>
                     <FormGroup row>
                       <FormControlLabel
@@ -422,11 +422,11 @@ export default function EditBlueprintPermissions(props) {
                         }
                         label={i18next.t("auto_answer_calss", "Auto answer calls")}
                       />
-                      <CustomPopupState message={i18next.t("auto_answer_calls_info", "If this option is enabled, incomming calls will be automaticly answered. This option can be usefull if you want for example to monitor your house or a particular room when you are away from home.")} />
+                      <CustomPopupState message={i18next.t("auto_answer_calls_info", "If this option is enabled, incoming calls are automatically answered. This option can be useful to monitor your house or a particular room when you are away from home for example.")} />
                     </FormGroup>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">Local LAN</FormLabel>
+                    <FormLabel component="legend">{i18next.t("local_lan","Local LAN")}</FormLabel>
                     <FormGroup row>
                       <FormControlLabel
                         control={
@@ -443,13 +443,13 @@ export default function EditBlueprintPermissions(props) {
                             name="peerDiscovery"
                           />
                         }
-                        label={i18next.t("allow_use_of_jami_in_local_lan", "Allow Jami usage on the local LAN")}
+                        label={i18next.t("allow_use_of_jami_in_local_lan", "Allow discovery of other peers on a local network")}
                       />
-                      <CustomPopupState message={i18next.t("local_lan_info", "If this option is enabled, you will be able to communicate with connected contacts on you local lan, even if your lan is disconnected from internet.")} />
+                      <CustomPopupState message={i18next.t("local_lan_info", "If this option is enabled, you can communicate with connected contacts on you local lan, even if your lan is disconnected from the Internet.")} />
                     </FormGroup>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">Allow Lookup</FormLabel>
+                    <FormLabel component="legend">{i18next.t("contact_management", "Contact management")}</FormLabel>
                     <FormGroup row>
                       <FormControlLabel
                         control={
@@ -466,9 +466,9 @@ export default function EditBlueprintPermissions(props) {
                             name="allowLookup"
                           />
                         }
-                        label={i18next.t("allow_jami_user_to_search_for_other_contacts", "Allow Jami user to search for other contacts")}
+                        label={i18next.t("allow_jami_user_to_search_for_other_contacts", "Allow user to add new contacts")}
                       />
-                      <CustomPopupState message={i18next.t("local_lan_info", "If this option is enabled, users will be able to search for other contacts and add them.")} />
+                      <CustomPopupState message={i18next.t("lookup_info", "If this option is disabled, user can not search and add new contacts")} />
                     </FormGroup>
                     </Grid>
                     <Grid item xs={12} sm={12} md={12}>
@@ -501,11 +501,11 @@ export default function EditBlueprintPermissions(props) {
                             inputProps={{ "aria-label": "secondary checkbox" }}
                           />
                           }
-                          label={i18next.t("convert_your_account_into_a_rendezvous_point", "Activate this account into rendezvous mode")}
+                          label={i18next.t("convert_your_account_into_a_rendezvous_point", "Set the account as a Rendezvous point")}
                         />
-                        <CustomPopupState message={i18next.t("rendezvous_info", "If this option is enabled, incomming calls will automaticly be added to a conference room.")}/>
+                        <CustomPopupState message={i18next.t("rendezvous_info", "If this option is enabled, incoming calls are automatically added to a conference room.")}/>
                         <Button disabled={!rendezVous} color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_moderator_to", "Add moderator to")} {props.blueprintName}</Button>
-                        <CustomPopupState message={i18next.t("rendezvous_moderators_info", "Moderators are people allowed to manage rendezvous points and conferences even if they are not hosted on their devices.")} />
+                        <CustomPopupState message={i18next.t("rendezvous_moderators_info", "Moderators can manage the Rendezvous point.")} />
                         </FormGroup>
                     <Table className={classes.table}>
                         <TableHead>

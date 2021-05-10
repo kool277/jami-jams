@@ -64,8 +64,8 @@ export default function IdentityManagement(props) {
 
   const validationSchemaLDAPform = Yup.object().shape({
     servername: Yup.string().required(i18next.t("servername_is_required", "Server name is required.")),
-    ldapadminusername: Yup.string().required(i18next.t("username_is_required", "Username is required.")),
-    ldappassword: Yup.string().required(i18next.t("password_is_required", "Password is required.")),
+    ldapadminusername: Yup.string().required(i18next.t("username_is_required", "Username is required!")),
+    ldappassword: Yup.string().required(i18next.t("password_is_required", "Password is required!")),
     basedn: Yup.string().required(i18next.t("domain_name_is_required", "Domain name is required.")),
   });
 
@@ -76,9 +76,9 @@ export default function IdentityManagement(props) {
       .integer(i18next.t("port_must_be_an_integer", "Port must be an integer."))
       .required(i18next.t("port_number_is_required", "Port number is required.")),
     host: Yup.string().required(i18next.t("host_is_required", "Host is required.")),
-    adadminusername: Yup.string().required(i18next.t("username_is_required", "Username is required.")),
+    adadminusername: Yup.string().required(i18next.t("username_is_required", "Username is required!")),
     domainname: Yup.string().required(i18next.t("domain_name_is_required", "Domain name is required.")),
-    adpassword: Yup.string().required(i18next.t("password_is_required", "Password is required.")),
+    adpassword: Yup.string().required(i18next.t("password_is_required", "Password is required!")),
   });
 
   const directoryTypes = [

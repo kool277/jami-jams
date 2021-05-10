@@ -472,7 +472,7 @@ export default function EditCreateUserProfile(props) {
       .required(i18next.t("username_is_required", "Username is required!"))
       .matches(/^[A-Za-z_][A-Za-z0-9_]*$/, i18next.t("only_alphanumeric_characters", "Only alphanumeric characters!")),
     password: props.createUser
-      ? Yup.string().required(i18next.t("only_alphanumeric_characters", "Password is required!"))
+      ? Yup.string().required(i18next.t("password_is_required", "Password is required!"))
       : null,
     confirmPassword: props.createUser
       ? Yup.string().oneOf([Yup.ref("password"), null], i18next.t("password_must_match", "Passwords must match"))
@@ -484,16 +484,16 @@ export default function EditCreateUserProfile(props) {
     organization: Yup.string().min(2, i18next.t("organization_name_too_short", "Organization name is too short!")),
     faxNumber: Yup.string().matches(
       /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-      i18next.t("fax_not_valid", "Fax not valid!")
+      i18next.t("fax_not_valid", "Fax number not valid!")
     ),
     phoneNumber: Yup.string().matches(
       /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-      i18next.t("phone_not_valid", "Phone not valid!")
+      i18next.t("phone_not_valid", "Phone number not valid!")
     ),
     phoneNumberExtension: Yup.number().positive().integer(),
     mobileNumber: Yup.string().matches(
       /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-      i18next.t("mobile_not_valid", "Mobile not valid!")
+      i18next.t("mobile_not_valid", "Mobile number not valid!")
     ),
   });
 
@@ -697,8 +697,8 @@ export default function EditCreateUserProfile(props) {
                             <FormikField
                               type={passwordVisible ? "text" : "password"}
                               name="confirmPassword"
-                              label={i18next.t("confirm_password", "Confirm Password")}
-                              placeholder={i18next.t("confirm_password", "Confirm Password")}
+                              label={i18next.t("confirm_password", "Confirm password")}
+                              placeholder={i18next.t("confirm_password", "Confirm password")}
                               startAdornment={
                                 <InputAdornment position="start">
                                   <VpnKeyIcon />

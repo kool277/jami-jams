@@ -52,7 +52,7 @@ export default function CreateAdmin(props) {
     validationSchema: Yup.object({
       username: Yup.string()
         .max(60, i18next.t("must_be_60_characters_or_less", "Must be 60 characters or less"))
-        .required(i18next.t("username_is_required", "Username is required.")),
+        .required(i18next.t("username_is_required", "Username is required!")),
       password: Yup.string()
         .max(50, i18next.t("must_be_50_characters_or_less", "Must be 50 characters or less"))
         .required("Password is required"),

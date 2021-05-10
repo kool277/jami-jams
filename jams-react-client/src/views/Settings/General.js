@@ -100,7 +100,7 @@ export default function General(props) {
    */
 
   const passwordSchema = Yup.object().shape({
-    password: Yup.string().required(i18next.t("password_is_required", "Password is required")),
+    password: Yup.string().required(i18next.t("password_is_required", "Password is required!")),
     passwordConfirmation: Yup.string().oneOf(
       [Yup.ref("password"), null],
       i18next.t("password_must_match", "Passwords must match")
@@ -147,7 +147,7 @@ export default function General(props) {
             <Grid item lg={6} ><LanguagePicker navigationTarget={"/admin/settings"} /></Grid>
             <Grid item lg={6} >
               <Typography variant="p" gutterBottom color="primary">
-                {i18next.t("enter_the_following_information_below_to_change_your_admin_password", "Change administrator password")}
+                {i18next.t("enter_the_following_information_below_to_change_your_admin_password", "Enter the following information to change your admin password.")}
               </Typography>
             </Grid>
             <Grid item lg={6} >

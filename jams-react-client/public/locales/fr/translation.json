@@ -246,5 +246,11 @@
     "local_lan_info": "Si activé, il sera possible de communiquer avec les personnes connectées sur votre réseau local, même si ce dernier est isolé d'internet",
     "rendezvous_info": "Si activé, les appels entrants sont automatiquement ajoutés à une salle de conférence",
     "rendezvous_moderators_info": "Les modérateurs sont les personnes autorisées à administrer le point de rendez-vous et les conférences hébergées depuis ce compte",
-    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts"
+    "allow_jami_user_to_search_for_other_contacts": "Allow Jami user to search for other contacts",
+    "upnp_custom_popup": "UPnP allows Jami to automatically open network ports to establish peer-to-peer communications.",
+    "turn_server_configuration_popup": "Configure a TURN server to establish a connection when peer-to-peer communication is not possible",
+    "dht_configuration_popup": "Configure the DHT proxy server used by this account",
+    "contact_management": "Contact management",
+    "lookup_info": "If this option is disabled, user can not search and add new contacts",
+    "local_lan": "Local LAN"
 }
