@@ -18,6 +18,9 @@ import UserProfile from "views/UserProfile/UserProfile.js";
 import InfoIcon from "@material-ui/icons/Info";
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
 import Search from "@material-ui/icons/Search";
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from "auth.js";
@@ -80,6 +83,7 @@ export default function Users(props) {
   const [createUser, setCreateUser] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
+  const [showRevokedUsers, setShowRevokedUsers] = React.useState(false)
 
   const [searchValue, setSearchValue] = React.useState("");
 
@@ -186,6 +190,18 @@ export default function Users(props) {
               </Button>
             </Link>
           )}
+          <FormControlLabel
+            control={          
+            <Checkbox
+              checked={showRevokedUsers}
+              onChange={() => setShowRevokedUsers(!showRevokedUsers)}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+              color="primary"              
+            />}
+            style={{marginLeft: "1rem"}}
+            label="Display revoked users"
+          />
+
           <GridContainer>
             <GridItem xs={12} sm={12} md={6}>
               {!noUsersFound && (
