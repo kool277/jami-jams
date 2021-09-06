@@ -73,7 +73,7 @@
     "please_enter_valid_cors_domain_url": "Introdu un URL valabil al domeniului CORS.",
     "global_parameters_cover_general_configuration_of_servers_engine": "Parametrii globali acoperă configurarea generală a serverului.",
     "cors_domain_name": "Numele domeniului CORS",
-    "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps": "Stabilește domeniul client-server pentru a te conecta la panoul de control administrativ JAMS și la conturile Jami. Este utilizat și pentru a defini de unde ar trebui clienții să descarce CRL-uri și să trimită interogări OCSP. În cazul în care folosești o instanță proxy (adică JAMS în spatele IIS), asigură-te că definești corect acest lucru, altfel dispozitivele nu vor putea descărca CRL-uri sau valida certificate.",
+    "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps": "Stabilește domeniul client-server pentru a te conecta la tabloul de bord administrativ JAMS și la conturile Jami. Este utilizat și pentru a defini de unde ar trebui clienții să descarce CRL-uri și să trimită interogări OCSP. În cazul în care folosești o instanță proxy (adică JAMS în spatele IIS), asigură-te că definești corect acest lucru, altfel dispozitivele nu vor putea descărca CRL-uri sau valida certificate.",
     "domain_name_of_web_client_server": "Numele de domeniu al serverului tău.",
     "domain": "Domeniu",
     "certificate_revocation_list_lifetime": "Durata Listei Certificatelor Revocate",
