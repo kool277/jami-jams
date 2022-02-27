@@ -1,6 +1,8 @@
 #!/bin/bash
 #Build the UI from the react js folder.
 cd ../jams-react-client || exit
+echo "Using Node version: "
+nvm -v
 npm install
 npm run build
 #Now the UI is built we can exit and copy resource
