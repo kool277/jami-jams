@@ -24,22 +24,28 @@ package net.jami.jams.server.core.workflows;
 
 import com.jsoniter.JsonIterator;
 import lombok.extern.slf4j.Slf4j;
+
+import net.jami.jams.authmodule.UserAuthenticationModule;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
+import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.user.*;
 import net.jami.jams.dht.DeviceReceiptGenerator;
 import net.jami.jams.common.objects.user.Group;
+import net.jami.jams.dht.ETHAddressGenerator;
 
 
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static net.jami.jams.authmodule.UserAuthenticationModule.datastore;
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
@@ -61,6 +67,13 @@ public class RegisterDeviceFlow {
             if (user == null) {
                 log.error("Tried to enroll a device, but could not find a user, this is impossible!");
             }
+
+            // Renew user certificate if expired with same private key
+            if(!user.getCertificate().getNotAfter().after(new Date())) {
+                user = UserAuthenticationModule.certificateAuthority.getSignedCertificate(user);
+                datastore.getUserDao().storeObject(user);
+            }
+
             Device device = new Device();
             device.setCertificationRequest(registrationRequest.getCsr());
             device.setOwner(username);
