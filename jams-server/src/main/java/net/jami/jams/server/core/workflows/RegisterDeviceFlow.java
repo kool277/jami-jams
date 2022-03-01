@@ -70,6 +70,8 @@ public class RegisterDeviceFlow {
 
             // Renew user certificate if expired with same private key
             if(!user.getCertificate().getNotAfter().after(new Date())) {
+                user.setX509Fields(new X509Fields());
+                user.getX509Fields().setCommonName(user.getUsername());
                 user = UserAuthenticationModule.certificateAuthority.getSignedCertificate(user);
                 datastore.getUserDao().storeObject(user);
             }
