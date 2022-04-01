@@ -166,15 +166,7 @@ public class DataStore implements AuthenticationSource {
     }
 
     public boolean updateUserCertificate(User user) {
-
-        StatementList update  = new StatementList();
-        StatementList constraints  = new StatementList();
-
-        update.addStatement(new StatementElement("certificate","=", X509Utils.getPEMStringFromCertificate(user.getCertificate()),""));
-
-        constraints.addStatement(new StatementElement("username","=", user.getUsername(),""));
-
-        return userDao.updateObject(update, constraints);
+        return userDao.updateUserCertificate(user.getUsername(), X509Utils.getPEMStringFromCertificate(user.getCertificate()));
     }
 
     @Override

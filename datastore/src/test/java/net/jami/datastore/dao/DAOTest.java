@@ -22,6 +22,7 @@
 */
 package net.jami.datastore.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
@@ -41,11 +42,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
+@Slf4j
 class DAOTest {
 
     static String strPrivateKey;
     static String strCertificate;
     static String strPkcs10Request;
+    static String generatedCertificate;
+    static String refreshedCertificate;
 
     @BeforeAll
     static void setUp() throws Exception{
@@ -59,6 +63,10 @@ class DAOTest {
         strCertificate = new String(path.readAllBytes());
         path = classLoader.getResourceAsStream("pkcs10request.txt");
         strPkcs10Request = new String(path.readAllBytes());
+        path = classLoader.getResourceAsStream("cert_a.crt");
+        generatedCertificate = new String(path.readAllBytes());
+        path = classLoader.getResourceAsStream("cert_b.crt");
+        refreshedCertificate = new String(path.readAllBytes());
     }
 
     @Test
@@ -82,6 +90,34 @@ class DAOTest {
         User user1 = userDAO.getObjects(statementList).get(0);
         Assertions.assertNotNull(user1);
         Assertions.assertEquals(user1.getAccessLevel(),AccessLevel.ADMIN);
+    }
+
+    @Test
+    void refreshUserCertificate() throws Exception {
+        User user = new User();
+        user.setUsername("TestUser");
+        user.setUserType(AuthenticationSourceType.LOCAL);
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        user.setSalt(Base64.encodeBase64String(salt));
+        user.setPassword(hashPassword("abc123", salt));
+        user.setAccessLevel(AccessLevel.USER);
+        user.setCertificate(X509Utils.getCertificateFromPEMString(generatedCertificate));
+
+        UserDao userDAO = new UserDao();
+        userDAO.storeObject(user);
+
+        StatementList statementList = new StatementList();
+        statementList.addStatement(new StatementElement("username","=","TestUser",""));
+        User user1 = userDAO.getObjects(statementList).get(0);
+        Assertions.assertNotNull(user1);
+        Assertions.assertEquals(user1.getAccessLevel(),AccessLevel.USER);
+
+        userDAO.updateUserCertificate("TestUser", X509Utils.getPEMStringFromCertificate(X509Utils.getCertificateFromPEMString(refreshedCertificate)));
+
+        User user2 = userDAO.getObjects(statementList).get(0);
+        Assertions.assertNotEquals(user1.getCertificate(), user2.getCertificate());
     }
 
     @Test

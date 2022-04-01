@@ -29,7 +29,9 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.User;
 
+import java.security.cert.Certificate;
 import java.sql.PreparedStatement;
+import java.util.Objects;
 
 @Slf4j
 public class UserDao extends AbstractDao<User> {
@@ -56,18 +58,12 @@ public class UserDao extends AbstractDao<User> {
         }
     }
 
-    @Override
-    public boolean updateObject(StatementList update, StatementList constraints) {
-
-        if(update.getStatements().get(0).getColumn() == "certificate"){
-
+    public boolean updateUserCertificate(String username, String certificate) {
             SQLConnection connection = DataStore.connectionPool.getConnection();
             try {
-                String certificate = update.getStatements().get(0).getValue();
-                String user = constraints.getStatements().get(0).getValue();
                 PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE users SET certificate = ? WHERE username = ?");
                 ps.setString(1, certificate);
-                ps.setString(2, user);
+                ps.setString(2, username);
                 return ps.executeUpdate() != 0;
             } catch (Exception e) {
                 log.error("An error has occurred while trying to update a user certificate: " + e.toString());
@@ -75,8 +71,10 @@ public class UserDao extends AbstractDao<User> {
             } finally {
                 DataStore.connectionPool.returnConnection(connection);
             }
+    }
 
-        }
+    @Override
+    public boolean updateObject(StatementList update, StatementList constraints) {
 
         String pw = update.getStatements().get(0).getValue();
         String salt = "";
