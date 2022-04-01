@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.ca.workers.csr.utils.CertificateSigner;
 import net.jami.jams.ca.workers.csr.utils.ExtensionLibrary;
+import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.user.User;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -83,6 +84,11 @@ public class UserBuilder {
     public static User refreshUser(User user, long userLifeTime) {
         try {
             long now = System.currentTimeMillis();
+
+            user.setX509Fields(new X509Fields());
+            user.getX509Fields().setCommonName(user.getUsername());
+            user.getX509Fields().setUid(user.getJamiId());
+
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
                     new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),
                     new BigInteger(128, new SecureRandom()),
@@ -92,7 +98,7 @@ public class UserBuilder {
                     new JcaX509CertificateHolder(user.getCertificate()).getSubjectPublicKeyInfo()
             );
             user.setCertificate(CertificateSigner.signCertificate(JamsCA.CA.getPrivateKey(), builder, ExtensionLibrary.userExtensions));
-            log.info("====> Refreshed user certificate:  Not valid after: " + user.getCertificate().getNotAfter());
+            log.info("Refreshed user certificate:  Not valid after: " + user.getCertificate().getNotAfter());
 
             return user;
         } catch (Exception e) {
