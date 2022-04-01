@@ -12,6 +12,11 @@
     <artifactId>cryptoengine</artifactId>
     <dependencies>
         <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons.codec.version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.jami</groupId>
             <artifactId>jams-common</artifactId>
             <version>${revision}</version>

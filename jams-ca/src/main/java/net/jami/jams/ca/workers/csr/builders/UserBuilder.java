@@ -54,6 +54,9 @@ public class UserBuilder {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            user.getX509Fields().setUid(Hex.encodeHexString(MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1).digest(keyPair.getPublic().getEncoded())));
+
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
                     new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),
                     new BigInteger(128, new SecureRandom()),
