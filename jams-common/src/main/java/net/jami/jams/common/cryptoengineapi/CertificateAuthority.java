@@ -37,6 +37,7 @@ public interface CertificateAuthority {
     //Return a signed X509 certificate based on various constraints.
     void init(String settings, SystemAccount ca, SystemAccount ocsp);
     User getSignedCertificate(User user);
+    User getRefreshedCertificate(User user);
     Device getSignedCertificate(User user, Device device);
     SystemAccount getSignedCertificate(SystemAccount systemAccount);
     void revokeCertificate(RevocationRequest revocationRequest);

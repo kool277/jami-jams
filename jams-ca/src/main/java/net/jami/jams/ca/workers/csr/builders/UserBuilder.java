@@ -35,33 +35,65 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Date;
 
 import static net.jami.jams.ca.workers.csr.CertificateWorker.SHIFT;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.MessageDigestAlgorithms;
+
 
 @Slf4j
 public class UserBuilder {
 
     public static User generateUser(User user) {
         try {
+            long now = System.currentTimeMillis();
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
                     new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),
-                    new BigInteger(256, new SecureRandom()),
-                    new Date(System.currentTimeMillis() - SHIFT),
-                    new Date(System.currentTimeMillis() + JamsCA.userLifetime),
+                    new BigInteger(128, new SecureRandom()),
+                    new Date(now - SHIFT),
+                    new Date(now + JamsCA.userLifetime),
                     new X500Name(user.getX509Fields().getDN()),
                     SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded())
             );
+
             user.setPrivateKey(keyPair.getPrivate());
             user.setCertificate(CertificateSigner.signCertificate(JamsCA.CA.getPrivateKey(), builder, ExtensionLibrary.userExtensions));
-
+            log.info("New user certificate:  Not valid after: " + user.getCertificate().getNotAfter());
             return user;
         } catch (Exception e) {
             log.error("Could not generate a user certificate: " + e.toString());
+            return null;
+        }
+    }
+
+    public static User refreshUser(User user) {
+        return refreshUser(user, JamsCA.userLifetime);
+    }
+
+    public static User refreshUser(User user, long userLifeTime) {
+        try {
+            long now = System.currentTimeMillis();
+            X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
+                    new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),
+                    new BigInteger(128, new SecureRandom()),
+                    new Date(now - SHIFT),
+                    new Date(now + userLifeTime),
+                    new X500Name(user.getX509Fields().getDN()),
+                    new JcaX509CertificateHolder(user.getCertificate()).getSubjectPublicKeyInfo()
+            );
+            user.setCertificate(CertificateSigner.signCertificate(JamsCA.CA.getPrivateKey(), builder, ExtensionLibrary.userExtensions));
+            log.info("====> Refreshed user certificate:  Not valid after: " + user.getCertificate().getNotAfter());
+
+            return user;
+        } catch (Exception e) {
+            log.error("Could not refresh user certificate: " + e.toString());
             return null;
         }
     }

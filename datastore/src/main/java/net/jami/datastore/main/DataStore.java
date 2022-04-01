@@ -42,11 +42,15 @@ import net.jami.jams.common.dao.connectivity.ConnectionPool;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.utils.X509Utils;
+
 import org.flywaydb.core.Flyway;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.swing.plaf.nimbus.State;
 
 @Getter
 @Setter
@@ -159,6 +163,18 @@ public class DataStore implements AuthenticationSource {
         update.addStatement(new StatementElement("mobileNumber","=",userProfile.getMobileNumber(),""));
 
         return userProfileDao.updateObject(update, null);
+    }
+
+    public boolean updateUserCertificate(User user) {
+
+        StatementList update  = new StatementList();
+        StatementList constraints  = new StatementList();
+
+        update.addStatement(new StatementElement("certificate","=", X509Utils.getPEMStringFromCertificate(user.getCertificate()),""));
+
+        constraints.addStatement(new StatementElement("username","=", user.getUsername(),""));
+
+        return userDao.updateObject(update, constraints);
     }
 
     @Override

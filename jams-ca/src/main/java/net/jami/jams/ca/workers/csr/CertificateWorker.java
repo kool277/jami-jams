@@ -48,6 +48,10 @@ public class CertificateWorker {
         return UserBuilder.generateUser(user);
     }
 
+    public static User getRefreshedCertificate(User user){
+        return UserBuilder.refreshUser(user);
+    }
+
     public static Device getSignedCertificate(User user, Device device){
         return DeviceBuilder.generateDevice(user,device);
     }

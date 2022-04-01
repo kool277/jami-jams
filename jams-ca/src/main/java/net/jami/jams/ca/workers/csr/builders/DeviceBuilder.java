@@ -52,11 +52,12 @@ public class DeviceBuilder {
 
     public static Device generateDevice(User user, Device device){
         try {
+            long now = System.currentTimeMillis();
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
                     new JcaX509CertificateHolder(user.getCertificate()).getSubject(),
                     new BigInteger(256, new SecureRandom()),
-                    new Date(System.currentTimeMillis() - SHIFT),
-                    new Date(System.currentTimeMillis() + JamsCA.deviceLifetime),
+                    new Date(now - SHIFT),
+                    new Date(now + JamsCA.deviceLifetime),
                     device.getCertificationRequest().getSubject(),
                     device.getCertificationRequest().getSubjectPublicKeyInfo()
             );

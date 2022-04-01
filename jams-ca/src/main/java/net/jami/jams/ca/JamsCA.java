@@ -98,6 +98,11 @@ public class JamsCA implements CertificateAuthority {
     }
 
     @Override
+    public User getRefreshedCertificate(User user) {
+        return CertificateWorker.getRefreshedCertificate(user);
+    }
+
+    @Override
     public Device getSignedCertificate(User user, Device device) {
         return CertificateWorker.getSignedCertificate(user, device);
     }

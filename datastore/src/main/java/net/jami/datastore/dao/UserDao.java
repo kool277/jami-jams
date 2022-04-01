@@ -59,17 +59,31 @@ public class UserDao extends AbstractDao<User> {
     @Override
     public boolean updateObject(StatementList update, StatementList constraints) {
 
+        if(update.getStatements().get(0).getColumn() == "certificate"){
+
+            SQLConnection connection = DataStore.connectionPool.getConnection();
+            try {
+                String certificate = update.getStatements().get(0).getValue();
+                String user = constraints.getStatements().get(0).getValue();
+                PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE users SET certificate = ? WHERE username = ?");
+                ps.setString(1, certificate);
+                ps.setString(2, user);
+                return ps.executeUpdate() != 0;
+            } catch (Exception e) {
+                log.error("An error has occurred while trying to update a user certificate: " + e.toString());
+                return false;
+            } finally {
+                DataStore.connectionPool.returnConnection(connection);
+            }
+
+        }
+
         String pw = update.getStatements().get(0).getValue();
         String salt = "";
         if (update.getStatements().size() > 1)
             salt = update.getStatements().get(1).getValue();
 
         String user = constraints.getStatements().get(0).getValue();
-//        String pwReset = "false";
-//
-//        if (update.getStatements().size() > 1) {
-//            pwReset = update.getStatements().get(1).getValue();
-//        }
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
@@ -78,12 +92,7 @@ public class UserDao extends AbstractDao<User> {
             ps.setString(1, pw);
             ps.setString(2, salt);
             ps.setString(3, user);
-//            ps.executeUpdate();
-//
-//            ps = connection.getConnection().prepareStatement("UPDATE users SET needsPasswordReset = ? WHERE username = ?");
-//            ps.setString(1, pwReset);
-//
-//            ps.setString(2, user);
+
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
             log.error("An error has occurred while trying to update a user: " + e.toString());
