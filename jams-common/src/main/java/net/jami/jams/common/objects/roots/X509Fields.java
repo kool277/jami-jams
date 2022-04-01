@@ -30,6 +30,7 @@ import lombok.Setter;
 public class X509Fields {
 
     private String commonName;
+    private String uid;
     private String country;
     private String state;
     private String organization;
@@ -42,6 +43,9 @@ public class X509Fields {
         if(commonName != null) {
             stringBuilder.append("CN=").append(commonName);
         } else return null;
+        if(uid !=null) {
+            stringBuilder.append(",").append("UID=").append(uid);
+        }
         if(country != null) stringBuilder.append(",").append("C=").append(country);
         if(state != null) stringBuilder.append(",").append("ST=").append(state);
         if(organization != null) stringBuilder.append(",").append("O=").append(organization);
