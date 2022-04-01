@@ -50,7 +50,7 @@ public class RegisterUserFlow {
         user.setEthKey(ethKeyPair[1]);
         user.setJamiId(DeviceReceiptGenerator.generateJamiId(user));
         //Didn't exactly plan on this happening here, but this is the only place we actually need it.
-        //Given an interface of NameServer, we need to enroll the user or decline the enrollement before
+        //Given an interface of NameServer, we need to enroll the user or decline the enrollment before
         //storing him
         NameRegistrationRequest nameRegistrationRequest = new NameRegistrationRequest();
         nameRegistrationRequest.setOwner(ethKeyPair[0]);
