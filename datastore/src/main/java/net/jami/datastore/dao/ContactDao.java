@@ -67,8 +67,8 @@ public class ContactDao extends AbstractDao<Contact> {
             PreparedStatement ps = connection.getConnection().prepareStatement(delete);
             ps.setString(1, contactList.get(0).getOwner());
             ps.executeUpdate();
-            String insert = "INSERT INTO contacts (owner, uri, displayName, timestamp, status,banned,confirmed) VALUES " +
-                "(?, ?, ?, ?, ?,?,?)";
+            String insert = "INSERT INTO contacts (owner, uri, displayName, timestamp, status, banned, confirmed, conversationId) VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?, ?)";
             for (Contact contact : contactList) {
                 ps = connection.getConnection().prepareStatement(insert);
                 contact.getInsert(ps);

@@ -22,8 +22,8 @@ class ContactTest {
 
     @Test
     public void deserialize(){
-        String str = "[{\"uri\":\"tcp://def@local\",\"added\":1594742298377,\"banned\":false,\"confirmed\":true}," +
-            "{\"uri\":\"tcp://abc@19293.com\",\"removed\":1594742298377,\"banned\":true,\"confirmed\":true}]";
+        String str = "[{\"uri\":\"tcp://def@local\",\"added\":1594742298377,\"banned\":false,\"confirmed\":true,\"confirmed\":6a61013979964f70c8fb9183a8b238d58a1846ed}," +
+            "{\"uri\":\"tcp://abc@19293.com\",\"removed\":1594742298377,\"banned\":true,\"confirmed\":true,\"confirmed\":2b61024119964f70c8fb9183a8b238d58a1846ed}]";
         Contact[] contacts = JsonIterator.deserialize(str,Contact[].class);
         Assertions.assertEquals(2,contacts.length);
     }
@@ -35,6 +35,7 @@ class ContactTest {
         contact1.setStatus('A');
         contact1.setTimestamp(System.currentTimeMillis());
         contact1.setUri("tcp://def@local");
+        contact1.setConversationId("6a61013979964f70c8fb9183a8b238d58a1846ed");
         contact1.setBanned(false);
         contact1.setConfirmed(false);
         Contact contact2 = new Contact();
@@ -42,6 +43,7 @@ class ContactTest {
         contact2.setStatus('D');
         contact2.setTimestamp(System.currentTimeMillis());
         contact2.setUri("tcp://abc@19293.com");
+        contact2.setConversationId("2b61024119964f70c8fb9183a8b238d58a1846ed");
         contact2.setBanned(true);
         contact2.setConfirmed(true);
         ArrayList<Contact> lst = new ArrayList<>();
@@ -58,6 +60,7 @@ class ContactTest {
         contact1.setStatus('A');
         contact1.setTimestamp(System.currentTimeMillis());
         contact1.setUri("tcp://def@local");
+        contact1.setConversationId("6a61013979964f70c8fb9183a8b238d58a1846ed");
         Contact contact2 = new Contact();
         contact2.setOwner("fsidokhine");
         contact2.setStatus('D');
@@ -71,6 +74,7 @@ class ContactTest {
         contact3.setStatus('A');
         contact3.setTimestamp(System.currentTimeMillis() + 10000);
         contact3.setUri("tcp://abc@19293.com");
+        contact3.setConversationId("2b61024119964f70c8fb9183a8b238d58a1846ed");
         ArrayList<Contact> lst2 = new ArrayList<>();
         lst2.add(contact3);
         List<Contact> out = ContactMerger.mergeContacts(lst,lst2);

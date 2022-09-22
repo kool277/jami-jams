@@ -16,7 +16,8 @@ public class ContactCodec implements Encoder, Decoder {
      *         "added" : 1595523510,
      *         "banned" : false,
      *         "uri" : "520290d7f45e5811fe5af637d328e7fbf5e8cab9",
-     *         "removed" : 0
+     *         "removed" : 0,
+     *         "conversationId": 6a61013979964f70c8fb9183a8b238d58a1846ed
      *     }
      */
     @Override
@@ -24,6 +25,7 @@ public class ContactCodec implements Encoder, Decoder {
         Any input = jsonIterator.readAny();
         Contact contact = new Contact();
         contact.setUri(input.get("uri").toString());
+        contact.setConversationId(input.get("conversationId").toString());
         long timeAdded = 0L;
         long timeRemoved = 0L;
         if(!input.get("added").toString().isBlank())
@@ -49,6 +51,7 @@ public class ContactCodec implements Encoder, Decoder {
         Contact ct = (Contact) o;
         StringBuilder sb = new StringBuilder();
         sb.append("{\"uri\":\"").append(ct.getUri()).append("\",");
+        sb.append("\"conversationId\":").append(ct.getConversationId()).append(",");
         switch (ct.getStatus()){
             case 'A':
                 sb.append("\"added\":").append(ct.getTimestamp());

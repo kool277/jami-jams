@@ -13,6 +13,9 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
+import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
+import SmsFailedIcon from "@material-ui/icons/SmsFailed";
+
 import Search from "@material-ui/icons/Search";
 import IconButton from "@material-ui/core/IconButton";
 
@@ -456,6 +459,16 @@ export default function Users(props) {
                           style={{ marginRight: "10px" }}
                         />}
                         {contact.organization && ` ${contact.organization}`}
+                      </li>
+                      <li>
+                        { contact.conversationId === null ?  <SmsFailedIcon
+                        fontSize="small"
+                        style={{ marginRight: "10px" }}
+                        ></SmsFailedIcon> : <QuestionAnswerIcon
+                          fontSize="small"
+                          style={{ marginRight: "10px" }}
+                        />}
+                        {contact.conversationId === null ? "No conversation id" :  ` ${contact.conversationId}`}
                       </li>
                     </ul>
                   </CardBody>

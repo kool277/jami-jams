@@ -47,6 +47,7 @@ public class Contact implements DatabaseObject {
     private Character status; //A = added, D = deleted.
     private Boolean banned = false;
     private Boolean confirmed = false;
+    private String conversationId;
 
     public Contact(ResultSet rs) throws Exception {
         this.owner = rs.getString("owner");
@@ -56,6 +57,7 @@ public class Contact implements DatabaseObject {
         this.status = (char) rs.getInt("status");
         this.banned = rs.getBoolean("banned");
         this.confirmed = rs.getBoolean("confirmed");
+        this.conversationId = rs.getString("conversationId");
     }
 
     @Override
@@ -68,6 +70,7 @@ public class Contact implements DatabaseObject {
         ps.setInt(5,status);
         ps.setBoolean(6,banned);
         ps.setBoolean(7,confirmed);
+        ps.setString(8, conversationId);
         return ps;
     }
 
