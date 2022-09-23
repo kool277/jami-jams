@@ -15,6 +15,7 @@ import CardFooter from "components/Card/CardFooter.js";
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
 import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 import SmsFailedIcon from "@material-ui/icons/SmsFailed";
+import LaunchIcon from "@material-ui/icons/Launch";
 
 import Search from "@material-ui/icons/Search";
 import IconButton from "@material-ui/core/IconButton";
@@ -29,7 +30,7 @@ import {
   api_path_delete_admin_contacts,
   api_path_get_ns_name_from_addr,
   api_path_get_user_profile,
-  api_path_get_user_directory_search
+  api_path_get_user_directory_search,
 } from "globalUrls";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -77,7 +78,7 @@ const styles = {
   },
   actionButtons: {
     height: "3em",
-  }
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -108,15 +109,15 @@ export default function Users(props) {
       .then((response) => {
         let profiles = [];
         const profilesResults = response.data.profiles;
-        profilesResults.forEach((profile) =>{
-          if(profile.username !== props.username) {
+        profilesResults.forEach((profile) => {
+          if (profile.username !== props.username) {
             let existingContact = false;
-            contacts.forEach((contact)=>{
-              if(profile.username === contact.username) existingContact = true;
-            })
-            if(!existingContact) profiles.push(profile);
+            contacts.forEach((contact) => {
+              if (profile.username === contact.username) existingContact = true;
+            });
+            if (!existingContact) profiles.push(profile);
           }
-        })
+        });
         setUsers(profiles);
       })
       .catch((error) => {
@@ -124,14 +125,13 @@ export default function Users(props) {
         if (error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
-        }else if(error.response.status === 403){
+        } else if (error.response.status === 403) {
           setAllowedToAdd(false);
         }
       });
-  }
+  };
 
   const getAllContacts = () => {
-    
     if (auth.hasAdminScope()) {
       axios(
         configApiCall(
@@ -227,7 +227,6 @@ export default function Users(props) {
   };
 
   const addContactToUser = (value) => {
-
     const data = {
       owner: props.username,
       uri: value.id,
@@ -335,12 +334,12 @@ export default function Users(props) {
 
   return (
     <div>
-      <TemporaryDrawer 
-        openDrawer={openDrawer} 
-        setOpenDrawer={setOpenDrawer} 
-        direction="right" 
+      <TemporaryDrawer
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        direction="right"
         placeholder={i18next.t("add_contact", "Add contact…")}
-        searchTargets={searchContacts} 
+        searchTargets={searchContacts}
         targets={users}
         existingTargets={contacts}
         addElementToTarget={addContactToUser}
@@ -353,17 +352,22 @@ export default function Users(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{i18next.t("remove_contact", "Remove contact")}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {i18next.t("remove_contact", "Remove contact")}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          {i18next.t("are_you_sure_you_want_to_remove", "Are you sure you want to remove")}
-            <strong>{removedContactName}</strong> {i18next.t("from", "from")} {props.username} {i18next.t("contacts", "contacts")}{" "}
-            ?
+            {i18next.t(
+              "are_you_sure_you_want_to_remove",
+              "Are you sure you want to remove"
+            )}
+            <strong>{removedContactName}</strong> {i18next.t("from", "from")}{" "}
+            {props.username} {i18next.t("contacts", "contacts")} ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-          {i18next.t("cancel", "Cancel")}
+            {i18next.t("cancel", "Cancel")}
           </Button>
           <Button onClick={removeContact} color="info" autoFocus>
             {i18next.t("remove", "Remove")}
@@ -373,16 +377,19 @@ export default function Users(props) {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           <div className={classes.actionButtons}>
-          {allowedToAdd && <Button
-            variant="contained"
-            color="primary"
-            href="#contained-buttons"
-            onClick={() => {
-              setOpenDrawer(true);
-            }}
-          >
-            <AddCircleOutlineIcon /> {i18next.t("add_a_contact", "Add contact")}
-          </Button>}
+            {allowedToAdd && (
+              <Button
+                variant="contained"
+                color="primary"
+                href="#contained-buttons"
+                onClick={() => {
+                  setOpenDrawer(true);
+                }}
+              >
+                <AddCircleOutlineIcon />{" "}
+                {i18next.t("add_a_contact", "Add contact")}
+              </Button>
+            )}
           </div>
           <div className={classes.searchWrapper}>
             <CustomInput
@@ -390,7 +397,10 @@ export default function Users(props) {
                 className: classes.margin + " " + classes.search,
               }}
               inputProps={{
-                placeholder: i18next.t("search_contacts_using", "Search contact fields (URI, firstname, lastname)"),
+                placeholder: i18next.t(
+                  "search_contacts_using",
+                  "Search contact fields (URI, firstname, lastname)"
+                ),
                 inputProps: {
                   "aria-label": i18next.t("search_contacts", "Search contacts"),
                 },
@@ -409,13 +419,25 @@ export default function Users(props) {
           .filter((data) => {
             if (searchValue === null) return data;
             else {
-              if(typeof data.name !== "undefined" && typeof data.firstName !== "undefined" && typeof data.lastName !== "undefined" && typeof data.uri !== "undefined"){
-                return data.name.toLowerCase().includes(searchValue.toLowerCase()) ||  data.firstName.toLowerCase().includes(searchValue.toLowerCase()) || data.lastName.toLowerCase().includes(searchValue.toLowerCase()) || data.uri.toLowerCase().includes(searchValue.toLowerCase());
-              }
-              else {
+              if (
+                typeof data.name !== "undefined" &&
+                typeof data.firstName !== "undefined" &&
+                typeof data.lastName !== "undefined" &&
+                typeof data.uri !== "undefined"
+              ) {
+                return (
+                  data.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+                  data.firstName
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()) ||
+                  data.lastName
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()) ||
+                  data.uri.toLowerCase().includes(searchValue.toLowerCase())
+                );
+              } else {
                 return data;
               }
-              
             }
           })
           .map((contact) => (
@@ -427,8 +449,8 @@ export default function Users(props) {
               key={contact.uri}
               style={{ display: contact.display }}
             >
-              {contact.username && <Card profile>
-                <a href={`/user/${contact.username}`}>
+              {contact.username && (
+                <Card profile>
                   <CardBody profile>
                     <CardAvatar profile>
                       <img
@@ -440,39 +462,61 @@ export default function Users(props) {
                         alt="..."
                       />
                     </CardAvatar>
+                    <a
+                      style={{ float: "right", top: 0 }}
+                      href={`/user/${contact.username}`}
+                    >
+                      <LaunchIcon
+                        fontSize="small"
+                        style={{
+                          marginRight: "10px",
+                          color: "black",
+                        }}
+                      ></LaunchIcon>
+                    </a>
                     <h4 className={classes.cardTitle}>
-                      {(contact.firstName || contact.lastName) &&`${contact.firstName} ${contact.lastName}`}
+                      {(contact.firstName || contact.lastName) &&
+                        `${contact.firstName} ${contact.lastName}`}
                     </h4>
                     <ul>
-                      <li>
-                        {contact.username && <img
-                          src={jami}
-                          width="20"
-                          alt="Jami"
-                          style={{ marginRight: "10px" }}
-                        />}
+                      <li style={{ display: "block" }}>
+                        {contact.username && (
+                          <img
+                            src={jami}
+                            width="20"
+                            alt="Jami"
+                            style={{ marginRight: "10px" }}
+                          />
+                        )}
                         {contact.username && ` ${contact.username}`}
                       </li>
-                      <li>
-                        {contact.organization && <BusinessOutlinedIcon
-                          fontSize="small"
-                          style={{ marginRight: "10px" }}
-                        />}
+                      <li style={{ display: "block" }}>
+                        {contact.organization && (
+                          <BusinessOutlinedIcon
+                            fontSize="small"
+                            style={{ marginRight: "10px" }}
+                          />
+                        )}
                         {contact.organization && ` ${contact.organization}`}
                       </li>
-                      <li>
-                        { contact.conversationId === null ?  <SmsFailedIcon
-                        fontSize="small"
-                        style={{ marginRight: "10px" }}
-                        ></SmsFailedIcon> : <QuestionAnswerIcon
-                          fontSize="small"
-                          style={{ marginRight: "10px" }}
-                        />}
-                        {contact.conversationId === null ? "No conversation id" :  ` ${contact.conversationId}`}
+                      <li style={{ display: "block" }}>
+                        {contact.conversationId === null ? (
+                          <SmsFailedIcon
+                            fontSize="small"
+                            style={{ marginRight: "10px" }}
+                          ></SmsFailedIcon>
+                        ) : (
+                          <QuestionAnswerIcon
+                            fontSize="small"
+                            style={{ marginRight: "10px" }}
+                          />
+                        )}
+                        {contact.conversationId === "null"
+                          ? "No conversation id"
+                          : `Conversation id: ${contact.conversationId}`}
                       </li>
                     </ul>
                   </CardBody>
-                  </a>
                   <CardFooter>
                     <IconButton
                       color="secondary"
@@ -483,10 +527,12 @@ export default function Users(props) {
                       <DeleteOutlineIcon />
                     </IconButton>
                   </CardFooter>
-              </Card>}
+                </Card>
+              )}
             </GridItem>
           ))}
-        {contacts === [] && props.username + i18next.t("has_no_contacts", " has no contacts")}
+        {contacts === [] &&
+          props.username + i18next.t("has_no_contacts", " has no contacts")}
       </GridContainer>
     </div>
   );
