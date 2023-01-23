@@ -133,7 +133,7 @@
     "updated_blueprint_permissions_successfully": "Blueprint permissions successfully updated.",
     "error_updating_blueprint_permissions": "Si è verificato un errore durante l'aggiornamento delle autorizzazioni del progetto.",
     "allow_video_calls": "Consenti videochiamate",
-    "allow_incoming_calls_from_unknown_contacts": "Consenti chiamate in arrivo da contatti sconosciuti",
+    "allow_incoming_calls_from_unknown_contacts": "Ricevi chiamate sconosciute",
     "auto_answer_calss": "Risposta automatica alle chiamate",
     "allow_use_of_jami_in_local_lan": "Consenti la scoperta di altri utenti in una rete locale",
     "convert_your_account_into_a_rendezvous_point": "Trasforma l'account in un punto di riunione",

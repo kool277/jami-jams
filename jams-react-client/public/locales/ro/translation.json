@@ -133,7 +133,7 @@
     "updated_blueprint_permissions_successfully": "Modelul a fost actualizat.",
     "error_updating_blueprint_permissions": "A apărut o eroare în timpul actualizării modelului.",
     "allow_video_calls": "Permite apeluri video",
-    "allow_incoming_calls_from_unknown_contacts": "Primește apeluri de la persoane necunoscute",
+    "allow_incoming_calls_from_unknown_contacts": "Primește apeluri necunoscute",
     "auto_answer_calss": "Răspuns automat la apeluri",
     "allow_use_of_jami_in_local_lan": "Permite descoperirea altor utilizatori într-o rețeaua locală",
     "convert_your_account_into_a_rendezvous_point": "Transformă-ți contul într-un loc de conferință",
