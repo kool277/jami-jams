@@ -74,7 +74,6 @@ const styles = {
 };
 
 export default function Settings(props) {
-
   const [value, setValue] = React.useState(0);
   const [error, setError] = React.useState(false);
   const [severity, setSeverity] = React.useState("error");
@@ -87,7 +86,10 @@ export default function Settings(props) {
     return (
       <div>
         <h4>
-        {i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")}
+          {i18next.t(
+            "you_are_not_allowed_to_access_this_section",
+            "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
+          )}
         </h4>
       </div>
     );
@@ -101,7 +103,10 @@ export default function Settings(props) {
             aria-label="simple tabs example"
           >
             <Tab label={i18next.t("general", "General")} {...a11yProps(0)} />
-            <Tab label={i18next.t("subscription", "Subscription")} {...a11yProps(1)} />
+            <Tab
+              label={i18next.t("subscription", "Subscription")}
+              {...a11yProps(1)}
+            />
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>

@@ -1,18 +1,16 @@
 import React from "react";
 
-import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import PropTypes from "prop-types";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
-import EditBlueprintPermissions from "./EditBlueprintPermissions"
-import EditBlueprintConfiguration from "./EditBlueprintConfiguration"
+import EditBlueprintPermissions from "./EditBlueprintPermissions";
+import EditBlueprintConfiguration from "./EditBlueprintConfiguration";
 
-import {
-  infoColor
-} from "assets/jss/material-dashboard-react.js";
+import { infoColor } from "assets/jss/material-dashboard-react.js";
 
 import i18next from "i18next";
 
@@ -45,7 +43,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -55,7 +53,7 @@ const styles = {
     margin: "0",
     fontSize: "14px",
     marginTop: "0",
-    marginBottom: "0"
+    marginBottom: "0",
   },
   cardTitleWhite: {
     color: "#FFFFFF",
@@ -64,12 +62,11 @@ const styles = {
     fontWeight: "300",
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     marginBottom: "3px",
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 };
 
 export default function Blueprint(props) {
-
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -78,16 +75,26 @@ export default function Blueprint(props) {
   return (
     <div>
       <AppBar position="static" style={{ background: infoColor[0] }}>
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label={i18next.t("permissions", "Permissions")} {...a11yProps(0)} />
-          <Tab label={i18next.t("configuration", "Configuration")} {...a11yProps(1)} />
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="simple tabs example"
+        >
+          <Tab
+            label={i18next.t("permissions", "Permissions")}
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={i18next.t("configuration", "Configuration")}
+            {...a11yProps(1)}
+          />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-            <EditBlueprintPermissions blueprintName={props.blueprintName} />
+        <EditBlueprintPermissions blueprintName={props.blueprintName} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-            <EditBlueprintConfiguration blueprintName={props.blueprintName} />
+        <EditBlueprintConfiguration blueprintName={props.blueprintName} />
       </TabPanel>
     </div>
   );

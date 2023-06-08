@@ -24,7 +24,7 @@ export default function AdminNavbarLinks(props) {
   const classes = useStyles();
   const [openProfile, setOpenProfile] = React.useState(null);
 
-  const handleClickProfile = event => {
+  const handleClickProfile = (event) => {
     if (openProfile && openProfile.contains(event.target)) {
       setOpenProfile(null);
     } else {
@@ -34,7 +34,7 @@ export default function AdminNavbarLinks(props) {
 
   const handleOtherAction = () => {
     // Do nothing
-  }
+  };
 
   return (
     <div>
@@ -70,7 +70,7 @@ export default function AdminNavbarLinks(props) {
               id="profile-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>

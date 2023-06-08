@@ -46,7 +46,7 @@ const styles = (theme) => ({
   },
   whiteButtonText: {
     color: "white",
-  }
+  },
 });
 
 const useStyles = makeStyles(styles);

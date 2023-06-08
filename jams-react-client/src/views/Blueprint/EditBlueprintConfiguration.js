@@ -311,13 +311,25 @@ export default function EditBlueprintConfiguration(props) {
         setOpen(false);
         setSeverity("success");
         setOpen(true);
-        setMessage(i18next.t("updated_blueprint_configuration_successfully", "Blueprint configuration successfully updated."));
+        setMessage(
+          i18next.t(
+            "updated_blueprint_configuration_successfully",
+            "Blueprint configuration successfully updated."
+          )
+        );
       })
       .catch((error) => {
         setOpen(false);
         setSeverity("error");
         setOpen(true);
-        setMessage(i18next.t("error_updating_blueprint_configuration", "Error occurred while updating blueprint configuration.") + error + "!");
+        setMessage(
+          i18next.t(
+            "error_updating_blueprint_configuration",
+            "Error occurred while updating blueprint configuration."
+          ) +
+            error +
+            "!"
+        );
       });
   };
 
@@ -387,14 +399,24 @@ export default function EditBlueprintConfiguration(props) {
               <CardIcon color="info">
                 <BuildOutlinedIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>{i18next.t("configuration", "Configuration")}</p>
+              <p className={classes.cardCategory}>
+                {i18next.t("configuration", "Configuration")}
+              </p>
               <h3 className={classes.cardTitle}>{props.blueprintName}</h3>
             </CardHeader>
             <CardBody profile>
               <div className={classes.root}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">UPnP <CustomPopupState message={i18next.t("upnp_custom_popup", "UPnP allows Jami to automatically open network ports to establish peer-to-peer communications.")} /></FormLabel>
+                    <FormLabel component="legend">
+                      UPnP{" "}
+                      <CustomPopupState
+                        message={i18next.t(
+                          "upnp_custom_popup",
+                          "UPnP allows Jami to automatically open network ports to establish peer-to-peer communications."
+                        )}
+                      />
+                    </FormLabel>
                     <FormControlLabel
                       control={
                         <Switch
@@ -417,7 +439,15 @@ export default function EditBlueprintConfiguration(props) {
                   </Grid>
                   <Grid item xs={12} sm={12} md={12}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">TURN <CustomPopupState message={i18next.t("turn_server_configuration_popup", "Configure a TURN server to establish a connection when peer-to-peer communication is not possible")} /></FormLabel>
+                      <FormLabel component="legend">
+                        TURN{" "}
+                        <CustomPopupState
+                          message={i18next.t(
+                            "turn_server_configuration_popup",
+                            "Configure a TURN server to establish a connection when peer-to-peer communication is not possible"
+                          )}
+                        />
+                      </FormLabel>
                       <RadioGroup
                         value={selectedTurnOption}
                         aria-label="gender"
@@ -427,12 +457,18 @@ export default function EditBlueprintConfiguration(props) {
                         <FormControlLabel
                           value="defaultTurn"
                           control={<StyledRadio />}
-                          label={i18next.t("use_jami_default_turn_configuration", "Use Jami default TURN configuration")}
+                          label={i18next.t(
+                            "use_jami_default_turn_configuration",
+                            "Use Jami default TURN configuration"
+                          )}
                         />
                         <FormControlLabel
                           value="customTurn"
                           control={<StyledRadio />}
-                          label={i18next.t("use_a_custom_turn_configuration", "Use a custom TURN configuration")}
+                          label={i18next.t(
+                            "use_a_custom_turn_configuration",
+                            "Use a custom TURN configuration"
+                          )}
                         />
                         <FormGroup
                           row
@@ -445,7 +481,10 @@ export default function EditBlueprintConfiguration(props) {
                         >
                           <FormControl className={classes.margin} size="large">
                             <InputLabel htmlFor="turnServer">
-                            {i18next.t("turn_server_address", "TURN Server address")}
+                              {i18next.t(
+                                "turn_server_address",
+                                "TURN Server address"
+                              )}
                             </InputLabel>
                             <Input
                               id="turnServer"
@@ -477,7 +516,10 @@ export default function EditBlueprintConfiguration(props) {
                         >
                           <FormControl className={classes.margin} size="large">
                             <InputLabel htmlFor="turnServerUserName">
-                              {i18next.t("turn_server_username", "TURN server username")}
+                              {i18next.t(
+                                "turn_server_username",
+                                "TURN server username"
+                              )}
                             </InputLabel>
                             <Input
                               id="turnServerUserName"
@@ -509,7 +551,10 @@ export default function EditBlueprintConfiguration(props) {
                         >
                           <FormControl className={classes.margin} size="large">
                             <InputLabel htmlFor="turnServerPassword">
-                            {i18next.t("turn_server_password", "TURN server password")}
+                              {i18next.t(
+                                "turn_server_password",
+                                "TURN server password"
+                              )}
                             </InputLabel>
                             <Input
                               disabled={!turnEnabled}
@@ -548,7 +593,10 @@ export default function EditBlueprintConfiguration(props) {
                         <FormControlLabel
                           value="disabledTurn"
                           control={<StyledRadio />}
-                          label={i18next.t("disable_turn_configuration", "Disable TURN configuration")}
+                          label={i18next.t(
+                            "disable_turn_configuration",
+                            "Disable TURN configuration"
+                          )}
                         />
                       </RadioGroup>
                     </FormControl>
@@ -556,7 +604,15 @@ export default function EditBlueprintConfiguration(props) {
                   <Grid item xs={12} sm={12} md={4}></Grid>
                   <Grid item xs={12} sm={12} md={12}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">DHT Proxy <CustomPopupState message={i18next.t("dht_configuration_popup", "Configure the DHT proxy server used by this account")} /></FormLabel>
+                      <FormLabel component="legend">
+                        DHT Proxy{" "}
+                        <CustomPopupState
+                          message={i18next.t(
+                            "dht_configuration_popup",
+                            "Configure the DHT proxy server used by this account"
+                          )}
+                        />
+                      </FormLabel>
                       <RadioGroup
                         value={selectedDHTProxyOption}
                         aria-label="gender"
@@ -566,12 +622,18 @@ export default function EditBlueprintConfiguration(props) {
                         <FormControlLabel
                           value="defaultDHTProxy"
                           control={<StyledRadio />}
-                          label={i18next.t("use_jami_default_dht_proxy_configuration", "Use Jami default DHT Proxy configuration")}
+                          label={i18next.t(
+                            "use_jami_default_dht_proxy_configuration",
+                            "Use Jami default DHT Proxy configuration"
+                          )}
                         />
                         <FormControlLabel
                           value="customDHTProxy"
                           control={<StyledRadio />}
-                          label={i18next.t("use_a_custom_dht_proxy_configuration", "Use a custom DHT Proxy configuration")}
+                          label={i18next.t(
+                            "use_a_custom_dht_proxy_configuration",
+                            "Use a custom DHT Proxy configuration"
+                          )}
                         />
                         <FormGroup row>
                           <FormControl
@@ -585,7 +647,10 @@ export default function EditBlueprintConfiguration(props) {
                             }}
                           >
                             <InputLabel htmlFor="proxyServer">
-                            {i18next.t("dht_proxy_server_name", "DHT proxy server name")}
+                              {i18next.t(
+                                "dht_proxy_server_name",
+                                "DHT proxy server name"
+                              )}
                             </InputLabel>
                             <Input
                               id="proxyServer"
@@ -618,7 +683,10 @@ export default function EditBlueprintConfiguration(props) {
                             }}
                           >
                             <InputLabel htmlFor="dhtProxyListUrl">
-                              {i18next.t("dht_proxy_list_url", "DHT proxy List URL")}
+                              {i18next.t(
+                                "dht_proxy_list_url",
+                                "DHT proxy List URL"
+                              )}
                             </InputLabel>
                             <Input
                               id="proxyServer"
@@ -642,7 +710,10 @@ export default function EditBlueprintConfiguration(props) {
                         <FormControlLabel
                           value="disabledDHTProxy"
                           control={<StyledRadio />}
-                          label={i18next.t("disable_dht_proxy_configuration", "Disable DHT Proxy configuration")}
+                          label={i18next.t(
+                            "disable_dht_proxy_configuration",
+                            "Disable DHT Proxy configuration"
+                          )}
                         />
                       </RadioGroup>
                     </FormControl>

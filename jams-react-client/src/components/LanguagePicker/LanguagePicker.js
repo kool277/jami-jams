@@ -12,44 +12,46 @@ import { useTranslation } from "react-i18next";
 
 export default function LanguagePicker(props) {
   const history = useHistory();
-  const [language, setLanguage] = React.useState(i18next.language || window.localStorage.i18nextLng || "en");
+  const [language, setLanguage] = React.useState(
+    i18next.language || window.localStorage.i18nextLng || "en"
+  );
   const [languages, setLanguages] = React.useState([]);
 
   const { i18n } = useTranslation();
 
   const handleChange = (value) => {
     setLanguage(value);
-    i18n.changeLanguage(value).then(()=>{
+    i18n.changeLanguage(value).then(() => {
       history.push(props.navigationTarget);
-    })
+    });
   };
 
   useEffect(() => {
-    fetch("/available_languages.json").then(res => res.json()).then((result) => {
-      const response = result.languages;
-      let translates_languages = [{ "code": "en", "name": "English"}];
-      
-      response.forEach((lang) =>
-      {
-        if(result.stats[lang.code]["translated"]["percentage"] > 0.01){
-          translates_languages.push(lang);
-        } 
-      })
+    fetch("/available_languages.json")
+      .then((res) => res.json())
+      .then((result) => {
+        const response = result.languages;
+        let translates_languages = [{ code: "en", name: "English" }];
 
-      let exists = false;
-      translates_languages.map((option) => {
-        if (option.code === language) {
-          exists = true;
+        response.forEach((lang) => {
+          if (result.stats[lang.code]["translated"]["percentage"] > 0.01) {
+            translates_languages.push(lang);
+          }
+        });
+
+        let exists = false;
+        translates_languages.map((option) => {
+          if (option.code === language) {
+            exists = true;
+          }
+        });
+        if (!exists) {
+          setLanguage("en");
+          i18n.changeLanguage("en");
         }
-      })
-      if (!exists ) {
-        setLanguage("en");
-        i18n.changeLanguage("en");
-      }
-      setLanguages(translates_languages)
-    })
-
-  }, [language])
+        setLanguages(translates_languages);
+      });
+  }, [language]);
 
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">

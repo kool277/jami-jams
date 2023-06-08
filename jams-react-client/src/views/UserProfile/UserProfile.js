@@ -65,7 +65,7 @@ export default function UserProfile(props) {
   };
 
   React.useEffect(() => {
-    if(props.username === "null") {
+    if (props.username === "null") {
       history.push("/");
     }
   }, []);

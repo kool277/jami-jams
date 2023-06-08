@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,9 +18,9 @@ import UserProfile from "views/UserProfile/UserProfile.js";
 import InfoIcon from "@material-ui/icons/Info";
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
 import Search from "@material-ui/icons/Search";
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from "auth.js";
@@ -68,9 +68,8 @@ const styles = {
     alignItems: "center",
   },
   cardBodyContent: {
-
-    wordWrap: "break-word"
-  }  
+    wordWrap: "break-word",
+  },
 };
 const useStyles = makeStyles(styles);
 export default function Users(props) {
@@ -83,7 +82,7 @@ export default function Users(props) {
   const [createUser, setCreateUser] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-  const [showRevokedUsers, setShowRevokedUsers] = React.useState(false)
+  const [showRevokedUsers, setShowRevokedUsers] = React.useState(false);
 
   const [searchValue, setSearchValue] = React.useState("");
 
@@ -181,24 +180,22 @@ export default function Users(props) {
         <GridItem xs={12} sm={12} md={12}>
           {auth.isLocalDirectory() && auth.hasAdminScope() && (
             <Link to={"/createuser"}>
-              <Button
-                variant="contained"
-                color="primary"
-              >
+              <Button variant="contained" color="primary">
                 <AddCircleOutlineIcon />{" "}
                 {i18next.t("create_user", "Create user")}
               </Button>
             </Link>
           )}
           <FormControlLabel
-            control={          
-            <Checkbox
-              checked={showRevokedUsers}
-              onChange={() => setShowRevokedUsers(!showRevokedUsers)}
-              inputProps={{ 'aria-label': 'primary checkbox' }}
-              color="primary"              
-            />}
-            style={{marginLeft: "1rem"}}
+            control={
+              <Checkbox
+                checked={showRevokedUsers}
+                onChange={() => setShowRevokedUsers(!showRevokedUsers)}
+                inputProps={{ "aria-label": "primary checkbox" }}
+                color="primary"
+              />
+            }
+            style={{ marginLeft: "1rem" }}
             label="Display revoked users"
           />
 
@@ -210,8 +207,10 @@ export default function Users(props) {
                     className: classes.margin + " " + classes.search,
                   }}
                   inputProps={{
-                    placeholder:
-                    i18next.t("search_users_using", "Search users using (username, first name, last name)"),
+                    placeholder: i18next.t(
+                      "search_users_using",
+                      "Search users using (username, first name, last name)"
+                    ),
                     inputProps: {
                       "aria-label": i18next.t("search_users", "Search users"),
                     },
@@ -242,7 +241,9 @@ export default function Users(props) {
             <div className={classes.usersNotFound}>
               <InfoIcon />
 
-          <p style={{ marginLeft: "10px" }}>{i18next.t("no_users_found", "No users found")}</p>
+              <p style={{ marginLeft: "10px" }}>
+                {i18next.t("no_users_found", "No users found")}
+              </p>
             </div>
           )}
         </GridItem>
@@ -258,64 +259,60 @@ export default function Users(props) {
               return 0;
             })
             .map((user) => (
-              <GridItem
-                xs={12}
-                sm={6}
-                md={3}
-                lg={2}
-                xl={2}
-                
-                key={user.username}
-              >
-                <Card profile >
+              <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={user.username}>
+                <Card profile>
                   <Link to={`/user/${user.username}`}>
                     <CardBody profile>
                       <CardAvatar profile>
                         <img
                           src={
                             user.profilePicture
-                              ? "data:image/png;base64, " +
-                                user.profilePicture
+                              ? "data:image/png;base64, " + user.profilePicture
                               : noProfilePicture
                           }
                           alt="..."
                         />
                       </CardAvatar>
-                      
+
                       <GridContainer
-                          container
-                          direction="column"
-                          justify="flex-end"
-                          alignItems="flex-start"
-                        >
-                        <GridItem style={{ minHeight:"50px"}}>
-                            <h4 className={classes.cardTitle}>
+                        container
+                        direction="column"
+                        justify="flex-end"
+                        alignItems="flex-start"
+                      >
+                        <GridItem style={{ minHeight: "50px" }}>
+                          <h4 className={classes.cardTitle}>
                             {`${user.firstName} ${user.lastName}`}
                           </h4>
                         </GridItem>
                         <GridItem>
                           <ul className={classes.cardBodyContent}>
-                          <li>
-                            <img
-                              src={jami}
-                              width="20px"
-                              alt="Jami"
-                              style={{ minWidth:"20px", marginRight: "10px" }}
-                            />{" "}
-                            {user.username}
-                          </li>
-                          <li>
-                            {user.organization && <BusinessOutlinedIcon
-                              fontSize="small"
-                              style={{ marginRight: "10px" }}
-                            />}{" "}
-                            {user.organization}
-                          </li>
-                        </ul>
+                            <li>
+                              <img
+                                src={jami}
+                                width="20px"
+                                alt="Jami"
+                                style={{
+                                  minWidth: "20px",
+                                  marginRight: "10px",
+                                }}
+                              />{" "}
+                              {user.username}
+                            </li>
+                            <li>
+                              {user.organization && (
+                                <BusinessOutlinedIcon
+                                  fontSize="small"
+                                  style={{ marginRight: "10px" }}
+                                />
+                              )}{" "}
+                              {user.organization}
+                            </li>
+                          </ul>
                         </GridItem>
                       </GridContainer>
-                      </CardBody>
-                    </Link>
+                    </CardBody>
+                  </Link>
                 </Card>
               </GridItem>
             ))}
@@ -324,7 +321,10 @@ export default function Users(props) {
             <InfoIcon />
 
             <p style={{ marginLeft: "10px" }}>
-                {i18next.t("no_users_found_matching", "No users found matching search value!")}
+              {i18next.t(
+                "no_users_found_matching",
+                "No users found matching search value!"
+              )}
             </p>
           </div>
         )}

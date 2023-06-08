@@ -11,7 +11,7 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 // @material-ui/icons
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Person from "@material-ui/icons/Person";
 import Group from "@material-ui/icons/Group";
 import AllInbox from "@material-ui/icons/AllInbox";
@@ -30,12 +30,9 @@ import logo from "assets/img/jams_logo_white_no_gnu_package.svg";
 
 import auth from "auth";
 import configApiCall from "api.js";
-import {
-  api_path_get_start_update
-} from "globalUrls";
+import { api_path_get_start_update } from "globalUrls";
 
 import axios from "axios";
-
 
 import Dialog from "@material-ui/core/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
@@ -77,7 +74,7 @@ export default function Admin(props) {
       icon: AccountCircleIcon,
       component: Users,
       layout: "/admin",
-      admin: false
+      admin: false,
     },
     {
       path: "/users",
@@ -85,7 +82,7 @@ export default function Admin(props) {
       icon: Person,
       component: Users,
       layout: "/admin",
-      admin: false
+      admin: false,
     },
     {
       path: "/groups",
@@ -93,7 +90,7 @@ export default function Admin(props) {
       icon: Group,
       component: Groups,
       layout: "/admin",
-      admin: true
+      admin: true,
     },
     {
       path: "/blueprints",
@@ -101,7 +98,7 @@ export default function Admin(props) {
       icon: AllInbox,
       component: Blueprints,
       layout: "/admin",
-      admin: true
+      admin: true,
     },
     {
       path: "/settings",
@@ -109,7 +106,7 @@ export default function Admin(props) {
       icon: SettingsIcon,
       component: Settings,
       layout: "/admin",
-      admin: true
+      admin: true,
     },
   ];
 
@@ -127,20 +124,29 @@ export default function Admin(props) {
     if (auth.hasAdminScope()) {
       if (auth.isActivated()) {
         setDialogMessage(
-          i18next.t("new_version_jams_available", "A new version of JAMS is available. Would you like to update now?")
+          i18next.t(
+            "new_version_jams_available",
+            "A new version of JAMS is available. Would you like to update now?"
+          )
         );
         setMessageYes("Update Now");
         setMessageNo("Update Later");
       } else {
         setDialogMessage(
-          i18next.t("running_community_version_jams", "You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?")
+          i18next.t(
+            "running_community_version_jams",
+            "You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?"
+          )
         );
         setMessageYes("Yes, go to Jami Store");
         setMessageNo("No thanks");
       }
     } else {
       setDialogMessage(
-        i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")
+        i18next.t(
+          "you_are_not_allowed_to_access_this_section",
+          "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
+        )
       );
     }
   };
@@ -151,7 +157,12 @@ export default function Admin(props) {
       auth.getUpdates(() => {
         if (auth.isUpdateAvailable()) {
           setOpen(true);
-          setMessage(i18next.t("an_update_is_available_for_jams", "An update is available for JAMS."));
+          setMessage(
+            i18next.t(
+              "an_update_is_available_for_jams",
+              "An update is available for JAMS."
+            )
+          );
         }
       });
     });
@@ -180,14 +191,24 @@ export default function Admin(props) {
   const handleUpdate = () => {
     setQuery(false);
     if (auth.isActivated()) {
-      setSnackbarMessage(i18next.t("updating_jams_shutting_down_shortly", "Updating JAMS, shutting down shortly..."));
+      setSnackbarMessage(
+        i18next.t(
+          "updating_jams_shutting_down_shortly",
+          "Updating JAMS, shutting down shortly..."
+        )
+      );
       axios(configApiCall(api_path_get_start_update, "POST", null, null))
         .then(() => {
           handleCancel();
           setUpdating(true);
         })
         .catch((error) => {
-          setSnackbarMessage(i18next.t("error_while_attempting_update_jams", "Error occurred while attempting to update JAMS:") + error);
+          setSnackbarMessage(
+            i18next.t(
+              "error_while_attempting_update_jams",
+              "Error occurred while attempting to update JAMS:"
+            ) + error
+          );
         });
     }
   };
@@ -235,14 +256,11 @@ export default function Admin(props) {
       />
 
       <div className={classes.mainPanel} ref={mainPanel}>
-            <Navbar
-                routes={Routes}
-                handleDrawerToggle={handleDrawerToggle}
-            />
-            <div className={classes.content}>
-                <div className={classes.container}>{props.component}</div>
-            </div>
-            <Footer />
+        <Navbar routes={Routes} handleDrawerToggle={handleDrawerToggle} />
+        <div className={classes.content}>
+          <div className={classes.container}>{props.component}</div>
+        </div>
+        <Footer />
       </div>
     </div>
   );

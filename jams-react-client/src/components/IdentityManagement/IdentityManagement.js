@@ -20,7 +20,7 @@ import AdStorageForm from "./AdStorageForm";
 import auth from "../../auth";
 import * as Yup from "yup";
 
-import i18next from 'i18next';
+import i18next from "i18next";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -63,10 +63,18 @@ export default function IdentityManagement(props) {
   };
 
   const validationSchemaLDAPform = Yup.object().shape({
-    servername: Yup.string().required(i18next.t("servername_is_required", "Server name is required.")),
-    ldapadminusername: Yup.string().required(i18next.t("username_is_required", "Username is required!")),
-    ldappassword: Yup.string().required(i18next.t("password_is_required", "Password is required!")),
-    basedn: Yup.string().required(i18next.t("domain_name_is_required", "Domain name is required.")),
+    servername: Yup.string().required(
+      i18next.t("servername_is_required", "Server name is required.")
+    ),
+    ldapadminusername: Yup.string().required(
+      i18next.t("username_is_required", "Username is required!")
+    ),
+    ldappassword: Yup.string().required(
+      i18next.t("password_is_required", "Password is required!")
+    ),
+    basedn: Yup.string().required(
+      i18next.t("domain_name_is_required", "Domain name is required.")
+    ),
   });
 
   const validationSchemaADform = Yup.object().shape({
@@ -74,11 +82,21 @@ export default function IdentityManagement(props) {
       .typeError(i18next.t("port_must_be_a_number", "Port must be a number."))
       .positive(i18next.t("port_must_be_positive", "Port must be positive."))
       .integer(i18next.t("port_must_be_an_integer", "Port must be an integer."))
-      .required(i18next.t("port_number_is_required", "Port number is required.")),
-    host: Yup.string().required(i18next.t("host_is_required", "Host is required.")),
-    adadminusername: Yup.string().required(i18next.t("username_is_required", "Username is required!")),
-    domainname: Yup.string().required(i18next.t("domain_name_is_required", "Domain name is required.")),
-    adpassword: Yup.string().required(i18next.t("password_is_required", "Password is required!")),
+      .required(
+        i18next.t("port_number_is_required", "Port number is required.")
+      ),
+    host: Yup.string().required(
+      i18next.t("host_is_required", "Host is required.")
+    ),
+    adadminusername: Yup.string().required(
+      i18next.t("username_is_required", "Username is required!")
+    ),
+    domainname: Yup.string().required(
+      i18next.t("domain_name_is_required", "Domain name is required.")
+    ),
+    adpassword: Yup.string().required(
+      i18next.t("password_is_required", "Password is required!")
+    ),
   });
 
   const directoryTypes = [
@@ -221,7 +239,10 @@ export default function IdentityManagement(props) {
       })
       .catch(() => {
         props.setErrorMessage(
-          i18next.t("information_appears_incorrect_connection_directory_failed", "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again.")
+          i18next.t(
+            "information_appears_incorrect_connection_directory_failed",
+            "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again."
+          )
         );
         props.setError(true);
       });
@@ -237,7 +258,10 @@ export default function IdentityManagement(props) {
       })
       .catch(() => {
         props.setErrorMessage(
-          i18next.t("information_appears_incorrect_connection_directory_failed", "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again.")
+          i18next.t(
+            "information_appears_incorrect_connection_directory_failed",
+            "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again."
+          )
         );
         props.setError(true);
       });
@@ -283,12 +307,15 @@ export default function IdentityManagement(props) {
     return (
       <form className={classes.form} noValidate onSubmit={handleLocalSubmit}>
         <Typography variant="h5" gutterBottom color="primary">
-        {i18next.t("identity_management", "Identity Management")}
+          {i18next.t("identity_management", "Identity Management")}
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Typography variant="body1" gutterBottom>
-            {i18next.t("select_type_of_user_directory", "Select the type of user directory to be integrated with JAMS")}
+              {i18next.t(
+                "select_type_of_user_directory",
+                "Select the type of user directory to be integrated with JAMS"
+              )}
             </Typography>
             <Select
               labelId="demo-simple-select-label"
@@ -341,7 +368,10 @@ export default function IdentityManagement(props) {
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Typography variant="body1" gutterBottom>
-                  {i18next.t("select_type_of_user_directory", "Select the type of user directory to be integrated with JAMS")}
+                    {i18next.t(
+                      "select_type_of_user_directory",
+                      "Select the type of user directory to be integrated with JAMS"
+                    )}
                   </Typography>
                   <Select
                     labelId="demo-simple-select-label"
@@ -361,7 +391,10 @@ export default function IdentityManagement(props) {
                 color="primary"
                 className={classes.submit}
               >
-                {i18next.t("set_identity_parameters", "Set identity parameters")}
+                {i18next.t(
+                  "set_identity_parameters",
+                  "Set identity parameters"
+                )}
               </Button>
             </form>
           );
@@ -394,7 +427,10 @@ export default function IdentityManagement(props) {
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Typography variant="body1" gutterBottom>
-                  {i18next.t("select_type_of_user_directory", "Select the type of user directory to be integrated with JAMS")}
+                    {i18next.t(
+                      "select_type_of_user_directory",
+                      "Select the type of user directory to be integrated with JAMS"
+                    )}
                   </Typography>
                   <Select
                     labelId="demo-simple-select-label"
@@ -414,7 +450,10 @@ export default function IdentityManagement(props) {
                 color="primary"
                 className={classes.submit}
               >
-                {i18next.t("set_identity_parameters", "Set identity parameters")}
+                {i18next.t(
+                  "set_identity_parameters",
+                  "Set identity parameters"
+                )}
               </Button>
             </form>
           );

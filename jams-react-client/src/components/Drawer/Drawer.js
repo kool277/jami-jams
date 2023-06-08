@@ -18,13 +18,13 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     [theme.breakpoints.up("xl")]: {
       width: "400px",
-    }
+    },
   },
   fullList: {
     width: "100%",
     [theme.breakpoints.up("xl")]: {
       width: "400px",
-    }
+    },
   },
   search: {
     width: "100%",
@@ -38,54 +38,66 @@ const useStyles = makeStyles((theme) => ({
 export default function TemporaryDrawer(props) {
   const classes = useStyles();
 
-  useEffect(() => {
-  }, []);
-
+  useEffect(() => {}, []);
 
   const listUsers = () => (
     <List>
-      {props.type === "user" ? ( props.targets && props.targets.filter((target) => !props.existingTargets.some(t => target.username == t.username)).map((target) => (
-        <ListItem
-          button
-          key={target.username}
-          onClick={() => {
-            props.addElementToTarget(target);
-            props.setOpenDrawer(false);
-          }}
-        >
-          <Avatar
-            style={{ marginRight: "10px" }}
-            alt={target.username}
-            src={
-              target.profilePicture
-                ? "data:image/png;base64, " + target.profilePicture
-                : noProfilePicture
-            }
-          />
-          <ListItemText
-            primary={
-              target.username === ""
-                ? target.id
-                : target.firstName === "" || target.lastName === ""
-                ? target.username
-                : target.firstName + " " + target.lastName
-            }
-          />
-        </ListItem>
-      ))) : ( props.targets && props.targets.filter((target) => !props.existingTargets.some(t => target.name == t.name)).map((target) => (      
-        <ListItem
-          button
-          key={target.name}
-          onClick={() => {
-            props.addElementToTarget(target);
-            props.setOpenDrawer(false);
-          }}
-        >
-          <ListItemText
-            primary={target.name}
-          />
-        </ListItem>
-      )))}
+      {props.type === "user"
+        ? props.targets &&
+          props.targets
+            .filter(
+              (target) =>
+                !props.existingTargets.some(
+                  (t) => target.username == t.username
+                )
+            )
+            .map((target) => (
+              <ListItem
+                button
+                key={target.username}
+                onClick={() => {
+                  props.addElementToTarget(target);
+                  props.setOpenDrawer(false);
+                }}
+              >
+                <Avatar
+                  style={{ marginRight: "10px" }}
+                  alt={target.username}
+                  src={
+                    target.profilePicture
+                      ? "data:image/png;base64, " + target.profilePicture
+                      : noProfilePicture
+                  }
+                />
+                <ListItemText
+                  primary={
+                    target.username === ""
+                      ? target.id
+                      : target.firstName === "" || target.lastName === ""
+                      ? target.username
+                      : target.firstName + " " + target.lastName
+                  }
+                />
+              </ListItem>
+            ))
+        : props.targets &&
+          props.targets
+            .filter(
+              (target) =>
+                !props.existingTargets.some((t) => target.name == t.name)
+            )
+            .map((target) => (
+              <ListItem
+                button
+                key={target.name}
+                onClick={() => {
+                  props.addElementToTarget(target);
+                  props.setOpenDrawer(false);
+                }}
+              >
+                <ListItemText primary={target.name} />
+              </ListItem>
+            ))}
     </List>
   );
 
@@ -111,7 +123,8 @@ export default function TemporaryDrawer(props) {
         >
           <div
             className={clsx(classes.list, {
-              [classes.fullList]: props.direction === "top" || props.direction === "bottom",
+              [classes.fullList]:
+                props.direction === "top" || props.direction === "bottom",
             })}
             role="presentation"
           >

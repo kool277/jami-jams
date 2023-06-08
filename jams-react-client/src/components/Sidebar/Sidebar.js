@@ -56,13 +56,14 @@ export default function Sidebar(props) {
 
   var links = (
     <List className={classes.list}>
-      <ListItem
-        className={classes.itemLink}
-      >{brand}</ListItem>
-      <div className={classes.itemLinkSeparator}><hr/></div>
+      <ListItem className={classes.itemLink}>{brand}</ListItem>
+      <div className={classes.itemLinkSeparator}>
+        <hr />
+      </div>
       {routes.map((prop, key) => {
-        if( prop.admin && !auth.hasAdminScope()) return;
-        if( !prop.admin && auth.hasAdminScope() && prop.path === "/user/admin") return;
+        if (prop.admin && !auth.hasAdminScope()) return;
+        if (!prop.admin && auth.hasAdminScope() && prop.path === "/user/admin")
+          return;
         var activePro = " ";
         var listItemClasses;
         if (prop.path === "/upgrade-to-pro") {
@@ -96,23 +97,28 @@ export default function Sidebar(props) {
               key={key}
             >
               <Link to={`${prop.path}`}>
-                <ListItem
-                  button
-                  className={classes.itemLink + listItemClasses}
-                >
+                <ListItem button className={classes.itemLink + listItemClasses}>
                   {typeof prop.icon === "string" ? (
                     <Icon
-                      className={classNames(classes.itemIcon, whiteFontClasses, {
-                        [classes.itemIconRTL]: props.rtlActive,
-                      })}
+                      className={classNames(
+                        classes.itemIcon,
+                        whiteFontClasses,
+                        {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        }
+                      )}
                     >
                       {prop.icon}
                     </Icon>
                   ) : (
                     <prop.icon
-                      className={classNames(classes.itemIcon, whiteFontClasses, {
-                        [classes.itemIconRTL]: props.rtlActive,
-                      })}
+                      className={classNames(
+                        classes.itemIcon,
+                        whiteFontClasses,
+                        {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        }
+                      )}
                     />
                   )}
                   <ListItemText
@@ -133,7 +139,6 @@ export default function Sidebar(props) {
 
   var bottomLinks = (
     <List className={classes.bottomlist}>
-
       {open && (
         <ListItem
           button

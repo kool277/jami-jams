@@ -31,7 +31,7 @@ import GroupsRoute from "routes/GroupsRoute.js";
 import GroupRoute from "routes/GroupRoute.js";
 import BlueprintsRoute from "routes/BlueprintsRoute.js";
 import BlueprintRoute from "routes/BlueprintRoute.js";
-import SettingsRoute from  "routes/SettingsRoute.js";
+import SettingsRoute from "routes/SettingsRoute.js";
 
 import SignIn from "layouts/SignIn.js";
 
@@ -54,7 +54,10 @@ auth.checkServerInstalled(() => {
               <ProtectedRoute path="/groups" component={GroupsRoute} />
               <ProtectedRoute path="/group/:groupid" component={GroupRoute} />
               <ProtectedRoute path="/blueprints" component={BlueprintsRoute} />
-              <ProtectedRoute path="/blueprint/:blueprintname" component={BlueprintRoute} />
+              <ProtectedRoute
+                path="/blueprint/:blueprintname"
+                component={BlueprintRoute}
+              />
               <ProtectedRoute path="/settings" component={SettingsRoute} />
               <Redirect from="/" to="/signin" />
             </Switch>

@@ -7,14 +7,17 @@ import TextField from "@material-ui/core/TextField";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
-import i18next from 'i18next';
+import i18next from "i18next";
 
 export default function AdStorageForm(props) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
-        {i18next.t("active_directory_server_informations", "Active Directory server information")}
+          {i18next.t(
+            "active_directory_server_informations",
+            "Active Directory server information"
+          )}
         </Typography>
       </Grid>
       <Grid item xs={6}>

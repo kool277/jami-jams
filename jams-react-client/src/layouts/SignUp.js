@@ -110,7 +110,7 @@ export default function SignUp(props) {
         <Box mt={8}>
           <Copyright />
         </Box>
-        <Box mt={8} justifyContent="center" >
+        <Box mt={8} justifyContent="center">
           <LanguagePicker navigationTarget={"/"} />
         </Box>
       </Paper>

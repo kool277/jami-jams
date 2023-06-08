@@ -4,8 +4,6 @@ import Blueprints from "views/Blueprints/Blueprints.js";
 
 import ListLayout from "layouts/ListLayout.js";
 
-export default function BlueprintsRoute () {
-    return (
-        <ListLayout component={<Blueprints />} />
-    )
+export default function BlueprintsRoute() {
+  return <ListLayout component={<Blueprints />} />;
 }

@@ -51,15 +51,41 @@ export default function CreateAdmin(props) {
     },
     validationSchema: Yup.object({
       username: Yup.string()
-        .max(60, i18next.t("must_be_60_characters_or_less", "Must be 60 characters or less"))
+        .max(
+          60,
+          i18next.t(
+            "must_be_60_characters_or_less",
+            "Must be 60 characters or less"
+          )
+        )
         .required(i18next.t("username_is_required", "Username is required!")),
       password: Yup.string()
-        .max(50, i18next.t("must_be_50_characters_or_less", "Must be 50 characters or less"))
+        .max(
+          50,
+          i18next.t(
+            "must_be_50_characters_or_less",
+            "Must be 50 characters or less"
+          )
+        )
         .required("Password is required"),
       confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], i18next.t("password_must_match", "Passwords must match"))
-        .max(50, i18next.t("must_be_50_characters_or_less", "Must be 50 characters or less"))
-        .required(i18next.t("password_confirmation_required", "Password confirmation is required.")),
+        .oneOf(
+          [Yup.ref("password"), null],
+          i18next.t("password_must_match", "Passwords must match")
+        )
+        .max(
+          50,
+          i18next.t(
+            "must_be_50_characters_or_less",
+            "Must be 50 characters or less"
+          )
+        )
+        .required(
+          i18next.t(
+            "password_confirmation_required",
+            "Password confirmation is required."
+          )
+        ),
     }),
 
     onSubmit: (values) => {
@@ -82,13 +108,13 @@ export default function CreateAdmin(props) {
       password: values.password,
     };
     axios(configApiCall(api_path_post_install_admin, "PUT", jsonData, null))
-        .then((response) => {
-          createAdminCallBackHandler(response);
-        })
-        .catch((error) => {
-          props.setErrorMessage(error);
-          props.setError(true);
-        });
+      .then((response) => {
+        createAdminCallBackHandler(response);
+      })
+      .catch((error) => {
+        props.setErrorMessage(error);
+        props.setError(true);
+      });
   }
 
   return (

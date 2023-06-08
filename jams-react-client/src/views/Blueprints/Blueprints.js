@@ -18,7 +18,7 @@ import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
 import GroupIcon from "@material-ui/icons/Group";
-import PersonIcon from '@material-ui/icons/Person';
+import PersonIcon from "@material-ui/icons/Person";
 import Search from "@material-ui/icons/Search";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import InfoIcon from "@material-ui/icons/Info";
@@ -81,7 +81,7 @@ const styles = {
   },
   whiteButtonText: {
     color: "white",
-  }
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -239,7 +239,6 @@ export default function Blueprints() {
     history.push("/blueprints");
   };
 
-
   return (
     <div>
       <Dialog
@@ -249,7 +248,7 @@ export default function Blueprints() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-        {i18next.t("create_blueprint", "Create blueprint")}
+          {i18next.t("create_blueprint", "Create blueprint")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -259,7 +258,7 @@ export default function Blueprints() {
               error={blueprintNameExits}
             >
               <InputLabel htmlFor="blueprintName">
-              {i18next.t("blueprint_name", "Blueprint name")}
+                {i18next.t("blueprint_name", "Blueprint name")}
               </InputLabel>
               <Input
                 id="blueprintName"
@@ -276,15 +275,29 @@ export default function Blueprints() {
               />
             </FormControl>
             {disableCreate && blueprintName.length > 0 && (
-              <p>{i18next.t("blueprint_name_already_exists", "Blueprint name already exists!")}</p>
+              <p>
+                {i18next.t(
+                  "blueprint_name_already_exists",
+                  "Blueprint name already exists!"
+                )}
+              </p>
             )}
             {disableCreate && blueprintName.length === 0 && (
-              <p>{i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}</p>
+              <p>
+                {i18next.t(
+                  "blueprint_name_is_empty",
+                  "Blueprint name is empty"
+                )}
+              </p>
             )}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="info" className={classes.whiteButtonText}>
+          <Button
+            onClick={handleClose}
+            color="info"
+            className={classes.whiteButtonText}
+          >
             Cancel
           </Button>
           <Button
@@ -304,23 +317,23 @@ export default function Blueprints() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-        {i18next.t("remove_blueprint", "Remove blueprint")}
+          {i18next.t("remove_blueprint", "Remove blueprint")}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-          {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")}{" "}
+            {i18next.t(
+              "are_you_sure_you_want_to_delete",
+              "Are you sure you want to delete"
+            )}{" "}
             <strong>{removedBlueprint}</strong> ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => setOpenRemoveDialog(false)}
-            color="primary"
-          >
+          <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
             {i18next.t("cancel", "Cancel")}
           </Button>
           <Button onClick={removeBlueprint} color="info" autoFocus>
-          {i18next.t("remove", "Remove")}
+            {i18next.t("remove", "Remove")}
           </Button>
         </DialogActions>
       </Dialog>
@@ -332,7 +345,8 @@ export default function Blueprints() {
             href="#contained-buttons"
             onClick={(e) => setOpen(true)}
           >
-            <AddCircleOutlineIcon /> {i18next.t("create_blueprint", "Create blueprint")}
+            <AddCircleOutlineIcon />{" "}
+            {i18next.t("create_blueprint", "Create blueprint")}
           </Button>
           <div className={classes.searchWrapper}>
             {!zeroBlueprint && (
@@ -341,9 +355,15 @@ export default function Blueprints() {
                   className: classes.margin + " " + classes.search,
                 }}
                 inputProps={{
-                  placeholder: i18next.t("search_blueprints_placeholder", "Search blueprints…"),
+                  placeholder: i18next.t(
+                    "search_blueprints_placeholder",
+                    "Search blueprints…"
+                  ),
                   inputProps: {
-                    "aria-label": i18next.t("search_blueprints", "Search blueprints"),
+                    "aria-label": i18next.t(
+                      "search_blueprints",
+                      "Search blueprints"
+                    ),
                   },
                   onKeyUp: (e) => setSearchValue(e.target.value),
                 }}
@@ -360,17 +380,13 @@ export default function Blueprints() {
         {zeroBlueprint ? (
           <div className={classes.blueprintsNotFound}>
             <InfoIcon />
-              <p style={{ marginLeft: "10px" }}>{i18next.t("no_blueprints_found", "No blueprints found")}</p>
+            <p style={{ marginLeft: "10px" }}>
+              {i18next.t("no_blueprints_found", "No blueprints found")}
+            </p>
           </div>
         ) : (
           blueprints.map((blueprint) => (
-            <GridItem
-            xs={12}
-            sm={6}
-            md={3}
-            lg={2}
-            xl={2}
-            key={blueprint.name}>
+            <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={blueprint.name}>
               <Card profile>
                 <Link to={`/blueprint/${blueprint.name}`}>
                   <CardBody profile>
@@ -381,18 +397,27 @@ export default function Blueprints() {
                     </h3>
                     <ul>
                       <li>
-                        {JSON.parse(blueprint.policyData).rendezVous == true ? (<p><GroupIcon
-                          fontSize="small"
-                          style={{ marginRight: "10px" }}
-                        />{i18next.t("rendezvous", "Rendezvous")}</p>) : <p><PersonIcon
-                        fontSize="small"
-                        style={{ marginRight: "10px" }}
-                      />{i18next.t("standalone", "Standalone")}</p>
-                        }
+                        {JSON.parse(blueprint.policyData).rendezVous == true ? (
+                          <p>
+                            <GroupIcon
+                              fontSize="small"
+                              style={{ marginRight: "10px" }}
+                            />
+                            {i18next.t("rendezvous", "Rendezvous")}
+                          </p>
+                        ) : (
+                          <p>
+                            <PersonIcon
+                              fontSize="small"
+                              style={{ marginRight: "10px" }}
+                            />
+                            {i18next.t("standalone", "Standalone")}
+                          </p>
+                        )}
                       </li>
                     </ul>
-                    </CardBody>
-                  </Link>
+                  </CardBody>
+                </Link>
                 <CardFooter>
                   <IconButton
                     color="secondary"

@@ -3,8 +3,10 @@ import React from "react";
 import BaseLayout from "layouts/BaseLayout.js";
 import Blueprint from "views/Blueprint/Blueprint";
 
-export default function BlueprintRoute (props) {
-    return (
-        <BaseLayout component={<Blueprint blueprintName={props.match.params.blueprintname} />} />
-    )
+export default function BlueprintRoute(props) {
+  return (
+    <BaseLayout
+      component={<Blueprint blueprintName={props.match.params.blueprintname} />}
+    />
+  );
 }

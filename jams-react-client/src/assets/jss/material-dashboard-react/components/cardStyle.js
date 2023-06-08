@@ -1,7 +1,7 @@
 import {
   blackColor,
   whiteColor,
-  hexToRgb
+  hexToRgb,
 } from "assets/jss/material-dashboard-react.js";
 import { grayColor } from "assets/jss/material-dashboard-react";
 
@@ -24,33 +24,33 @@ const cardStyle = {
     "& ul": {
       "list-style": "none",
       padding: 0,
-      "& li" :{
-        display: 'flex',
-        alignItems: 'center',
-      }
+      "& li": {
+        display: "flex",
+        alignItems: "center",
+      },
     },
     "&:hover": {
       boxShadow: "0 1px 4px 0 rgba(" + hexToRgb(blackColor) + ", 0.54)",
     },
     "& a": {
-      color: blackColor
-    }
+      color: blackColor,
+    },
   },
   cardPlain: {
     background: "transparent",
-    boxShadow: "none"
+    boxShadow: "none",
   },
   cardProfile: {
     marginTop: "50px",
     textAlign: "left",
-    height: "calc(100% - 4em)"
+    height: "calc(100% - 4em)",
   },
   cardChart: {
     "& p": {
       marginTop: "0px",
-      paddingTop: "0px"
-    }
-  }
+      paddingTop: "0px",
+    },
+  },
 };
 
 export default cardStyle;

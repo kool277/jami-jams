@@ -140,8 +140,8 @@ const styles = (theme) => ({
       display: "flex",
       flexDirection: "column",
       "& button": {
-          width: "100%"
-      }
+        width: "100%",
+      },
     },
   },
   button: {
@@ -194,28 +194,28 @@ const styles = (theme) => ({
     [theme.breakpoints.down("xs")]: {
       display: "flex",
       flexDirection: "column",
-      alignItems: "center"
-    }
+      alignItems: "center",
+    },
   },
   profileEditAvatarMobile: {
     [theme.breakpoints.down("xs")]: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      marginTop: 10
-    }
+      marginTop: 10,
+    },
   },
   profileEditAvatarInputMobile: {
     [theme.breakpoints.down("xs")]: {
-      display: "flex", 
+      display: "flex",
       flexDirection: "row",
-      justifyContent: "center", 
-      alignItems: "center"
-    }
+      justifyContent: "center",
+      alignItems: "center",
+    },
   },
   whiteButtonText: {
     color: "white",
-  }
+  },
 });
 
 const useStyles = makeStyles(styles);
@@ -270,7 +270,6 @@ export default function EditCreateUserProfile(props) {
   });
 
   React.useEffect(() => {
-    
     if (!props.createUser) {
       setLoading(true);
       const timer = setInterval(() => {
@@ -293,7 +292,7 @@ export default function EditCreateUserProfile(props) {
       )
         .then((response) => {
           const user = response.data;
-          const values ={
+          const values = {
             username: user.username,
             firstName: user.firstName,
             lastName: user.lastName,
@@ -304,7 +303,7 @@ export default function EditCreateUserProfile(props) {
             phoneNumber: user.phoneNumber,
             phoneNumberExtension: user.phoneNumberExtension,
             mobileNumber: user.mobileNumber,
-          }
+          };
           setInitialValues(values);
           setProfilePicture(user.profilePicture);
           if (user.profilePicture !== "") {
@@ -470,18 +469,41 @@ export default function EditCreateUserProfile(props) {
       .min(3, i18next.t("minimum_3_characters", "Minimum 3 characters!"))
       .max(32, i18next.t("maximum_32_characters", "Maximum 32 characters!"))
       .required(i18next.t("username_is_required", "Username is required!"))
-      .matches(/^[A-Za-z_][A-Za-z0-9_]*$/, i18next.t("only_alphanumeric_characters", "Only alphanumeric characters!")),
+      .matches(
+        /^[A-Za-z_][A-Za-z0-9_]*$/,
+        i18next.t(
+          "only_alphanumeric_characters",
+          "Only alphanumeric characters!"
+        )
+      ),
     password: props.createUser
-      ? Yup.string().required(i18next.t("password_is_required", "Password is required!"))
+      ? Yup.string().required(
+          i18next.t("password_is_required", "Password is required!")
+        )
       : null,
     confirmPassword: props.createUser
-      ? Yup.string().oneOf([Yup.ref("password"), null], i18next.t("password_must_match", "Passwords must match"))
+      ? Yup.string().oneOf(
+          [Yup.ref("password"), null],
+          i18next.t("password_must_match", "Passwords must match")
+        )
       : null,
-    firstName: Yup.string().min(2, i18next.t("first_name_is_too_short", "First name is too short!")),
-    lastName: Yup.string().min(2, i18next.t("last_name_is_too_short", "Last Name is too short!")),
+    firstName: Yup.string().min(
+      2,
+      i18next.t("first_name_is_too_short", "First name is too short!")
+    ),
+    lastName: Yup.string().min(
+      2,
+      i18next.t("last_name_is_too_short", "Last Name is too short!")
+    ),
     email: Yup.string().email(i18next.t("invalid_email", "Invalid email!")),
     profilePicture: Yup.string(),
-    organization: Yup.string().min(2, i18next.t("organization_name_too_short", "Organization name is too short!")),
+    organization: Yup.string().min(
+      2,
+      i18next.t(
+        "organization_name_too_short",
+        "Organization name is too short!"
+      )
+    ),
     faxNumber: Yup.string().matches(
       /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       i18next.t("fax_not_valid", "Fax number not valid!")
@@ -506,7 +528,9 @@ export default function EditCreateUserProfile(props) {
         aria-describedby="alert-dialog-description"
         classes={{ paper: classes.dialogPaper }}
       >
-        <DialogTitle id="alert-dialog-title">{i18next.t("crop_image", "Crop image")}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {i18next.t("crop_image", "Crop image")}
+        </DialogTitle>
         <DialogContent>
           <div className={classes.cropContainer}>
             <Cropper
@@ -560,386 +584,444 @@ export default function EditCreateUserProfile(props) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cropProfilePicture} color="info" className={classes.whiteButtonText} autoFocus>
+          <Button
+            onClick={cropProfilePicture}
+            color="info"
+            className={classes.whiteButtonText}
+            autoFocus
+          >
             {i18next.t("validate", "Validate")}
           </Button>
         </DialogActions>
       </Dialog>
       <div className={classes.loading}>
-        {loading && (
-          <LinearProgress variant="determinate" value={progress} />
-        )}
+        {loading && <LinearProgress variant="determinate" value={progress} />}
       </div>
-      {!loading && (<GridContainer>
-        <GridItem xs={12} sm={12} md={8}>
-          <Formik
-            initialValues={initialValues}
-            onSubmit={handleFormikSubmit}
-            validationSchema={EditCreateSchema}
-          >
-            {({ isValid, dirty, handleSubmit, setFieldValue, values }) => (
-              <form onSubmit={handleSubmit}>
-                <Card profile>
-                  <CardHeader color="info" stats icon className={classes.profileEditHeaderMobile}>
-                    <p className={classes.cardCategory}>
-                      {props.createUser ? i18next.t("create_new_profile", "Create new profile") : i18next.t("edit_profile", "Edit profile")}
-                    </p>
-                    {props.createUser ? (
-                      ""
-                    ) : (
-                      <h3 className={classes.cardTitle}>{userName}</h3>
-                    )}
-                  </CardHeader>
-                  <CardBody profile>
-                    <CardAvatar editProfile className={classes.profileEditAvatarMobile}>
-                      <img
-                        src={profilePicturePreview}
-                        alt="..."
-                        className={classes.editProfilePicture}
-                        onClick={() => {
-                          let pictureChange = document.getElementById(
-                            "change-profile-picture"
-                          );
-                          pictureChange.click();
-                        }}
-                      />
-                    </CardAvatar>
-                    <div className={classes.root}>
-                      <Grid container spacing={5}>
-                        <Grid item xs={12} sm={12} md={12} className={classes.profileEditAvatarInputMobile} >
-                          <input
-                            accept="image/*"
-                            className={classes.input}
-                            id="icon-button-file"
-                            type="file"
-                            onChange={handleProfilePictureChange}
-                          />
-                          <label htmlFor="icon-button-file">
-                            <IconButton
-                              id="change-profile-picture"
-                              color="info"
-                              aria-label="upload picture"
-                              component="span"
-                            >
-                              <PhotoCamera />
-                            </IconButton>{" "}
-                            {i18next.t("change_profile_image", "Change profile image")}
-                          </label>
-                        </Grid>
-                        {props.createUser && (
-                          <Grid item xs={12} sm={12} md={6}>
-                            <FormikField
-                              name="username"
-                              label={i18next.t("username", "Username")}
-                              placeholder={i18next.t("username", "Username")}
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  <AccountCircleIcon />
-                                </InputAdornment>
-                              }
-                              endAdornment={
-                                values.username === "" ? (
-                                  ""
-                                ) : userExists ? (
-                                  <CancelIcon style={{ color: "#cc0000" }} />
-                                ) : (
-                                  <CheckCircleIcon
-                                    style={{ color: "#99cc00" }}
-                                  />
-                                )
-                              }
-                              required
-                              autoComplete="off"
-                              handleChange={checkUserExists}
-                              onKeyUpError={userExists}
-                              onKeyUpErrorMessage={i18next.t("username_already_taken", "Username already taken")}
+      {!loading && (
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={8}>
+            <Formik
+              initialValues={initialValues}
+              onSubmit={handleFormikSubmit}
+              validationSchema={EditCreateSchema}
+            >
+              {({ isValid, dirty, handleSubmit, setFieldValue, values }) => (
+                <form onSubmit={handleSubmit}>
+                  <Card profile>
+                    <CardHeader
+                      color="info"
+                      stats
+                      icon
+                      className={classes.profileEditHeaderMobile}
+                    >
+                      <p className={classes.cardCategory}>
+                        {props.createUser
+                          ? i18next.t(
+                              "create_new_profile",
+                              "Create new profile"
+                            )
+                          : i18next.t("edit_profile", "Edit profile")}
+                      </p>
+                      {props.createUser ? (
+                        ""
+                      ) : (
+                        <h3 className={classes.cardTitle}>{userName}</h3>
+                      )}
+                    </CardHeader>
+                    <CardBody profile>
+                      <CardAvatar
+                        editProfile
+                        className={classes.profileEditAvatarMobile}
+                      >
+                        <img
+                          src={profilePicturePreview}
+                          alt="..."
+                          className={classes.editProfilePicture}
+                          onClick={() => {
+                            let pictureChange = document.getElementById(
+                              "change-profile-picture"
+                            );
+                            pictureChange.click();
+                          }}
+                        />
+                      </CardAvatar>
+                      <div className={classes.root}>
+                        <Grid container spacing={5}>
+                          <Grid
+                            item
+                            xs={12}
+                            sm={12}
+                            md={12}
+                            className={classes.profileEditAvatarInputMobile}
+                          >
+                            <input
+                              accept="image/*"
+                              className={classes.input}
+                              id="icon-button-file"
+                              type="file"
+                              onChange={handleProfilePictureChange}
                             />
+                            <label htmlFor="icon-button-file">
+                              <IconButton
+                                id="change-profile-picture"
+                                color="info"
+                                aria-label="upload picture"
+                                component="span"
+                              >
+                                <PhotoCamera />
+                              </IconButton>{" "}
+                              {i18next.t(
+                                "change_profile_image",
+                                "Change profile image"
+                              )}
+                            </label>
                           </Grid>
-                        )}
-                        {props.createUser && (
-                          <Grid item xs={12} sm={12} md={6}></Grid>
-                        )}
-                        {props.createUser && (
-                          <Grid item xs={12} sm={12} md={6}>
-                            <FormikField
-                              type={passwordVisible ? "text" : "password"}
-                              name="password"
-                              label={i18next.t("password", "Password")}
-                              placeholder={i18next.t("password", "Password")}
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  <VpnKeyIcon />
-                                </InputAdornment>
-                              }
-                              endAdornment={
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onMouseDown={handleMouseDownPassword}
-                                  onMouseUp={handleMouseUpPassword}
-                                >
-                                  {passwordVisible ? (
-                                    <VisibilityIcon />
+                          {props.createUser && (
+                            <Grid item xs={12} sm={12} md={6}>
+                              <FormikField
+                                name="username"
+                                label={i18next.t("username", "Username")}
+                                placeholder={i18next.t("username", "Username")}
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    <AccountCircleIcon />
+                                  </InputAdornment>
+                                }
+                                endAdornment={
+                                  values.username === "" ? (
+                                    ""
+                                  ) : userExists ? (
+                                    <CancelIcon style={{ color: "#cc0000" }} />
                                   ) : (
-                                    <VisibilityOffIcon />
-                                  )}
-                                </IconButton>
-                              }
-                              required
-                              autoComplete="off"
-                              handleChange={() => {}}
-                              onKeyUpError={false}
-                              onKeyUpErrorMessage=""
-                            />
-                          </Grid>
-                        )}
-                        {props.createUser && (
-                          <Grid item xs={12} sm={12} md={6}>
-                            <FormikField
-                              type={passwordVisible ? "text" : "password"}
-                              name="confirmPassword"
-                              label={i18next.t("confirm_password", "Confirm password")}
-                              placeholder={i18next.t("confirm_password", "Confirm password")}
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  <VpnKeyIcon />
-                                </InputAdornment>
-                              }
-                              endAdornment={
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onMouseDown={handleMouseDownPassword}
-                                  onMouseUp={handleMouseUpPassword}
-                                >
-                                  {passwordVisible ? (
-                                    <VisibilityIcon />
-                                  ) : (
-                                    <VisibilityOffIcon />
-                                  )}
-                                </IconButton>
-                              }
-                              required
-                              autoComplete="off"
-                              handleChange={() => {}}
-                              onKeyUpError={false}
-                              onKeyUpErrorMessage=""
-                            />
-                          </Grid>
-                        )}
-                        {props.createUser && (
-                          <Grid item align="left" xs={12} sm={12} md={6}></Grid>
-                        )}
-                        {props.createUser && (
-                          <Grid item align="left" xs={12} sm={12} md={6}>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              size="large"
-                              className={classes.button}
-                              startIcon={<RefreshIcon />}
-                              onClick={() => {
-                                const newGeneratedPassword = passwordGenerator();
-                                setFieldValue(
-                                  "password",
-                                  newGeneratedPassword,
-                                  false
-                                );
-                                setFieldValue(
-                                  "confirmPassword",
-                                  newGeneratedPassword,
-                                  false
-                                );
-                                setCopied(false);
-                                setGenerated(true);
-                              }}
-                            >
-                              {i18next.t("generate", "Generate")}
-                            </Button>
-                            <CopyToClipboard
-                              text={values.password}
-                              onCopy={() => {
-                                setCopied(true);
-                                setGenerated(false);
-                              }}
-                            >
+                                    <CheckCircleIcon
+                                      style={{ color: "#99cc00" }}
+                                    />
+                                  )
+                                }
+                                required
+                                autoComplete="off"
+                                handleChange={checkUserExists}
+                                onKeyUpError={userExists}
+                                onKeyUpErrorMessage={i18next.t(
+                                  "username_already_taken",
+                                  "Username already taken"
+                                )}
+                              />
+                            </Grid>
+                          )}
+                          {props.createUser && (
+                            <Grid item xs={12} sm={12} md={6}></Grid>
+                          )}
+                          {props.createUser && (
+                            <Grid item xs={12} sm={12} md={6}>
+                              <FormikField
+                                type={passwordVisible ? "text" : "password"}
+                                name="password"
+                                label={i18next.t("password", "Password")}
+                                placeholder={i18next.t("password", "Password")}
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    <VpnKeyIcon />
+                                  </InputAdornment>
+                                }
+                                endAdornment={
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onMouseDown={handleMouseDownPassword}
+                                    onMouseUp={handleMouseUpPassword}
+                                  >
+                                    {passwordVisible ? (
+                                      <VisibilityIcon />
+                                    ) : (
+                                      <VisibilityOffIcon />
+                                    )}
+                                  </IconButton>
+                                }
+                                required
+                                autoComplete="off"
+                                handleChange={() => {}}
+                                onKeyUpError={false}
+                                onKeyUpErrorMessage=""
+                              />
+                            </Grid>
+                          )}
+                          {props.createUser && (
+                            <Grid item xs={12} sm={12} md={6}>
+                              <FormikField
+                                type={passwordVisible ? "text" : "password"}
+                                name="confirmPassword"
+                                label={i18next.t(
+                                  "confirm_password",
+                                  "Confirm password"
+                                )}
+                                placeholder={i18next.t(
+                                  "confirm_password",
+                                  "Confirm password"
+                                )}
+                                startAdornment={
+                                  <InputAdornment position="start">
+                                    <VpnKeyIcon />
+                                  </InputAdornment>
+                                }
+                                endAdornment={
+                                  <IconButton
+                                    aria-label="toggle password visibility"
+                                    onMouseDown={handleMouseDownPassword}
+                                    onMouseUp={handleMouseUpPassword}
+                                  >
+                                    {passwordVisible ? (
+                                      <VisibilityIcon />
+                                    ) : (
+                                      <VisibilityOffIcon />
+                                    )}
+                                  </IconButton>
+                                }
+                                required
+                                autoComplete="off"
+                                handleChange={() => {}}
+                                onKeyUpError={false}
+                                onKeyUpErrorMessage=""
+                              />
+                            </Grid>
+                          )}
+                          {props.createUser && (
+                            <Grid
+                              item
+                              align="left"
+                              xs={12}
+                              sm={12}
+                              md={6}
+                            ></Grid>
+                          )}
+                          {props.createUser && (
+                            <Grid item align="left" xs={12} sm={12} md={6}>
                               <Button
                                 variant="contained"
                                 color="primary"
                                 size="large"
                                 className={classes.button}
-                                startIcon={<FileCopyIcon />}
+                                startIcon={<RefreshIcon />}
+                                onClick={() => {
+                                  const newGeneratedPassword = passwordGenerator();
+                                  setFieldValue(
+                                    "password",
+                                    newGeneratedPassword,
+                                    false
+                                  );
+                                  setFieldValue(
+                                    "confirmPassword",
+                                    newGeneratedPassword,
+                                    false
+                                  );
+                                  setCopied(false);
+                                  setGenerated(true);
+                                }}
                               >
-                                {i18next.t("copy_to_clipboard", "Copy to clipboard")}
+                                {i18next.t("generate", "Generate")}
                               </Button>
-                            </CopyToClipboard>
-                            {copied ? (
-                              <span style={{ marginLeft: "10px" }}>{i18next.t("copied", "Copied")}</span>
-                            ) : null}
-                            {generated ? (
-                              <span style={{ marginLeft: "10px" }}>
-                                {i18next.t("generated", "Generated")}
-                              </span>
-                            ) : null}
+                              <CopyToClipboard
+                                text={values.password}
+                                onCopy={() => {
+                                  setCopied(true);
+                                  setGenerated(false);
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  size="large"
+                                  className={classes.button}
+                                  startIcon={<FileCopyIcon />}
+                                >
+                                  {i18next.t(
+                                    "copy_to_clipboard",
+                                    "Copy to clipboard"
+                                  )}
+                                </Button>
+                              </CopyToClipboard>
+                              {copied ? (
+                                <span style={{ marginLeft: "10px" }}>
+                                  {i18next.t("copied", "Copied")}
+                                </span>
+                              ) : null}
+                              {generated ? (
+                                <span style={{ marginLeft: "10px" }}>
+                                  {i18next.t("generated", "Generated")}
+                                </span>
+                              ) : null}
+                            </Grid>
+                          )}
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="firstName"
+                              label={i18next.t("first_name", "First name")}
+                              placeholder={i18next.t(
+                                "first_name",
+                                "First name"
+                              )}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <PersonIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
                           </Grid>
-                        )}
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="firstName"
-                            label={i18next.t("first_name", "First name")}
-                            placeholder={i18next.t("first_name", "First name")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <PersonIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="lastName"
+                              label={i18next.t("last_name", "Last name")}
+                              placeholder={i18next.t("last_name", "Last name")}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <PersonOutlinedIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
+                          </Grid>
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="email"
+                              label={i18next.t("email", "Email")}
+                              placeholder={i18next.t("email", "Email")}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <AlternateEmailOutlinedIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
+                          </Grid>
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="organization"
+                              label={i18next.t("organization", "Organization")}
+                              placeholder={i18next.t(
+                                "organization",
+                                "Organization"
+                              )}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <BusinessCenterOutlinedIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
+                          </Grid>
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="faxNumber"
+                              label={i18next.t("fax_number", "Fax number")}
+                              placeholder={i18next.t(
+                                "fax_number",
+                                "Fax number"
+                              )}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <LocalPrintshopOutlinedIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
+                          </Grid>
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="phoneNumber"
+                              label={i18next.t("phone_number", "Phone number")}
+                              placeholder={i18next.t(
+                                "phone_number",
+                                "Phone number"
+                              )}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <PhoneInTalkOutlinedIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
+                          </Grid>
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="phoneNumberExtension"
+                              label={i18next.t("extension", "Extension")}
+                              placeholder={i18next.t("extension", "Extension")}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <PhoneForwardedOutlinedIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
+                          </Grid>
+                          <Grid item align="center" xs={12} sm={12} md={6}>
+                            <FormikField
+                              name="mobileNumber"
+                              label={i18next.t("mobile", "Mobile")}
+                              placeholder={i18next.t("mobile", "Mobile")}
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <SmartphoneOutlinedIcon />
+                                </InputAdornment>
+                              }
+                              handleChange={() => {}}
+                              onKeyUpError={false}
+                              onKeyUpErrorMessage=""
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="lastName"
-                            label={i18next.t("last_name", "Last name")}
-                            placeholder={i18next.t("last_name", "Last name")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <PersonOutlinedIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
-                        </Grid>
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="email"
-                            label={i18next.t("email", "Email")}
-                            placeholder={i18next.t("email", "Email")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <AlternateEmailOutlinedIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
-                        </Grid>
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="organization"
-                            label={i18next.t("organization", "Organization")}
-                            placeholder={i18next.t("organization", "Organization")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <BusinessCenterOutlinedIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
-                        </Grid>
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="faxNumber"
-                            label={i18next.t("fax_number", "Fax number")}
-                            placeholder={i18next.t("fax_number", "Fax number")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <LocalPrintshopOutlinedIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
-                        </Grid>
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="phoneNumber"
-                            label={i18next.t("phone_number", "Phone number")}
-                            placeholder={i18next.t("phone_number", "Phone number")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <PhoneInTalkOutlinedIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
-                        </Grid>
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="phoneNumberExtension"
-                            label={i18next.t("extension", "Extension")}
-                            placeholder={i18next.t("extension", "Extension")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <PhoneForwardedOutlinedIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
-                        </Grid>
-                        <Grid item align="center" xs={12} sm={12} md={6}>
-                          <FormikField
-                            name="mobileNumber"
-                            label={i18next.t("mobile", "Mobile")}
-                            placeholder={i18next.t("mobile", "Mobile")}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <SmartphoneOutlinedIcon />
-                              </InputAdornment>
-                            }
-                            handleChange={() => {}}
-                            onKeyUpError={false}
-                            onKeyUpErrorMessage=""
-                          />
-                        </Grid>
-                      </Grid>
-                    </div>
-                  </CardBody>
-                  <CardFooter className={classes.alignRight}>
-                    {!props.createUser && (
-                      <Button 
-                        color="info"
-                        className={classes.whiteButtonText}
-                        onClick={handleCancelUpdate}
-                      >
-                        {i18next.t("cancel", "Cancel")}
-                      </Button>
-                    )}
-                    {props.createUser ? (
-                      <Button
-                        type="submit"
-                        disabled={!isValid || !dirty || userExists}
-                        color="info"
-                        className={classes.whiteButtonText}
-                      >
-                        {i18next.t("create_profile", "Create Profile")}
-                      </Button>
-                    ) : (
-                      <Button
-                        type="submit"
-                        disabled={!isValid}
-                        color="info"
-                        className={classes.whiteButtonText}
-                      >
-                        {i18next.t("save_profile", "Save Profile")}
-                      </Button>
-                    )}
-                  </CardFooter>
-                </Card>
-              </form>
-            )}
-          </Formik>
-        </GridItem>
-      </GridContainer>
+                      </div>
+                    </CardBody>
+                    <CardFooter className={classes.alignRight}>
+                      {!props.createUser && (
+                        <Button
+                          color="info"
+                          className={classes.whiteButtonText}
+                          onClick={handleCancelUpdate}
+                        >
+                          {i18next.t("cancel", "Cancel")}
+                        </Button>
+                      )}
+                      {props.createUser ? (
+                        <Button
+                          type="submit"
+                          disabled={!isValid || !dirty || userExists}
+                          color="info"
+                          className={classes.whiteButtonText}
+                        >
+                          {i18next.t("create_profile", "Create Profile")}
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          disabled={!isValid}
+                          color="info"
+                          className={classes.whiteButtonText}
+                        >
+                          {i18next.t("save_profile", "Save Profile")}
+                        </Button>
+                      )}
+                    </CardFooter>
+                  </Card>
+                </form>
+              )}
+            </Formik>
+          </GridItem>
+        </GridContainer>
       )}
     </div>
   );

@@ -18,7 +18,7 @@ import { api_path_post_install_server } from "../../globalUrls";
 import auth from "auth";
 import * as Yup from "yup";
 
-import i18next from 'i18next';
+import i18next from "i18next";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,7 +44,9 @@ export default function ServerParameters(props) {
   // Formik validation fields
   const initialValues = { domain: window.location.origin };
   const validationSchema = Yup.object().shape({
-    domain: Yup.string().required(i18next.t("domain_is_required", "Domain is required.")),
+    domain: Yup.string().required(
+      i18next.t("domain_is_required", "Domain is required.")
+    ),
   });
 
   const certificateRevocationTypes = [
@@ -107,40 +109,45 @@ export default function ServerParameters(props) {
     auth.installed = true;
     auth.authenticated = true;
     auth.admin = true;
-    window.localStorage.setItem('scope', 'true');
+    window.localStorage.setItem("scope", "true");
     auth.checkDirectoryType(() => {
       history.push("/users");
     });
   }
 
   function handleSubmit(values) {
-      let jsonData = {};
-      let re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
-      let nohttpre = new RegExp(/^\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
+    let jsonData = {};
+    let re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
+    let nohttpre = new RegExp(/^\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
 
-      if (values.domain.match(nohttpre))
-          values.domain = (window.location.protocol) + "//" + values.domain;
+    if (values.domain.match(nohttpre))
+      values.domain = window.location.protocol + "//" + values.domain;
 
-      if (values.domain.match(re)) {
-          jsonData = {
-              serverDomain: values.domain,
-              crlLifetime: certificateRevocation.value,
-              deviceLifetime: deviceLifetime.value,
-              userLifetime: userAccountLifetime.value,
-              sipConfig: sipConfigurationTemplate,
-              signingAlgorithm: "SHA512WITHRSA",
-          };
-          axios(configApiCall(api_path_post_install_server, "POST", jsonData, null))
-              .then((response) => {
-                  callBackServerParameters();
-              })
-              .catch((error) => {
-                  console.log("Error installing server parameters: " + error);
-              });
-      } else {
-          props.setError(true);
-          props.setErrorMessage(i18next.t("please_enter_valid_cors_domain_url", "Please enter a valid CORS domain URL."));
-      }
+    if (values.domain.match(re)) {
+      jsonData = {
+        serverDomain: values.domain,
+        crlLifetime: certificateRevocation.value,
+        deviceLifetime: deviceLifetime.value,
+        userLifetime: userAccountLifetime.value,
+        sipConfig: sipConfigurationTemplate,
+        signingAlgorithm: "SHA512WITHRSA",
+      };
+      axios(configApiCall(api_path_post_install_server, "POST", jsonData, null))
+        .then((response) => {
+          callBackServerParameters();
+        })
+        .catch((error) => {
+          console.log("Error installing server parameters: " + error);
+        });
+    } else {
+      props.setError(true);
+      props.setErrorMessage(
+        i18next.t(
+          "please_enter_valid_cors_domain_url",
+          "Please enter a valid CORS domain URL."
+        )
+      );
+    }
   }
 
   const handleCertificateRevocationChange = (event) => {
@@ -185,17 +192,28 @@ export default function ServerParameters(props) {
         return (
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <Typography variant="h5" gutterBottom color="primary">
-            {i18next.t("server_parameters", "Server Parameters")}
+              {i18next.t("server_parameters", "Server Parameters")}
             </Typography>
             <Typography variant="body1" gutterBottom>
-            {i18next.t("global_parameters_cover_general_configuration_of_servers_engine", "The global parameters cover the general configuration of the server's engine.")}  
+              {i18next.t(
+                "global_parameters_cover_general_configuration_of_servers_engine",
+                "The global parameters cover the general configuration of the server's engine."
+              )}
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
-            {i18next.t("cors_domain_name", "CORS domain name")}
-              <CustomPopupState message={i18next.t("set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps", "Set the domain of the web client-server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates.")} />
+              {i18next.t("cors_domain_name", "CORS domain name")}
+              <CustomPopupState
+                message={i18next.t(
+                  "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps",
+                  "Set the domain of the web client-server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates."
+                )}
+              />
             </Typography>
             <Typography variant="body1" gutterBottom>
-            {i18next.t("domain_name_of_web_client_server", "The domain name of your web client server.")}
+              {i18next.t(
+                "domain_name_of_web_client_server",
+                "The domain name of your web client server."
+              )}
             </Typography>
             <TextField
               variant="outlined"
@@ -213,8 +231,16 @@ export default function ServerParameters(props) {
               helperText={errors.domain && touched.domain && errors.domain}
             />
             <Typography variant="subtitle1" gutterBottom>
-            {i18next.t("certificate_revocation_list_lifetime", "Certificate Revocation List Lifetime")}
-              <CustomPopupState message={i18next.t("set_liftetime_crl_list_certificates_revoked", "Set the lifetime of the CRL which contains the list of the certificates that have been revoked before their scheduled expiration date.")} />
+              {i18next.t(
+                "certificate_revocation_list_lifetime",
+                "Certificate Revocation List Lifetime"
+              )}
+              <CustomPopupState
+                message={i18next.t(
+                  "set_liftetime_crl_list_certificates_revoked",
+                  "Set the lifetime of the CRL which contains the list of the certificates that have been revoked before their scheduled expiration date."
+                )}
+              />
             </Typography>
             <Select
               labelId="certificate-revocation-select-label"
@@ -249,11 +275,17 @@ export default function ServerParameters(props) {
             />
             {userlifeDisabled ? (
               <span class="spanError">
-                {i18next.t("account_lifetime_should_be_bigger_to_device_lifetime", "The account lifetime should be longer than the Device lifetime.")}
+                {i18next.t(
+                  "account_lifetime_should_be_bigger_to_device_lifetime",
+                  "The account lifetime should be longer than the Device lifetime."
+                )}
               </span>
             ) : null}
             <Typography variant="subtitle1" gutterBottom>
-              {i18next.t("sip_configuration_template", "SIP Configuration Template")}
+              {i18next.t(
+                "sip_configuration_template",
+                "SIP Configuration Template"
+              )}
             </Typography>
             <Input
               fullWidth

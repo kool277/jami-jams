@@ -18,12 +18,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import Button from "components/CustomButtons/Button.js";
 
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 import Avatar from "@material-ui/core/Avatar";
 
 import Table from "@material-ui/core/Table";
-import TableHead from '@material-ui/core/TableHead';
+import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -38,14 +38,14 @@ import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 import axios from "axios";
 import configApiCall from "../../api";
-import { 
+import {
   api_path_blueprints,
   api_path_get_user_directory_search,
   api_path_get_ns_name_from_addr,
-  api_path_get_user_profile
+  api_path_get_user_profile,
 } from "../../globalUrls";
 
-import TemporaryDrawer from "components/Drawer/Drawer"
+import TemporaryDrawer from "components/Drawer/Drawer";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
@@ -164,13 +164,13 @@ export default function EditBlueprintPermissions(props) {
       .then((response) => {
         let profiles = [];
         const profilesResults = response.data.profiles;
-        profilesResults.forEach((profile) =>{
-            let existingUser = false;
-            users.forEach((user)=>{
-              if(profile.username === user.username) existingUser = true;
-            })
-            if(!existingUser) profiles.push(profile);
-        })
+        profilesResults.forEach((profile) => {
+          let existingUser = false;
+          users.forEach((user) => {
+            if (profile.username === user.username) existingUser = true;
+          });
+          if (!existingUser) profiles.push(profile);
+        });
         setUsers(profiles);
       })
       .catch((error) => {
@@ -212,13 +212,21 @@ export default function EditBlueprintPermissions(props) {
         setAllowLookup(policyData["allowLookup"]);
 
         policyData["defaultModerators"].split("/").forEach((id) => {
-          if(id !== "undefined" && id !== ""){
-            axios(configApiCall(api_path_get_ns_name_from_addr + id), null, null).then((usernameResponse) => {
+          if (id !== "undefined" && id !== "") {
+            axios(
+              configApiCall(api_path_get_ns_name_from_addr + id),
+              null,
+              null
+            ).then((usernameResponse) => {
               let username = usernameResponse.data.name;
-              axios(configApiCall(api_path_get_user_profile + username), null, null).then((userProfileResponse) => {
+              axios(
+                configApiCall(api_path_get_user_profile + username),
+                null,
+                null
+              ).then((userProfileResponse) => {
                 let userProfiles = blueprintModerators;
                 userProfileResponse.data["id"] = id;
-                userProfiles.push(userProfileResponse.data)
+                userProfiles.push(userProfileResponse.data);
                 setBlueprintModerators(userProfiles);
                 // This state update is added to refresh the list of moderators
                 setOpenDrawer(true);
@@ -226,7 +234,7 @@ export default function EditBlueprintPermissions(props) {
               });
             });
           }
-        })
+        });
       })
       .catch((error) => {
         console.log(
@@ -292,13 +300,25 @@ export default function EditBlueprintPermissions(props) {
         setOpen(false);
         setSeverity("success");
         setOpen(true);
-        setMessage(i18next.t("updated_blueprint_permissions_successfully", "Blueprint permissions successfully updated."));
+        setMessage(
+          i18next.t(
+            "updated_blueprint_permissions_successfully",
+            "Blueprint permissions successfully updated."
+          )
+        );
       })
       .catch((error) => {
         setOpen(false);
         setSeverity("error");
         setOpen(true);
-        setMessage(i18next.t("error_updating_blueprint_permissions", "Error occurred while updating blueprint permissions.") + error + "!");
+        setMessage(
+          i18next.t(
+            "error_updating_blueprint_permissions",
+            "Error occurred while updating blueprint permissions."
+          ) +
+            error +
+            "!"
+        );
       });
   };
 
@@ -307,21 +327,24 @@ export default function EditBlueprintPermissions(props) {
   };
 
   const addModeratorToBlueprint = (user) => {
-      handleUpdatePermissions("defaultModerators", defaultModerators + user.id + "/");
-      setDefaultModerators(defaultModerators + user.id + "/");
-      let newBlueprintModerators = blueprintModerators;
-      newBlueprintModerators.push(user);
-      setBlueprintModerators(newBlueprintModerators);
-  }
+    handleUpdatePermissions(
+      "defaultModerators",
+      defaultModerators + user.id + "/"
+    );
+    setDefaultModerators(defaultModerators + user.id + "/");
+    let newBlueprintModerators = blueprintModerators;
+    newBlueprintModerators.push(user);
+    setBlueprintModerators(newBlueprintModerators);
+  };
 
   const removeModeratorFromBlueprint = (user) => {
-    let newDefaultModerators = defaultModerators.replace( user.id + "/", "")
+    let newDefaultModerators = defaultModerators.replace(user.id + "/", "");
     handleUpdatePermissions("defaultModerators", newDefaultModerators);
     setDefaultModerators(newDefaultModerators);
     let newBlueprintModerators = blueprintModerators;
     newBlueprintModerators.splice(newBlueprintModerators.indexOf(user), 1);
     setBlueprintModerators(newBlueprintModerators);
-  }
+  };
 
   return (
     <div>
@@ -336,16 +359,19 @@ export default function EditBlueprintPermissions(props) {
           {message}
         </Alert>
       </Snackbar>
-      <TemporaryDrawer 
-          openDrawer={openDrawer} 
-          setOpenDrawer={setOpenDrawer} 
-          direction="right" 
-          placeholder={i18next.t("add_moderator_to_blueprint", "Add moderator to blueprint ...")} 
-          searchTargets={searchUsers} 
-          targets={users}
-          existingTargets={blueprintModerators}
-          addElementToTarget={addModeratorToBlueprint}
-          type="user"
+      <TemporaryDrawer
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        direction="right"
+        placeholder={i18next.t(
+          "add_moderator_to_blueprint",
+          "Add moderator to blueprint ..."
+        )}
+        searchTargets={searchUsers}
+        targets={users}
+        existingTargets={blueprintModerators}
+        addElementToTarget={addModeratorToBlueprint}
+        type="user"
       />
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
@@ -354,202 +380,285 @@ export default function EditBlueprintPermissions(props) {
               <CardIcon color="info">
                 <PriorityHighOutlinedIcon />
               </CardIcon>
-              <p className={classes.cardCategory}>{i18next.t("permissions", "Permissions")}</p>
+              <p className={classes.cardCategory}>
+                {i18next.t("permissions", "Permissions")}
+              </p>
               <h3 className={classes.cardTitle}>{props.blueprintName}</h3>
             </CardHeader>
             <CardBody profile>
               <div className={classes.root}>
                 <Grid container spacing={5}>
                   <Grid item xs={12} sm={12} md={12}>
-                  <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">Call parameters</FormLabel>
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={videoEnabled}
-                            color="primary"
-                            onChange={(e) => {
-                              setVideoEnabled(e.target.checked);
-                              handleUpdatePermissions(
-                                "videoEnabled",
-                                e.target.checked
-                              );
-                            }}
-                            name="videoEnabled"
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={12} md={12}>
+                        <FormLabel component="legend">
+                          Call parameters
+                        </FormLabel>
+                        <FormGroup row>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={videoEnabled}
+                                color="primary"
+                                onChange={(e) => {
+                                  setVideoEnabled(e.target.checked);
+                                  handleUpdatePermissions(
+                                    "videoEnabled",
+                                    e.target.checked
+                                  );
+                                }}
+                                name="videoEnabled"
+                              />
+                            }
+                            label={i18next.t(
+                              "allow_video_calls",
+                              "Allow video calls"
+                            )}
                           />
-                        }
-                        label={i18next.t("allow_video_calls", "Allow video calls")}
-                      />
-                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_allow_video_calls_info", "If this option is disabled, only audio calls are allowed.")} />
-                    </FormGroup>
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={publicInCalls}
-                            color="primary"
-                            onChange={(e) => {
-                              setPublicInCalls(e.target.checked);
-                              handleUpdatePermissions(
-                                "publicInCalls",
-                                e.target.checked
-                              );
-                            }}
-                            name="publicInCalls"
+                          <CustomPopupState
+                            message={i18next.t(
+                              "allow_incoming_calls_from_unknown_allow_video_calls_info",
+                              "If this option is disabled, only audio calls are allowed."
+                            )}
                           />
-                        }
-                        label={i18next.t("allow_incoming_calls_from_unknown_contacts", "Allow incoming calls from unknown contacts")}
-                      />
-                      <CustomPopupState message={i18next.t("allow_incoming_calls_from_unknown_contacts_info", "If this option is disabled, only contacts from your list can contact you.")} />
-                    </FormGroup>
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={autoAnswer}
-                            color="primary"
-                            onChange={(e) => {
-                              setAutoAnswer(e.target.checked);
-                              handleUpdatePermissions(
-                                "autoAnswer",
-                                e.target.checked
-                              );
-                            }}
-                            name="autoAnswer"
+                        </FormGroup>
+                        <FormGroup row>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={publicInCalls}
+                                color="primary"
+                                onChange={(e) => {
+                                  setPublicInCalls(e.target.checked);
+                                  handleUpdatePermissions(
+                                    "publicInCalls",
+                                    e.target.checked
+                                  );
+                                }}
+                                name="publicInCalls"
+                              />
+                            }
+                            label={i18next.t(
+                              "allow_incoming_calls_from_unknown_contacts",
+                              "Allow incoming calls from unknown contacts"
+                            )}
                           />
-                        }
-                        label={i18next.t("auto_answer_calss", "Auto answer calls")}
-                      />
-                      <CustomPopupState message={i18next.t("auto_answer_calls_info", "If this option is enabled, incoming calls are automatically answered. This option can be useful to monitor your house or a particular room when you are away from home for example.")} />
-                    </FormGroup>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">{i18next.t("local_lan","Local LAN")}</FormLabel>
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={peerDiscovery}
-                            color="primary"
-                            onChange={(e) => {
-                              setPeerDiscovery(e.target.checked);
-                              handleUpdatePermissions(
-                                "peerDiscovery",
-                                e.target.checked
-                              );
-                            }}
-                            name="peerDiscovery"
+                          <CustomPopupState
+                            message={i18next.t(
+                              "allow_incoming_calls_from_unknown_contacts_info",
+                              "If this option is disabled, only contacts from your list can contact you."
+                            )}
                           />
-                        }
-                        label={i18next.t("allow_use_of_jami_in_local_lan", "Allow discovery of other peers on a local network")}
-                      />
-                      <CustomPopupState message={i18next.t("local_lan_info", "If this option is enabled, you can communicate with connected contacts on you local lan, even if your lan is disconnected from the Internet.")} />
-                    </FormGroup>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12}>
-                    <FormLabel component="legend">{i18next.t("contact_management", "Contact management")}</FormLabel>
-                    <FormGroup row>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={allowLookup}
-                            color="primary"
-                            onChange={(e) => {
-                              setAllowLookup(e.target.checked);
-                              handleUpdatePermissions(
-                                "allowLookup",
-                                e.target.checked
-                              );
-                            }}
-                            name="allowLookup"
+                        </FormGroup>
+                        <FormGroup row>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={autoAnswer}
+                                color="primary"
+                                onChange={(e) => {
+                                  setAutoAnswer(e.target.checked);
+                                  handleUpdatePermissions(
+                                    "autoAnswer",
+                                    e.target.checked
+                                  );
+                                }}
+                                name="autoAnswer"
+                              />
+                            }
+                            label={i18next.t(
+                              "auto_answer_calss",
+                              "Auto answer calls"
+                            )}
                           />
-                        }
-                        label={i18next.t("allow_jami_user_to_search_for_other_contacts", "Allow user to add new contacts")}
-                      />
-                      <CustomPopupState message={i18next.t("lookup_info", "If this option is disabled, user can not search and add new contacts")} />
-                    </FormGroup>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={12}>
-
+                          <CustomPopupState
+                            message={i18next.t(
+                              "auto_answer_calls_info",
+                              "If this option is enabled, incoming calls are automatically answered. This option can be useful to monitor your house or a particular room when you are away from home for example."
+                            )}
+                          />
+                        </FormGroup>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={12}>
+                        <FormLabel component="legend">
+                          {i18next.t("local_lan", "Local LAN")}
+                        </FormLabel>
+                        <FormGroup row>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={peerDiscovery}
+                                color="primary"
+                                onChange={(e) => {
+                                  setPeerDiscovery(e.target.checked);
+                                  handleUpdatePermissions(
+                                    "peerDiscovery",
+                                    e.target.checked
+                                  );
+                                }}
+                                name="peerDiscovery"
+                              />
+                            }
+                            label={i18next.t(
+                              "allow_use_of_jami_in_local_lan",
+                              "Allow discovery of other peers on a local network"
+                            )}
+                          />
+                          <CustomPopupState
+                            message={i18next.t(
+                              "local_lan_info",
+                              "If this option is enabled, you can communicate with connected contacts on you local lan, even if your lan is disconnected from the Internet."
+                            )}
+                          />
+                        </FormGroup>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={12}>
+                        <FormLabel component="legend">
+                          {i18next.t(
+                            "contact_management",
+                            "Contact management"
+                          )}
+                        </FormLabel>
+                        <FormGroup row>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={allowLookup}
+                                color="primary"
+                                onChange={(e) => {
+                                  setAllowLookup(e.target.checked);
+                                  handleUpdatePermissions(
+                                    "allowLookup",
+                                    e.target.checked
+                                  );
+                                }}
+                                name="allowLookup"
+                              />
+                            }
+                            label={i18next.t(
+                              "allow_jami_user_to_search_for_other_contacts",
+                              "Allow user to add new contacts"
+                            )}
+                          />
+                          <CustomPopupState
+                            message={i18next.t(
+                              "lookup_info",
+                              "If this option is disabled, user can not search and add new contacts"
+                            )}
+                          />
+                        </FormGroup>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={12}></Grid>
                     </Grid>
                   </Grid>
-                </Grid>
                 </Grid>
               </div>
             </CardBody>
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={12}>
-                    <h3>Rendezvous mode</h3>
+          <h3>Rendezvous mode</h3>
 
-                      <FormGroup row>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                            checked={rendezVous}
-                            color="primary"
-                            onChange={(e) => {
-                              setRendezVous(e.target.checked);
-                              handleUpdatePermissions(
-                                "rendezVous",
-                                e.target.checked
-                              );
-                            }}
-                            name="rendezVous"
-                            inputProps={{ "aria-label": "secondary checkbox" }}
-                          />
-                          }
-                          label={i18next.t("convert_your_account_into_a_rendezvous_point", "Set the account as a Rendezvous point")}
-                        />
-                        <CustomPopupState message={i18next.t("rendezvous_info", "If this option is enabled, incoming calls are automatically added to a conference room.")}/>
-                        <Button disabled={!rendezVous} color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_moderator_to", "Add moderator to")} {props.blueprintName}</Button>
-                        <CustomPopupState message={i18next.t("rendezvous_moderators_info", "Moderators can manage the Rendezvous point.")} />
-                        </FormGroup>
-                    <Table className={classes.table}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="left"></TableCell>
-                                <TableCell align="left">{i18next.t("username", "Username")}</TableCell>
-                                <TableCell align="left">{i18next.t("first_name", "First name")}</TableCell>
-                                <TableCell align="left">{i18next.t("last_name", "Last name")}</TableCell>
-                                <TableCell align="right">{i18next.t("action", "Action")}</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {blueprintModerators.map(user =>                       
-                                <TableRow key={user.username} className={classes.tableRow}>
-                                    <TableCell  className={tableCellClasses}>
-                                        <Link to={`/user/${user.username}`}>
-                                            <Avatar
-                                                style={{ marginRight: "10px" }}
-                                                alt={user.username}
-                                                src={
-                                                    user.profilePicture
-                                                    ? "data:image/png;base64, " + user.profilePicture
-                                                    : noProfilePicture
-                                                }
-                                            />
-                                        </Link>
-                                    </TableCell>
-                                    <TableCell className={tableCellClasses}>
-                                        <Link to={`/user/${user.username}`}>{user.username}</Link>
-                                    </TableCell>
-                                    <TableCell className={tableCellClasses}>
-                                        <Link to={`/user/${user.username}`}>{user.firstName}</Link>
-                                    </TableCell>
-                                    <TableCell className={tableCellClasses}>
-                                        <Link to={`/user/${user.username}`}>{user.lastName}</Link>
-                                    </TableCell>
-                                    <TableCell align="right" className={classes.tableActions}>
-                                        <Button disabled={!rendezVous} color="primary" onClick={() => removeModeratorFromBlueprint(user)}>{i18next.t("remove_moderator", "Remove moderator")}</Button>
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </GridItem>
+          <FormGroup row>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={rendezVous}
+                  color="primary"
+                  onChange={(e) => {
+                    setRendezVous(e.target.checked);
+                    handleUpdatePermissions("rendezVous", e.target.checked);
+                  }}
+                  name="rendezVous"
+                  inputProps={{ "aria-label": "secondary checkbox" }}
+                />
+              }
+              label={i18next.t(
+                "convert_your_account_into_a_rendezvous_point",
+                "Set the account as a Rendezvous point"
+              )}
+            />
+            <CustomPopupState
+              message={i18next.t(
+                "rendezvous_info",
+                "If this option is enabled, incoming calls are automatically added to a conference room."
+              )}
+            />
+            <Button
+              disabled={!rendezVous}
+              color="primary"
+              onClick={() => {
+                setOpenDrawer(true);
+              }}
+            >
+              <AddCircleOutlineIcon />{" "}
+              {i18next.t("add_moderator_to", "Add moderator to")}{" "}
+              {props.blueprintName}
+            </Button>
+            <CustomPopupState
+              message={i18next.t(
+                "rendezvous_moderators_info",
+                "Moderators can manage the Rendezvous point."
+              )}
+            />
+          </FormGroup>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="left"></TableCell>
+                <TableCell align="left">
+                  {i18next.t("username", "Username")}
+                </TableCell>
+                <TableCell align="left">
+                  {i18next.t("first_name", "First name")}
+                </TableCell>
+                <TableCell align="left">
+                  {i18next.t("last_name", "Last name")}
+                </TableCell>
+                <TableCell align="right">
+                  {i18next.t("action", "Action")}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {blueprintModerators.map((user) => (
+                <TableRow key={user.username} className={classes.tableRow}>
+                  <TableCell className={tableCellClasses}>
+                    <Link to={`/user/${user.username}`}>
+                      <Avatar
+                        style={{ marginRight: "10px" }}
+                        alt={user.username}
+                        src={
+                          user.profilePicture
+                            ? "data:image/png;base64, " + user.profilePicture
+                            : noProfilePicture
+                        }
+                      />
+                    </Link>
+                  </TableCell>
+                  <TableCell className={tableCellClasses}>
+                    <Link to={`/user/${user.username}`}>{user.username}</Link>
+                  </TableCell>
+                  <TableCell className={tableCellClasses}>
+                    <Link to={`/user/${user.username}`}>{user.firstName}</Link>
+                  </TableCell>
+                  <TableCell className={tableCellClasses}>
+                    <Link to={`/user/${user.username}`}>{user.lastName}</Link>
+                  </TableCell>
+                  <TableCell align="right" className={classes.tableActions}>
+                    <Button
+                      disabled={!rendezVous}
+                      color="primary"
+                      onClick={() => removeModeratorFromBlueprint(user)}
+                    >
+                      {i18next.t("remove_moderator", "Remove moderator")}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </GridItem>
       </GridContainer>
     </div>
   );

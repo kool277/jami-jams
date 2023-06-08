@@ -1,35 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Check from '@material-ui/icons/Check';
-import SettingsIcon from '@material-ui/icons/Settings';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import VideoLabelIcon from '@material-ui/icons/VideoLabel';
+import React from "react";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepLabel from "@material-ui/core/StepLabel";
+import Check from "@material-ui/icons/Check";
+import SettingsIcon from "@material-ui/icons/Settings";
+import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import VideoLabelIcon from "@material-ui/icons/VideoLabel";
 
-import i18next from 'i18next';
+import i18next from "i18next";
 
 const useQontoStepIconStyles = makeStyles({
   root: {
-    color: '#eaeaf0',
-    display: 'flex',
+    color: "#eaeaf0",
+    display: "flex",
     height: 22,
-    alignItems: 'center',
+    alignItems: "center",
   },
   active: {
-    color: '#784af4',
+    color: "#784af4",
   },
   circle: {
     width: 8,
     height: 8,
-    borderRadius: '50%',
-    backgroundColor: 'currentColor',
+    borderRadius: "50%",
+    backgroundColor: "currentColor",
   },
   completed: {
-    color: '#784af4',
+    color: "#784af4",
     zIndex: 1,
     fontSize: 18,
   },
@@ -45,7 +45,11 @@ function QontoStepIcon(props) {
         [classes.active]: active,
       })}
     >
-      {completed ? <Check className={classes.completed} /> : <div className={classes.circle} />}
+      {completed ? (
+        <Check className={classes.completed} />
+      ) : (
+        <div className={classes.circle} />
+      )}
     </div>
   );
 }
@@ -63,24 +67,24 @@ QontoStepIcon.propTypes = {
 
 const useColorlibStepIconStyles = makeStyles({
   root: {
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
     zIndex: 1,
-    color: '#fff',
+    color: "#fff",
     width: 50,
     height: 50,
-    display: 'flex',
-    borderRadius: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    display: "flex",
+    borderRadius: "50%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   active: {
     backgroundImage:
-      'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
-    boxShadow: '0 4px 10px 0 rgba(0,0,0,.25)',
+      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
   },
   completed: {
     backgroundImage:
-      'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
   },
 });
 
@@ -123,7 +127,7 @@ ColorlibStepIcon.propTypes = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
   },
   button: {
     marginRight: theme.spacing(1),
@@ -135,7 +139,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-  return [i18next.t("create_administrator_user", 'Create Administrator User'), i18next.t("certificate_authority_setup", 'Certificate Authority Setup'), i18next.t("identity_management", 'Identity Management'), i18next.t("server_parameters", 'Server Parameters')];
+  return [
+    i18next.t("create_administrator_user", "Create Administrator User"),
+    i18next.t("certificate_authority_setup", "Certificate Authority Setup"),
+    i18next.t("identity_management", "Identity Management"),
+    i18next.t("server_parameters", "Server Parameters"),
+  ];
 }
 
 export default function CustomizedSteppers(props) {

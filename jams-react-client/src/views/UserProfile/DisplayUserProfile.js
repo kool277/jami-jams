@@ -19,10 +19,10 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 import Table from "@material-ui/core/Table";
-import TableHead from '@material-ui/core/TableHead';
+import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -35,7 +35,6 @@ import PhoneInTalkOutlinedIcon from "@material-ui/icons/PhoneInTalkOutlined";
 import SmartphoneOutlinedIcon from "@material-ui/icons/SmartphoneOutlined";
 import LocalPrintshopOutlinedIcon from "@material-ui/icons/LocalPrintshopOutlined";
 import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
-
 
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
@@ -61,7 +60,7 @@ import {
   api_path_get_group,
   api_path_post_group_member,
   api_path_get_admin_user_groups,
-  api_path_delete_group_member
+  api_path_delete_group_member,
 } from "globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
@@ -69,10 +68,9 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 import axios from "axios";
 
-
 import PasswordDialog from "components/PasswordDialog/PasswordDialog";
 
-import TemporaryDrawer from "components/Drawer/Drawer"
+import TemporaryDrawer from "components/Drawer/Drawer";
 
 import i18next from "i18next";
 
@@ -133,25 +131,25 @@ const styles = (theme) => ({
     [theme.breakpoints.down("md")]: {
       display: "flex",
       flexDirection: "column",
-    }
+    },
   },
-  footerActionButtons:{
+  footerActionButtons: {
     display: "flex",
     flexDirection: "row",
     alignItems: "end",
     "& button": {
-      marginRight: "1rem"
+      marginRight: "1rem",
     },
     [theme.breakpoints.down("md")]: {
       flexDirection: "column",
       alignItems: "stretch",
       "& button": {
         marginRight: "0",
-        width: "100%"
+        width: "100%",
       },
-    }
+    },
   },
-  footerActionButtonsRight:{
+  footerActionButtonsRight: {
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "end",
@@ -161,9 +159,9 @@ const styles = (theme) => ({
       alignItems: "stretch",
       "& button": {
         marginRight: "0",
-        width: "100%"
+        width: "100%",
       },
-    }
+    },
   },
   userProfileHeader: {
     display: "flex",
@@ -184,7 +182,7 @@ const styles = (theme) => ({
   },
   cardAvatarMobile: {
     [theme.breakpoints.down("md")]: {
-      textAlign: "center"
+      textAlign: "center",
     },
   },
   loading: {
@@ -192,7 +190,7 @@ const styles = (theme) => ({
   },
   whiteButtonText: {
     color: "white",
-  }
+  },
 });
 
 const useStyles = makeStyles(styles);
@@ -212,7 +210,7 @@ export default function DisplayUserProfile(props) {
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
   const searchGroups = (value) => {
-    if(value === "") value = "*";
+    if (value === "") value = "*";
     axios(
       configApiCall(
         api_path_get_list_group + "?groupName=" + value,
@@ -224,16 +222,16 @@ export default function DisplayUserProfile(props) {
       .then((response) => {
         let availableGroups = [];
         const groupResults = response.data;
-        groupResults.forEach((possibleGroup) =>{
-            let existingGroup = false;
-            groups.forEach((actualGroup)=>{
-              if(actualGroup === possibleGroup.name) {
-                existingGroup = true;
-                return;
-              }
-            })
-            if(!existingGroup) availableGroups.push(possibleGroup);
-        })
+        groupResults.forEach((possibleGroup) => {
+          let existingGroup = false;
+          groups.forEach((actualGroup) => {
+            if (actualGroup === possibleGroup.name) {
+              existingGroup = true;
+              return;
+            }
+          });
+          if (!existingGroup) availableGroups.push(possibleGroup);
+        });
         setGroups(availableGroups);
       })
       .catch((error) => {
@@ -241,21 +239,19 @@ export default function DisplayUserProfile(props) {
           if (error.response.status === 401) {
             auth.authenticated = false;
             history.push("/");
-          }else {
+          } else {
             setGroups([]);
           }
         } else {
           setGroups([]);
         }
- 
       });
-  }
+  };
 
   const removeUserFromGroup = (group) => {
-
     let data = {
-      "username": props.username
-    }
+      username: props.username,
+    };
 
     axios(
       configApiCall(
@@ -264,38 +260,36 @@ export default function DisplayUserProfile(props) {
         data,
         null
       )
-    ).then((response)=>{
+    )
+      .then((response) => {
         let newGroupMemberships = groupMemberships;
         newGroupMemberships.splice(newGroupMemberships.indexOf(group), 1);
         setGroupMemberships(newGroupMemberships);
-    }).catch((error)=>{console.log(error)})
-
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const addUserToGroup = (group) => {
-
     let data = {
-      "username": props.username
-    }
+      username: props.username,
+    };
 
     axios(
-      configApiCall(
-        api_path_post_group_member + group.id,
-        "POST",
-        data,
-        null
-      )
-    ).then((response)=>{      
+      configApiCall(api_path_post_group_member + group.id, "POST", data, null)
+    )
+      .then((response) => {
         let newGroupMemberships = groupMemberships;
-        newGroupMemberships.push(
-          {
-            "groupId": group.id,
-            "name": group.name
-          }
-        );
+        newGroupMemberships.push({
+          groupId: group.id,
+          name: group.name,
+        });
         setGroupMemberships(newGroupMemberships);
-    }).catch((error)=>{console.log(error)})
-
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -330,28 +324,40 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
-                axios(configApiCall(api_path_get_admin_user_groups + props.username,
-                  "GET",
-                  null,
-                  null
-                )).then((userGroups) => {
-                  let userGroupsData = userGroups.data;
-                  userGroupsData.forEach((group) => {
-                    axios(configApiCall(api_path_get_group + group.groupId, 'GET', null, null)).then((groupInfo) =>{
-                      group["name"] = groupInfo.data.name;
+                axios(
+                  configApiCall(
+                    api_path_get_admin_user_groups + props.username,
+                    "GET",
+                    null,
+                    null
+                  )
+                )
+                  .then((userGroups) => {
+                    let userGroupsData = userGroups.data;
+                    userGroupsData.forEach((group) => {
+                      axios(
+                        configApiCall(
+                          api_path_get_group + group.groupId,
+                          "GET",
+                          null,
+                          null
+                        )
+                      ).then((groupInfo) => {
+                        group["name"] = groupInfo.data.name;
+                      });
                     });
+                    setGroupMemberships(userGroupsData);
+                  })
+                  .catch((error) => {
+                    if (error.response.status === 401) {
+                      auth.authenticated = false;
+                      history.push("/signin");
+                    }
+                    if (error.response.status === 404) {
+                      setGroupMemberships([]);
+                    }
                   });
-                  setGroupMemberships(userGroupsData);
-                }).catch((error) => {
-                  if (error.response.status === 401) {
-                    auth.authenticated = false;
-                    history.push("/signin");
-                  }
-                  if (error.response.status === 404) {
-                    setGroupMemberships([]);
-                  }
-                })
-                searchGroups("*")
+                searchGroups("*");
                 setLoading(false);
               })
               .catch((error) => {
@@ -391,27 +397,39 @@ export default function DisplayUserProfile(props) {
             )
               .then((response) => {
                 setUser(response.data);
-                axios(configApiCall(api_path_get_admin_user_groups + props.username,
-                  "GET",
-                  null,
-                  null
-                )).then((userGroups) => {
-                  let userGroupsData = userGroups.data;
-                  userGroupsData.forEach((group) => {
-                    axios(configApiCall(api_path_get_group + group.groupId, 'GET', null, null)).then((groupInfo) =>{
-                      group["name"] = groupInfo.data.name;
+                axios(
+                  configApiCall(
+                    api_path_get_admin_user_groups + props.username,
+                    "GET",
+                    null,
+                    null
+                  )
+                )
+                  .then((userGroups) => {
+                    let userGroupsData = userGroups.data;
+                    userGroupsData.forEach((group) => {
+                      axios(
+                        configApiCall(
+                          api_path_get_group + group.groupId,
+                          "GET",
+                          null,
+                          null
+                        )
+                      ).then((groupInfo) => {
+                        group["name"] = groupInfo.data.name;
+                      });
                     });
+                    setGroupMemberships(userGroupsData);
+                  })
+                  .catch((error) => {
+                    if (error.response.status === 401) {
+                      auth.authenticated = false;
+                      history.push("/signin");
+                    }
+                    if (error.response.status === 404) {
+                      setGroupMemberships([]);
+                    }
                   });
-                  setGroupMemberships(userGroupsData);
-                }).catch((error) => {
-                  if (error.response.status === 401) {
-                    auth.authenticated = false;
-                    history.push("/signin");
-                  }
-                  if (error.response.status === 404) {
-                    setGroupMemberships([]);
-                  }
-                })
                 setLoading(false);
               })
               .catch((error) => {
@@ -490,16 +508,15 @@ export default function DisplayUserProfile(props) {
   };
 
   const tableCellClasses = classnames(classes.tableCell);
-  
+
   const canEdit = () => {
-    if(auth.isLocalDirectory()) {
-      if(!auth.hasAdminScope() && auth.getUsername() !== user.username) {
-        return false
+    if (auth.isLocalDirectory()) {
+      if (!auth.hasAdminScope() && auth.getUsername() !== user.username) {
+        return false;
       }
       return true;
-    }
-    else return false;
-  }
+    } else return false;
+  };
 
   return (
     <div>
@@ -514,14 +531,23 @@ export default function DisplayUserProfile(props) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {i18next.t("are_you_sure_want_revoke", "Are you sure you want to revoke")} <strong>{revokedUser}</strong> ?
+            {i18next.t(
+              "are_you_sure_want_revoke",
+              "Are you sure you want to revoke"
+            )}{" "}
+            <strong>{revokedUser}</strong> ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             {i18next.t("cancel", "Cancel")}
           </Button>
-          <Button onClick={revokeUser} color="info" className={classes.whiteButtonText} autoFocus>
+          <Button
+            onClick={revokeUser}
+            color="info"
+            className={classes.whiteButtonText}
+            autoFocus
+          >
             {i18next.t("revoke", "Revoke")}
           </Button>
         </DialogActions>
@@ -533,206 +559,231 @@ export default function DisplayUserProfile(props) {
         handleClosechangePassword={handleClosechangePassword}
       />
       <div className={classes.loading}>
-        {loading && (
-          <LinearProgress variant="determinate" value={progress} />
-        )}
+        {loading && <LinearProgress variant="determinate" value={progress} />}
       </div>
-      <TemporaryDrawer 
-          openDrawer={openDrawer} 
-          setOpenDrawer={setOpenDrawer} 
-          direction="right" 
-          placeholder={i18next.t("add_user_to_group", "Add user to group ...")} 
-          searchTargets={searchGroups} 
-          targets={groups}
-          existingTargets={groupMemberships}
-          addElementToTarget={addUserToGroup}
-          targetName={props.username}
-          type="group"
+      <TemporaryDrawer
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        direction="right"
+        placeholder={i18next.t("add_user_to_group", "Add user to group ...")}
+        searchTargets={searchGroups}
+        targets={groups}
+        existingTargets={groupMemberships}
+        addElementToTarget={addUserToGroup}
+        targetName={props.username}
+        type="group"
       />
-      {!loading && (<GridContainer>
-        <Grid item xs={12} sm={12} md={6}>
-          <Card profile>
-            <CardBody profile>
-              <div className={classes.root}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12} md={6}>
-                    <CardAvatar
-                      displayProfile
-                      className={classes.cardAvatarMobile}
-                    >
-                      <img
-                        src={
-                          user.profilePicture
-                            ? "data:image/png;base64, " + user.profilePicture
-                            : noProfilePicture
-                        }
-                        className={classes.editProfilePicture}
-                        alt="..."
-                      />
-                    </CardAvatar>
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={6}>
-                    <div className={classes.userProfileHeader}>
-                      <div>
-                        <h3 className={classes.cardTitle}>
-                          {user.username}
-                        </h3>
-                        {getUserStatus()}
+      {!loading && (
+        <GridContainer>
+          <Grid item xs={12} sm={12} md={6}>
+            <Card profile>
+              <CardBody profile>
+                <div className={classes.root}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <CardAvatar
+                        displayProfile
+                        className={classes.cardAvatarMobile}
+                      >
+                        <img
+                          src={
+                            user.profilePicture
+                              ? "data:image/png;base64, " + user.profilePicture
+                              : noProfilePicture
+                          }
+                          className={classes.editProfilePicture}
+                          alt="..."
+                        />
+                      </CardAvatar>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <div className={classes.userProfileHeader}>
+                        <div>
+                          <h3 className={classes.cardTitle}>{user.username}</h3>
+                          {getUserStatus()}
+                        </div>
                       </div>
-                    </div>
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={6}>
-                    <List dense={false}>
-                      {(user.firstName || user.lastName) && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PersonIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={`${user.firstName} ${user.lastName}`} />
-                        </ListItem>
-                      )}
-                      {user.phoneNumber && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PhoneInTalkOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.phoneNumber} />
-                        </ListItem>
-                      )}
-                      {user.organization && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <BusinessCenterOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.organization} />
-                        </ListItem>
-                      )}
-                    </List>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={6}>
+                      <List dense={false}>
+                        {(user.firstName || user.lastName) && (
+                          <ListItem>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <PersonIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={`${user.firstName} ${user.lastName}`}
+                            />
+                          </ListItem>
+                        )}
+                        {user.phoneNumber && (
+                          <ListItem>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <PhoneInTalkOutlinedIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={user.phoneNumber} />
+                          </ListItem>
+                        )}
+                        {user.organization && (
+                          <ListItem>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <BusinessCenterOutlinedIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={user.organization} />
+                          </ListItem>
+                        )}
+                      </List>
 
-                    <List dense={false}>
-                      {user.email && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <AlternateEmailOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.email} />
-                        </ListItem>
-                      )}
-                      {user.phoneNumberExtension && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <PhoneForwardedOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.phoneNumberExtension} />
-                        </ListItem>
-                      )}
-                      {user.mobileNumber && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <SmartphoneOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.mobileNumber} />
-                        </ListItem>
-                      )}
-                      {user.faxNumber && (
-                        <ListItem>
-                          <ListItemAvatar>
-                            <Avatar>
-                              <LocalPrintshopOutlinedIcon />
-                            </Avatar>
-                          </ListItemAvatar>
-                          <ListItemText primary={user.faxNumber} />
-                        </ListItem>
-                      )}
-                    </List>
+                      <List dense={false}>
+                        {user.email && (
+                          <ListItem>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <AlternateEmailOutlinedIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={user.email} />
+                          </ListItem>
+                        )}
+                        {user.phoneNumberExtension && (
+                          <ListItem>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <PhoneForwardedOutlinedIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={user.phoneNumberExtension} />
+                          </ListItem>
+                        )}
+                        {user.mobileNumber && (
+                          <ListItem>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <SmartphoneOutlinedIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={user.mobileNumber} />
+                          </ListItem>
+                        )}
+                        {user.faxNumber && (
+                          <ListItem>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <LocalPrintshopOutlinedIcon />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={user.faxNumber} />
+                          </ListItem>
+                        )}
+                      </List>
+                    </Grid>
+                  </Grid>
+                </div>
+              </CardBody>
+              <CardFooter className={classes.profileFooter}>
+                <Grid container className={classes.footerActionButtons}>
+                  <Grid item>
+                    {canEdit() && (
+                      <Button
+                        color="info"
+                        className={classes.whiteButtonText}
+                        onClick={() => props.setDisplayUser(false)}
+                      >
+                        <EditIcon /> {i18next.t("edit_profile", "Edit profile")}
+                      </Button>
+                    )}
+                  </Grid>
+                  <Grid item>
+                    {auth.isLocalDirectory() && auth.hasAdminScope() && (
+                      <Button
+                        color="info"
+                        className={classes.whiteButtonText}
+                        onClick={() => {
+                          setChangePasswordOpen(true);
+                        }}
+                      >
+                        <VpnKeyIcon />{" "}
+                        {i18next.t("change_password", "Change password")}
+                      </Button>
+                    )}
                   </Grid>
                 </Grid>
-              </div>
-            </CardBody>
-            <CardFooter className={classes.profileFooter}>
-              <Grid container className={classes.footerActionButtons}>
-                <Grid item >
-                  {canEdit() && (
-                    <Button
-                      color="info"
-                      className={classes.whiteButtonText}
-                      onClick={() => props.setDisplayUser(false)}
-                    >
-                      <EditIcon /> {i18next.t("edit_profile", "Edit profile")}
-                    </Button>
-                  )}
-                  </Grid>
-                  <Grid item >
-                  {auth.isLocalDirectory() && auth.hasAdminScope() && (
-                    <Button
-                      color="info"
-                      className={classes.whiteButtonText}
-                      onClick={() => {
-                        setChangePasswordOpen(true);
-                      }}
-                    >
-                      <VpnKeyIcon /> {i18next.t("change_password", "Change password")}
-                    </Button>
-                  )}
-                  </Grid>
-              </Grid>
 
-              <Grid container className={classes.footerActionButtonsRight}>
-                <Grid item>
-                {auth.hasAdminScope() && revoked === false && (
-                  <Button
-                    color="info"
-                    className={classes.whiteButtonText}
-                    onClick={() => handleClickOpen(user.username)}
-                  >
-                    <DeleteIcon fontSize="small" /> {i18next.t("revoke_user", "Revoke user")}
-                  </Button>
-                )}
+                <Grid container className={classes.footerActionButtonsRight}>
+                  <Grid item>
+                    {auth.hasAdminScope() && revoked === false && (
+                      <Button
+                        color="info"
+                        className={classes.whiteButtonText}
+                        onClick={() => handleClickOpen(user.username)}
+                      >
+                        <DeleteIcon fontSize="small" />{" "}
+                        {i18next.t("revoke_user", "Revoke user")}
+                      </Button>
+                    )}
+                  </Grid>
                 </Grid>
-              </Grid>
-            </CardFooter>
-          </Card>
-        </Grid>
+              </CardFooter>
+            </Card>
+          </Grid>
           {auth.hasAdminScope() && (
             <GridItem xs={12} sm={12} md={12}>
-                <Button color="primary" onClick={() => {setOpenDrawer(true)}}><AddCircleOutlineIcon /> {i18next.t("add_user_to_a_group", "Add user to a group")}</Button>
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="left">{i18next.t("group_name", "Group name")}</TableCell>
-                            <TableCell align="right">{i18next.t("action", "Action")}</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {groupMemberships !== [] && groupMemberships.map(group =>
-                            <TableRow key={group} className={classes.tableRow}>
-                                <TableCell className={tableCellClasses}>
-                                  <Link to={`/group/${group.groupId}`}>
-                                    {group.name}
-                                  </Link>
-                                </TableCell>
-                                <TableCell align="right" className={classes.tableActions}>
-                                    <Button color="primary" onClick={() => removeUserFromGroup(group)}>{i18next.t("remove_from_group", "Remove from group")}</Button>
-                                </TableCell>
-                            </TableRow>
-                        ) }
-                    </TableBody>
-                </Table>
+              <Button
+                color="primary"
+                onClick={() => {
+                  setOpenDrawer(true);
+                }}
+              >
+                <AddCircleOutlineIcon />{" "}
+                {i18next.t("add_user_to_a_group", "Add user to a group")}
+              </Button>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left">
+                      {i18next.t("group_name", "Group name")}
+                    </TableCell>
+                    <TableCell align="right">
+                      {i18next.t("action", "Action")}
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {groupMemberships !== [] &&
+                    groupMemberships.map((group) => (
+                      <TableRow key={group} className={classes.tableRow}>
+                        <TableCell className={tableCellClasses}>
+                          <Link to={`/group/${group.groupId}`}>
+                            {group.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                          className={classes.tableActions}
+                        >
+                          <Button
+                            color="primary"
+                            onClick={() => removeUserFromGroup(group)}
+                          >
+                            {i18next.t(
+                              "remove_from_group",
+                              "Remove from group"
+                            )}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
             </GridItem>
           )}
-      </GridContainer>
+        </GridContainer>
       )}
     </div>
   );

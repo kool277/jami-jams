@@ -111,5 +111,5 @@ module.exports = {
   api_path_get_group_members,
   api_path_post_group_member,
   api_path_delete_group_member,
-  api_path_get_admin_user_groups
+  api_path_get_admin_user_groups,
 };

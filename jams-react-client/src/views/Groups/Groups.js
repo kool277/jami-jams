@@ -32,7 +32,7 @@ import {
   api_path_get_list_group,
   api_path_delete_group,
   api_path_blueprints,
-  api_path_get_group_members
+  api_path_get_group_members,
 } from "globalUrls";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -89,8 +89,8 @@ const styles = {
     color: "white",
   },
   inputBottomMargin: {
-    marginBottom: "1rem"
-  }
+    marginBottom: "1rem",
+  },
 };
 
 const useStyles = makeStyles(styles);
@@ -111,8 +111,8 @@ export default function Groups() {
   const [groupNameExits, setGroupNameExits] = React.useState(false);
 
   const [removedGroup, setRemovedGroup] = React.useState({
-    "id": 0,
-    "name": "groupeName"
+    id: 0,
+    name: "groupeName",
   });
   const [openRemoveDialog, setOpenRemoveDialog] = React.useState();
 
@@ -160,20 +160,20 @@ export default function Groups() {
 
   const getBlueprints = () => {
     axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
-    .then((response) => {
-      setBlueprints(response.data);
-      setSelectedBlueprint(getBlueprintsOptions()[0]);
-    })
-    .catch((error) => {
-      if (error.response.status === 401) {
-        auth.authenticated = false;
-        history.push("/signin");
-      }
-      if (error.response.status === 500) {
-        setBlueprints([]);
-      }
-    });
-  }
+      .then((response) => {
+        setBlueprints(response.data);
+        setSelectedBlueprint(getBlueprintsOptions()[0]);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          auth.authenticated = false;
+          history.push("/signin");
+        }
+        if (error.response.status === 500) {
+          setBlueprints([]);
+        }
+      });
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -187,25 +187,32 @@ export default function Groups() {
       });
     }, 500);
 
-    axios(
-      configApiCall(api_path_get_list_group, "GET", null, null)
-    )
+    axios(configApiCall(api_path_get_list_group, "GET", null, null))
       .then((response) => {
         let allGroups = response.data;
 
-        allGroups.forEach((group)=> {
-          axios(configApiCall(api_path_get_group_members + group.id, 'GET', null, null)).then((response) => {
-            group["groupMembersLength"] = response.data.length;
-          }).catch((error) => {
-            if (error.response.status === 401) {
-              auth.authenticated = false;
-              history.push("/");
-            }
-            if (error.response.status === 404) {
-              group["groupMembersLength"] = 0;
-            }
-          });
-        })
+        allGroups.forEach((group) => {
+          axios(
+            configApiCall(
+              api_path_get_group_members + group.id,
+              "GET",
+              null,
+              null
+            )
+          )
+            .then((response) => {
+              group["groupMembersLength"] = response.data.length;
+            })
+            .catch((error) => {
+              if (error.response.status === 401) {
+                auth.authenticated = false;
+                history.push("/");
+              }
+              if (error.response.status === 404) {
+                group["groupMembersLength"] = 0;
+              }
+            });
+        });
         setGroups(allGroups);
         getBlueprints();
         setLoading(false);
@@ -215,7 +222,7 @@ export default function Groups() {
           auth.authenticated = false;
           history.push("/signin");
         }
-        if (error.response.status === 404){
+        if (error.response.status === 404) {
           getBlueprints();
           setZeroGroup(true);
         }
@@ -240,7 +247,7 @@ export default function Groups() {
         setDisableCreate(false);
         setGroupNameExits(false);
         allGroups.forEach((group) => {
-          if(searchGroupNameValue === group.name){
+          if (searchGroupNameValue === group.name) {
             setDisableCreate(true);
             setGroupNameExits(true);
           }
@@ -310,12 +317,14 @@ export default function Groups() {
     return (
       <div>
         <h4>
-          {i18next.t("you_are_not_allowed_to_access_this_section", "You are not allowed to access this section. Please contact your administrator to get administrator privileges.")}
+          {i18next.t(
+            "you_are_not_allowed_to_access_this_section",
+            "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
+          )}
         </h4>
       </div>
     );
-  } 
-  else {
+  } else {
     return (
       <div>
         <Dialog
@@ -324,7 +333,9 @@ export default function Groups() {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{i18next.t("create_group", "Create group")}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            {i18next.t("create_group", "Create group")}
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <Grid container spacing={2}>
@@ -334,7 +345,9 @@ export default function Groups() {
                     error={groupNameExits}
                     fullWidth
                   >
-                    <InputLabel htmlFor="groupName">{i18next.t("group_name", "Group name")}</InputLabel>
+                    <InputLabel htmlFor="groupName">
+                      {i18next.t("group_name", "Group name")}
+                    </InputLabel>
                     <Input
                       id="groupName"
                       placeholder={i18next.t("group_name", "Group name")}
@@ -350,14 +363,26 @@ export default function Groups() {
                     />
                   </FormControl>
                   {disableCreate && groupName.length > 0 && (
-                    <p>{i18next.t("group_name_already_exists", "Group name already exists!")}</p>
+                    <p>
+                      {i18next.t(
+                        "group_name_already_exists",
+                        "Group name already exists!"
+                      )}
+                    </p>
                   )}
                   {disableCreate && groupName.length === 0 && (
-                    <p>{i18next.t("group_name_is_empty", "Group name is empty")}</p>
+                    <p>
+                      {i18next.t("group_name_is_empty", "Group name is empty")}
+                    </p>
                   )}
                 </Grid>
                 <Grid item xs={12} sm={12} md={12}>
-                  <InputLabel className={classes.inputBottomMargin} htmlFor="blueprint">{i18next.t("select_blueprint", "Select a blueprint")}</InputLabel>
+                  <InputLabel
+                    className={classes.inputBottomMargin}
+                    htmlFor="blueprint"
+                  >
+                    {i18next.t("select_blueprint", "Select a blueprint")}
+                  </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     fullWidth
@@ -372,7 +397,11 @@ export default function Groups() {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseCreate} color="info" className={classes.whiteButtonText}>
+            <Button
+              onClick={handleCloseCreate}
+              color="info"
+              className={classes.whiteButtonText}
+            >
               Cancel
             </Button>
             <Button
@@ -391,10 +420,16 @@ export default function Groups() {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{i18next.t("remove_group", "Remove group")}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">
+            {i18next.t("remove_group", "Remove group")}
+          </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            {i18next.t("are_you_sure_you_want_to_delete", "Are you sure you want to delete")} <strong>{removedGroup.name}</strong> ?
+              {i18next.t(
+                "are_you_sure_you_want_to_delete",
+                "Are you sure you want to delete"
+              )}{" "}
+              <strong>{removedGroup.name}</strong> ?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -415,7 +450,8 @@ export default function Groups() {
                 href="#contained-buttons"
                 onClick={(e) => setOpenCreate(true)}
               >
-                <AddCircleOutlineIcon /> {i18next.t("create_group", "Create group")}
+                <AddCircleOutlineIcon />{" "}
+                {i18next.t("create_group", "Create group")}
               </Button>
             }
             <div className={classes.searchWrapper}>
@@ -425,7 +461,10 @@ export default function Groups() {
                     className: classes.margin + " " + classes.search,
                   }}
                   inputProps={{
-                    placeholder: i18next.t("search_groups_placeholder", "Search groups…"),
+                    placeholder: i18next.t(
+                      "search_groups_placeholder",
+                      "Search groups…"
+                    ),
                     inputProps: {
                       "aria-label": i18next.t("search_groups", "Search groups"),
                     },
@@ -435,7 +474,7 @@ export default function Groups() {
               )}
               {!zeroGroup && <Search />}
               <div className={classes.loading}>
-                {!zeroGroup  && loading && (
+                {!zeroGroup && loading && (
                   <LinearProgress variant="determinate" value={progress} />
                 )}
               </div>
@@ -443,7 +482,10 @@ export default function Groups() {
           </GridItem>
           {zeroGroup ? (
             <div className={classes.groupsNotFound}>
-              <InfoIcon /> <p style={{ marginLeft: "10px" }}>{i18next.t("no_groups_found", "No groups Found")}</p>
+              <InfoIcon />{" "}
+              <p style={{ marginLeft: "10px" }}>
+                {i18next.t("no_groups_found", "No groups Found")}
+              </p>
             </div>
           ) : (
             groups
@@ -457,13 +499,7 @@ export default function Groups() {
                 }
               })
               .map((group) => (
-                <GridItem                  
-                  xs={12}
-                  sm={6}
-                  md={3}
-                  lg={2}
-                  xl={2} 
-                  key={group.name}>
+                <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={group.name}>
                   <Card profile>
                     <Link to={`/group/${group.id}`}>
                       <CardBody profile>
