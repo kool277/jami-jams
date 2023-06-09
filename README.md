@@ -10,18 +10,25 @@
 Clone the contents of this repository and run
 
 ```
+cd jams-react-client
+npm install
+npm start
+cd ..
 mvn clean package
 ```
 
 This will create a distribution folder called `jams` in the root folder. You can
 then launch the server by running
 
-`java -jar jams-launcher`
+```
+cd jams
+java -jar jams-launcher.jar
+```
 
 If you want to start the server with an SSL certificate and on a port different
 from 8080, then run:
 
-`java -jar jams-launcher 8443 server.pem server.key`
+`java -jar jams-launcher.jar 8443 server.pem server.key`
 
 Where the `pem` and `key` files are a pem encoded certificate and key.
 
@@ -40,6 +47,8 @@ To build the documentation, change enter the `jams-server` directory and simply 
 
 `apidoc -i src/ -o doc/`
 
+You can then open `doc/index.html`. Click on 1.0.0 in the top right corner if the doc doesn't appear.
+
 ##### Building the Docker container
 
 You can build the docker container using:
@@ -48,8 +57,8 @@ You can build the docker container using:
 docker build -f Dockerfile -t jams:latest .
 ```
 
-To run the docker container (assuming you want to have it on port 80 locally):
+To run the docker container (assuming you want to have it on port 8080 locally):
 
 ```
-docker run -p 80:8080 --rm jams:latest
+docker run -p 8080:8080 --rm jams:latest
 ```
