@@ -51,14 +51,15 @@ import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
-//In order to make this "stoppable" to simply, I turned the server itself into a thread.
+// In order to make this "stoppable" to simply, I turned the server itself into
+// a thread.
 public class Server {
 
     public final static AtomicBoolean isInstalled = new AtomicBoolean(false);
     public final static AtomicBoolean activated = new AtomicBoolean(false);
 
     public static DataStore dataStore;
-    //This one gets loaded via JAR, to make it more flexible.
+    // This one gets loaded via JAR, to make it more flexible.
     public static CertificateAuthority certificateAuthority;
     public static AuthenticationModule userAuthenticationModule;
     public static NameServer nameServer;
@@ -67,12 +68,12 @@ public class Server {
     public static final UpdateInterface updateInterface = new UpdateInterface();
     public static JAMSUpdater appUpdater = new JAMSUpdater(new AtomicBoolean(false));
 
-
     public static void main(String[] args) {
-        //This is a fix to drop old cached stuff from the tomcat classloader.
+        // This is a fix to drop old cached stuff from the tomcat classloader.
         ClassPool.getDefault().clearImportedPackages();
         ScopedServletAnnotationScanner scanner = new ScopedServletAnnotationScanner();
-        scanner.processClasses(new java.io.File(Server.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName());
+        scanner.processClasses(
+                new java.io.File(Server.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName());
         switch (args.length) {
             case 1:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]));
@@ -86,34 +87,52 @@ public class Server {
                 break;
         }
 
-        //Pre-load the libraries we should pre-load.
+        // Pre-load the libraries we should pre-load.
         LibraryLoader.loadlibs("libs", Server.class);
-        //Step 1: Create the data store.
+        // Step 1: Create the data store.
         dataStore = new DataStore("jdbc:derby:jams;create=true");
+
+        // Create image folder if it doesn't exist.
+        File imagesFolder = new File("." + File.separator + "images");
+        if (!imagesFolder.exists()) {
+            boolean created = imagesFolder.mkdirs();
+            if (created) {
+                log.info("Created images folder");
+            } else {
+                log.error("Failed to create images folder");
+                System.exit(-1);
+            }
+        }
 
         isInstalled.set(new File(System.getProperty("user.dir") + File.separator + "config.json").exists());
         log.info("Server is already installed: " + isInstalled.get());
         ServerSettings serverSettings = null;
         if (isInstalled.get()) {
             try {
-                InputStream path = new FileInputStream(new File(System.getProperty("user.dir") + File.separator + "config.json"));
+                InputStream path = new FileInputStream(
+                        new File(System.getProperty("user.dir") + File.separator + "config.json"));
                 serverSettings = JsonIterator.deserialize(path.readAllBytes(), ServerSettings.class);
-                certificateAuthority = CryptoEngineLoader.loadCertificateAuthority(serverSettings.getCaConfiguration(), dataStore);
+                certificateAuthority = CryptoEngineLoader.loadCertificateAuthority(serverSettings.getCaConfiguration(),
+                        dataStore);
                 userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
                 if (serverSettings.getLdapConfiguration() != null)
                     userAuthenticationModule.attachAuthSource(AuthenticationSourceType.LDAP,
-                            serverSettings.getLdapConfiguration()
-                    );
+                            serverSettings.getLdapConfiguration());
                 if (serverSettings.getActiveDirectoryConfiguration() != null) {
                     userAuthenticationModule.attachAuthSource(AuthenticationSourceType.AD,
                             serverSettings.getActiveDirectoryConfiguration());
                 }
                 if (serverSettings.getLocalDirectoryConfiguration() != null) {
-                    LocalAuthSettings settings = JsonIterator.deserialize(serverSettings.getLocalDirectoryConfiguration(), LocalAuthSettings.class);
-                    if(settings.getPublicNames()) nameServer = new PublicNameServer(settings.getPublicNameServer());
-                    else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
-                }
-                else nameServer = new LocalNameServer(dataStore,userAuthenticationModule,serverSettings.getServerPublicURI());
+                    LocalAuthSettings settings = JsonIterator
+                            .deserialize(serverSettings.getLocalDirectoryConfiguration(), LocalAuthSettings.class);
+                    if (settings.getPublicNames())
+                        nameServer = new PublicNameServer(settings.getPublicNameServer());
+                    else
+                        nameServer = new LocalNameServer(dataStore, userAuthenticationModule,
+                                serverSettings.getServerPublicURI());
+                } else
+                    nameServer = new LocalNameServer(dataStore, userAuthenticationModule,
+                            serverSettings.getServerPublicURI());
 
                 licenseService.loadLicense();
                 log.info("All services are UP and ready for use...");
@@ -125,27 +144,29 @@ public class Server {
             userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
             log.info("Started server with empty modules waiting for setup...");
         }
-        //Now pop-up the GUI
-        //Here we need to do a small spin-wait because keys may be slow to generate.
+        // Now pop-up the GUI
+        // Here we need to do a small spin-wait because keys may be slow to generate.
         try {
             startGUI();
+            log.info("Server is now running!");
+        } catch (Exception e) {
+            log.error("Could not start GUI with error {}", e.getMessage());
         }
-        catch (Exception e){
-            log.error("Could not start GUI with error {}",e.getMessage());
-        }
-
 
     }
 
-    public static void startGUI() throws Exception{
+    public static void startGUI() throws Exception {
         boolean ready = false;
-        while(!ready){
-            if(userAuthenticationModule.getAuthModulePubKey() != null){
+        while (!ready) {
+            log.info("Waiting for authentication module to be ready...");
+            if (userAuthenticationModule.getAuthModulePubKey() != null) {
                 ready = true;
             }
         }
+        log.info("Authentication module is ready!");
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop.getDesktop().browse(new URI(tomcatLauncher.getTomcat().getConnector().getScheme() + "://localhost:" + tomcatLauncher.getTomcat().getService().findConnectors()[0].getPort()));
+            Desktop.getDesktop().browse(new URI(tomcatLauncher.getTomcat().getConnector().getScheme() + "://localhost:"
+                    + tomcatLauncher.getTomcat().getService().findConnectors()[0].getPort()));
         } else {
             log.info("There is no graphical interface on this system - please connect remotely!");
         }

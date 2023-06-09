@@ -73,7 +73,8 @@ public class ContactServlet extends HttpServlet {
      * @apiGroup Contacts
      *
      * @apiParam {body} Contact JSON representation of the contact object
-     * @apiParamExample {json} Request-Example: { "uri": "jami://7e3ab29383" }
+     * @apiParamExample {json} Request-Example:
+     *      { "uri": "jami://7e3ab29383" }
      *
      * @apiSuccess (200) {null} null successfully added contact
      * @apiError (500) {null} null contact could not be successfully added

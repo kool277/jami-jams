@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
@@ -20,6 +21,7 @@ import java.util.Scanner;
 
 import static net.jami.jams.server.Server.dataStore;
 
+@Slf4j
 @WebServlet("/api/admin/policy")
 public class PolicyServlet extends HttpServlet {
 
@@ -37,8 +39,14 @@ public class PolicyServlet extends HttpServlet {
             StatementList statementList = new StatementList();
             StatementElement st = new StatementElement("name", "=", name, "");
             statementList.addStatement(st);
-            resp.getOutputStream().write(JsonStream.serialize(dataStore.getPolicyDao().getObjects(statementList).get(0)).getBytes());
-            resp.setStatus(200);
+            policies = dataStore.getPolicyDao().getObjects(statementList);
+            if (!policies.isEmpty()) {
+                resp.getOutputStream().write(JsonStream.serialize(policies.get(0)).getBytes());
+                resp.setStatus(200);
+            } else {
+                resp.setStatus(404); // 404 status code for Not Found
+                resp.getWriter().write("{\"message\": \"No policy found.\"}");
+            }
         } else {
             policies = dataStore.getPolicyDao().getObjects(null);
             resp.getOutputStream().write(JsonStream.serialize(policies).getBytes());

@@ -87,7 +87,9 @@ public class FilterUtils {
                 StatementList statementList = new StatementList();
                 StatementElement statementElement = new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
                 statementList.addStatement(statementElement);
+                log.info("Getting user from database");
                 User user =  dataStore.getUserDao().getObjects(statementList).get(0);
+                log.info("User retrieved from database: {}", user);
                 if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get() != null) {
                     if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
                         return false;
