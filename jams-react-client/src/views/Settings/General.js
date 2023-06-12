@@ -108,7 +108,7 @@ export default function General(props) {
     password: Yup.string().required(
       i18next.t("password_is_required", "Password is required!")
     ),
-    passwordConfirmation: Yup.string().oneOf(
+    confirmPassword: Yup.string().oneOf(
       [Yup.ref("password"), null],
       i18next.t("password_must_match", "Passwords must match")
     ),

@@ -103,8 +103,8 @@ export default function Blueprints() {
 
   const [disableCreate, setDisableCreate] = React.useState(true);
 
-  const [removedBlueprint, setRemovedBlueprint] = React.useState();
-  const [openRemoveDialog, setOpenRemoveDialog] = React.useState();
+  const [removedBlueprint, setRemovedBlueprint] = React.useState("");
+  const [openRemoveDialog, setOpenRemoveDialog] = React.useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -254,7 +254,7 @@ export default function Blueprints() {
           <DialogContentText id="alert-dialog-description">
             <FormControl
               className={classes.margin}
-              size="large"
+              size="medium"
               error={blueprintNameExits}
             >
               <InputLabel htmlFor="blueprintName">
@@ -295,14 +295,14 @@ export default function Blueprints() {
         <DialogActions>
           <Button
             onClick={handleClose}
-            color="info"
-            className={classes.whiteButtonText}
+            color="primary"
           >
             {i18next.t("cancel", "Cancel")}
           </Button>
           <Button
             onClick={handleCreateBlueprint}
-            color="primary"
+            color="info"
+            className={classes.whiteButtonText}
             disabled={disableCreate}
             autoFocus
           >

@@ -44,7 +44,7 @@ const buttonStyle = {
     touchAction: "manipulation",
     cursor: "pointer",
     "&:hover,&:focus": {
-      color: blackColor,
+      color: "inherit",
       backgroundColor: grayColor[0],
       boxShadow:
         "0 14px 26px -12px rgba(" +

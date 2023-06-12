@@ -399,14 +399,14 @@ export default function Groups() {
           <DialogActions>
             <Button
               onClick={handleCloseCreate}
-              color="info"
-              className={classes.whiteButtonText}
+              color="primary"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreateGroup}
-              color="primary"
+              color="info"
+              className={classes.whiteButtonText}
               disabled={disableCreate}
               autoFocus
             >
