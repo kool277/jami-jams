@@ -53,6 +53,8 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 import i18next from "i18next";
 
+import { getBlueprintsOptions } from "./getBlueprintsOptions";
+
 const styles = {
   cardCategoryWhite: {
     color: "rgba(255,255,255,.62)",
@@ -113,7 +115,7 @@ export default function Groups() {
     id: 0,
     name: "groupeName",
   });
-  const [openRemoveDialog, setOpenRemoveDialog] = useState();
+  const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
 
   const [disableCreate, setDisableCreate] = useState(true);
 
@@ -143,25 +145,11 @@ export default function Groups() {
     history.push("/groups");
   };
 
-  const getBlueprintsOptions = () => {
-    let blueprintsOptions = [];
-    let index = 0;
-    if (blueprints.length === 0)
-      blueprintsOptions.push({ value: index, label: "No blueprint found" });
-    else {
-      blueprints.map((blueprint) => {
-        blueprintsOptions.push({ value: index, label: blueprint.name });
-        index += 1;
-      });
-    }
-    return blueprintsOptions;
-  };
-
   const getBlueprints = () => {
     axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
       .then((response) => {
         setBlueprints(response.data);
-        setSelectedBlueprint(getBlueprintsOptions()[0]);
+        setSelectedBlueprint(getBlueprintsOptions(blueprints)[0]);
       })
       .catch((error) => {
         if (error.response.status === 401) {
@@ -300,7 +288,7 @@ export default function Groups() {
   };
 
   const blueprintsOptionsItems = tool.buildSelectMenuItems(
-    getBlueprintsOptions()
+    getBlueprintsOptions(blueprints)
   );
 
   const [selectedBlueprint, setSelectedBlueprint] = useState({
@@ -309,7 +297,7 @@ export default function Groups() {
   });
 
   const handleBlueprintsChange = (e) => {
-    setSelectedBlueprint(getBlueprintsOptions()[e.target.value]);
+    setSelectedBlueprint(getBlueprintsOptions(blueprints)[e.target.value]);
   };
 
   if (!auth.hasAdminScope()) {
@@ -388,9 +376,10 @@ export default function Groups() {
                     value={selectedBlueprint.value}
                     onChange={handleBlueprintsChange}
                     variant="outlined"
-                    children={blueprintsOptionsItems}
                     disabled={blueprints.length === 0}
-                  />
+                  >
+                    {blueprintsOptionsItems}
+                  </Select>
                 </Grid>
               </Grid>
             </DialogContentText>

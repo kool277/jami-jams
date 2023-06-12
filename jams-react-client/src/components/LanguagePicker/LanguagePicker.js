@@ -63,6 +63,7 @@ export default function LanguagePicker(props) {
               if (option.code === language) {
                 return option.name;
               }
+              return null;
             })}
           </Button>
           <Menu {...bindMenu(popupState)}>

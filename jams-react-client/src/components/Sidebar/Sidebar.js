@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -11,15 +12,14 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
+import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
-// core components
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import UpdateIcon from "@material-ui/icons/Update";
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js";
 
 import auth from "auth";
-import Snackbar from "@material-ui/core/Snackbar/Snackbar";
 
 import i18next from "i18next";
 
@@ -60,24 +60,17 @@ export default function Sidebar(props) {
         <hr />
       </div>
       {routes.map((prop, key) => {
-        if (prop.admin && !auth.hasAdminScope()) return;
+        if (prop.admin && !auth.hasAdminScope()) return null;
         if (!prop.admin && auth.hasAdminScope() && prop.path === "/user/admin")
-          return;
-        var activePro = " ";
-        var listItemClasses;
-        if (prop.path === "/upgrade-to-pro") {
-          activePro = classes.activePro + " ";
-          listItemClasses = classNames({
-            [" " + classes[color]]: true,
-          });
-        } else {
-          listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.layout + prop.path),
-          });
-        }
+          return null;
+
+        const listItemClasses = classNames({
+          [" " + classes[color]]: activeRoute(prop.layout + prop.path),
+        });
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path),
         });
+
         return (
           <div className={classes.wrapper} key={key}>
             {props.updating && (
@@ -91,7 +84,7 @@ export default function Sidebar(props) {
 
             <NavLink
               to={prop.layout + prop.path}
-              className={activePro + classes.item}
+              className={classes.item}
               activeClassName="active"
               key={key}
             >

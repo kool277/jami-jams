@@ -12,7 +12,7 @@ i18next
     lookupCookie: "i18next",
     lookupLocalStorage: "i18nextLng",
     lookupSessionStorage: "i18nextLng",
-    debug: true,
+    debug: false,
     detection: {
       order: ["cookie", "localStorage", "sessionStorage", "navigator"],
       cache: ["cookie"],

@@ -132,98 +132,64 @@ export default function Users(props) {
   };
 
   const getAllContacts = () => {
+    let request;
+
     if (auth.hasAdminScope()) {
-      axios(
+      request = axios(
         configApiCall(
           api_path_get_admin_contacts + "?username=" + props.username,
           "GET",
           null,
           null
         )
-      )
-        .then((response) => {
-          /*
-                    TODO: Include the username of the user of witch we want to display contacts
-                    at the moment the admin sees his contacts in each user profile he visits
-                */
-          let orginalContacts = response.data;
-          for (const contact of orginalContacts) {
-            contact.display = "";
-            axios(
-              configApiCall(
-                api_path_get_ns_name_from_addr + contact.uri,
-                null,
-                null
-              )
-            ).then((response) => {
-              contact.username = response.data.name;
-              axios(
-                configApiCall(
-                  api_path_get_user_profile + contact.username,
-                  "GET",
-                  null,
-                  null
-                )
-              ).then((response) => {
-                contact.profilePicture = response.data.profilePicture;
-                contact.firstName = response.data.firstName;
-                contact.lastName = response.data.lastName;
-                contact.organization = response.data.organization;
-              });
-            });
-          }
-          setContacts(orginalContacts);
-          setLoading(false);
-        })
-        .catch((error) => {
-          if (error.response.status === 401) {
-            auth.authenticated = false;
-            history.push("/");
-          }
-        });
+      );
     } else {
-      axios(configApiCall(api_path_get_auth_contacts, "GET", null, null))
-        .then((response) => {
-          /*
-                    TODO: Include the username of the user of witch we want to display contacts
-                    at the moment the admin sees his contacts in each user profile he visits
-                */
-          let orginalContacts = response.data;
-          orginalContacts.map((contact) => {
-            contact.display = "";
+      request = axios(
+        configApiCall(api_path_get_auth_contacts, "GET", null, null)
+      );
+    }
+
+    request
+      .then((response) => {
+        /*
+          TODO: Include the username of the user of which we want to display contacts
+          at the moment the admin sees his contacts in each user profile he visits
+        */
+        const originalContacts = response.data;
+        for (const contact of originalContacts) {
+          contact.display = "";
+          axios(
+            configApiCall(
+              api_path_get_ns_name_from_addr + contact.uri,
+              null,
+              null
+            )
+          ).then((response) => {
+            contact.username = response.data.name;
             axios(
               configApiCall(
-                api_path_get_ns_name_from_addr + contact.uri,
+                api_path_get_user_profile + contact.username,
+                "GET",
                 null,
                 null
               )
             ).then((response) => {
-              contact.username = response.data.name;
-              axios(
-                configApiCall(
-                  api_path_get_user_profile + contact.username,
-                  "GET",
-                  null,
-                  null
-                )
-              ).then((response) => {
-                contact.profilePicture = response.data.profilePicture;
-                contact.firstName = response.data.firstName;
-                contact.lastName = response.data.lastName;
-                contact.organization = response.data.organization;
-              });
+              contact.profilePicture = response.data.profilePicture;
+              contact.firstName = response.data.firstName;
+              contact.lastName = response.data.lastName;
+              contact.organization = response.data.organization;
             });
           });
-          setContacts(orginalContacts);
-          setLoading(false);
-        })
-        .catch((error) => {
-          if (error.response.status === 401) {
-            auth.authenticated = false;
-            history.push("/signin");
-          }
-        });
-    }
+        }
+        setContacts(originalContacts);
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          auth.authenticated = false;
+          history.push("/signin");
+        }
+      });
   };
 
   const addContactToUser = (value) => {

@@ -63,6 +63,8 @@ import auth from "auth.js";
 
 import { debounce } from "lodash";
 
+import { getBlueprintsOptions } from "./getBlueprintsOptions";
+
 const useStyles = makeStyles((theme) => ({
   ...devicesStyle,
   ...dashboardStyle,
@@ -203,20 +205,6 @@ export default function EditGroup(props) {
       });
   };
 
-  const getBlueprintsOptions = (inputs) => {
-    let blueprintsOptions = [];
-    let index = 0;
-    if (blueprints.length === 0)
-      blueprintsOptions.push({ value: index, label: "No blueprint found" });
-    else {
-      blueprints.map((blueprint) => {
-        blueprintsOptions.push({ value: index, label: blueprint.name });
-        index += 1;
-      });
-    }
-    return blueprintsOptions;
-  };
-
   const blueprintsOptionsItems = tool.buildSelectMenuItems(
     getBlueprintsOptions(blueprints)
   );
@@ -333,12 +321,9 @@ export default function EditGroup(props) {
   };
 
   const handleBlueprintsChange = (e) => {
-    updateGroup(
-      getBlueprintsOptions()[e.target.value].label !== "No blueprint found"
-        ? getBlueprintsOptions()[e.target.value].label
-        : ""
-    );
-    setSelectedBlueprint(getBlueprintsOptions()[e.target.value]);
+    const option = getBlueprintsOptions(blueprints)[e.target.value];
+    updateGroup(option.label !== "No blueprint found" ? option.label : "");
+    setSelectedBlueprint(option);
   };
 
   const initCheckGroupNameExists = useCallback(

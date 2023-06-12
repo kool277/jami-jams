@@ -85,16 +85,13 @@ export default function configApiCall(
         config["data"] = data;
       }
     } else {
+      config["header"] = {
+        "Content-type": "application/json",
+      };
+
       if (window.localStorage.getItem("access_token")) {
         const jwt = localStorage.getItem("access_token");
-
-        config["headers"] = {
-          Authorization: "Bearer " + jwt,
-        };
-      } else {
-        config["headers"] = {
-          "Content-type": "application/json",
-        };
+        config["headers"]["Authorization"] = "Bearer " + jwt;
       }
 
       config["data"] = JSON.stringify(data);
