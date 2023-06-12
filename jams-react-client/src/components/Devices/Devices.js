@@ -58,7 +58,7 @@ export default function Devices(props) {
       if (auth.hasAdminScope()) {
         axios(configApiCall(api_path_get_admin_devices, "GET", userData, null))
           .then((response) => {
-            if (response.data.length == 0) {
+            if (response.data.length === 0) {
               setDevices([]);
             } else {
               var resultSet = JSON.parse(
@@ -77,7 +77,7 @@ export default function Devices(props) {
       } else {
         axios(configApiCall(api_path_get_auth_devices, "GET", null, null))
           .then((response) => {
-            if (response.data.length == 0) {
+            if (response.data.length === 0) {
               setDevices([]);
             } else {
               var resultSet = JSON.parse(
@@ -94,7 +94,7 @@ export default function Devices(props) {
           });
       }
     });
-  }, [selectedDevice]);
+  }, [history, selectedDevice, userData]);
 
   function getDeviceStatus(device) {
     if (!device.revoked) {

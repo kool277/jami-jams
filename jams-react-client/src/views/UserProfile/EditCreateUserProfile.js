@@ -505,16 +505,16 @@ export default function EditCreateUserProfile(props) {
       )
     ),
     faxNumber: Yup.string().matches(
-      /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+      /^(\+\d{1,2}\s?)?1?-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       i18next.t("fax_not_valid", "Fax number not valid!")
     ),
     phoneNumber: Yup.string().matches(
-      /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+      /^(\+\d{1,2}\s?)?1?-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       i18next.t("phone_not_valid", "Phone number not valid!")
     ),
     phoneNumberExtension: Yup.number().positive().integer(),
     mobileNumber: Yup.string().matches(
-      /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+      /^(\+\d{1,2}\s?)?1?-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
       i18next.t("mobile_not_valid", "Mobile number not valid!")
     ),
   });

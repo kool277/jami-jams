@@ -146,11 +146,9 @@ export default function EditGroup(props) {
         axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
           .then((response) => {
             setBlueprints(response.data);
-            let index = 0;
-            response.data.map((blueprint) => {
-              if (blueprint.name == group["blueprint"])
-                setSelectedBlueprint({ value: index, label: blueprint.name });
-              index += 1;
+            response.data.forEach((blueprint, i) => {
+              if (blueprint.name === group["blueprint"])
+                setSelectedBlueprint({ value: i, label: blueprint.name });
             });
           })
           .catch((error) => {
@@ -427,7 +425,7 @@ export default function EditGroup(props) {
                             onClick={() => {
                               updateGroup();
                             }}
-                            disabled={groupNameExits || name == newName}
+                            disabled={groupNameExits || name === newName}
                           >
                             <SaveIcon />
                           </IconButton>

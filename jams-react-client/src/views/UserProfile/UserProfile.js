@@ -19,8 +19,6 @@ import DisplayUserProfile from "./DisplayUserProfile";
 
 import i18next from "i18next";
 
-import auth from "auth.js";
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -68,7 +66,7 @@ export default function UserProfile(props) {
     if (props.username === "null") {
       history.push("/");
     }
-  }, []);
+  }, [history, props.username]);
 
   return (
     <div>

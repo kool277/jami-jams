@@ -450,7 +450,7 @@ export default function DisplayUserProfile(props) {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [history, props.username]);
 
   const getUserStatus = () => {
     if (revoked === false) {

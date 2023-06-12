@@ -14,12 +14,10 @@ import Card from "components/Card/Card.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 
-import UserProfile from "views/UserProfile/UserProfile.js";
 import InfoIcon from "@material-ui/icons/Info";
 import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
 import Search from "@material-ui/icons/Search";
 import Checkbox from "@material-ui/core/Checkbox";
-import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import axios from "axios";
 import configApiCall from "api.js";
@@ -28,7 +26,6 @@ import { api_path_get_user_directory_search } from "globalUrls";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
-import EditCreateUserProfile from "views/UserProfile/EditCreateUserProfile";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import { debounce } from "lodash";
@@ -78,8 +75,6 @@ export default function Users(props) {
   const [users, setUsers] = useState([]);
   const [noUsersFound, setNoUsersFound] = useState(false);
   const [noMatchFound, setNoMatchFound] = useState(false);
-  const [selectedUsername, setSelectedUsername] = useState("");
-  const [createUser, setCreateUser] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showRevokedUsers, setShowRevokedUsers] = useState(false);
@@ -128,7 +123,7 @@ export default function Users(props) {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [history]);
 
   const searchUsers = (value, page = "1") => {
     setSelectedPage(page);

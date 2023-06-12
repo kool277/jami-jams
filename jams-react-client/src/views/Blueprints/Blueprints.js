@@ -35,8 +35,6 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
-import Blueprint from "views/Blueprint/Blueprint";
-
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -135,7 +133,7 @@ export default function Blueprints() {
     return () => {
       clearInterval(timer);
     };
-  }, [open, openRemoveDialog]);
+  }, [history, open, openRemoveDialog]);
 
   function redirectToBlueprint(e, blueprintNameRedirect) {
     e.preventDefault();
@@ -397,7 +395,8 @@ export default function Blueprints() {
                     </h3>
                     <ul>
                       <li>
-                        {JSON.parse(blueprint.policyData).rendezVous == true ? (
+                        {JSON.parse(blueprint.policyData).rendezVous ===
+                        true ? (
                           <p>
                             <GroupIcon
                               fontSize="small"

@@ -36,16 +36,15 @@ export default function LanguagePicker(props) {
           { code: "en", name: "English" },
         ];
 
-        let exists = false;
-        translates_languages.map((option) => {
-          if (option.code === language) {
-            exists = true;
-          }
-        });
+        const exists = translates_languages
+          .map((option) => option.code)
+          .includes(language);
+
         if (!exists) {
           setLanguage("en");
           i18n.changeLanguage("en");
         }
+
         setLanguages(translates_languages);
       });
   }, [language]);

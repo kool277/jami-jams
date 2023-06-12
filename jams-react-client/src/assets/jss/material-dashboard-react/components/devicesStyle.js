@@ -1,6 +1,5 @@
 import {
   defaultFont,
-  primaryColor,
   dangerColor,
   grayColor,
   infoColor,

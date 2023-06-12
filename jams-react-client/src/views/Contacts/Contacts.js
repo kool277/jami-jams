@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -147,7 +147,7 @@ export default function Users(props) {
                     at the moment the admin sees his contacts in each user profile he visits
                 */
           let orginalContacts = response.data;
-          orginalContacts.map((contact) => {
+          for (const contact of orginalContacts) {
             contact.display = "";
             axios(
               configApiCall(
@@ -171,7 +171,7 @@ export default function Users(props) {
                 contact.organization = response.data.organization;
               });
             });
-          });
+          }
           setContacts(orginalContacts);
           setLoading(false);
         })

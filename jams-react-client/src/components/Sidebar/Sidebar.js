@@ -1,4 +1,3 @@
-/*eslint-disable*/
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
@@ -46,7 +45,7 @@ export default function Sidebar(props) {
   function activeRoute(routeName) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
   }
-  const { color, logo, image, logoText, routes } = props;
+  const { color, logo, image, routes } = props;
 
   var brand = (
     <Link to={"/"}>

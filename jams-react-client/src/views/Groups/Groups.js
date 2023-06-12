@@ -36,7 +36,6 @@ import {
 } from "globalUrls";
 
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import EditGroup from "views/Groups/EditGroup";
 
 import FormControl from "@material-ui/core/FormControl";
 import Input from "@material-ui/core/Input";

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -52,9 +51,6 @@ export default function Admin(props) {
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   // states and functions
-  const [image, setImage] = useState(bgImage);
-  const [color, setColor] = useState("blue");
-  const [fixedClasses, setFixedClasses] = useState("dropdown");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(false);
@@ -242,10 +238,10 @@ export default function Admin(props) {
         routes={Routes}
         logoText={"Jams"}
         logo={logo}
-        image={image}
+        image={bgImage}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
-        color={color}
+        color="blue"
         handleQuery={handleQuery}
         updating={updating}
         snackbarMessage={snackbarMessage}
