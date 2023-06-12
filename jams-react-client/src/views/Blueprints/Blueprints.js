@@ -298,7 +298,7 @@ export default function Blueprints() {
             color="info"
             className={classes.whiteButtonText}
           >
-            Cancel
+            {i18next.t("cancel", "Cancel")}
           </Button>
           <Button
             onClick={handleCreateBlueprint}
@@ -306,7 +306,7 @@ export default function Blueprints() {
             disabled={disableCreate}
             autoFocus
           >
-            Create
+            {i18next.t("create_blueprint", "Create blueprint")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -30,14 +30,11 @@ export default function LanguagePicker(props) {
     fetch("/available_languages.json")
       .then((res) => res.json())
       .then((result) => {
-        const response = result.languages;
-        let translates_languages = [{ code: "en", name: "English" }];
-
-        response.forEach((lang) => {
-          if (result.stats[lang.code]["translated"]["percentage"] > 0.01) {
-            translates_languages.push(lang);
-          }
-        });
+        const response = result.data.map(({ attributes }) => attributes);
+        let translates_languages = [
+          ...response,
+          { code: "en", name: "English" },
+        ];
 
         let exists = false;
         translates_languages.map((option) => {

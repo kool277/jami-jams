@@ -392,7 +392,7 @@ export default function EditBlueprintPermissions(props) {
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={12} md={12}>
                         <FormLabel component="legend">
-                          Call parameters
+                          {i18next.t("call_parameters", "Call parameters")}
                         </FormLabel>
                         <FormGroup row>
                           <FormControlLabel
