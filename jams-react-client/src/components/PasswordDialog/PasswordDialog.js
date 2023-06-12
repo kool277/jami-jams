@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -54,9 +54,9 @@ const useStyles = makeStyles(styles);
 export default function PasswordDialog(props) {
   const classes = useStyles();
 
-  const [copied, setCopied] = React.useState(false);
-  const [generated, setGenerated] = React.useState(false);
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
+  const [copied, setCopied] = useState(false);
+  const [generated, setGenerated] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const passwordGenerator = () => {
     return generator.generate({

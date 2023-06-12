@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
@@ -118,12 +118,10 @@ export default function CaSetup(props) {
   const validityPeriodsItems = tool.buildSelectMenuItems(validityPeriods);
   const classes = useStyles();
 
-  const [certificateOpt, setCertificateOpt] = React.useState(
+  const [certificateOpt, setCertificateOpt] = useState(
     getCertificateOptions[0]
   );
-  const [validityPeriod, setValidityPeriod] = React.useState(
-    validityPeriods[0]
-  );
+  const [validityPeriod, setValidityPeriod] = useState(validityPeriods[0]);
 
   function handleInstallCA(data) {
     if (data.status === 500 || data.status === 512 || data.status === 513) {

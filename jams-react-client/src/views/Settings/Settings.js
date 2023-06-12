@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // core components
 import General from "./General";
 import Subscription from "./Subscription";
@@ -74,10 +74,10 @@ const styles = {
 };
 
 export default function Settings(props) {
-  const [value, setValue] = React.useState(0);
-  const [error, setError] = React.useState(false);
-  const [severity, setSeverity] = React.useState("error");
-  const [errorMessage, setErrorMessage] = React.useState("Test");
+  const [value, setValue] = useState(0);
+  const [error, setError] = useState(false);
+  const [severity, setSeverity] = useState("error");
+  const [errorMessage, setErrorMessage] = useState("Test");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

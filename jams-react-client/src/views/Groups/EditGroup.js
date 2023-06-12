@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
@@ -113,17 +113,17 @@ export default function EditGroup(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const [name, setName] = React.useState("");
-  const [newName, setNewName] = React.useState("");
-  const [blueprints, setBlueprints] = React.useState([]);
-  const [selectedBlueprint, setSelectedBlueprint] = React.useState({
+  const [name, setName] = useState("");
+  const [newName, setNewName] = useState("");
+  const [blueprints, setBlueprints] = useState([]);
+  const [selectedBlueprint, setSelectedBlueprint] = useState({
     value: 0,
     label: "No blueprint",
   });
-  const [groupMembers, setGroupMembers] = React.useState([]);
-  const [openDrawer, setOpenDrawer] = React.useState(false);
-  const [groupNameExits, setGroupNameExits] = React.useState(false);
-  const [users, setUsers] = React.useState([]);
+  const [groupMembers, setGroupMembers] = useState([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [groupNameExits, setGroupNameExits] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const getUserInfo = (username) =>
     new Promise((resolve, reject) => {

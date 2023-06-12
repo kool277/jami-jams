@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
@@ -66,8 +66,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp(props) {
   const classes = useStyles();
-  const [error, setError] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("Test");
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("Test");
 
   useEffect(() => {
     //request the server to check for the step to return

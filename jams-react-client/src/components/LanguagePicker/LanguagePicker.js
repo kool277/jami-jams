@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
@@ -12,10 +12,10 @@ import { useTranslation } from "react-i18next";
 
 export default function LanguagePicker(props) {
   const history = useHistory();
-  const [language, setLanguage] = React.useState(
+  const [language, setLanguage] = useState(
     i18next.language || window.localStorage.i18nextLng || "en"
   );
-  const [languages, setLanguages] = React.useState([]);
+  const [languages, setLanguages] = useState([]);
 
   const { i18n } = useTranslation();
 

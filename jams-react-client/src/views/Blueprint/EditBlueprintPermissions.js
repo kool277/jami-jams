@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -126,31 +126,31 @@ export default function EditBlueprintPermissions(props) {
 
   const tableCellClasses = classnames(classes.tableCell);
 
-  const [openDrawer, setOpenDrawer] = React.useState(false);
-  const [users, setUsers] = React.useState([]);
-  const [blueprintModerators, setBlueprintModerators] = React.useState([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [blueprintModerators, setBlueprintModerators] = useState([]);
 
-  const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [publicInCalls, setPublicInCalls] = React.useState(true);
-  const [autoAnswer, setAutoAnswer] = React.useState(false);
-  const [peerDiscovery, setPeerDiscovery] = React.useState(true);
-  const [rendezVous, setRendezVous] = React.useState(false);
-  const [defaultModerators, setDefaultModerators] = React.useState("");
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [publicInCalls, setPublicInCalls] = useState(true);
+  const [autoAnswer, setAutoAnswer] = useState(false);
+  const [peerDiscovery, setPeerDiscovery] = useState(true);
+  const [rendezVous, setRendezVous] = useState(false);
+  const [defaultModerators, setDefaultModerators] = useState("");
 
-  const [upnpEnabled, setUpnpEnabled] = React.useState(true);
-  const [turnEnabled, setTurnEnabled] = React.useState(true);
-  const [turnServer, setTurnServer] = React.useState("turn.jami.net");
-  const [turnServerUserName, setTurnServerUserName] = React.useState("ring");
-  const [turnServerPassword, setTurnServerPassword] = React.useState("ring");
-  const [proxyEnabled, setProxyEnabled] = React.useState(false);
-  const [proxyServer, setProxyServer] = React.useState("dhtproxy.jami.net");
-  const [dhtProxyListUrl, setDhtProxyListUrl] = React.useState("");
+  const [upnpEnabled, setUpnpEnabled] = useState(true);
+  const [turnEnabled, setTurnEnabled] = useState(true);
+  const [turnServer, setTurnServer] = useState("turn.jami.net");
+  const [turnServerUserName, setTurnServerUserName] = useState("ring");
+  const [turnServerPassword, setTurnServerPassword] = useState("ring");
+  const [proxyEnabled, setProxyEnabled] = useState(false);
+  const [proxyServer, setProxyServer] = useState("dhtproxy.jami.net");
+  const [dhtProxyListUrl, setDhtProxyListUrl] = useState("");
 
-  const [allowLookup, setAllowLookup] = React.useState(true);
+  const [allowLookup, setAllowLookup] = useState(true);
 
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState(false);
-  const [severity, setSeverity] = React.useState("success");
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [severity, setSeverity] = useState("success");
 
   const searchUsers = (value) => {
     axios(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@material-ui/core/Button";
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Subscription(props) {
   const classes = useStyles();
-  const [activated, setActivated] = React.useState(false);
+  const [activated, setActivated] = useState(false);
 
   useEffect(() => {
     axios(

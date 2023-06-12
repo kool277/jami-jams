@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 // core components
 import Devices from "components/Devices/Devices.js";
@@ -57,8 +57,8 @@ function a11yProps(index) {
 export default function UserProfile(props) {
   const history = useHistory();
 
-  const [value, setValue] = React.useState(0);
-  const [displayUser, setDisplayUser] = React.useState(true);
+  const [value, setValue] = useState(0);
+  const [displayUser, setDisplayUser] = useState(true);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

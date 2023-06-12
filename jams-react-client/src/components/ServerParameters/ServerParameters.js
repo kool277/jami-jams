@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -83,19 +83,15 @@ export default function ServerParameters(props) {
 
   const classes = useStyles();
   const history = useHistory();
-  const [certificateRevocation, setCertificateRevocation] = React.useState(
+  const [certificateRevocation, setCertificateRevocation] = useState(
     certificateRevocationTypes[0]
   );
-  const [deviceLifetime, setDeviceLifetime] = React.useState(
-    deviceLifetimeTypes[3]
-  );
-  const [userAccountLifetime, setUserAccountLifetime] = React.useState(
+  const [deviceLifetime, setDeviceLifetime] = useState(deviceLifetimeTypes[3]);
+  const [userAccountLifetime, setUserAccountLifetime] = useState(
     userAccountLifetimeTypes[0]
   );
-  const [sipConfigurationTemplate, setSIPCertificateTemplate] = React.useState(
-    null
-  );
-  const [userlifeDisabled, setUserlifeDisabled] = React.useState(false);
+  const [sipConfigurationTemplate, setSIPCertificateTemplate] = useState(null);
+  const [userlifeDisabled, setUserlifeDisabled] = useState(false);
 
   React.useEffect(() => {
     if (deviceLifetime.value <= userAccountLifetime.value) {

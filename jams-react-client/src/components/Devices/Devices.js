@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import classnames from "classnames";
@@ -44,11 +44,11 @@ export default function Devices(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const [devices, setDevices] = React.useState([]);
-  const [selectedDevice, setSelectedDevice] = React.useState({});
-  const [displayName, setDisplayName] = React.useState("");
-  const [openEdit, setOpenEdit] = React.useState(false);
-  const [openRevoke, setOpenRevoke] = React.useState(false);
+  const [devices, setDevices] = useState([]);
+  const [selectedDevice, setSelectedDevice] = useState({});
+  const [displayName, setDisplayName] = useState("");
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openRevoke, setOpenRevoke] = useState(false);
   const userData = {
     username: props.username,
   };

@@ -98,25 +98,25 @@ const useStyles = makeStyles(styles);
 export default function Groups() {
   const classes = useStyles();
   const history = useHistory();
-  const [groups, setGroups] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
-  const [zeroGroup, setZeroGroup] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
-  const [searchValue, setSearchValue] = React.useState(null);
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [zeroGroup, setZeroGroup] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [searchValue, setSearchValue] = useState(null);
 
-  const [blueprints, setBlueprints] = React.useState([]);
+  const [blueprints, setBlueprints] = useState([]);
 
-  const [openCreate, setOpenCreate] = React.useState(false);
-  const [groupName, setGroupName] = React.useState("");
-  const [groupNameExits, setGroupNameExits] = React.useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [groupNameExits, setGroupNameExits] = useState(false);
 
-  const [removedGroup, setRemovedGroup] = React.useState({
+  const [removedGroup, setRemovedGroup] = useState({
     id: 0,
     name: "groupeName",
   });
-  const [openRemoveDialog, setOpenRemoveDialog] = React.useState();
+  const [openRemoveDialog, setOpenRemoveDialog] = useState();
 
-  const [disableCreate, setDisableCreate] = React.useState(true);
+  const [disableCreate, setDisableCreate] = useState(true);
 
   const handleRemoveGroup = (group) => {
     setRemovedGroup(group);
@@ -397,10 +397,7 @@ export default function Groups() {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button
-              onClick={handleCloseCreate}
-              color="primary"
-            >
+            <Button onClick={handleCloseCreate} color="primary">
               Cancel
             </Button>
             <Button

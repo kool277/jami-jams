@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
@@ -198,16 +198,16 @@ const useStyles = makeStyles(styles);
 export default function DisplayUserProfile(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [user, setUser] = React.useState([]);
-  const [groupMemberships, setGroupMemberships] = React.useState([]);
-  const [revoked, setRevoked] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [revokedUser, setRevokedUser] = React.useState("");
-  const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
-  const [groups, setGroups] = React.useState([]);
-  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [user, setUser] = useState([]);
+  const [groupMemberships, setGroupMemberships] = useState([]);
+  const [revoked, setRevoked] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [revokedUser, setRevokedUser] = useState("");
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [groups, setGroups] = useState([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   const searchGroups = (value) => {
     if (value === "") value = "*";

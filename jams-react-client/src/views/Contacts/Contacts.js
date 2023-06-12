@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -86,16 +86,16 @@ const useStyles = makeStyles(styles);
 export default function Users(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [contacts, setContacts] = React.useState([]);
-  const [users, setUsers] = React.useState([]);
-  const [searchValue, setSearchValue] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
-  const [openDrawer, setOpenDrawer] = React.useState(false);
-  const [removedContact, setRemovedContact] = React.useState();
-  const [removedContactName, setRemovedContactName] = React.useState();
-  const [open, setOpen] = React.useState(false);
-  const [allowedToAdd, setAllowedToAdd] = React.useState(true);
+  const [contacts, setContacts] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [searchValue, setSearchValue] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [removedContact, setRemovedContact] = useState();
+  const [removedContactName, setRemovedContactName] = useState();
+  const [open, setOpen] = useState(false);
+  const [allowedToAdd, setAllowedToAdd] = useState(true);
 
   const searchContacts = (value) => {
     axios(

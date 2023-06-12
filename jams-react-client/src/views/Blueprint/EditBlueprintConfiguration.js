@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 
 // @material-ui/core components
@@ -170,32 +170,30 @@ const StyledRadio = (props) => {
 export default function EditBlueprintConfiguration(props) {
   const classes = useStyles();
 
-  const [videoEnabled, setVideoEnabled] = React.useState(true);
-  const [publicInCalls, setPublicInCalls] = React.useState(true);
-  const [autoAnswer, setAutoAnswer] = React.useState(false);
-  const [peerDiscovery, setPeerDiscovery] = React.useState(true);
-  const [rendezVous, setRendezVous] = React.useState(false);
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [publicInCalls, setPublicInCalls] = useState(true);
+  const [autoAnswer, setAutoAnswer] = useState(false);
+  const [peerDiscovery, setPeerDiscovery] = useState(true);
+  const [rendezVous, setRendezVous] = useState(false);
 
-  const [selectedTurnOption, setSelectedTurnOption] = React.useState(
-    "defaultTurn"
-  );
-  const [selectedDHTProxyOption, setSelectedDHTProxyOption] = React.useState(
+  const [selectedTurnOption, setSelectedTurnOption] = useState("defaultTurn");
+  const [selectedDHTProxyOption, setSelectedDHTProxyOption] = useState(
     "defaultDHTProxy"
   );
-  const [upnpEnabled, setUpnpEnabled] = React.useState(true);
-  const [turnEnabled, setTurnEnabled] = React.useState(true);
-  const [turnServer, setTurnServer] = React.useState("turn.jami.net");
-  const [turnServerUserName, setTurnServerUserName] = React.useState("ring");
-  const [turnServerPassword, setTurnServerPassword] = React.useState("ring");
-  const [proxyEnabled, setProxyEnabled] = React.useState(false);
-  const [proxyServer, setProxyServer] = React.useState("dhtproxy.jami.net");
-  const [dhtProxyListUrl, setDhtProxyListUrl] = React.useState("");
+  const [upnpEnabled, setUpnpEnabled] = useState(true);
+  const [turnEnabled, setTurnEnabled] = useState(true);
+  const [turnServer, setTurnServer] = useState("turn.jami.net");
+  const [turnServerUserName, setTurnServerUserName] = useState("ring");
+  const [turnServerPassword, setTurnServerPassword] = useState("ring");
+  const [proxyEnabled, setProxyEnabled] = useState(false);
+  const [proxyServer, setProxyServer] = useState("dhtproxy.jami.net");
+  const [dhtProxyListUrl, setDhtProxyListUrl] = useState("");
 
-  const [turnPassowrdVisible, setTurnPasswordVisible] = React.useState(false);
+  const [turnPassowrdVisible, setTurnPasswordVisible] = useState(false);
 
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState(false);
-  const [severity, setSeverity] = React.useState("success");
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [severity, setSeverity] = useState("success");
 
   React.useEffect(() => {
     axios(

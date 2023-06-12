@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import Button from "@material-ui/core/Button";
@@ -109,13 +109,13 @@ export default function IdentityManagement(props) {
 
   const classes = useStyles();
   const history = useHistory();
-  const [directory, setDirectory] = React.useState(directoryTypes[0]);
+  const [directory, setDirectory] = useState(directoryTypes[0]);
 
   /**
    * Local storage Config
    */
 
-  const [nameServerChecked, setNameServerChecked] = React.useState(false);
+  const [nameServerChecked, setNameServerChecked] = useState(false);
 
   /**
    * LDAP storage Config
@@ -124,8 +124,8 @@ export default function IdentityManagement(props) {
   const ldapFiltersTypes = [{ value: 0, label: "UID" }];
 
   const ldapFiltersTypesItems = buildSelectMenuItems(ldapFiltersTypes);
-  const [useStartTLS, setUseStartTLS] = React.useState("false");
-  const [ldapFilter, setLdapFilter] = React.useState(ldapFiltersTypes[0]);
+  const [useStartTLS, setUseStartTLS] = useState("false");
+  const [ldapFilter, setLdapFilter] = useState(ldapFiltersTypes[0]);
 
   const handleFilterIdChange = (event) => {
     setLdapFilter(ldapFiltersTypes[event.target.value]);
@@ -142,7 +142,7 @@ export default function IdentityManagement(props) {
    * Active Directory Storage Config
    */
 
-  const [isSSL, setIsSSL] = React.useState("false");
+  const [isSSL, setIsSSL] = useState("false");
 
   const handleIsSSLChange = (event) => {
     setIsSSL(event.target.value);

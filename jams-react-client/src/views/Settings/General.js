@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import FormikField from "components/FormikField/FormikField";
 import * as Yup from "yup";
@@ -58,9 +58,9 @@ const useStyles = makeStyles((theme) => ({
 export default function General(props) {
   const classes = useStyles();
 
-  const [copied, setCopied] = React.useState(false);
-  const [generated, setGenerated] = React.useState(false);
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
+  const [copied, setCopied] = useState(false);
+  const [generated, setGenerated] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const changePassword = (values) => {
     const data = {

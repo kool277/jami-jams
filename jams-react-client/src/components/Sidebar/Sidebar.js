@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
@@ -29,7 +29,7 @@ const useStyles = makeStyles(styles);
 export default function Sidebar(props) {
   const classes = useStyles();
   const mainPanel = React.createRef();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const history = useHistory();
 
   const handleCloseProfile = () => {

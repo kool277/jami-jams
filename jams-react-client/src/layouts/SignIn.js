@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import Button from "@material-ui/core/Button";
@@ -69,8 +69,8 @@ export default function SignIn(props) {
 
   const classes = useStyles();
   const history = useHistory();
-  const [error, setError] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   React.useEffect(() => {
     if (auth.isAuthenticated() && auth.isInstalled()) {

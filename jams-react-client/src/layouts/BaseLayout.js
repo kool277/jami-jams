@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
@@ -52,19 +52,19 @@ export default function Admin(props) {
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   // states and functions
-  const [image, setImage] = React.useState(bgImage);
-  const [color, setColor] = React.useState("blue");
-  const [fixedClasses, setFixedClasses] = React.useState("dropdown");
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState(false);
-  const [openUpdate, setOpenUpdate] = React.useState(false);
-  const [dialogMessage, setDialogMessage] = React.useState("");
-  const [messageYes, setMessageYes] = React.useState("");
-  const [messageNo, setMessageNo] = React.useState("");
-  const [updating, setUpdating] = React.useState(false);
-  const [query, setQuery] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState("");
+  const [image, setImage] = useState(bgImage);
+  const [color, setColor] = useState("blue");
+  const [fixedClasses, setFixedClasses] = useState("dropdown");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [messageYes, setMessageYes] = useState("");
+  const [messageNo, setMessageNo] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const [query, setQuery] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const Routes = [
     {

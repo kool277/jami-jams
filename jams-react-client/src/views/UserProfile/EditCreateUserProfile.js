@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // @material-ui/core components
@@ -223,24 +223,24 @@ const useStyles = makeStyles(styles);
 export default function EditCreateUserProfile(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [copied, setCopied] = React.useState(false);
-  const [generated, setGenerated] = React.useState(true);
-  const [userExists, setUserExists] = React.useState(false);
-  const [userName, setUserName] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
+  const [copied, setCopied] = useState(false);
+  const [generated, setGenerated] = useState(true);
+  const [userExists, setUserExists] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  const [profilePicture, setProfilePicture] = React.useState("");
-  const [profilePicturePreview, setProfilePicturePreview] = React.useState(
+  const [profilePicture, setProfilePicture] = useState("");
+  const [profilePicturePreview, setProfilePicturePreview] = useState(
     noProfilePicture
   );
-  const [originalUploadedImage, setOriginalUploadedImage] = React.useState("");
+  const [originalUploadedImage, setOriginalUploadedImage] = useState("");
 
-  const [open, setOpen] = React.useState(false);
-  const [crop, setCrop] = React.useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = React.useState(1);
-  const [rotation, setRotation] = React.useState(0);
-  const [passwordVisible, setPasswordVisible] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState(0);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const passwordGenerator = () => {
     return generator.generate({
@@ -253,7 +253,7 @@ export default function EditCreateUserProfile(props) {
 
   const intialyGeneratedPassword = passwordGenerator();
 
-  const [initialValues, setInitialValues] = React.useState({
+  const [initialValues, setInitialValues] = useState({
     username: "",
     password: intialyGeneratedPassword,
     confirmPassword: intialyGeneratedPassword,
