@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
@@ -38,7 +38,7 @@ export default function Sidebar(props) {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (auth.isUpdateAvailable() && auth.hasAdminScope()) setOpen(true);
   }, [mainPanel]);
 

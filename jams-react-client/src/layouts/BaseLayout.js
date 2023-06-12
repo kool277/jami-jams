@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
@@ -149,7 +149,7 @@ export default function Admin(props) {
   };
 
   // initialize and destroy the PerfectScrollbar plugin
-  React.useEffect(() => {
+  useEffect(() => {
     auth.checkForUpdates(() => {
       auth.getUpdates(() => {
         if (auth.isUpdateAvailable()) {

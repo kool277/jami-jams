@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -182,7 +182,7 @@ export default function EditBlueprintPermissions(props) {
       });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     searchUsers();
     axios(
       configApiCall(

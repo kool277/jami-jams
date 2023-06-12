@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
@@ -223,7 +223,7 @@ export default function EditGroup(props) {
     getBlueprintsOptions(blueprints)
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     getGroup();
     searchUsers();
   }, []);

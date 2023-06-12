@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 // core components
 import Devices from "components/Devices/Devices.js";
@@ -64,7 +64,7 @@ export default function UserProfile(props) {
     setValue(newValue);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (props.username === "null") {
       history.push("/");
     }

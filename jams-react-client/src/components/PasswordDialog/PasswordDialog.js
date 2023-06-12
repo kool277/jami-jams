@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
@@ -133,7 +133,7 @@ export default function PasswordDialog(props) {
     } else return "";
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCopied(false);
     setGenerated(false);
   }, []);

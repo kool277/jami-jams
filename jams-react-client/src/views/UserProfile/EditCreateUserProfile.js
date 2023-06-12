@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // @material-ui/core components
@@ -269,7 +269,7 @@ export default function EditCreateUserProfile(props) {
     jamiId: "",
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!props.createUser) {
       setLoading(true);
       const timer = setInterval(() => {

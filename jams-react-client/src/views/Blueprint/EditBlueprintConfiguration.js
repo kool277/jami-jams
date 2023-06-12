@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 
 // @material-ui/core components
@@ -195,7 +195,7 @@ export default function EditBlueprintConfiguration(props) {
   const [message, setMessage] = useState(false);
   const [severity, setSeverity] = useState("success");
 
-  React.useEffect(() => {
+  useEffect(() => {
     axios(
       configApiCall(
         api_path_blueprints + "?name=" + props.blueprintName,

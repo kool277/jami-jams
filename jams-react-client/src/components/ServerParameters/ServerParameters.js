@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -93,7 +93,7 @@ export default function ServerParameters(props) {
   const [sipConfigurationTemplate, setSIPCertificateTemplate] = useState(null);
   const [userlifeDisabled, setUserlifeDisabled] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (deviceLifetime.value <= userAccountLifetime.value) {
       setUserlifeDisabled(false);
     } else {

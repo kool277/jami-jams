@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import Button from "@material-ui/core/Button";
@@ -72,7 +72,7 @@ export default function SignIn(props) {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (auth.isAuthenticated() && auth.isInstalled()) {
       if (auth.hasAdminScope()) history.push("/users");
       else {
