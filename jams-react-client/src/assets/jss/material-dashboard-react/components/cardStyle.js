@@ -3,7 +3,6 @@ import {
   whiteColor,
   hexToRgb,
 } from "assets/jss/material-dashboard-react.js";
-import { grayColor } from "assets/jss/material-dashboard-react";
 
 const cardStyle = {
   card: {
