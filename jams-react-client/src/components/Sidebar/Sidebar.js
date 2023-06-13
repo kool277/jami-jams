@@ -80,7 +80,7 @@ export default function Sidebar(props) {
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path),
         });
         return (
-          <div className={classes.wrapper}>
+          <div className={classes.wrapper} key={key}>
             {props.updating && (
               <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

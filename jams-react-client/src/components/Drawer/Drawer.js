@@ -38,8 +38,6 @@ const useStyles = makeStyles((theme) => ({
 export default function TemporaryDrawer(props) {
   const classes = useStyles();
 
-  useEffect(() => {}, []);
-
   const listUsers = () => (
     <List>
       {props.type === "user"
@@ -48,7 +46,7 @@ export default function TemporaryDrawer(props) {
             .filter(
               (target) =>
                 !props.existingTargets.some(
-                  (t) => target.username == t.username
+                  (t) => target.username === t.username
                 )
             )
             .map((target) => (
@@ -84,7 +82,7 @@ export default function TemporaryDrawer(props) {
           props.targets
             .filter(
               (target) =>
-                !props.existingTargets.some((t) => target.name == t.name)
+                !props.existingTargets.some((t) => target.name === t.name)
             )
             .map((target) => (
               <ListItem

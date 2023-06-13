@@ -27,7 +27,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       {new Date().getFullYear() + " "}
-      <Link color="info" href="https://savoirfairelinux.com">
+      <Link color="primary" href="https://savoirfairelinux.com">
         Savoir-faire Linux Inc.
       </Link>
     </Typography>
@@ -103,7 +103,7 @@ export default function SignUp(props) {
         <img src={logo} className={classes.logo} alt="Logo Jami" />
         <CustomizedSteppers step={props.step} />
         {error && errorMessage && (
-          <Alert severity="error">{errorMessage}</Alert>
+          <Alert severity="error">{errorMessage.toString()}</Alert>
         )}
         {returnStep()}
 
