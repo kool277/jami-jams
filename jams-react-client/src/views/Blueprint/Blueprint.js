@@ -9,6 +9,7 @@ import Box from "@material-ui/core/Box";
 
 import EditBlueprintPermissions from "./EditBlueprintPermissions";
 import EditBlueprintConfiguration from "./EditBlueprintConfiguration";
+import EditBlueprintUi from "./EditBlueprintUi";
 
 import { infoColor } from "assets/jss/material-dashboard-react.js";
 
@@ -69,6 +70,10 @@ export default function Blueprint(props) {
             label={i18next.t("configuration", "Configuration")}
             {...a11yProps(1)}
           />
+          <Tab
+            label={i18next.t("customization", "Customization")}
+            {...a11yProps(2)}
+          />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -76,6 +81,9 @@ export default function Blueprint(props) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <EditBlueprintConfiguration blueprintName={props.blueprintName} />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <EditBlueprintUi blueprintName={props.blueprintName} />
       </TabPanel>
     </div>
   );

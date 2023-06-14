@@ -191,9 +191,13 @@ export default function EditBlueprintConfiguration(props) {
 
   const [turnPassowrdVisible, setTurnPasswordVisible] = useState(false);
 
+  const [uiCustomization, setUiCustomization] = useState("");
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(false);
   const [severity, setSeverity] = useState("success");
+
+  const [getRequestDone, setGetRequestDone] = useState(false);
 
   useEffect(() => {
     axios(
@@ -211,6 +215,7 @@ export default function EditBlueprintConfiguration(props) {
         setAutoAnswer(policyData["autoAnswer"]);
         setPeerDiscovery(policyData["peerDiscovery"]);
         setRendezVous(policyData["rendezVous"]);
+        setUiCustomization(policyData["uiCustomization"]);
 
         setUpnpEnabled(policyData["upnpEnabled"]);
         if (policyData["turnEnabled"] === true) {
@@ -244,10 +249,18 @@ export default function EditBlueprintConfiguration(props) {
             " " +
             error
         );
+      })
+      .finally(() => {
+        setGetRequestDone(true);
       });
   }, [props.blueprintName, props.username]);
 
   const handleUpdateConfiguration = (field, value, selectedOptions = []) => {
+    // if the get request is not done yet, don't update the configuration
+    if (!getRequestDone) {
+      return;
+    }
+
     let data = {
       videoEnabled: videoEnabled,
       publicInCalls: publicInCalls,
@@ -264,6 +277,7 @@ export default function EditBlueprintConfiguration(props) {
       proxyEnabled: proxyEnabled,
       proxyServer: proxyServer,
       dhtProxyListUrl: dhtProxyListUrl,
+      uiCustomization: uiCustomization,
     };
 
     data[field] = value;

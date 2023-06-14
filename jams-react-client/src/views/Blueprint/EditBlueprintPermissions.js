@@ -148,6 +148,8 @@ export default function EditBlueprintPermissions(props) {
 
   const [allowLookup, setAllowLookup] = useState(true);
 
+  const [uiCustomization, setUiCustomization] = useState("");
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(false);
   const [severity, setSeverity] = useState("success");
@@ -184,6 +186,7 @@ export default function EditBlueprintPermissions(props) {
 
   useEffect(() => {
     searchUsers();
+
     axios(
       configApiCall(
         api_path_blueprints + "?name=" + props.blueprintName,
@@ -194,6 +197,7 @@ export default function EditBlueprintPermissions(props) {
     )
       .then((response) => {
         let policyData = JSON.parse(response.data.policyData);
+
         setVideoEnabled(policyData["videoEnabled"]);
         setPublicInCalls(policyData["publicInCalls"]);
         setAutoAnswer(policyData["autoAnswer"]);
@@ -210,6 +214,8 @@ export default function EditBlueprintPermissions(props) {
         setProxyServer(policyData["proxyServer"]);
         setDhtProxyListUrl();
         setAllowLookup(policyData["allowLookup"]);
+
+        setUiCustomization(policyData["uiCustomization"]);
 
         policyData["defaultModerators"].split("/").forEach((id) => {
           if (id !== "undefined" && id !== "") {
@@ -265,6 +271,7 @@ export default function EditBlueprintPermissions(props) {
       proxyServer: proxyServer,
       dhtProxyListUrl: dhtProxyListUrl,
       allowLookup: allowLookup,
+      uiCustomization: uiCustomization,
     };
 
     if (field === "peerDiscovery") {
