@@ -29,6 +29,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 
 import i18next from "i18next";
+import CustomUiPreview from "components/CustomUiPreview/CustomUiPreview";
+import EditBlueprintUiForm from "./EditBlueprintUiForm";
 
 const DEFAULT_UI_CUSTOMIZATION = {
   hasTitle: true,
@@ -124,6 +126,11 @@ export default function EditBlueprintUi({ blueprintName }) {
     setPolicyData({ ...policyData, uiCustomization: ui });
   };
 
+  const [oldUiCustomization, setOldUiCustomization] = useState({
+    ...uiCustomization,
+  });
+  const [opacity, setOpacity] = useState(0);
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(false);
   const [severity, setSeverity] = useState("success");
@@ -176,6 +183,8 @@ export default function EditBlueprintUi({ blueprintName }) {
             }
           }
 
+          // refresh the preview
+          setOldUiCustomization(uiCustomizationResponse);
           console.log("Found ui customization in the policy data");
         } else {
           setUiCustomization(DEFAULT_UI_CUSTOMIZATION);
@@ -193,6 +202,19 @@ export default function EditBlueprintUi({ blueprintName }) {
 
   const handleUpdateUi = (field, value) => {
     const newUiCustomization = { ...uiCustomization, [field]: value };
+
+    if (field === "title" || field === "description" || field === "backgroundColor") {
+      // Don't fade in for those fields
+      setOldUiCustomization(newUiCustomization);
+    } else {
+      // To make a fade effect, the new preview fades in,
+      // then the old preview is updated, and the preview on top fades out
+      setOpacity(1);
+      setTimeout(() => {
+        setOldUiCustomization(newUiCustomization);
+        setOpacity(0);
+      }, 250);
+    }
 
     axios(
       configApiCall(
@@ -337,6 +359,23 @@ export default function EditBlueprintUi({ blueprintName }) {
                 <Grid container spacing={5}>
                   <Grid item xs={12} sm={12} md={12}>
                     <Grid container spacing={2}>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={12}
+                        className={classes.previewContainer}
+                      >
+                        <CustomUiPreview
+                          opacity={opacity}
+                          uiCustomization={policyData.uiCustomization}
+                        />
+                        <CustomUiPreview
+                          isOldPreview
+                          opacity="1"
+                          uiCustomization={oldUiCustomization}
+                        />
+                      </Grid>
                       <Grid item xs={12} sm={12} md={12}>
                         <EditBlueprintUiForm
                           uiCustomization={policyData.uiCustomization}
