@@ -92,11 +92,11 @@ const TitleForm = ({ uiCustomization, handleUpdateUi }) => {
         )}
       </span>
       <TextField
-        id="customTitle"
+        id="title"
         placeholder={i18next.t("welcome_title", "Welcome to Jami")}
-        value={uiCustomization.customTitle}
+        value={uiCustomization.title}
         onChange={(e) => {
-          handleUpdateUi("customTitle", e.target.value);
+          handleUpdateUi("title", e.target.value);
         }}
         fullWidth
         inputProps={{ maxLength: 20 }}
@@ -137,14 +137,14 @@ const DescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
             )}
           </span>
           <TextField
-            id="customDescription"
+            id="description"
             placeholder={i18next.t(
               "welcome_Description",
               "Here is your Jami identifier, don’t hesitate to share it in order to be contacted more easily!"
             )}
-            value={uiCustomization.customDescription}
+            value={uiCustomization.description}
             onChange={(e) => {
-              handleUpdateUi("customDescription", e.target.value);
+              handleUpdateUi("description", e.target.value);
             }}
             fullWidth
             inputProps={{ maxLength: 100 }}
@@ -181,12 +181,12 @@ const HasBackgroundCustomForm = ({ uiCustomization, handleUpdateUi }) => {
       <FormControlLabel
         control={
           <Checkbox
-            checked={uiCustomization.hasBackgroundCustom}
+            checked={uiCustomization.hasBackground}
             color="primary"
             onChange={(e) => {
-              handleUpdateUi("hasBackgroundCustom", e.target.checked);
+              handleUpdateUi("hasBackground", e.target.checked);
             }}
-            name="hasBackgroundCustom"
+            name="hasBackground"
           />
         }
         label={i18next.t("welcome_has_BackgroundCustom", "Background")}
@@ -220,7 +220,7 @@ const CustomBackgroundForm = ({
 
   return (
     <FormGroup row>
-      {uiCustomization.hasBackgroundCustom && (
+      {uiCustomization.hasBackground && (
         <>
           <span>
             {i18next.t(
@@ -240,7 +240,7 @@ const CustomBackgroundForm = ({
             <div style={{ padding: "0 20px" }}>
               <button
                 style={{
-                  backgroundColor: uiCustomization.customBackgroundColor,
+                  backgroundColor: uiCustomization.backgroundColor,
                 }}
                 className={classes.colorButtonStyle}
                 onClick={() => {
@@ -251,10 +251,10 @@ const CustomBackgroundForm = ({
                 <div className={classes.popover}>
                   <div className={classes.cover} onClick={handleCloseColor} />
                   <SketchPicker
-                    color={uiCustomization.customBackgroundColor}
+                    color={uiCustomization.backgroundColor}
                     onChange={(color) => {
                       handleColorChange(color);
-                      handleUpdateUi("customBackgroundColor", color.hex);
+                      handleUpdateUi("backgroundColor", color.hex);
                     }}
                   />
                 </div>
@@ -274,7 +274,7 @@ const CustomBackgroundForm = ({
                 file={bgFile}
                 setFile={setBgFile}
                 handleDelete={(e) => {
-                  handleUpdateUi("customBackgroundImageUrl", "");
+                  handleUpdateUi("backgroundUrl", "");
                   e.preventDefault();
                   e.stopPropagation();
                 }}
@@ -334,7 +334,7 @@ const LogoForm = ({
           setFile={setLogoFile}
           handleDelete={(e) => {
             handleDeleteLogo(e);
-            handleUpdateUi("customLogoImageUrl", null);
+            handleUpdateUi("logoUrl", null);
           }}
         />
       </FormGroup>
@@ -350,13 +350,13 @@ const EditBlueprintUiForm = ({
 }) => {
   const { isCustomizationEnabled } = uiCustomization;
 
-  const bgFile = uiCustomization.customBackgroundImageUrl?.split("/").pop();
-  const logoFile = uiCustomization.customLogoImageUrl?.split("/").pop();
+  const bgFile = uiCustomization.backgroundUrl?.split("/").pop();
+  const logoFile = uiCustomization.logoUrl?.split("/").pop();
 
   const handleDeleteLogo = (e) => {
     setUiCustomization({
       ...uiCustomization,
-      customLogoImageUrl: "",
+      logoUrl: "",
     });
     e.stopPropagation();
   };
@@ -364,8 +364,8 @@ const EditBlueprintUiForm = ({
   const handleColorChange = (color) => {
     setUiCustomization({
       ...uiCustomization,
-      customBackgroundColor: color.hex,
-      customBackgroundImageUrl: "",
+      backgroundColor: color.hex,
+      backgroundUrl: "",
     });
   };
 

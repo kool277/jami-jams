@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -115,9 +115,192 @@ function Alert(props) {
 export default function EditBlueprintUi({ blueprintName }) {
   const classes = useStyles();
 
+  const [policyData, setPolicyData] = useState({
+    uiCustomization: DEFAULT_UI_CUSTOMIZATION,
+  });
+  let { uiCustomization } = policyData;
+
+  const setUiCustomization = (ui) => {
+    setPolicyData({ ...policyData, uiCustomization: ui });
+  };
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(false);
   const [severity, setSeverity] = useState("success");
+
+  const [bgFile, setBgFile] = useState(null);
+  const [logoFile, setLogoFile] = useState(null);
+
+  useEffect(() => {
+    axios(
+      configApiCall(
+        api_path_blueprints + "?name=" + blueprintName,
+        "GET",
+        null,
+        null
+      )
+    )
+      .then((response) => {
+        let policyDataResponse = JSON.parse(response.data.policyData);
+        policyDataResponse.uiCustomization = JSON.parse(
+          policyDataResponse.uiCustomization
+        );
+
+        setPolicyData(policyDataResponse);
+
+        const { uiCustomization: uiCustomizationResponse } = policyDataResponse;
+
+        if (uiCustomizationResponse) {
+          if (
+            uiCustomizationResponse.customBackgroundImageUrl &&
+            uiCustomizationResponse.hasBackgroundCustom
+          ) {
+            //Get the name of the file from the url
+            let urlParts = uiCustomizationResponse.customBackgroundImageUrl.split(
+              "/"
+            );
+            if (urlParts.length) {
+              setBgFile(urlParts[urlParts.length - 1]);
+            }
+          }
+          if (
+            uiCustomizationResponse.customLogoImageUrl &&
+            uiCustomizationResponse.hasLogo
+          ) {
+            //Get the name of the file from the url
+            let urlParts = uiCustomizationResponse.customLogoImageUrl.split(
+              "/"
+            );
+            if (urlParts.length) {
+              setLogoFile(urlParts[urlParts.length - 1]);
+            }
+          }
+
+          console.log("Found ui customization in the policy data");
+        } else {
+          setUiCustomization(DEFAULT_UI_CUSTOMIZATION);
+          console.log("Did not find ui customization in the policy data");
+        }
+      })
+      .catch((error) => {
+        setUiCustomization(DEFAULT_UI_CUSTOMIZATION);
+
+        console.log(
+          `Error fetching blueprint permissions : ${blueprintName} ${error}`
+        );
+      });
+  }, [blueprintName]);
+
+  const handleUpdateUi = (field, value) => {
+    const newUiCustomization = { ...uiCustomization, [field]: value };
+
+    axios(
+      configApiCall(
+        api_path_blueprints + "?name=" + blueprintName,
+        "PUT",
+        { ...policyData, uiCustomization: JSON.stringify(newUiCustomization) },
+        null
+      )
+    )
+      .then(() => {
+        setOpen(false);
+        setSeverity("success");
+        setOpen(true);
+        setMessage(
+          i18next.t(
+            "updated_blueprint_permissions_successfully",
+            "Blueprint permissions successfully updated."
+          )
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+        setOpen(false);
+        setSeverity("error");
+        setOpen(true);
+        setMessage(
+          i18next.t(
+            "error_updating_blueprint_permissions",
+            "Error occurred while updating blueprint permissions."
+          ) +
+            error +
+            "!"
+        );
+      });
+  };
+
+  const handleImgDrop = (acceptedFiles, imgType) => {
+    const formData = new FormData();
+    formData.append("file", acceptedFiles[0]);
+
+    const url = `${api_path_post_image}/${blueprintName}/${imgType}`;
+
+    fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then(() => {
+        if (imgType === "background") {
+          let newUrl =
+            api_path_get_image +
+            "/" +
+            blueprintName +
+            "/background/" +
+            acceptedFiles[0].name;
+          setUiCustomization({
+            ...uiCustomization,
+            backgroundUrl: newUrl,
+            backgroundColor: "",
+          });
+          setBgFile(acceptedFiles[0].name);
+          handleUpdateUi("backgroundUrl", newUrl);
+        } else if (imgType === "logo") {
+          let newUrl =
+            api_path_get_image +
+            "/" +
+            blueprintName +
+            "/logo/" +
+            acceptedFiles[0].name;
+          setUiCustomization({
+            ...uiCustomization,
+            logoUrl: newUrl,
+          });
+          setLogoFile(acceptedFiles[0].name);
+          handleUpdateUi("logoUrl", newUrl);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleDeleteLogo = (e) => {
+    setLogoFile(null);
+    setUiCustomization({
+      ...uiCustomization,
+      customLogoImageUrl: null,
+    });
+    e.stopPropagation();
+  };
+
+  const handleDeleteBg = (e) => {
+    setBgFile(null);
+    setUiCustomization({
+      ...uiCustomization,
+      customBackgroundImageUrl: null,
+    });
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleColorChange = (color) => {
+    setUiCustomization({
+      ...uiCustomization,
+      customBackgroundColor: color.hex,
+      customBackgroundImageUrl: null,
+    });
+    setBgFile(null);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -154,8 +337,21 @@ export default function EditBlueprintUi({ blueprintName }) {
                 <Grid container spacing={5}>
                   <Grid item xs={12} sm={12} md={12}>
                     <Grid container spacing={2}>
-                        {/* TODO */}
-                        Coming soon
+                      <Grid item xs={12} sm={12} md={12}>
+                        <EditBlueprintUiForm
+                          uiCustomization={policyData.uiCustomization}
+                          setUiCustomization={setUiCustomization}
+                          handleUpdateUi={handleUpdateUi}
+                          handleImgDrop={handleImgDrop}
+                          logoFile={logoFile}
+                          setLogoFile={setLogoFile}
+                          handleDeleteLogo={handleDeleteLogo}
+                          bgFile={bgFile}
+                          setBgFile={setBgFile}
+                          handleDeleteBg={handleDeleteBg}
+                          handleColorChange={handleColorChange}
+                        />
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>

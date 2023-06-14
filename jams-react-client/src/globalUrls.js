@@ -55,6 +55,8 @@ const api_path_get_group_members = "/api/admin/group/members/";
 const api_path_post_group_member = "/api/admin/group/members/";
 const api_path_delete_group_member = "/api/admin/group/members/";
 const api_path_get_admin_user_groups = "/api/admin/user/groups/";
+const api_path_get_image = "/api/image/filehandler";
+const api_path_post_image = "/api/image/filehandler";
 
 module.exports = {
   uri,
@@ -112,4 +114,6 @@ module.exports = {
   api_path_post_group_member,
   api_path_delete_group_member,
   api_path_get_admin_user_groups,
+  api_path_get_image,
+  api_path_post_image,
 };
