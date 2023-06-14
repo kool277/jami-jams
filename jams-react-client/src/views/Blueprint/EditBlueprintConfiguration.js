@@ -4,6 +4,7 @@ import clsx from "clsx";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
+
 // core components
 import Grid from "@material-ui/core/Grid";
 import GridItem from "components/Grid/GridItem.js";
@@ -21,7 +22,9 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import Switch from "@material-ui/core/Switch";
 
+import BuildOutlinedIcon from "@material-ui/icons/BuildOutlined";
 import IconButton from "@material-ui/core/IconButton";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
@@ -30,24 +33,14 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import VpnKeyOutlinedIcon from "@material-ui/icons/VpnKeyOutlined";
 import LanguageOutlinedIcon from "@material-ui/icons/LanguageOutlined";
 
-import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
-
-import BuildOutlinedIcon from "@material-ui/icons/BuildOutlined";
-
-import axios from "axios";
-import configApiCall from "../../api";
-import { api_path_blueprints } from "../../globalUrls";
-
-import Snackbar from "@material-ui/core/Snackbar";
-
-import MuiAlert from "@material-ui/lab/Alert";
+import i18next from "i18next";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 
-import Switch from "@material-ui/core/Switch";
-import CustomPopupState from "../../components/CustomPopupState/CustomPopupState";
+import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
+import CustomPopupState from "components/CustomPopupState/CustomPopupState";
 
-import i18next from "i18next";
 
 const styles = (theme) => ({
   ...dashboardStyle,
@@ -146,10 +139,6 @@ const styles = (theme) => ({
 });
 
 const useStyles = makeStyles(styles);
-
-const Alert = (props) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
 
 // Inspired by blueprintjs
 const StyledRadio = (props) => {
@@ -345,10 +334,6 @@ export default function EditBlueprintConfiguration(props) {
       });
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const handleTurnChangedOption = (event) => {
     setSelectedTurnOption(event.target.value);
     if (event.target.value === "customTurn") {
@@ -393,17 +378,7 @@ export default function EditBlueprintConfiguration(props) {
 
   return (
     <div>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        open={open}
-        onClose={handleClose}
-        message={message}
-        key={"bottomright"}
-      >
-        <Alert onClose={handleClose} severity={severity}>
-          {message}
-        </Alert>
-      </Snackbar>
+      <BlueprintSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <Card profile>
@@ -462,7 +437,7 @@ export default function EditBlueprintConfiguration(props) {
                       </FormLabel>
                       <RadioGroup
                         value={selectedTurnOption}
-                        aria-label="gender"
+                        aria-label="turn option"
                         name="customized-radios"
                         onChange={handleTurnChangedOption}
                       >
@@ -491,7 +466,7 @@ export default function EditBlueprintConfiguration(props) {
                                 : "none",
                           }}
                         >
-                          <FormControl className={classes.margin} size="large">
+                          <FormControl className={classes.margin}>
                             <InputLabel htmlFor="turnServer">
                               {i18next.t(
                                 "turn_server_address",
@@ -526,7 +501,7 @@ export default function EditBlueprintConfiguration(props) {
                                 : "none",
                           }}
                         >
-                          <FormControl className={classes.margin} size="large">
+                          <FormControl className={classes.margin}>
                             <InputLabel htmlFor="turnServerUserName">
                               {i18next.t(
                                 "turn_server_username",
@@ -561,7 +536,7 @@ export default function EditBlueprintConfiguration(props) {
                                 : "none",
                           }}
                         >
-                          <FormControl className={classes.margin} size="large">
+                          <FormControl className={classes.margin}>
                             <InputLabel htmlFor="turnServerPassword">
                               {i18next.t(
                                 "turn_server_password",
@@ -627,7 +602,7 @@ export default function EditBlueprintConfiguration(props) {
                       </FormLabel>
                       <RadioGroup
                         value={selectedDHTProxyOption}
-                        aria-label="gender"
+                        aria-label="dht proxy option"
                         name="customized-radios"
                         onChange={handleDHTProxyChangedOption}
                       >
@@ -650,7 +625,6 @@ export default function EditBlueprintConfiguration(props) {
                         <FormGroup row>
                           <FormControl
                             className={classes.margin}
-                            size="large"
                             style={{
                               display:
                                 selectedDHTProxyOption === "customDHTProxy"
@@ -686,7 +660,6 @@ export default function EditBlueprintConfiguration(props) {
                         <FormGroup row>
                           <FormControl
                             className={classes.margin}
-                            size="large"
                             style={{
                               display:
                                 selectedDHTProxyOption === "customDHTProxy"

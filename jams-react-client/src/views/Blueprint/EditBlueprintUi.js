@@ -1,36 +1,28 @@
 import React, { useEffect, useState } from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 
-// core components
+import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
+import SettingsIcon from "@material-ui/icons/Settings";
+
+import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
-
-import SettingsIcon from "@material-ui/icons/Settings";
+import GridItem from "components/Grid/GridItem.js";
+import GridContainer from "components/Grid/GridContainer.js";
 
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 
-import axios from "axios";
-import configApiCall from "../../api";
-import {
-  api_path_blueprints,
-  api_path_get_image,
-  api_path_post_image,
-} from "../../globalUrls";
+import { api_path_blueprints, api_path_get_image, api_path_post_image } from "../../globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-
-import Snackbar from "@material-ui/core/Snackbar";
-import MuiAlert from "@material-ui/lab/Alert";
 
 import i18next from "i18next";
 import CustomUiPreview from "components/CustomUiPreview/CustomUiPreview";
 import EditBlueprintUiForm from "./EditBlueprintUiForm";
+import configApiCall from "api";
+import axios from "axios";
 
 const DEFAULT_UI_CUSTOMIZATION = {
   hasTitle: true,
@@ -110,10 +102,6 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 export default function EditBlueprintUi({ blueprintName }) {
   const classes = useStyles();
 
@@ -126,9 +114,7 @@ export default function EditBlueprintUi({ blueprintName }) {
     setPolicyData({ ...policyData, uiCustomization: ui });
   };
 
-  const [oldUiCustomization, setOldUiCustomization] = useState({
-    ...uiCustomization,
-  });
+  const [oldUiCustomization, setOldUiCustomization] = useState(uiCustomization);
   const [opacity, setOpacity] = useState(0);
 
   const [open, setOpen] = useState(false);
@@ -324,24 +310,9 @@ export default function EditBlueprintUi({ blueprintName }) {
     setBgFile(null);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <div>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        open={open}
-        onClose={handleClose}
-        message={message}
-        key={"bottomright"}
-      >
-        <Alert onClose={handleClose} severity={severity}>
-          {message}
-        </Alert>
-      </Snackbar>
-
+      <BlueprintSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <Card profile className={classes.card}>
@@ -382,7 +353,6 @@ export default function EditBlueprintUi({ blueprintName }) {
                           setUiCustomization={setUiCustomization}
                           handleUpdateUi={handleUpdateUi}
                           handleImgDrop={handleImgDrop}
-                          logoFile={logoFile}
                           setLogoFile={setLogoFile}
                           handleDeleteLogo={handleDeleteLogo}
                           bgFile={bgFile}

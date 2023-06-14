@@ -41,24 +41,25 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
+const a11yProps = (index) => {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
   };
-}
+};
 
-export default function Blueprint(props) {
-  const [value, setValue] = useState(0);
+export default function Blueprint({ blueprintName }) {
+  const [openedTab, setOpenedTab] = useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setOpenedTab(newValue);
   };
+
   return (
     <div>
       <AppBar position="static" style={{ background: infoColor[0] }}>
         <Tabs
-          value={value}
+          value={openedTab}
           onChange={handleChange}
           aria-label="simple tabs example"
         >
@@ -76,15 +77,16 @@ export default function Blueprint(props) {
           />
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0}>
-        <EditBlueprintPermissions blueprintName={props.blueprintName} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <EditBlueprintConfiguration blueprintName={props.blueprintName} />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <EditBlueprintUi blueprintName={props.blueprintName} />
-      </TabPanel>
+
+        <TabPanel value={openedTab} index={0}>
+          <EditBlueprintPermissions blueprintName={blueprintName} />
+        </TabPanel>
+        <TabPanel value={openedTab} index={1}>
+          <EditBlueprintConfiguration blueprintName={blueprintName} />
+        </TabPanel>
+        <TabPanel value={openedTab} index={2}>
+          <EditBlueprintUi blueprintName={blueprintName} />
+        </TabPanel>
     </div>
   );
 }

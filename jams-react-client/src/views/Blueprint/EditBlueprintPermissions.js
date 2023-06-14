@@ -1,65 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+import i18next from "i18next";
+
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
-import classnames from "classnames";
-
-// core components
-import Grid from "@material-ui/core/Grid";
-import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardIcon from "components/Card/CardIcon.js";
-import CardBody from "components/Card/CardBody.js";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
-import Button from "components/CustomButtons/Button.js";
-
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 import Avatar from "@material-ui/core/Avatar";
-
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormLabel from "@material-ui/core/FormLabel";
+import Grid from "@material-ui/core/Grid";
+import Switch from "@material-ui/core/Switch";
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 
-import Snackbar from "@material-ui/core/Snackbar";
-
-import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
-
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import PriorityHighOutlinedIcon from "@material-ui/icons/PriorityHighOutlined";
 
-import noProfilePicture from "assets/img/faces/no-profile-picture.png";
+import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
+import Button from "components/CustomButtons/Button.js";
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+import CardHeader from "components/Card/CardHeader.js";
+import CardIcon from "components/Card/CardIcon.js";
+import CustomPopupState from "components/CustomPopupState/CustomPopupState";
+import GridItem from "components/Grid/GridItem.js";
+import GridContainer from "components/Grid/GridContainer.js";
+import TemporaryDrawer from "components/Drawer/Drawer";
 
-import axios from "axios";
+import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
+import noProfilePicture from "assets/img/faces/no-profile-picture.png";
+import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+
+import auth from "../../auth";
 import configApiCall from "../../api";
 import {
-  api_path_blueprints,
   api_path_get_user_directory_search,
   api_path_get_ns_name_from_addr,
   api_path_get_user_profile,
 } from "../../globalUrls";
 
-import TemporaryDrawer from "components/Drawer/Drawer";
 
-import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
-
-import MuiAlert from "@material-ui/lab/Alert";
-
-import i18next from "i18next";
-
-import auth from "auth.js";
-
-import CustomPopupState from "../../components/CustomPopupState/CustomPopupState";
-
-import Switch from "@material-ui/core/Switch";
-
-const styles = (theme) => ({
+const styles = {
   ...dashboardStyle,
   root: {
     flexGrow: 1,
@@ -112,19 +99,15 @@ const styles = (theme) => ({
     minWidth: "80vh",
     maxWidth: "80vh",
   },
-});
+};
 
 const useStyles = makeStyles(styles);
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export default function EditBlueprintPermissions(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const tableCellClasses = classnames(classes.tableCell);
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [users, setUsers] = useState([]);
@@ -329,10 +312,6 @@ export default function EditBlueprintPermissions(props) {
       });
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const addModeratorToBlueprint = (user) => {
     handleUpdatePermissions(
       "defaultModerators",
@@ -355,17 +334,7 @@ export default function EditBlueprintPermissions(props) {
 
   return (
     <div>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        open={open}
-        onClose={handleClose}
-        message={message}
-        key={"bottomright"}
-      >
-        <Alert onClose={handleClose} severity={severity}>
-          {message}
-        </Alert>
-      </Snackbar>
+      <BlueprintSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <TemporaryDrawer
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
@@ -630,7 +599,7 @@ export default function EditBlueprintPermissions(props) {
             <TableBody>
               {blueprintModerators.map((user) => (
                 <TableRow key={user.username} className={classes.tableRow}>
-                  <TableCell className={tableCellClasses}>
+                  <TableCell className={classes.tableCell}>
                     <Link to={`/user/${user.username}`}>
                       <Avatar
                         style={{ marginRight: "10px" }}
@@ -643,13 +612,13 @@ export default function EditBlueprintPermissions(props) {
                       />
                     </Link>
                   </TableCell>
-                  <TableCell className={tableCellClasses}>
+                  <TableCell className={classes.tableCell}>
                     <Link to={`/user/${user.username}`}>{user.username}</Link>
                   </TableCell>
-                  <TableCell className={tableCellClasses}>
+                  <TableCell className={classes.tableCell}>
                     <Link to={`/user/${user.username}`}>{user.firstName}</Link>
                   </TableCell>
-                  <TableCell className={tableCellClasses}>
+                  <TableCell className={classes.tableCell}>
                     <Link to={`/user/${user.username}`}>{user.lastName}</Link>
                   </TableCell>
                   <TableCell align="right" className={classes.tableActions}>

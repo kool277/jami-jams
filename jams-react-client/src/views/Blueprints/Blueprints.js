@@ -203,7 +203,7 @@ export default function Blueprints() {
         setDisableCreate(true);
         setSelectedBlueprintName(blueprintName);
         setSelectedBlueprint(true);
-        console.log("Successfully created" + blueprintName);
+        console.log("Successfully created " + blueprintName);
       })
       .catch((error) => {
         setOpen(false);
