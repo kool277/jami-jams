@@ -1,0 +1,101 @@
+import axios from "axios";
+
+import configApiCall from "../../api";
+import {
+  api_path_get_ns_name_from_addr,
+  api_path_get_user_profile,
+} from "../../globalUrls";
+import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
+
+const getModerators = async (defaultModerators) => {
+  const moderators = [];
+  const ids = defaultModerators.split("/").filter((id) => id !== "");
+
+  for (const id of ids) {
+    const usernameResponse = await axios(
+      configApiCall(api_path_get_ns_name_from_addr + id, "GET", null, null)
+    );
+    const username = usernameResponse.data.name;
+
+    const userProfileResponse = await axios(
+      configApiCall(api_path_get_user_profile + username, "GET", null, null)
+    );
+    userProfileResponse.data["id"] = id;
+    moderators.push(userProfileResponse.data);
+  }
+
+  return moderators;
+};
+
+const setConfigurationSettings = (policyData) => {
+  const { turnEnabled, proxyEnabled } = policyData;
+
+  if (turnEnabled === true) {
+    policyData.selectedTurnOption = "customTurn";
+  } else if (turnEnabled === false) {
+    policyData.selectedTurnOption = "disabledTurn";
+  } else {
+    policyData.selectedTurnOption = "defaultTurn";
+  }
+  delete policyData.turnEnabled;
+
+  if (proxyEnabled === true) {
+    policyData.selectedDHTProxyOption = "customDHTProxy";
+  } else if (proxyEnabled === false) {
+    policyData.selectedDHTProxyOption = "disabledDHTProxy";
+  } else {
+    policyData.selectedDHTProxyOption = "defaultDHTProxy";
+  }
+  delete policyData.proxyEnabled;
+
+  return policyData;
+};
+
+const setCustomizationSettings = (policyData) => {
+  if (!policyData.uiCustomization) {
+    policyData.uiCustomization = DEFAULT_UI_CUSTOMIZATION;
+    return policyData;
+  }
+
+  const result = JSON.parse(policyData.uiCustomization);
+  const ui = { isCustomizationEnabled: true };
+
+  ui.hasTitle = result.title !== "";
+  ui.title = result.title;
+  ui.hasDescription = result.description !== "";
+  ui.description = result.description;
+  ui.hasTips = result.hasTips;
+
+  if (result.backgroundType === "default") {
+    ui.hasBackground = false;
+  } else if (result.backgroundType === "color") {
+    ui.hasBackground = true;
+    ui.backgroundColor = result.backgroundColorOrUrl;
+  } else if (result.backgroundType === "image") {
+    ui.hasBackground = true;
+    ui.backgroundUrl = result.backgroundColorOrUrl;
+  }
+
+  // Get the name of the file from the url
+  ui.hasLogo = result.logoUrl !== "";
+  if (ui.hasLogo) {
+    ui.logoUrl = result.logoUrl;
+  }
+
+  policyData.uiCustomization = ui;
+  return policyData;
+};
+
+export const parsePolicyData = async (data) => {
+  let policyData = JSON.parse(data);
+
+  policyData.blueprintModerators = await getModerators(
+    policyData.defaultModerators
+  );
+  delete policyData.defaultModerators;
+
+  policyData = setConfigurationSettings(policyData);
+  policyData = setCustomizationSettings(policyData);
+
+  return policyData;
+};

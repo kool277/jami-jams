@@ -10,6 +10,7 @@ import Box from "@material-ui/core/Box";
 import EditBlueprintPermissions from "./EditBlueprintPermissions";
 import EditBlueprintConfiguration from "./EditBlueprintConfiguration";
 import EditBlueprintUi from "./EditBlueprintUi";
+import { PolicyDataContextProvider } from "./PolicyDataContext";
 
 import { infoColor } from "assets/jss/material-dashboard-react.js";
 
@@ -78,6 +79,7 @@ export default function Blueprint({ blueprintName }) {
         </Tabs>
       </AppBar>
 
+      <PolicyDataContextProvider blueprintName={blueprintName}>
         <TabPanel value={openedTab} index={0}>
           <EditBlueprintPermissions blueprintName={blueprintName} />
         </TabPanel>
@@ -87,6 +89,7 @@ export default function Blueprint({ blueprintName }) {
         <TabPanel value={openedTab} index={2}>
           <EditBlueprintUi blueprintName={blueprintName} />
         </TabPanel>
+      </PolicyDataContextProvider>
     </div>
   );
 }

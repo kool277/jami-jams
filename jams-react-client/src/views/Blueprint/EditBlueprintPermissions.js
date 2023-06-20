@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import i18next from "i18next";
@@ -41,10 +41,9 @@ import auth from "../../auth";
 import configApiCall from "../../api";
 import {
   api_path_get_user_directory_search,
-  api_path_get_ns_name_from_addr,
-  api_path_get_user_profile,
 } from "../../globalUrls";
 
+import { PolicyDataContext } from "./PolicyDataContext";
 
 const styles = {
   ...dashboardStyle,
@@ -103,39 +102,26 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-
 export default function EditBlueprintPermissions(props) {
   const classes = useStyles();
   const history = useHistory();
 
+  const { policyData, updatePolicyData, snackbar, setSnackbar } = useContext(
+    PolicyDataContext
+  );
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [users, setUsers] = useState([]);
-  const [blueprintModerators, setBlueprintModerators] = useState([]);
 
-  const [videoEnabled, setVideoEnabled] = useState(true);
-  const [publicInCalls, setPublicInCalls] = useState(true);
-  const [autoAnswer, setAutoAnswer] = useState(false);
-  const [peerDiscovery, setPeerDiscovery] = useState(true);
-  const [rendezVous, setRendezVous] = useState(false);
-  const [defaultModerators, setDefaultModerators] = useState("");
-
-  const [upnpEnabled, setUpnpEnabled] = useState(true);
-  const [turnEnabled, setTurnEnabled] = useState(true);
-  const [turnServer, setTurnServer] = useState("turn.jami.net");
-  const [turnServerUserName, setTurnServerUserName] = useState("ring");
-  const [turnServerPassword, setTurnServerPassword] = useState("ring");
-  const [proxyEnabled, setProxyEnabled] = useState(false);
-  const [proxyServer, setProxyServer] = useState("dhtproxy.jami.net");
-  const [dhtProxyListUrl, setDhtProxyListUrl] = useState("");
-
-  const [allowLookup, setAllowLookup] = useState(true);
-
-  const [uiCustomization, setUiCustomization] = useState("");
-
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState(false);
-  const [severity, setSeverity] = useState("success");
+  const {
+    videoEnabled,
+    publicInCalls,
+    autoAnswer,
+    peerDiscovery,
+    rendezVous,
+    blueprintModerators,
+    allowLookup,
+  } = policyData;
 
   const searchUsers = (value) => {
     axios(
@@ -147,14 +133,16 @@ export default function EditBlueprintPermissions(props) {
       )
     )
       .then((response) => {
-        let profiles = [];
+        if (response.status === 204) {
+          setUsers([]);
+          return;
+        }
+
         const profilesResults = response.data.profiles;
-        profilesResults.forEach((profile) => {
-          let existingUser = false;
-          users.forEach((user) => {
-            if (profile.username === user.username) existingUser = true;
-          });
-          if (!existingUser) profiles.push(profile);
+        const usernames = users.map((user) => user.username);
+
+        const profiles = profilesResults.filter((profile) => {
+          return !usernames.includes(profile.username);
         });
         setUsers(profiles);
       })
@@ -169,167 +157,17 @@ export default function EditBlueprintPermissions(props) {
 
   useEffect(() => {
     searchUsers();
-
-    axios(
-      configApiCall(
-        api_path_blueprints + "?name=" + props.blueprintName,
-        "GET",
-        null,
-        null
-      )
-    )
-      .then((response) => {
-        let policyData = JSON.parse(response.data.policyData);
-
-        setVideoEnabled(policyData["videoEnabled"]);
-        setPublicInCalls(policyData["publicInCalls"]);
-        setAutoAnswer(policyData["autoAnswer"]);
-        setPeerDiscovery(policyData["peerDiscovery"]);
-        setRendezVous(policyData["rendezVous"]);
-        setDefaultModerators(policyData["defaultModerators"]);
-
-        setUpnpEnabled(policyData["upnpEnabled"]);
-        setTurnEnabled(policyData["turnEnabled"]);
-        setTurnServer(policyData["turnServer"]);
-        setTurnServerUserName(policyData["turnServerUserName"]);
-        setTurnServerPassword(policyData["turnServerPassword"]);
-        setProxyEnabled(policyData["proxyEnabled"]);
-        setProxyServer(policyData["proxyServer"]);
-        setDhtProxyListUrl();
-        setAllowLookup(policyData["allowLookup"]);
-
-        setUiCustomization(policyData["uiCustomization"]);
-
-        policyData["defaultModerators"].split("/").forEach((id) => {
-          if (id !== "undefined" && id !== "") {
-            axios(
-              configApiCall(api_path_get_ns_name_from_addr + id),
-              null,
-              null
-            ).then((usernameResponse) => {
-              let username = usernameResponse.data.name;
-              axios(
-                configApiCall(api_path_get_user_profile + username),
-                null,
-                null
-              ).then((userProfileResponse) => {
-                let userProfiles = blueprintModerators;
-                userProfileResponse.data["id"] = id;
-                userProfiles.push(userProfileResponse.data);
-                setBlueprintModerators(userProfiles);
-                // This state update is added to refresh the list of moderators
-                setOpenDrawer(true);
-                setOpenDrawer(false);
-              });
-            });
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(
-          "Error fetching blueprint permissions : " +
-            props.blueprintName +
-            " " +
-            error
-        );
-      });
-  }, [props.blueprintName]);
-
-  const handleUpdatePermissions = (field, value) => {
-    let data = {
-      videoEnabled: videoEnabled,
-      publicInCalls: publicInCalls,
-      autoAnswer: autoAnswer,
-      peerDiscovery: peerDiscovery,
-      accountDiscovery: peerDiscovery,
-      accountPublish: peerDiscovery,
-      rendezVous: rendezVous,
-      defaultModerators: defaultModerators,
-      upnpEnabled: upnpEnabled,
-      turnEnabled: turnEnabled,
-      turnServer: turnServer,
-      turnServerUserName: turnServerUserName,
-      turnServerPassword: turnServerPassword,
-      proxyEnabled: proxyEnabled,
-      proxyServer: proxyServer,
-      dhtProxyListUrl: dhtProxyListUrl,
-      allowLookup: allowLookup,
-      uiCustomization: uiCustomization,
-    };
-
-    if (field === "peerDiscovery") {
-      data.peerDiscovery = value;
-      data.accountDiscovery = value;
-      data.accountPublish = value;
-    } else {
-      data[field] = value;
-    }
-
-    if (turnEnabled === undefined) {
-      delete data.turnEnabled;
-      delete data.turnServer;
-      delete data.turnServerUserName;
-      delete data.turnServerPassword;
-    }
-
-    if (proxyEnabled === undefined) {
-      delete data.proxyEnabled;
-      delete data.proxyServer;
-      delete data.dhtProxyListUrl;
-    }
-
-    axios(
-      configApiCall(
-        api_path_blueprints + "?name=" + props.blueprintName,
-        "PUT",
-        data,
-        null
-      )
-    )
-      .then((response) => {
-        setOpen(false);
-        setSeverity("success");
-        setOpen(true);
-        setMessage(
-          i18next.t(
-            "updated_blueprint_permissions_successfully",
-            "Blueprint permissions successfully updated."
-          )
-        );
-      })
-      .catch((error) => {
-        setOpen(false);
-        setSeverity("error");
-        setOpen(true);
-        setMessage(
-          i18next.t(
-            "error_updating_blueprint_permissions",
-            "Error occurred while updating blueprint permissions."
-          ) +
-            error +
-            "!"
-        );
-      });
-  };
+  }, []);
 
   const addModeratorToBlueprint = (user) => {
-    handleUpdatePermissions(
-      "defaultModerators",
-      defaultModerators + user.id + "/"
-    );
-    setDefaultModerators(defaultModerators + user.id + "/");
-    let newBlueprintModerators = blueprintModerators;
-    newBlueprintModerators.push(user);
-    setBlueprintModerators(newBlueprintModerators);
+    updatePolicyData("blueprintModerators", [...blueprintModerators, user]);
   };
 
   const removeModeratorFromBlueprint = (user) => {
-    let newDefaultModerators = defaultModerators.replace(user.id + "/", "");
-    handleUpdatePermissions("defaultModerators", newDefaultModerators);
-    setDefaultModerators(newDefaultModerators);
-    let newBlueprintModerators = blueprintModerators;
-    newBlueprintModerators.splice(newBlueprintModerators.indexOf(user), 1);
-    setBlueprintModerators(newBlueprintModerators);
+    const newBlueprintModerators = blueprintModerators.filter(
+      (moderator) => moderator.id !== user.id
+    );
+    updatePolicyData("blueprintModerators", newBlueprintModerators);
   };
 
   return (
@@ -377,8 +215,7 @@ export default function EditBlueprintPermissions(props) {
                                 checked={videoEnabled}
                                 color="primary"
                                 onChange={(e) => {
-                                  setVideoEnabled(e.target.checked);
-                                  handleUpdatePermissions(
+                                  updatePolicyData(
                                     "videoEnabled",
                                     e.target.checked
                                   );
@@ -405,8 +242,7 @@ export default function EditBlueprintPermissions(props) {
                                 checked={publicInCalls}
                                 color="primary"
                                 onChange={(e) => {
-                                  setPublicInCalls(e.target.checked);
-                                  handleUpdatePermissions(
+                                  updatePolicyData(
                                     "publicInCalls",
                                     e.target.checked
                                   );
@@ -433,8 +269,7 @@ export default function EditBlueprintPermissions(props) {
                                 checked={autoAnswer}
                                 color="primary"
                                 onChange={(e) => {
-                                  setAutoAnswer(e.target.checked);
-                                  handleUpdatePermissions(
+                                  updatePolicyData(
                                     "autoAnswer",
                                     e.target.checked
                                   );
@@ -466,8 +301,7 @@ export default function EditBlueprintPermissions(props) {
                                 checked={peerDiscovery}
                                 color="primary"
                                 onChange={(e) => {
-                                  setPeerDiscovery(e.target.checked);
-                                  handleUpdatePermissions(
+                                  updatePolicyData(
                                     "peerDiscovery",
                                     e.target.checked
                                   );
@@ -502,8 +336,7 @@ export default function EditBlueprintPermissions(props) {
                                 checked={allowLookup}
                                 color="primary"
                                 onChange={(e) => {
-                                  setAllowLookup(e.target.checked);
-                                  handleUpdatePermissions(
+                                  updatePolicyData(
                                     "allowLookup",
                                     e.target.checked
                                   );
@@ -542,8 +375,7 @@ export default function EditBlueprintPermissions(props) {
                   checked={rendezVous}
                   color="primary"
                   onChange={(e) => {
-                    setRendezVous(e.target.checked);
-                    handleUpdatePermissions("rendezVous", e.target.checked);
+                    updatePolicyData("rendezVous", e.target.checked);
                   }}
                   name="rendezVous"
                   inputProps={{ "aria-label": "secondary checkbox" }}

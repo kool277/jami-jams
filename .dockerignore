@@ -4,5 +4,6 @@
 .dockerignore
 
 **/node_modules
+**/target
 
 jams
