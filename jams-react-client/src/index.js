@@ -40,6 +40,7 @@ import SignIn from "layouts/SignIn.js";
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
 import "./i18n";
+import { grayColor } from "assets/jss/material-dashboard-react";
 
 const hist = createBrowserHistory();
 
@@ -50,6 +51,11 @@ const theme = createTheme({
     },
     secondary: {
       main: "#ffffff",
+    },
+  },
+  typography: {
+    allVariants: {
+      color: grayColor[2],
     },
   },
 });
