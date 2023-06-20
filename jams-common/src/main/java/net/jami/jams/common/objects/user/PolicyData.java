@@ -24,4 +24,5 @@ public class PolicyData {
     private Boolean rendezVous;
     private String defaultModerators;
     private Boolean allowLookup;
+    private String uiCustomization;
 }

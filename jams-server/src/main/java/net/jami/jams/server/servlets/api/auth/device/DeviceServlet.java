@@ -176,7 +176,6 @@ public class DeviceServlet extends HttpServlet {
                 obj.add("TURN.password", obj.get("turnServerPassword"));
                 obj.remove("turnServerPassword");
             }
-
             if (obj.get("proxyEnabled") != null) {
                 obj.add("Account.proxyEnabled", obj.get("proxyEnabled"));
                 obj.remove("proxyEnabled");
@@ -196,6 +195,10 @@ public class DeviceServlet extends HttpServlet {
             if (obj.get("defaultModerators") != null) {
                 obj.add("Account.defaultModerators", obj.get("defaultModerators"));
                 obj.remove("defaultModerators");
+            }
+            if (obj.get("uiCustomization") != null) {
+                obj.add("Account.uiCustomization", obj.get("uiCustomization"));
+                obj.remove("uiCustomization");
             }
 
             resp.getOutputStream().write((obj.toString()).getBytes());
