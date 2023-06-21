@@ -38,9 +38,9 @@ import java.io.IOException;
 
 import static net.jami.jams.server.servlets.filters.FilterUtils.doAuthCheck;
 
-@WebFilter("/api/install/*")
+@WebFilter(filterName = "installFilter", urlPatterns = { "/api/install/*" })
 @Slf4j
-public class InstallFilter implements Filter {
+public class CInstallFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

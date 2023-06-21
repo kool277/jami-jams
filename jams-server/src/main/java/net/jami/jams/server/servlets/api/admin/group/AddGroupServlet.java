@@ -1,6 +1,8 @@
 package net.jami.jams.server.servlets.api.admin.group;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,8 +30,11 @@ public class AddGroupServlet extends HttpServlet {
         Group group = new Group();
         UUID uuid = UUID.randomUUID();
         group.setId(uuid.toString());
-        group.setName(req.getParameter("name"));
-        group.setBlueprint(req.getParameter("blueprintName"));
+
+        JsonObject body = JsonParser.parseReader(req.getReader()).getAsJsonObject();
+        group.setName(body.get("name").getAsString());
+        group.setBlueprint(body.get("blueprintName").getAsString());
+
         if (dataStore.getGroupDao().storeObject(group)) {
             JsonObject data = new JsonObject();
             data.addProperty("id", uuid.toString());

@@ -1,6 +1,10 @@
 const uri = "";
 const current_uri = window.location.href;
-const backend_address = new URL(window.location.href);
+const backend_address = new URL(
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8080"
+    : window.location.href
+);
 const url_path = backend_address.protocol + "//" + backend_address.hostname;
 const url_port = backend_address.port;
 const api_path_post_install_admin = "/api/install/start";

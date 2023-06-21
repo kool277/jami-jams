@@ -27,6 +27,15 @@ const getModerators = async (defaultModerators) => {
   return moderators;
 };
 
+const setPermissionsSettings = async (policyData) => {
+  policyData.blueprintModerators = await getModerators(
+    policyData.defaultModerators
+  );
+  delete policyData.defaultModerators;
+
+  return policyData;
+};
+
 const setConfigurationSettings = (policyData) => {
   const { turnEnabled, proxyEnabled } = policyData;
 
@@ -89,11 +98,7 @@ const setCustomizationSettings = (policyData) => {
 export const parsePolicyData = async (data) => {
   let policyData = JSON.parse(data);
 
-  policyData.blueprintModerators = await getModerators(
-    policyData.defaultModerators
-  );
-  delete policyData.defaultModerators;
-
+  policyData = await setPermissionsSettings(policyData);
   policyData = setConfigurationSettings(policyData);
   policyData = setCustomizationSettings(policyData);
 

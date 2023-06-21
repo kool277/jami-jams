@@ -209,11 +209,6 @@ export default function EditGroup(props) {
     getBlueprintsOptions(blueprints)
   );
 
-  useEffect(() => {
-    getGroup();
-    searchUsers();
-  }, []);
-
   const updateGroup = (blueprintValue) => {
     let data = {
       name: newName,
@@ -356,6 +351,11 @@ export default function EditGroup(props) {
         setGroupNameExits(false);
       });
   };
+
+  useEffect(() => {
+    getGroup();
+    searchUsers();
+  }, []);
 
   const tableCellClasses = classnames(classes.tableCell);
 

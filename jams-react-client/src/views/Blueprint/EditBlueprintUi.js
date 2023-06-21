@@ -14,7 +14,7 @@ import GridContainer from "components/Grid/GridContainer.js";
 
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 
-import { api_path_get_image, api_path_post_image } from "../../globalUrls";
+import { api_path_get_image, api_path_post_image, url_path, url_port } from "../../globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
@@ -135,20 +135,16 @@ export default function EditBlueprintUi({ blueprintName }) {
     const formData = new FormData();
     formData.append("file", acceptedFiles[0]);
 
-    const url = `${api_path_post_image}/${blueprintName}/${imgType}`;
+    const url = `${url_path}:${url_port}${api_path_post_image}/${blueprintName}/${imgType}`;
 
     fetch(url, {
       method: "POST",
       body: formData,
     })
       .then(() => {
+        const newUrl = `${api_path_get_image}/${blueprintName}/${imgType}/${acceptedFiles[0].name}`;
+
         if (imgType === "background") {
-          let newUrl =
-            api_path_get_image +
-            "/" +
-            blueprintName +
-            "/background/" +
-            acceptedFiles[0].name;
           setUiCustomization({
             ...uiCustomization,
             backgroundUrl: newUrl,
@@ -156,12 +152,6 @@ export default function EditBlueprintUi({ blueprintName }) {
           });
           handleUpdateUi("backgroundUrl", newUrl);
         } else if (imgType === "logo") {
-          let newUrl =
-            api_path_get_image +
-            "/" +
-            blueprintName +
-            "/logo/" +
-            acceptedFiles[0].name;
           setUiCustomization({
             ...uiCustomization,
             logoUrl: newUrl,

@@ -266,18 +266,14 @@ export default function Groups() {
 
     axios(
       configApiCall(
-        api_path_post_create_group +
-          "?name=" +
-          groupName +
-          "&blueprintName=" +
-          blueprintName,
+        api_path_post_create_group,
         "POST",
-        null,
+        { name: groupName, blueprintName },
         null
       )
     )
       .then((response) => {
-        console.log("Successfully  created " + groupName);
+        console.log("Successfully created " + groupName);
         setOpenCreate(false);
         history.push(`/group/${response.data.id}`);
       })

@@ -29,9 +29,7 @@ import {
   api_path_post_update_user,
   api_path_get_user_directory_search,
   api_path_blueprints,
-} from "globalUrls";
-
-let isSearch = false;
+} from "./globalUrls";
 
 export default function configApiCall(
   api_path,
@@ -45,23 +43,23 @@ export default function configApiCall(
     method: request_type,
     crossDomain: true,
     dataType: "json",
+    headers: {},
   };
 
   // pass credentials in the header
   if (credentials) {
-    config["headers"] = {
-      Authorization:
-        "Basic " +
-        btoa(credentials["username"] + ":" + credentials["password"]),
-    };
+    const base64 = btoa(
+      credentials["username"] + ":" + credentials["password"]
+    );
+    config["headers"]["Authorization"] = "Basic " + base64;
   }
 
-  if (window.localStorage.getItem("access_token")) {
-    const jwt = localStorage.getItem("access_token");
-    config["headers"] = {
-      Authorization: "Bearer " + jwt,
-    };
+  const jwt = localStorage.getItem("access_token");
+  if (jwt) {
+    config["headers"]["Authorization"] = "Bearer " + jwt;
   }
+
+  config["headers"]["Content-type"] = "application/json";
 
   // pass data in the header
   if (data) {
@@ -74,30 +72,16 @@ export default function configApiCall(
       api_path === api_path_get_auth_devices ||
       api_path === api_path_get_admin_devices ||
       api_path === api_path_post_configuration_change_password
-    )
-      isSearch = true;
-
-    // search dataType
-    if (isSearch) {
+    ) {
       if (request_type === "GET" || request_type === "DELETE") {
         config["params"] = data;
       } else {
         config["data"] = data;
       }
     } else {
-      config["header"] = {
-        "Content-type": "application/json",
-      };
-
-      if (window.localStorage.getItem("access_token")) {
-        const jwt = localStorage.getItem("access_token");
-        config["headers"]["Authorization"] = "Bearer " + jwt;
-      }
-
       config["data"] = JSON.stringify(data);
     }
   }
 
-  isSearch = false;
   return config;
 }

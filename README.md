@@ -60,7 +60,7 @@ cp extras/scripts/pre-commit .git/hooks
 chmod +x .git/hooks/pre-commit
 ```
 
-## Development Docker container:
+## Development Docker container
 
 You can build the docker container using:
 
@@ -73,3 +73,8 @@ To run the docker container (assuming you want to have it on port 8080 locally):
 ```
 docker run -p 8080:8080 --rm jams:latest
 ```
+
+## About jams-server/src/main/java/net/jami/jams/server/filters
+The files in the `filters` folder are prefixed "A", "B", "C" and "D" so that the
+order of execution of the filters are right (jakarta registers filters in
+alphabetical order).

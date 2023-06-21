@@ -177,6 +177,7 @@ export default function Blueprints() {
   const handleCreateBlueprint = () => {
     let defaultPolicyData = {
       videoEnabled: true,
+      publicInCalls: false,
       allowCertFromContact: true,
       allowCertFromHistory: true,
       allowCertFromTrusted: true,
@@ -249,46 +250,41 @@ export default function Blueprints() {
           {i18next.t("create_blueprint", "Create blueprint")}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <FormControl
-              className={classes.margin}
-              size="medium"
-              error={blueprintNameExits}
-            >
-              <InputLabel htmlFor="blueprintName">
-                {i18next.t("blueprint_name", "Blueprint name")}
-              </InputLabel>
-              <Input
-                id="blueprintName"
-                placeholder={i18next.t("blueprint_name", "Blueprint name")}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <AllInbox />
-                  </InputAdornment>
-                }
-                onChange={(e) => {
-                  setBlueprintName(e.target.value);
-                  initCheckBlueprintNameExists(e.target.value);
-                }}
-              />
-            </FormControl>
-            {disableCreate && blueprintName.length > 0 && (
-              <p>
-                {i18next.t(
-                  "blueprint_name_already_exists",
-                  "Blueprint name already exists!"
-                )}
-              </p>
-            )}
-            {disableCreate && blueprintName.length === 0 && (
-              <p>
-                {i18next.t(
-                  "blueprint_name_is_empty",
-                  "Blueprint name is empty"
-                )}
-              </p>
-            )}
-          </DialogContentText>
+          <FormControl
+            className={classes.margin}
+            size="medium"
+            error={blueprintNameExits}
+          >
+            <InputLabel htmlFor="blueprintName">
+              {i18next.t("blueprint_name", "Blueprint name")}
+            </InputLabel>
+            <Input
+              id="blueprintName"
+              placeholder={i18next.t("blueprint_name", "Blueprint name")}
+              startAdornment={
+                <InputAdornment position="start">
+                  <AllInbox />
+                </InputAdornment>
+              }
+              onChange={(e) => {
+                setBlueprintName(e.target.value);
+                initCheckBlueprintNameExists(e.target.value);
+              }}
+            />
+          </FormControl>
+          {disableCreate && blueprintName.length > 0 && (
+            <p>
+              {i18next.t(
+                "blueprint_name_already_exists",
+                "Blueprint name already exists!"
+              )}
+            </p>
+          )}
+          {disableCreate && blueprintName.length === 0 && (
+            <p>
+              {i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}
+            </p>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

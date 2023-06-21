@@ -8,6 +8,8 @@ import logoImage from "assets/img/logo-jami-net.svg";
 import TipBox from "./TipBox";
 import JamiIdCard from "./JamiIdCard";
 import i18next from "i18next";
+import { url_path } from "../../globalUrls";
+import { url_port } from "../../globalUrls";
 
 const styles = {
   backgroundImage: {
@@ -118,13 +120,21 @@ export default function CustomUiPreview({
       "Here is your Jami identifier, don’t hesitate to share it in order to be contacted more easily!"
     );
   }
-  if (!logoUrl) {
+  if (logoUrl) {
+    logoUrl = `${url_path}:${url_port}/${logoUrl}`;
+  } else {
     logoUrl = logoImage;
   }
 
   if (hasBackground === false) {
     backgroundColor = "white";
     backgroundUrl = "";
+  }
+  if (backgroundUrl !== "") {
+    backgroundColor = "white";
+  }
+  if (backgroundUrl) {
+    backgroundUrl = `${url_path}:${url_port}/${backgroundUrl}`;
   }
 
   const isCompactDisplay = !hasTitle && !hasDescription && !hasTips;

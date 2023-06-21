@@ -45,7 +45,7 @@ import static net.jami.jams.server.servlets.filters.FilterUtils.doAuthCheck;
  */
 @WebFilter(urlPatterns = {"/api/auth/*","/api/admin/*"})
 @Slf4j
-public class ApiFilter implements Filter {
+public class DApiFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
