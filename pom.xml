@@ -152,24 +152,6 @@
                     </filesets>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo</groupId>
-                <version>${maven.exec.version}</version>
-                <inherited>false</inherited>
-                <executions>
-                    <execution><!-- Run our version calculation script -->
-                        <id>Build PDF Documentation</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>build-doc.sh</executable>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
