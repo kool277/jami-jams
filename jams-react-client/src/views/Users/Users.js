@@ -272,7 +272,7 @@ export default function Users(props) {
                       <GridContainer
                         container
                         direction="column"
-                        justify="flex-end"
+                        justifyContent="flex-end"
                         alignItems="flex-start"
                       >
                         <GridItem style={{ minHeight: "50px" }}>

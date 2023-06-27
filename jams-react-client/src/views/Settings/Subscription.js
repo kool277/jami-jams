@@ -141,7 +141,7 @@ export default function Subscription(props) {
               >
                 <Grid container spacing={3}>
                   <Grid item lg={6}>
-                    <Typography variant="p" gutterBottom color="primary">
+                    <Typography component="p" gutterBottom color="primary">
                       {i18next.t(
                         "paste_your_jams_enterprise_subscription_code_received_from_jami",
                         "Paste your JAMS Enterprise subscription code received from the Jami store."

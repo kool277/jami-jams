@@ -265,12 +265,11 @@ export default function ServerParameters(props) {
               fullWidth
               value={userAccountLifetime.value}
               onChange={handleUserAccountLifetimeChange}
-              isDisabled={userlifeDisabled}
               variant="outlined"
               children={userAccountLifetimeTypesItems}
             />
             {userlifeDisabled ? (
-              <span class="spanError">
+              <span className="spanError">
                 {i18next.t(
                   "account_lifetime_should_be_bigger_to_device_lifetime",
                   "The account lifetime should be longer than the Device lifetime."

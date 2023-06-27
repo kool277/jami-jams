@@ -664,7 +664,6 @@ export default function EditCreateUserProfile(props) {
                             <label htmlFor="icon-button-file">
                               <IconButton
                                 id="change-profile-picture"
-                                color="info"
                                 aria-label="upload picture"
                                 component="span"
                               >
@@ -689,7 +688,7 @@ export default function EditCreateUserProfile(props) {
                                 }
                                 endAdornment={
                                   values.username === "" ? (
-                                    ""
+                                    null
                                   ) : userExists ? (
                                     <CancelIcon style={{ color: "#cc0000" }} />
                                   ) : (

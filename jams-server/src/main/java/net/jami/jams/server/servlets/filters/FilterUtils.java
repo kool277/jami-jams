@@ -69,43 +69,44 @@ public class FilterUtils {
 
     public static boolean doAuthCheck(HttpServletRequest request){
         AuthRequestType requestType = FilterUtils.classifyRequest(request);
-        try {
-            if (requestType != null) {
-                SignedJWT token = null;
-                switch (requestType) {
-                    case BASIC:
-                        token = SignedJWT.parse(processUsernamePasswordAuth(request.getHeader("authorization")).getAccess_token());
-                        break;
-                    case BEARER_TOKEN:
-                        token = SignedJWT.parse(request.getHeader("authorization").
-                            replace("bearer", "")
-                            .replace("Bearer", ""));
-                        break;
-                    default:
-                        return false;
-                }
-                StatementList statementList = new StatementList();
-                StatementElement statementElement = new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
-                statementList.addStatement(statementElement);
-                log.info("Getting user from database");
-                User user =  dataStore.getUserDao().getObjects(statementList).get(0);
-                log.info("User retrieved from database: {}", user);
-                if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get() != null) {
-                    if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
-                        return false;
-                }
-                JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
-                if (token.verify(jwsVerifier) && verifyValidity(token)) {
-                    request.setAttribute(USERNAME_ATTR, token.getJWTClaimsSet().getSubject());
-                    request.setAttribute(ACCESS_LEVEL_ATTR, AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
-                    return true;
-                }
-            }
+        if (requestType == null) {
             return false;
+        }
+        try {
+            SignedJWT token = null;
+            switch (requestType) {
+                case BASIC:
+                    token = SignedJWT.parse(processUsernamePasswordAuth(request.getHeader("authorization")).getAccess_token());
+                    break;
+                case BEARER_TOKEN:
+                    token = SignedJWT.parse(request.getHeader("authorization").
+                        replace("bearer", "")
+                        .replace("Bearer", ""));
+                    break;
+                default:
+                    return false;
+            }
+            StatementList statementList = new StatementList();
+            StatementElement statementElement = new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
+            statementList.addStatement(statementElement);
+            log.info("Getting user from database");
+            User user =  dataStore.getUserDao().getObjects(statementList).get(0);
+            log.info("User retrieved from database: {}", user);
+            if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get() != null) {
+                if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
+                    return false;
+            }
+            JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
+            if (token.verify(jwsVerifier) && verifyValidity(token)) {
+                request.setAttribute(USERNAME_ATTR, token.getJWTClaimsSet().getSubject());
+                request.setAttribute(ACCESS_LEVEL_ATTR, AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
+                return true;
+            }
         }
         catch (Exception e){
             log.info("Failed to process authentication request and denying access: {}",e.getMessage());
-            return false;
         }
+
+        return false;
     }
 }

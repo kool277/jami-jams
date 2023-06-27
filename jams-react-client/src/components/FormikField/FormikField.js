@@ -47,16 +47,16 @@ class FormikField extends React.Component {
 }
 
 FormikField.propTypes = {
-  startAdornment: false,
-  endAdornment: false,
+  startAdornment: PropTypes.element,
+  endAdornment: PropTypes.element,
   placeholder: PropTypes.string,
-  required: false,
+  required: PropTypes.bool,
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  type: "text",
-  autoComplete: "on",
+  type: PropTypes.string,
+  autoComplete: PropTypes.oneOf(["on", "off"]),
   handleChange: PropTypes.func,
-  onKeyUpError: false,
+  onKeyUpError: PropTypes.bool,
   onKeyUpErrorMessage: PropTypes.string,
 };
 

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
 
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -82,47 +81,32 @@ export default function Sidebar(props) {
               ></Snackbar>
             )}
 
-            <NavLink
-              to={prop.layout + prop.path}
-              className={classes.item}
-              activeClassName="active"
-              key={key}
-            >
-              <Link to={`${prop.path}`}>
-                <ListItem button className={classes.itemLink + listItemClasses}>
-                  {typeof prop.icon === "string" ? (
-                    <Icon
-                      className={classNames(
-                        classes.itemIcon,
-                        whiteFontClasses,
-                        {
-                          [classes.itemIconRTL]: props.rtlActive,
-                        }
-                      )}
-                    >
-                      {prop.icon}
-                    </Icon>
-                  ) : (
-                    <prop.icon
-                      className={classNames(
-                        classes.itemIcon,
-                        whiteFontClasses,
-                        {
-                          [classes.itemIconRTL]: props.rtlActive,
-                        }
-                      )}
-                    />
-                  )}
-                  <ListItemText
-                    primary={props.rtlActive ? prop.rtlName : prop.name}
-                    className={classNames(classes.itemText, whiteFontClasses, {
-                      [classes.itemTextRTL]: props.rtlActive,
+            <Link to={`${prop.path}`}>
+              <ListItem button className={classes.itemLink + listItemClasses}>
+                {typeof prop.icon === "string" ? (
+                  <Icon
+                    className={classNames(classes.itemIcon, whiteFontClasses, {
+                      [classes.itemIconRTL]: props.rtlActive,
                     })}
-                    disableTypography={true}
+                  >
+                    {prop.icon}
+                  </Icon>
+                ) : (
+                  <prop.icon
+                    className={classNames(classes.itemIcon, whiteFontClasses, {
+                      [classes.itemIconRTL]: props.rtlActive,
+                    })}
                   />
-                </ListItem>
-              </Link>
-            </NavLink>
+                )}
+                <ListItemText
+                  primary={props.rtlActive ? prop.rtlName : prop.name}
+                  className={classNames(classes.itemText, whiteFontClasses, {
+                    [classes.itemTextRTL]: props.rtlActive,
+                  })}
+                  disableTypography={true}
+                />
+              </ListItem>
+            </Link>
           </div>
         );
       })}

@@ -108,10 +108,12 @@ export default function General(props) {
     password: Yup.string().required(
       i18next.t("password_is_required", "Password is required!")
     ),
-    confirmPassword: Yup.string().oneOf(
-      [Yup.ref("password"), null],
-      i18next.t("password_must_match", "Passwords must match")
-    ),
+    confirmPassword: Yup.string()
+      .oneOf(
+        [Yup.ref("password")],
+        i18next.t("password_must_match", "Passwords must match")
+      )
+      .required(i18next.t("password_is_required", "Password is required!")),
   });
 
   const handleMouseDownPassword = () => {
@@ -147,7 +149,7 @@ export default function General(props) {
                 <form onSubmit={handleSubmit} className={classes.form}>
                   <Grid container spacing={2}>
                     <Grid item lg={6} style={{ display: "flex" }}>
-                      <Typography variant="p" gutterBottom color="primary">
+                      <Typography component="p" gutterBottom color="primary">
                         {i18next.t("change_language", "Change language")}
                       </Typography>
                     </Grid>
@@ -155,7 +157,7 @@ export default function General(props) {
                       <LanguagePicker navigationTarget={"/admin/settings"} />
                     </Grid>
                     <Grid item lg={6}>
-                      <Typography variant="p" gutterBottom color="primary">
+                      <Typography component="p" gutterBottom color="primary">
                         {i18next.t(
                           "enter_the_following_information_below_to_change_your_admin_password",
                           "Enter the following information to change your admin password."
@@ -233,7 +235,6 @@ export default function General(props) {
 
                       <Button
                         variant="contained"
-                        color="info"
                         size="large"
                         className={classes.button}
                         startIcon={<RefreshIcon />}
@@ -264,7 +265,6 @@ export default function General(props) {
                       >
                         <Button
                           variant="contained"
-                          color="info"
                           size="large"
                           className={classes.button}
                           startIcon={<FileCopyIcon />}
@@ -290,7 +290,7 @@ export default function General(props) {
                         variant="contained"
                         color="primary"
                         fullWidth
-                        disable={!isValid && !dirty}
+                        disabled={!isValid || !dirty}
                         className={classes.submit}
                       >
                         {i18next.t(

@@ -78,6 +78,8 @@ The following commands will generate the userguide and the jars needed:
 docker build -f Dockerfile -t jams:latest --target prod .
 docker run -v $(pwd)/jams:/jams --rm jams:latest
 sudo chown -R $(whoami) jams
+cd jams
+java -jar jams-launcher.jar
 ```
 
 ## About jams-server/src/main/java/net/jami/jams/server/filters

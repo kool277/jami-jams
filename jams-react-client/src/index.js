@@ -64,33 +64,41 @@ auth.checkServerInstalled(() => {
   auth.checkAdminAccountStatus(() => {
     auth.checkLastKnownStep(() => {
       ReactDOM.render(
-        <ThemeProvider theme={theme}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Router history={hist}>
-              <Switch>
-                <ConfiguredRoute path="/signin" component={SignIn} />
-                <ProtectedRoute path="/users" component={UsersRoute} />
-                <ProtectedRoute path="/user/:username" component={UserRoute} />
-                <ProtectedRoute
-                  path="/createuser"
-                  component={CreateUserRoute}
-                />
-                <ProtectedRoute path="/groups" component={GroupsRoute} />
-                <ProtectedRoute path="/group/:groupid" component={GroupRoute} />
-                <ProtectedRoute
-                  path="/blueprints"
-                  component={BlueprintsRoute}
-                />
-                <ProtectedRoute
-                  path="/blueprint/:blueprintname"
-                  component={BlueprintRoute}
-                />
-                <ProtectedRoute path="/settings" component={SettingsRoute} />
-                <Redirect from="/" to="/signin" />
-              </Switch>
-            </Router>
-          </Suspense>
-        </ThemeProvider>,
+        <StrictMode>
+          <ThemeProvider theme={theme}>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Router history={hist}>
+                <Switch>
+                  <ConfiguredRoute path="/signin" component={SignIn} />
+                  <ProtectedRoute path="/users" component={UsersRoute} />
+                  <ProtectedRoute
+                    path="/user/:username"
+                    component={UserRoute}
+                  />
+                  <ProtectedRoute
+                    path="/createuser"
+                    component={CreateUserRoute}
+                  />
+                  <ProtectedRoute path="/groups" component={GroupsRoute} />
+                  <ProtectedRoute
+                    path="/group/:groupid"
+                    component={GroupRoute}
+                  />
+                  <ProtectedRoute
+                    path="/blueprints"
+                    component={BlueprintsRoute}
+                  />
+                  <ProtectedRoute
+                    path="/blueprint/:blueprintname"
+                    component={BlueprintRoute}
+                  />
+                  <ProtectedRoute path="/settings" component={SettingsRoute} />
+                  <Redirect from="/" to="/signin" />
+                </Switch>
+              </Router>
+            </Suspense>
+          </ThemeProvider>
+        </StrictMode>,
         document.getElementById("root")
       );
     });

@@ -40,6 +40,7 @@ import DialogContentText from "@material-ui/core/DialogContentText/DialogContent
 import Button from "@material-ui/core/Button";
 
 import i18next from "i18next";
+import { AccountCircle as AccountCircleIcon } from "@material-ui/icons";
 
 let ps;
 
@@ -66,7 +67,7 @@ export default function Admin(props) {
     {
       path: `/user/${auth.getUsername()}`,
       name: i18next.t("myprofile", "My profile"),
-      icon: Person,
+      icon: AccountCircleIcon,
       component: Users,
       layout: "/admin",
     },

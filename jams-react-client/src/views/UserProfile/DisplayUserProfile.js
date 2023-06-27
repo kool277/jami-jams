@@ -198,7 +198,7 @@ const useStyles = makeStyles(styles);
 export default function DisplayUserProfile(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState({});
   const [groupMemberships, setGroupMemberships] = useState([]);
   const [revoked, setRevoked] = useState(false);
   const [open, setOpen] = useState(false);

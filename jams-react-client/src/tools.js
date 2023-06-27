@@ -2,7 +2,7 @@ import React from "react";
 import MenuItem from "@material-ui/core/MenuItem";
 
 export function buildSelectMenuItems(elements) {
-  return elements.map((d) => <MenuItem value={d.value}>{d.label}</MenuItem>);
+  return elements.map((d) => <MenuItem key={d.value} value={d.value}>{d.label}</MenuItem>);
 }
 
 // read file content

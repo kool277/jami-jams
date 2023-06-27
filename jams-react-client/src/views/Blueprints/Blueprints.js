@@ -88,15 +88,12 @@ export default function Blueprints() {
   const classes = useStyles();
   const history = useHistory();
   const [blueprints, setBlueprints] = useState([]);
-  const [selectedBlueprint, setSelectedBlueprint] = useState(false);
-  const [selectedBlueprintName, setSelectedBlueprintName] = useState("");
   const [loading, setLoading] = useState(false);
   const [zeroBlueprint, setZeroBlueprint] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [searchValue, setSearchValue] = useState(false);
 
   const [blueprintName, setBlueprintName] = useState("");
-  const [blueprintNameExits, setBlueprintNameExits] = useState();
+  const [blueprintNameExits, setBlueprintNameExits] = useState(false);
   const [open, setOpen] = useState(false);
 
   const [disableCreate, setDisableCreate] = useState(true);
@@ -105,6 +102,7 @@ export default function Blueprints() {
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
 
   useEffect(() => {
+    console.log("useEffect");
     setLoading(true);
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
@@ -134,12 +132,6 @@ export default function Blueprints() {
       clearInterval(timer);
     };
   }, [history, open, openRemoveDialog]);
-
-  function redirectToBlueprint(e, blueprintNameRedirect) {
-    e.preventDefault();
-    setSelectedBlueprint(true);
-    setSelectedBlueprintName(blueprintNameRedirect);
-  }
 
   const handleCheckBlueprintNameExists = (searchBlueprintNameValue) => {
     setDisableCreate(true);
@@ -202,8 +194,6 @@ export default function Blueprints() {
       .then((response) => {
         setOpen(false);
         setDisableCreate(true);
-        setSelectedBlueprintName(blueprintName);
-        setSelectedBlueprint(true);
         console.log("Successfully created " + blueprintName);
       })
       .catch((error) => {
@@ -356,7 +346,6 @@ export default function Blueprints() {
                       "Search blueprints"
                     ),
                   },
-                  onKeyUp: (e) => setSearchValue(e.target.value),
                 }}
               />
             )}

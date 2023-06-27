@@ -320,65 +320,63 @@ export default function Groups() {
             {i18next.t("create_group", "Create group")}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12} md={12}>
-                  <FormControl
-                    className={classes.margin}
-                    error={groupNameExits}
-                    fullWidth
-                  >
-                    <InputLabel htmlFor="groupName">
-                      {i18next.t("group_name", "Group name")}
-                    </InputLabel>
-                    <Input
-                      id="groupName"
-                      placeholder={i18next.t("group_name", "Group name")}
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <PeopleOutlineIcon />
-                        </InputAdornment>
-                      }
-                      onChange={(e) => {
-                        setGroupName(e.target.value);
-                        initCheckGroupNameExists(e.target.value);
-                      }}
-                    />
-                  </FormControl>
-                  {disableCreate && groupName.length > 0 && (
-                    <p>
-                      {i18next.t(
-                        "group_name_already_exists",
-                        "Group name already exists!"
-                      )}
-                    </p>
-                  )}
-                  {disableCreate && groupName.length === 0 && (
-                    <p>
-                      {i18next.t("group_name_is_empty", "Group name is empty")}
-                    </p>
-                  )}
-                </Grid>
-                <Grid item xs={12} sm={12} md={12}>
-                  <InputLabel
-                    className={classes.inputBottomMargin}
-                    htmlFor="blueprint"
-                  >
-                    {i18next.t("select_blueprint", "Select a blueprint")}
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12} md={12}>
+                <FormControl
+                  className={classes.margin}
+                  error={groupNameExits}
+                  fullWidth
+                >
+                  <InputLabel htmlFor="groupName">
+                    {i18next.t("group_name", "Group name")}
                   </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    fullWidth
-                    value={selectedBlueprint.value}
-                    onChange={handleBlueprintsChange}
-                    variant="outlined"
-                    disabled={blueprints.length === 0}
-                  >
-                    {blueprintsOptionsItems}
-                  </Select>
-                </Grid>
+                  <Input
+                    id="groupName"
+                    placeholder={i18next.t("group_name", "Group name")}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <PeopleOutlineIcon />
+                      </InputAdornment>
+                    }
+                    onChange={(e) => {
+                      setGroupName(e.target.value);
+                      initCheckGroupNameExists(e.target.value);
+                    }}
+                  />
+                </FormControl>
+                {disableCreate && groupName.length > 0 && (
+                  <p>
+                    {i18next.t(
+                      "group_name_already_exists",
+                      "Group name already exists!"
+                    )}
+                  </p>
+                )}
+                {disableCreate && groupName.length === 0 && (
+                  <p>
+                    {i18next.t("group_name_is_empty", "Group name is empty")}
+                  </p>
+                )}
               </Grid>
-            </DialogContentText>
+              <Grid item xs={12} sm={12} md={12}>
+                <InputLabel
+                  className={classes.inputBottomMargin}
+                  htmlFor="blueprint"
+                >
+                  {i18next.t("select_blueprint", "Select a blueprint")}
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  fullWidth
+                  value={selectedBlueprint.value}
+                  onChange={handleBlueprintsChange}
+                  variant="outlined"
+                  disabled={blueprints.length === 0}
+                >
+                  {blueprintsOptionsItems}
+                </Select>
+              </Grid>
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseCreate} color="primary">

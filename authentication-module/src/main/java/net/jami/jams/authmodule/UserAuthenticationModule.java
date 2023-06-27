@@ -100,10 +100,14 @@ public class UserAuthenticationModule implements AuthenticationModule {
             log.info("Succesfully stored OAuth public key for future use...");
         }
         else{
-            InputStream path;
-            privateKey = X509Utils.getKeyFromPEMString(new String(new FileInputStream(privateKeyFile).readAllBytes()));
+            InputStream privateInput = new FileInputStream(privateKeyFile);
+            privateKey = X509Utils.getKeyFromPEMString(new String(privateInput.readAllBytes()));
+            privateInput.close();
             log.info("Succesfully loaded OAuth private key!");
-            publicKey = X509Utils.getPubKeyFromPEMString(new String(new FileInputStream(pubkeyFile).readAllBytes()));
+
+            InputStream publicInput = new FileInputStream(pubkeyFile);
+            publicKey = X509Utils.getPubKeyFromPEMString(new String(publicInput.readAllBytes()));
+            publicInput.close();
             log.info("Succesfully loaded OAuth public key!");
         }
         //TODO: Read signing key, if file does not exist create it (also create the corresponding public key)

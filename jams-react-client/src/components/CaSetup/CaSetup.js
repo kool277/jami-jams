@@ -235,7 +235,7 @@ export default function CaSetup(props) {
 
               <CountrySelect defaultValue={values.country} {...props} />
               {touched.country && errors.country ? (
-                <span class="spanError">{errors.country}</span>
+                <span className="spanError">{errors.country}</span>
               ) : null}
 
               <TextField
@@ -308,7 +308,6 @@ export default function CaSetup(props) {
 
               <Select
                 labelId="validity-period-select-label"
-                margin="normal"
                 fullWidth
                 variant="outlined"
                 value={validityPeriod.value}
@@ -375,7 +374,7 @@ export default function CaSetup(props) {
                     />
                     {form.errors.certificatefile &&
                     form.touched.certificatefile ? (
-                      <span class="spanError">
+                      <span className="spanError">
                         {form.errors.certificatefile}
                       </span>
                     ) : null}
@@ -390,7 +389,7 @@ export default function CaSetup(props) {
                   <div>
                     <Input fullWidth type="file" {...field} />
                     {meta.touched && meta.error && (
-                      <span class="spanError">{meta.error}</span>
+                      <span className="spanError">{meta.error}</span>
                     )}
                   </div>
                 )}

@@ -27,7 +27,7 @@ COPY . .
 FROM build as dev
 WORKDIR /app
 RUN mkdir -p /app/jams-server/src/main/resources/webapp \
-    && echo '<h1>Dev build, please connect to <a href="http://localhost:3000">localhost:3000</a> instead</h1>' \
+    && echo '<h1>Dev build, this is a placeholder index.html. Please connect to <a href="http://localhost:3000">localhost:3000</a> instead</h1>' \
     > /app/jams-server/src/main/resources/webapp/index.html
 RUN mvn package
 WORKDIR /app/jams
