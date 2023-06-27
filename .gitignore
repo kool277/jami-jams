@@ -103,3 +103,5 @@ jams-server/src/main/resources/webapp/
 # VScode
 .vscode/
 *.factorypath
+
+jams-server/doc/
