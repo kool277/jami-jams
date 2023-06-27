@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import { makeStyles } from "@mui/styles";
 
 import CountrySelect from "components/CountrySelect/CountrySelect.js";
 
@@ -12,10 +12,10 @@ import auth from "../../auth";
 import axios from "axios";
 import configApiCall from "../../api";
 import { api_path_post_install_ca } from "../../globalUrls";
-import Select from "@material-ui/core/Select";
+import Select from "@mui/material/Select";
 import * as tool from "../../tools";
-import Input from "@material-ui/core/Input";
-import Typography from "@material-ui/core/Typography";
+import Input from "@mui/material/Input";
+import Typography from "@mui/material/Typography";
 
 import i18next from "i18next";
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
 import jamiIdImage from "assets/img/jami_id.svg";
 import copySvg from "assets/img/BTN_Copy.svg";

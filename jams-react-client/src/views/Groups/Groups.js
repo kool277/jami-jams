@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link, useHistory } from "react-router-dom";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
+import InputLabel from "@mui/material/InputLabel";
 // core components
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
@@ -13,15 +13,15 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 
-import IconButton from "@material-ui/core/IconButton";
-import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
-import Search from "@material-ui/icons/Search";
-import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import PersonIcon from "@material-ui/icons/Person";
-import InfoIcon from "@material-ui/icons/Info";
+import IconButton from "@mui/material/IconButton";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import Search from "@mui/icons-material/Search";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import PersonIcon from "@mui/icons-material/Person";
+import InfoIcon from "@mui/icons-material/Info";
 
-import Select from "@material-ui/core/Select";
+import Select from "@mui/material/Select";
 
 import * as tool from "../../tools";
 import axios from "axios";
@@ -35,21 +35,21 @@ import {
   api_path_get_group_members,
 } from "globalUrls";
 
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import { debounce } from "lodash";
 
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import i18next from "i18next";
 

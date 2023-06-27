@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
 
 // core components
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
@@ -14,25 +14,25 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
-import FormControl from "@material-ui/core/FormControl";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import FormControl from "@mui/material/FormControl";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
 
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import InputLabel from "@material-ui/core/InputLabel";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import InputLabel from "@mui/material/InputLabel";
 
-import Select from "@material-ui/core/Select";
+import Select from "@mui/material/Select";
 
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import EditIcon from "@material-ui/icons/Edit";
-import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import EditIcon from "@mui/icons-material/Edit";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 
-import IconButton from "@material-ui/core/IconButton";
-import SaveIcon from "@material-ui/icons/Save";
+import IconButton from "@mui/material/IconButton";
+import SaveIcon from "@mui/icons-material/Save";
 
 import axios from "axios";
 import configApiCall from "../../api";
@@ -50,7 +50,7 @@ import {
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 import devicesStyle from "assets/jss/material-dashboard-react/components/devicesStyle.js";
-import Avatar from "@material-ui/core/Avatar";
+import Avatar from "@mui/material/Avatar";
 
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 

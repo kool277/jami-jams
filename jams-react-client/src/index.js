@@ -23,7 +23,7 @@ import { ProtectedRoute } from "protected.route";
 import { ConfiguredRoute } from "configured.route";
 import auth from "./auth";
 
-import { ThemeProvider, createTheme } from "@material-ui/core";
+import { ThemeProvider, createTheme } from "@mui/material";
 
 // core components
 import UsersRoute from "routes/UsersRoute.js";

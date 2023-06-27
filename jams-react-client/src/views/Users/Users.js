@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Pagination from "@material-ui/lab/Pagination";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
+import Pagination from "@mui/lab/Pagination";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -14,19 +14,19 @@ import Card from "components/Card/Card.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 
-import InfoIcon from "@material-ui/icons/Info";
-import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
-import Search from "@material-ui/icons/Search";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import InfoIcon from "@mui/icons-material/Info";
+import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
+import Search from "@mui/icons-material/Search";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from "auth.js";
 import { api_path_get_user_directory_search } from "globalUrls";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import { debounce } from "lodash";
 

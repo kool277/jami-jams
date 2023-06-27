@@ -1,37 +1,37 @@
 import React, { useContext, useState } from "react";
 import clsx from "clsx";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
+import InputLabel from "@mui/material/InputLabel";
 
 // core components
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Input from "@mui/material/Input";
+import InputAdornment from "@mui/material/InputAdornment";
 
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Switch from "@material-ui/core/Switch";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import Switch from "@mui/material/Switch";
 
-import BuildOutlinedIcon from "@material-ui/icons/BuildOutlined";
-import IconButton from "@material-ui/core/IconButton";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import DnsOutlinedIcon from "@material-ui/icons/DnsOutlined";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import VpnKeyOutlinedIcon from "@material-ui/icons/VpnKeyOutlined";
-import LanguageOutlinedIcon from "@material-ui/icons/LanguageOutlined";
+import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import DnsOutlinedIcon from "@mui/icons-material/DnsOutlined";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 
 import i18next from "i18next";
 

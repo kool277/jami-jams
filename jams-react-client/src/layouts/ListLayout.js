@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
 // core components
 import Navbar from "components/Navbars/Navbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-// @material-ui/icons
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import Person from "@material-ui/icons/Person";
-import Group from "@material-ui/icons/Group";
-import AllInbox from "@material-ui/icons/AllInbox";
-import SettingsIcon from "@material-ui/icons/Settings";
+// @mui/icons-material
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Person from "@mui/icons-material/Person";
+import Group from "@mui/icons-material/Group";
+import AllInbox from "@mui/icons-material/AllInbox";
+import SettingsIcon from "@mui/icons-material/Settings";
 // core components/views for Admin layout
 import Users from "views/Users/Users.js";
 import Groups from "views/Groups/Groups.js";
@@ -33,12 +33,12 @@ import { api_path_get_start_update } from "globalUrls";
 
 import axios from "axios";
 
-import Dialog from "@material-ui/core/Dialog/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions/DialogActions";
-import DialogContentText from "@material-ui/core/DialogContentText/DialogContentText";
-import Button from "@material-ui/core/Button";
+import Dialog from "@mui/material/Dialog/Dialog";
+import DialogTitle from "@mui/material/DialogTitle/DialogTitle";
+import DialogContent from "@mui/material/DialogContent/DialogContent";
+import DialogActions from "@mui/material/DialogActions/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText/DialogContentText";
+import Button from "@mui/material/Button";
 
 import i18next from "i18next";
 

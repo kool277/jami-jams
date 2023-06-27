@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ErrorMessage, Field } from "formik";
 
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Input from "@mui/material/Input";
 
 class FormikField extends React.Component {
   render() {

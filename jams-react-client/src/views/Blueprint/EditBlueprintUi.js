@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import SettingsIcon from "@material-ui/icons/Settings";
+import { makeStyles } from "@mui/styles";
+import Grid from "@mui/material/Grid";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
 import Card from "components/Card/Card.js";

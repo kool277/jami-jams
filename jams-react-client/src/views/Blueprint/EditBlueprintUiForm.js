@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 
-import Checkbox from "@material-ui/core/Checkbox";
-import Switch from "@material-ui/core/Switch";
+import Checkbox from "@mui/material/Checkbox";
+import Switch from "@mui/material/Switch";
 import { SketchPicker } from "react-color";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import { TextField, makeStyles } from "@material-ui/core";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import { TextField } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import CustomImgDropZone from "components/CustomImgDropZone/CustomImgDropZone";
 
 import i18next from "i18next";

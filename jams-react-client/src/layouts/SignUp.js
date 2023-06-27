@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Link from "@material-ui/core/Link";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import MuiAlert from "@material-ui/lab/Alert";
-import Paper from "@material-ui/core/Paper";
+import CssBaseline from "@mui/material/CssBaseline";
+import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { makeStyles } from "@mui/styles";
+import Container from "@mui/material/Container";
+import MuiAlert from "@mui/lab/Alert";
+import Paper from "@mui/material/Paper";
 
 import logo from "assets/img/jams_logo_no_gnu_package.svg";
 

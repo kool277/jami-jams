@@ -1,8 +1,8 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import Dropzone from "react-dropzone";
-import UploadIcon from "@material-ui/icons/CloudUpload";
-import CloseIcon from "@material-ui/icons/Close";
+import UploadIcon from "@mui/icons-material/CloudUpload";
+import CloseIcon from "@mui/icons-material/Close";
 
 const useStyles = makeStyles({
   dropzoneStyle: {

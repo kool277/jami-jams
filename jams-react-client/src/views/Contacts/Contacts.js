@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -12,13 +12,13 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import BusinessOutlinedIcon from "@material-ui/icons/BusinessOutlined";
-import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
-import SmsFailedIcon from "@material-ui/icons/SmsFailed";
-import LaunchIcon from "@material-ui/icons/Launch";
+import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import SmsFailedIcon from "@mui/icons-material/SmsFailed";
+import LaunchIcon from "@mui/icons-material/Launch";
 
-import Search from "@material-ui/icons/Search";
-import IconButton from "@material-ui/core/IconButton";
+import Search from "@mui/icons-material/Search";
+import IconButton from "@mui/material/IconButton";
 
 import axios from "axios";
 import configApiCall from "api.js";
@@ -33,19 +33,19 @@ import {
   api_path_get_user_directory_search,
 } from "globalUrls";
 
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import TemporaryDrawer from "components/Drawer/Drawer";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import i18next from "i18next";
 

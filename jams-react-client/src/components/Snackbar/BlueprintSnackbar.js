@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import MuiAlert from "@material-ui/lab/Alert";
-import Snackbar from "@material-ui/core/Snackbar";
-import Slide from "@material-ui/core/Slide";
+import MuiAlert from "@mui/lab/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import Slide from "@mui/material/Slide";
 
 // https://stackoverflow.com/a/67961603
 const Alert = React.forwardRef(function Alert(props, ref) {

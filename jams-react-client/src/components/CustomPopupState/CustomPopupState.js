@@ -1,10 +1,10 @@
 import React from "react";
-import InfoIcon from "@material-ui/icons/Info";
-import Popover from "@material-ui/core/Popover";
+import InfoIcon from "@mui/icons-material/Info";
+import Popover from "@mui/material/Popover";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import IconButton from "@material-ui/core/IconButton";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 export default function CustomPopupState(props) {
   return (

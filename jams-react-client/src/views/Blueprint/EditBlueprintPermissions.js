@@ -3,24 +3,24 @@ import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import i18next from "i18next";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Checkbox from "@material-ui/core/Checkbox";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
+import Checkbox from "@mui/material/Checkbox";
 
-import Avatar from "@material-ui/core/Avatar";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormLabel from "@material-ui/core/FormLabel";
-import Grid from "@material-ui/core/Grid";
-import Switch from "@material-ui/core/Switch";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Avatar from "@mui/material/Avatar";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import FormLabel from "@mui/material/FormLabel";
+import Grid from "@mui/material/Grid";
+import Switch from "@mui/material/Switch";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import PriorityHighOutlinedIcon from "@material-ui/icons/PriorityHighOutlined";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 
 import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
 import Button from "components/CustomButtons/Button.js";

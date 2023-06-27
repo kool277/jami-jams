@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
 
 // core components
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
@@ -14,38 +14,38 @@ import CardAvatar from "components/Card/CardAvatar.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Slider from "@material-ui/core/Slider";
-import Typography from "@material-ui/core/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
+import Slider from "@mui/material/Slider";
+import Typography from "@mui/material/Typography";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "./cropImage";
 
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import BusinessCenterOutlinedIcon from "@material-ui/icons/BusinessCenterOutlined";
-import AlternateEmailOutlinedIcon from "@material-ui/icons/AlternateEmailOutlined";
-import PhoneInTalkOutlinedIcon from "@material-ui/icons/PhoneInTalkOutlined";
-import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
-import SmartphoneOutlinedIcon from "@material-ui/icons/SmartphoneOutlined";
-import LocalPrintshopOutlinedIcon from "@material-ui/icons/LocalPrintshopOutlined";
-import PersonIcon from "@material-ui/icons/Person";
-import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import CancelIcon from "@material-ui/icons/Cancel";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
+import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
+import PhoneForwardedOutlinedIcon from "@mui/icons-material/PhoneForwardedOutlined";
+import SmartphoneOutlinedIcon from "@mui/icons-material/SmartphoneOutlined";
+import LocalPrintshopOutlinedIcon from "@mui/icons-material/LocalPrintshopOutlined";
+import PersonIcon from "@mui/icons-material/Person";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-import IconButton from "@material-ui/core/IconButton";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
+import IconButton from "@mui/material/IconButton";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
@@ -69,7 +69,7 @@ import FormikField from "components/FormikField/FormikField";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import i18next from "i18next";
 

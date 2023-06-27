@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
 // core components
 
 import Button from "components/CustomButtons/Button.js";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 
-import InputAdornment from "@material-ui/core/InputAdornment";
+import InputAdornment from "@mui/material/InputAdornment";
 
 import { Formik } from "formik";
 import FormikField from "components/FormikField/FormikField";
@@ -22,12 +22,12 @@ import axios from "axios";
 import configApiCall from "api.js";
 import { api_path_put_update_user } from "globalUrls";
 
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import IconButton from "@material-ui/core/IconButton";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 

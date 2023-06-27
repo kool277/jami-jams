@@ -3,18 +3,18 @@ import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Icon from "@material-ui/core/Icon";
-import Snackbar from "@material-ui/core/Snackbar/Snackbar";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
+import Drawer from "@mui/material/Drawer";
+import Hidden from "@mui/material/Hidden";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Icon from "@mui/material/Icon";
+import Snackbar from "@mui/material/Snackbar/Snackbar";
 
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import UpdateIcon from "@material-ui/icons/Update";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import UpdateIcon from "@mui/icons-material/Update";
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js";
 

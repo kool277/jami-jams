@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classnames from "classnames";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// @mui/material components
+import { makeStyles } from "@mui/styles";
 // core components
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
@@ -12,42 +12,42 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
 
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import GridItem from "components/Grid/GridItem.js";
-import BusinessCenterOutlinedIcon from "@material-ui/icons/BusinessCenterOutlined";
-import AlternateEmailOutlinedIcon from "@material-ui/icons/AlternateEmailOutlined";
-import PhoneInTalkOutlinedIcon from "@material-ui/icons/PhoneInTalkOutlined";
-import SmartphoneOutlinedIcon from "@material-ui/icons/SmartphoneOutlined";
-import LocalPrintshopOutlinedIcon from "@material-ui/icons/LocalPrintshopOutlined";
-import PhoneForwardedOutlinedIcon from "@material-ui/icons/PhoneForwardedOutlined";
+import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
+import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
+import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
+import SmartphoneOutlinedIcon from "@mui/icons-material/SmartphoneOutlined";
+import LocalPrintshopOutlinedIcon from "@mui/icons-material/LocalPrintshopOutlined";
+import PhoneForwardedOutlinedIcon from "@mui/icons-material/PhoneForwardedOutlined";
 
-import Avatar from "@material-ui/core/Avatar";
-import Chip from "@material-ui/core/Chip";
+import Avatar from "@mui/material/Avatar";
+import Chip from "@mui/material/Chip";
 import CardAvatar from "components/Card/CardAvatar";
-import PersonIcon from "../../../node_modules/@material-ui/icons/Person";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import PersonIcon from "../../../node_modules/@mui/icons-material/Person";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
 
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import auth from "auth.js";
 import configApiCall from "api.js";
