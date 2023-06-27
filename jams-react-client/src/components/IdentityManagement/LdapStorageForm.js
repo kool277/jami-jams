@@ -140,8 +140,9 @@ export default function LdapStorageForm(props) {
           value={props.ldapFilter.value}
           onChange={props.handleFilterIdChange}
           variant="outlined"
-          children={props.ldapFiltersTypesItems}
-        />
+        >
+          {props.ldapFiltersTypesItems}
+        </Select>
       </Grid>
     </Grid>
   );

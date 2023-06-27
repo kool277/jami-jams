@@ -158,7 +158,7 @@ export default function PasswordDialog(props) {
             <form onSubmit={handleSubmit}>
               <DialogContent>
                 <DialogContentText id="change-password-description">
-                  Change <strong>{props.username}'s</strong> password{" "}
+                  Change <strong>{props.username}&apos;s</strong> password
                 </DialogContentText>
                 <FormikField
                   name="password"

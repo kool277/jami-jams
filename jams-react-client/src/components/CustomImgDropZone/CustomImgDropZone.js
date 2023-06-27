@@ -33,15 +33,8 @@ const useStyles = makeStyles({
 });
 
 function CustomImgDropZone(props) {
-  const {
-    onDrop,
-    accept,
-    maxFiles,
-    label,
-    file,
-    handleDelete,
-    ...rest
-  } = props;
+  const { onDrop, accept, maxFiles, label, file, handleDelete, ...rest } =
+    props;
   const classes = useStyles();
 
   const handleDrop = (acceptedFiles) => {

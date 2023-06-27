@@ -14,7 +14,12 @@ import GridContainer from "components/Grid/GridContainer.js";
 
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react.js";
 
-import { api_path_get_image, api_path_post_image, url_path, url_port } from "../../globalUrls";
+import {
+  api_path_get_image,
+  api_path_post_image,
+  url_path,
+  url_port,
+} from "../../globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
@@ -93,9 +98,8 @@ const useStyles = makeStyles(styles);
 export default function EditBlueprintUi({ blueprintName }) {
   const classes = useStyles();
 
-  const { policyData, updatePolicyData, snackbar, setSnackbar } = useContext(
-    PolicyDataContext
-  );
+  const { policyData, updatePolicyData, snackbar, setSnackbar } =
+    useContext(PolicyDataContext);
   const { uiCustomization } = policyData;
 
   const setUiCustomization = (ui) => {

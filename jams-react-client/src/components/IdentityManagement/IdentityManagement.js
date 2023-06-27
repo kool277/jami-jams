@@ -323,8 +323,9 @@ export default function IdentityManagement(props) {
               value={directory.value}
               onChange={handleChangeDirectoryType}
               variant="outlined"
-              children={directoryTypesItems}
-            />
+            >
+              {directoryTypesItems}
+            </Select>
           </Grid>
         </Grid>
         <LocalStorageForm
@@ -379,8 +380,9 @@ export default function IdentityManagement(props) {
                     value={directory.value}
                     onChange={handleChangeDirectoryType}
                     variant="outlined"
-                    children={directoryTypesItems}
-                  />
+                  >
+                    {directoryTypesItems}
+                  </Select>
                 </Grid>
               </Grid>
               {returnForm(values, touched, errors, handleChange, handleBlur)}
@@ -438,8 +440,9 @@ export default function IdentityManagement(props) {
                     value={directory.value}
                     onChange={handleChangeDirectoryType}
                     variant="outlined"
-                    children={directoryTypesItems}
-                  />
+                  >
+                    {directoryTypesItems}
+                  </Select>
                 </Grid>
               </Grid>
               {returnForm(values, touched, errors, handleChange, handleBlur)}

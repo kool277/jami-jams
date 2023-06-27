@@ -74,9 +74,8 @@ export default function ServerParameters(props) {
   const certificateRevocationTypesItems = tool.buildSelectMenuItems(
     certificateRevocationTypes
   );
-  const deviceLifetimeTypesItems = tool.buildSelectMenuItems(
-    deviceLifetimeTypes
-  );
+  const deviceLifetimeTypesItems =
+    tool.buildSelectMenuItems(deviceLifetimeTypes);
   const userAccountLifetimeTypesItems = tool.buildSelectMenuItems(
     userAccountLifetimeTypes
   );
@@ -244,8 +243,9 @@ export default function ServerParameters(props) {
               value={certificateRevocation.value}
               onChange={handleCertificateRevocationChange}
               variant="outlined"
-              children={certificateRevocationTypesItems}
-            />
+            >
+              {certificateRevocationTypesItems}
+            </Select>
             <Typography variant="subtitle1" gutterBottom>
               {i18next.t("device_lifetime", "Device lifetime")}
             </Typography>
@@ -255,8 +255,9 @@ export default function ServerParameters(props) {
               value={deviceLifetime.value}
               onChange={handleDeviceLifetimeChange}
               variant="outlined"
-              children={deviceLifetimeTypesItems}
-            />
+            >
+              {deviceLifetimeTypesItems}
+            </Select>
             <Typography variant="subtitle1" gutterBottom>
               {i18next.t("user_account_lifetime", "User account lifetime")}
             </Typography>
@@ -266,8 +267,9 @@ export default function ServerParameters(props) {
               value={userAccountLifetime.value}
               onChange={handleUserAccountLifetimeChange}
               variant="outlined"
-              children={userAccountLifetimeTypesItems}
-            />
+            >
+              {userAccountLifetimeTypesItems}
+            </Select>
             {userlifeDisabled ? (
               <span className="spanError">
                 {i18next.t(

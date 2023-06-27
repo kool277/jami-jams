@@ -104,9 +104,8 @@ export default function EditBlueprintPermissions(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const { policyData, updatePolicyData, snackbar, setSnackbar } = useContext(
-    PolicyDataContext
-  );
+  const { policyData, updatePolicyData, snackbar, setSnackbar } =
+    useContext(PolicyDataContext);
 
   const [openDrawer, setOpenDrawer] = useState(false);
   const [users, setUsers] = useState([]);

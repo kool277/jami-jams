@@ -436,9 +436,10 @@ export default function EditGroup(props) {
                         value={selectedBlueprint.value}
                         onChange={handleBlueprintsChange}
                         variant="outlined"
-                        children={blueprintsOptionsItems}
                         disabled={blueprints.length === 0}
-                      />
+                      >
+                        {blueprintsOptionsItems}
+                      </Select>
                     </FormControl>
                   </Grid>
                 </Grid>

@@ -231,9 +231,8 @@ export default function EditCreateUserProfile(props) {
   const [progress, setProgress] = useState(0);
 
   const [profilePicture, setProfilePicture] = useState("");
-  const [profilePicturePreview, setProfilePicturePreview] = useState(
-    noProfilePicture
-  );
+  const [profilePicturePreview, setProfilePicturePreview] =
+    useState(noProfilePicture);
   const [originalUploadedImage, setOriginalUploadedImage] = useState("");
 
   const [open, setOpen] = useState(false);
@@ -687,9 +686,7 @@ export default function EditCreateUserProfile(props) {
                                   </InputAdornment>
                                 }
                                 endAdornment={
-                                  values.username === "" ? (
-                                    null
-                                  ) : userExists ? (
+                                  values.username === "" ? null : userExists ? (
                                     <CancelIcon style={{ color: "#cc0000" }} />
                                   ) : (
                                     <CheckCircleIcon
@@ -801,7 +798,8 @@ export default function EditCreateUserProfile(props) {
                                 className={classes.button}
                                 startIcon={<RefreshIcon />}
                                 onClick={() => {
-                                  const newGeneratedPassword = passwordGenerator();
+                                  const newGeneratedPassword =
+                                    passwordGenerator();
                                   setFieldValue(
                                     "password",
                                     newGeneratedPassword,

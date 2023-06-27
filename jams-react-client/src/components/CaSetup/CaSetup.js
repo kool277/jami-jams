@@ -212,8 +212,9 @@ export default function CaSetup(props) {
                 value={certificateOpt.value}
                 onChange={handleCertifOptionChange}
                 variant="outlined"
-                children={certificateOptionsItems}
-              />
+              >
+                {certificateOptionsItems}
+              </Select>
 
               <TextField
                 variant="outlined"
@@ -312,8 +313,9 @@ export default function CaSetup(props) {
                 variant="outlined"
                 value={validityPeriod.value}
                 onChange={handleValidPeriodChange}
-                children={validityPeriodsItems}
-              />
+              >
+                {validityPeriodsItems}
+              </Select>
 
               <Button
                 type="submit"
@@ -358,8 +360,9 @@ export default function CaSetup(props) {
                 value={certificateOpt.value}
                 onChange={handleCertifOptionChange}
                 variant="outlined"
-                children={certificateOptionsItems}
-              />
+              >
+                {certificateOptionsItems}
+              </Select>
               <Typography variant="subtitle1" gutterBottom>
                 CA file (PEM-encoded)
               </Typography>

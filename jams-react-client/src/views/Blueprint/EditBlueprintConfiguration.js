@@ -159,9 +159,8 @@ const StyledRadio = (props) => {
 
 export default function EditBlueprintConfiguration(props) {
   const classes = useStyles();
-  const { policyData, updatePolicyData, snackbar, setSnackbar } = useContext(
-    PolicyDataContext
-  );
+  const { policyData, updatePolicyData, snackbar, setSnackbar } =
+    useContext(PolicyDataContext);
 
   const {
     upnpEnabled,
