@@ -128,7 +128,7 @@ export default function ServerParameters(props) {
         signingAlgorithm: "SHA512WITHRSA",
       };
       axios(configApiCall(api_path_post_install_server, "POST", jsonData, null))
-        .then((response) => {
+        .then(() => {
           callBackServerParameters();
         })
         .catch((error) => {

@@ -119,7 +119,7 @@ export default function Sidebar(props) {
         <ListItem
           button
           className={classes.itemLink}
-          onClick={(e) => {
+          onClick={() => {
             props.handleQuery();
             props.setOpenUpdate(true);
           }}

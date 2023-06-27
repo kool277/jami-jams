@@ -54,7 +54,7 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function Settings(props) {
+export default function Settings() {
   const [value, setValue] = useState(0);
   const [error, setError] = useState(false);
   const [severity, setSeverity] = useState("error");

@@ -222,7 +222,7 @@ export default function Admin(props) {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={(e) => {
+            onClick={() => {
               if (auth.isActivated()) handleUpdate();
               else window.location.href = "https://jami.biz/";
             }}

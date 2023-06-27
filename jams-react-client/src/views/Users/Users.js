@@ -69,7 +69,7 @@ const styles = {
   },
 };
 const useStyles = makeStyles(styles);
-export default function Users(props) {
+export default function Users() {
   const classes = useStyles();
   const history = useHistory();
   const [users, setUsers] = useState([]);

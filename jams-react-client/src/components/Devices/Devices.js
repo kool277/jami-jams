@@ -152,7 +152,7 @@ export default function Devices(props) {
           null
         )
       )
-        .then((response) => {
+        .then(() => {
           setSelectedDevice({});
           setOpenEdit(false);
         })
@@ -175,7 +175,7 @@ export default function Devices(props) {
           null
         )
       )
-        .then((response) => {
+        .then(() => {
           setSelectedDevice({});
           setOpenEdit(false);
         })
@@ -203,7 +203,7 @@ export default function Devices(props) {
           null
         )
       )
-        .then((response) => {
+        .then(() => {
           setSelectedDevice({});
           setOpenRevoke(false);
         })
@@ -219,7 +219,7 @@ export default function Devices(props) {
           null
         )
       )
-        .then((response) => {
+        .then(() => {
           setSelectedDevice({});
           setOpenRevoke(false);
         })

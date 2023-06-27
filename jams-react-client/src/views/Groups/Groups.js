@@ -133,7 +133,7 @@ export default function Groups() {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         console.log("Successfully deleted " + removedGroup.name);
         setOpenRemoveDialog(false);
       })
@@ -149,7 +149,7 @@ export default function Groups() {
     axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
       .then((response) => {
         setBlueprints(response.data);
-        setSelectedBlueprint(getBlueprintsOptions(blueprints)[0]);
+        setSelectedBlueprint(getBlueprintsOptions(response.data)[0]);
       })
       .catch((error) => {
         if (error.response.status === 401) {
@@ -240,7 +240,7 @@ export default function Groups() {
           }
         });
       })
-      .catch((error) => {
+      .catch(() => {
         setDisableCreate(false);
         setGroupNameExits(false);
       });
@@ -427,7 +427,7 @@ export default function Groups() {
                 variant="contained"
                 color="primary"
                 href="#contained-buttons"
-                onClick={(e) => setOpenCreate(true)}
+                onClick={() => setOpenCreate(true)}
               >
                 <AddCircleOutlineIcon />{" "}
                 {i18next.t("create_group", "Create group")}

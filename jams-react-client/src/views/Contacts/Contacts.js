@@ -211,7 +211,7 @@ export default function Users(props) {
           null
         )
       )
-        .then((response) => {
+        .then(() => {
           getAllContacts();
           setOpenDrawer(false);
         })
@@ -221,7 +221,7 @@ export default function Users(props) {
         });
     } else {
       axios(configApiCall(api_path_get_auth_contacts, "PUT", data, null))
-        .then((response) => {
+        .then(() => {
           getAllContacts();
           setOpenDrawer(false);
         })
@@ -264,7 +264,7 @@ export default function Users(props) {
           null
         )
       )
-        .then((response) => {
+        .then(() => {
           setOpen(false);
           getAllContacts();
         })
@@ -282,7 +282,7 @@ export default function Users(props) {
           null
         )
       )
-        .then((response) => {
+        .then(() => {
           setOpen(false);
           getAllContacts();
         })

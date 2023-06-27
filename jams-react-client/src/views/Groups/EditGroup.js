@@ -65,7 +65,7 @@ import { debounce } from "lodash";
 
 import { getBlueprintsOptions } from "./getBlueprintsOptions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   ...devicesStyle,
   ...dashboardStyle,
   root: {
@@ -223,7 +223,7 @@ export default function EditGroup(props) {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         setName(newName);
       })
       .catch((error) => {
@@ -273,7 +273,7 @@ export default function EditGroup(props) {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         let newGroupMembers = groupMembers;
         newGroupMembers.push(user);
         setGroupMembers(newGroupMembers);
@@ -301,7 +301,7 @@ export default function EditGroup(props) {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         let newGroupMembers = groupMembers;
         newGroupMembers.splice(newGroupMembers.indexOf(user), 1);
         setGroupMembers(newGroupMembers);
@@ -347,7 +347,7 @@ export default function EditGroup(props) {
           }
         });
       })
-      .catch((error) => {
+      .catch(() => {
         setGroupNameExits(false);
       });
   };

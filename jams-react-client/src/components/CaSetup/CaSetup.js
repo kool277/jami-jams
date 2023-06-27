@@ -388,7 +388,7 @@ export default function CaSetup(props) {
                 Key File (PEM-encoded)
               </Typography>
               <Field name="privkeyfile">
-                {({ field, form, meta }) => (
+                {({ field, meta }) => (
                   <div>
                     <Input fullWidth type="file" {...field} />
                     {meta.touched && meta.error && (

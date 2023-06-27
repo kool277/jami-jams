@@ -234,7 +234,7 @@ export default function IdentityManagement(props) {
       data = setAdStorageData(values);
     }
     axios(configApiCall(api_path_post_install_auth, "POST", data, null))
-      .then((response) => {
+      .then(() => {
         callbackIdentityManagement();
       })
       .catch(() => {
@@ -253,7 +253,7 @@ export default function IdentityManagement(props) {
     let data = {};
     data = setLocalStorageData();
     axios(configApiCall(api_path_post_install_auth, "POST", data, null))
-      .then((response) => {
+      .then(() => {
         callbackIdentityManagement();
       })
       .catch(() => {

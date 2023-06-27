@@ -119,7 +119,7 @@ const sendPutRequest = (blueprintName, data, setSnackbar) => {
       null
     )
   )
-    .then((response) => {
+    .then(() => {
       const message = i18next.t(
         "updated_blueprint_permissions_successfully",
         "Blueprint permissions successfully updated."

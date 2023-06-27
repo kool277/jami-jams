@@ -261,7 +261,7 @@ export default function DisplayUserProfile(props) {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         let newGroupMemberships = groupMemberships;
         newGroupMemberships.splice(newGroupMemberships.indexOf(group), 1);
         setGroupMemberships(newGroupMemberships);
@@ -279,7 +279,7 @@ export default function DisplayUserProfile(props) {
     axios(
       configApiCall(api_path_post_group_member + group.id, "POST", data, null)
     )
-      .then((response) => {
+      .then(() => {
         let newGroupMemberships = groupMemberships;
         newGroupMemberships.push({
           groupId: group.id,

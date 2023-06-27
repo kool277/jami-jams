@@ -376,10 +376,10 @@ export default function EditCreateUserProfile(props) {
     };
 
     axios(configApiCall(api_path_post_create_user, "POST", body, null))
-      .then((response) => {
+      .then(() => {
         handleUserProfileCreation(data);
       })
-      .catch((error) => {
+      .catch(() => {
         console.log(
           "Failed to create new user. This is either because the username is already in use on the public nameserver, or another unknown error has occurred. Please choose another one."
         );
@@ -392,7 +392,7 @@ export default function EditCreateUserProfile(props) {
 
   const handleUpdateUser = (data) => {
     axios(configApiCall(api_path_put_update_user_profile, "PUT", data, null))
-      .then((response) => {
+      .then(() => {
         handleUserUpdate();
       })
       .catch((error) => {

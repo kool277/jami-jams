@@ -102,7 +102,6 @@ export default function Blueprints() {
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
 
   useEffect(() => {
-    console.log("useEffect");
     setLoading(true);
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
@@ -143,11 +142,11 @@ export default function Blueprints() {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         setDisableCreate(true);
         setBlueprintNameExits(true);
       })
-      .catch((error) => {
+      .catch(() => {
         setDisableCreate(false);
         setBlueprintNameExits(false);
       });
@@ -191,7 +190,7 @@ export default function Blueprints() {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         setOpen(false);
         setDisableCreate(true);
         console.log("Successfully created " + blueprintName);
@@ -217,7 +216,7 @@ export default function Blueprints() {
         null
       )
     )
-      .then((response) => {
+      .then(() => {
         console.log("Successfully  create " + removedBlueprint);
         setOpenRemoveDialog(false);
       })
@@ -324,7 +323,7 @@ export default function Blueprints() {
             variant="contained"
             color="primary"
             href="#contained-buttons"
-            onClick={(e) => setOpen(true)}
+            onClick={() => setOpen(true)}
           >
             <AddCircleOutlineIcon />{" "}
             {i18next.t("create_blueprint", "Create blueprint")}

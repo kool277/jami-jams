@@ -188,7 +188,7 @@ class Auth {
           this.authenticated = true;
           cb();
         })
-        .catch((error) => {
+        .catch(() => {
           cb();
         });
     }
@@ -216,7 +216,7 @@ class Auth {
           this.authenticated = true;
           cb();
         })
-        .catch((error) => {
+        .catch(() => {
           cb();
         });
     }

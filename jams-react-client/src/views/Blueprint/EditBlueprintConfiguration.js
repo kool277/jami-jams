@@ -43,7 +43,7 @@ import CustomPopupState from "components/CustomPopupState/CustomPopupState";
 
 import { PolicyDataContext } from "./PolicyDataContext";
 
-const styles = (theme) => ({
+const styles = () => ({
   ...dashboardStyle,
   root: {
     flexGrow: 1,

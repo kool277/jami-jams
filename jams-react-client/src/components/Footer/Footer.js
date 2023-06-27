@@ -8,14 +8,14 @@ const pjson = require("../../../package.json");
 
 const useStyles = makeStyles(styles);
 
-export default function Footer(props) {
+export default function Footer() {
   const classes = useStyles();
   return (
     <footer className={classes.footer}>
       <div className={classes.container}>
         <p className={classes.right}>
           <span>
-            JAMS Version {pjson.version.slice(0, 3)} - &copy;{" "}
+            JAMS Version {pjson.version.slice(0, 3)} - &copy;
             {1900 + new Date().getYear()}{" "}
             <a
               href="https://savoirfairelinux.com"
