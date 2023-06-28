@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import Checkbox from "@mui/material/Checkbox";
 import Switch from "@mui/material/Switch";
-import { SketchPicker } from "react-color";
+import { HexColorPicker } from "react-colorful";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { TextField } from "@mui/material";
@@ -252,11 +252,11 @@ const CustomBackgroundForm = ({
               {displayColorPicker && (
                 <div className={classes.popover}>
                   <div className={classes.cover} onClick={handleCloseColor} />
-                  <SketchPicker
+                  <HexColorPicker
                     color={uiCustomization.backgroundColor}
                     onChange={(color) => {
                       handleColorChange(color);
-                      handleUpdateUi("backgroundColor", color.hex);
+                      handleUpdateUi("backgroundColor", color);
                     }}
                   />
                 </div>
@@ -370,7 +370,7 @@ const EditBlueprintUiForm = ({
   const handleColorChange = (color) => {
     setUiCustomization({
       ...uiCustomization,
-      backgroundColor: color.hex,
+      backgroundColor: color,
       backgroundUrl: "",
     });
   };

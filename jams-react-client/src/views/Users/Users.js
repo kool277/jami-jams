@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
-import Pagination from "@mui/lab/Pagination";
+import { Pagination } from "@mui/material";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";

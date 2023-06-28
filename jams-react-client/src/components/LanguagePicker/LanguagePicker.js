@@ -55,7 +55,7 @@ export default function LanguagePicker(props) {
         <React.Fragment>
           <Button
             variant="contained"
-            color="default"
+            color="inherit"
             fullWidth
             {...bindTrigger(popupState)}
           >

@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import { infoColor } from "assets/jss/material-dashboard-react.js";
-import MuiAlert from "@mui/lab/Alert";
+import MuiAlert from "@mui/material/Alert";
 
 import auth from "auth.js";
 

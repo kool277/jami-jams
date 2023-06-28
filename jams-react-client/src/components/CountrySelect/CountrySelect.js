@@ -1,20 +1,15 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/lab/Autocomplete";
+import { Autocomplete, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import i18next from "i18next";
 
-// ISO 3166-1 alpha-2
-// ⚠️ No support for IE 11
 function countryToFlag(isoCode) {
-  return typeof String.fromCodePoint !== "undefined"
-    ? isoCode
-        .toUpperCase()
-        .replace(/./g, (char) =>
-          String.fromCodePoint(char.charCodeAt(0) + 127397)
-        )
-    : isoCode;
+  console.log("isoCode: ", isoCode);
+  return isoCode
+    .toUpperCase()
+    .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397));
 }
 
 const useStyles = makeStyles({
@@ -32,8 +27,7 @@ export default function CountrySelect(props) {
 
   return (
     <Autocomplete
-      id="country-select-demo"
-      name="country"
+      id="country-select"
       options={countries}
       classes={{
         option: classes.option,

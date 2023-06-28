@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
 import Container from "@mui/material/Container";
-import MuiAlert from "@mui/lab/Alert";
+import MuiAlert from "@mui/material/Alert";
 import auth from "../auth.js";
 
 import LanguagePicker from "../components/LanguagePicker/LanguagePicker";
