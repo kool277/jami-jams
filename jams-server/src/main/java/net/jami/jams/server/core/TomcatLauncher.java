@@ -38,6 +38,7 @@ import org.apache.tomcat.util.descriptor.web.ErrorPage;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static net.jami.jams.server.Server.certificateAuthority;
 
@@ -92,9 +93,16 @@ public class TomcatLauncher {
     public void startServer() {
         String jarName = System.getProperty("user.dir") + File.separator + "jams-server.jar";
         log.info("JAR Resource File = " + jarName);
-        context = (StandardContext) tomcat.addWebapp("", new File(System.getProperty("user.dir")).getAbsolutePath());
+        String contextPath = new File(System.getProperty("user.dir")).getAbsolutePath() + File.separator + "app";
+        try {
+            Path path = Paths.get(contextPath);
+            Files.createDirectories(path);
+        } catch (Exception e) {
+            log.error("Could not create context directory", e);
+        }
+        context = (StandardContext) tomcat.addWebapp("", contextPath);
         context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
-        log.info("Serving application from: " + new File(System.getProperty("user.dir")).getAbsolutePath());
+        log.info("Serving application from: " + contextPath);
         WebResourceRoot resources = new StandardRoot(context);
         if (jarName.contains(".jar")) {
             resources.addPreResources(
