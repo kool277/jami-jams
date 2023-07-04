@@ -111,7 +111,11 @@ export default function EditBlueprintUi({ blueprintName }) {
       ? newUiCustomization
       : DEFAULT_UI_CUSTOMIZATION;
 
-    if (field === "title" || field === "description" || field === "backgroundColor") {
+    if (
+      field === "title" ||
+      field === "description" ||
+      field === "backgroundColor"
+    ) {
       // Don't fade in for those fields
       setOldUiCustomization(newUiCustomization);
     } else {

@@ -39,9 +39,7 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 
 import auth from "../../auth";
 import configApiCall from "../../api";
-import {
-  api_path_get_user_directory_search,
-} from "../../globalUrls";
+import { api_path_get_user_directory_search } from "../../globalUrls";
 
 import { PolicyDataContext } from "./PolicyDataContext";
 

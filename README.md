@@ -38,6 +38,8 @@ In order to generate a pair of pem and key use the following command using opens
 
 `openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem`
 
+## Generate documentation
+
 To generate the documentation you will need `apidoc` installed on your system.
 This can be completed by running `npm install -g apidoc`, if for some reason
 that does not work, you can clone their project from : https://github.com/apidoc/apidoc
@@ -49,7 +51,16 @@ To build the documentation, change enter the `jams-server` directory and simply 
 
 You can then open `doc/index.html`. Click on 1.0.0 in the top right corner if the doc doesn't appear.
 
-##### Building the Docker container
+## Pre-commit hook
+
+The `extras` folder contains a pre-commit hook that formats every js file in
+`jams-react-client`. To enable it, run:
+```sh
+cp extras/scripts/pre-commit .git/hooks
+chmod +x .git/hooks/pre-commit
+```
+
+## Development Docker container:
 
 You can build the docker container using:
 

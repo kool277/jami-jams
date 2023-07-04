@@ -291,10 +291,7 @@ export default function Blueprints() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleClose}
-            color="primary"
-          >
+          <Button onClick={handleClose} color="primary">
             {i18next.t("cancel", "Cancel")}
           </Button>
           <Button

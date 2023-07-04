@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd jams-react-client
+npm run format

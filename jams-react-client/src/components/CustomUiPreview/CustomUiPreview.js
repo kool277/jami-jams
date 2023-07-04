@@ -138,7 +138,10 @@ export default function CustomUiPreview({
     hasTitle,
   });
 
-  const tip1 = i18next.t("preview_tip1", "Add a picture and a nickname to complete your profile");
+  const tip1 = i18next.t(
+    "preview_tip1",
+    "Add a picture and a nickname to complete your profile"
+  );
   const tip2 = i18next.t("preview_tip2", "Why should I save my account?");
   const tip3 = i18next.t("preview_tip3", "How to set shortcuts?");
 
@@ -149,16 +152,10 @@ export default function CustomUiPreview({
         <div className={classes.mainContent}>
           <div className={classes.welcomeRow}>
             {hasLogo ? (
-              <img
-                src={logoUrl}
-                alt="logo"
-                className={classes.logo}
-              ></img>
+              <img src={logoUrl} alt="logo" className={classes.logo}></img>
             ) : null}
             <div className={classes.welcomeCard}>
-              {hasTitle ? (
-                <h4 className={classes.title}>{title}</h4>
-              ) : null}
+              {hasTitle ? <h4 className={classes.title}>{title}</h4> : null}
               {hasDescription ? (
                 <p className={classes.description}>{description}</p>
               ) : null}
