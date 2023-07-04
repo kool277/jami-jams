@@ -1,32 +1,42 @@
+import hashlib
 import json
 import sys
-import hashlib
-import os
+from pathlib import Path
 
-os.chdir("..")
 
-className = sys.argv[1]
-version = sys.argv[2]
-try:
-    filename = sys.argv[3].split("/")[1]
-except:
+def read_versions(versions_file: Path) -> dict:
+    if not versions_file.exists():
+        return {}
+
+    with open(versions_file) as f:
+        return json.load(f)
+
+
+
+def main() -> None:
+    here = Path(__file__).parent
+    versions_file = here / "versions.json"
+
+    class_name = sys.argv[1]
+    version = sys.argv[2]
     filename = sys.argv[3]
 
-try:
-    f = open("versions.json", "r")
-    map = json.loads(f.read())
-except:
-    map = {}
-map[className] = {}
-map[className]['version'] = version
-map[className]['filename'] = filename
-md5_hash = hashlib.md5()
-a_file = open("jams/" + sys.argv[3], "rb")
-content = a_file.read()
-md5_hash.update(content)
-digest = md5_hash.hexdigest()
-map[className]['md5'] = digest
-f = open("versions.json", "w")
-f.write(json.dumps(map,indent=4))
-f.close()
+    versions = read_versions(versions_file)
 
+    md5_hash = hashlib.md5()
+
+    with open(here / "jams" / filename, "rb") as jar:
+        md5_hash.update(jar.read())
+
+    versions[class_name] = {
+        "version": version,
+        "filename": filename,
+        "md5": md5_hash.hexdigest(),
+    }
+
+    with open(versions_file, "w") as f:
+        json.dump(versions, f, indent=4)
+
+
+if __name__ == "__main__":
+    main()

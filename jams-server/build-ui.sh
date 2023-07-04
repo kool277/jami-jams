@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -eo pipefail
+
 #Build the UI from the react js folder.
 cd ../jams-react-client || exit
 npm install

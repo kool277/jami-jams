@@ -1,19 +1,15 @@
-#### JAMS (Jami Account Management Server)
+# JAMS (Jami Account Management Server)
 
-##### Requirements
+## Requirements
 
 - JDK 11+
 - maven
 
-##### Building from source
+## Building from source
 
 Clone the contents of this repository and run
 
 ```
-cd jams-react-client
-npm install
-npm start
-cd ..
 mvn clean package
 ```
 
@@ -32,7 +28,7 @@ from 8080, then run:
 
 Where the `pem` and `key` files are a pem encoded certificate and key.
 
-##### How to generate server.pem and server.key pair
+## How to generate server.pem and server.key pair
 
 In order to generate a pair of pem and key use the following command using openssl
 
@@ -45,7 +41,7 @@ This can be completed by running `npm install -g apidoc`, if for some reason
 that does not work, you can clone their project from : https://github.com/apidoc/apidoc
 and install it from source.
 
-To build the documentation, change enter the `jams-server` directory and simply run:
+To build the documentation, enter the `jams-server` directory and simply run:
 
 `apidoc -i src/ -o doc/`
 
@@ -62,16 +58,26 @@ chmod +x .git/hooks/pre-commit
 
 ## Development Docker container
 
-You can build the docker container using:
-
+A development environment with react hot reloading can be created using:
 ```
-docker build -f Dockerfile -t jams:latest .
+docker build -f Dockerfile -t jams:dev --target dev .
+docker run -it -p 3000:3000 -p 8080:8080 \
+    -v $(pwd)/jams-react-client/src:/app/jams-react-client/src \
+    -v $(pwd)/jams-react-client/public:/app/jams-react-client/public \
+    --rm jams:dev
 ```
 
-To run the docker container (assuming you want to have it on port 8080 locally):
+Note: It is possible that after 15 minutes, the user's token expires, the server
+will answer with a "You are not authentified" and forget to put the CORS
+headers, thus the browser will refuse to read the response. In this case, you
+will need to restart the server.
 
+## Generate jams with Docker
+The following commands will generate the userguide and the jars needed:
 ```
-docker run -p 8080:8080 --rm jams:latest
+docker build -f Dockerfile -t jams:latest --target prod .
+docker run -v $(pwd)/jams:/jams --rm jams:latest
+sudo chown -R $(whoami) jams
 ```
 
 ## About jams-server/src/main/java/net/jami/jams/server/filters

@@ -17,16 +17,36 @@ COPY jams-common/pom.xml jams-common/pom.xml
 COPY jams-launcher/pom.xml jams-launcher/pom.xml
 COPY ldap-connector/pom.xml ldap-connector/pom.xml
 COPY jams-server/pom.xml jams-server/pom.xml
+
 # RUN mvn verify --fail-never
 # RUN mvn dependency:resolve --fail-never
-RUN mvn dependency:go-offline --fail-never
-
+# RUN mvn dependency:go-offline --fail-never -am
+RUN mvn install -pl ad-connector,authentication-module,datastore,jami-dht,jami-nameserver,jams-ca,jams-common,jams-launcher,ldap-connector,jams-server -am -DskipTests
 COPY . .
-# RUN mvn clean package
+
+FROM build as dev
+WORKDIR /app
+RUN mkdir -p /app/jams-server/src/main/resources/webapp \
+    && echo '<h1>Dev build, please connect to <a href="http://localhost:3000">localhost:3000</a> instead</h1>' \
+    > /app/jams-server/src/main/resources/webapp/index.html
+RUN mvn package
+WORKDIR /app/jams
+EXPOSE 3000 8080
+CMD java -jar jams-launcher.jar & npm start --prefix ../jams-react-client
+
+FROM build as prod
+WORKDIR /app/jams-react-client
+RUN npm run build
+RUN mv build ../jams-server/src/main/resources/webapp
+WORKDIR /app
 RUN mvn package
 
-FROM adoptopenjdk/openjdk11:jdk-11.0.2.9-alpine
-WORKDIR /app
-COPY --from=build /app/jams .
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","jams-launcher.jar"]
+ENV JAMS_VERSION=3.4
+RUN python3 generate-versions.py net.jami.jams.ca.JamsCA $JAMS_VERSION libs/cryptoengine.jar
+RUN python3 generate-versions.py net.jami.jams.authmodule.UserAuthenticationModule $JAMS_VERSION libs/authentication-module.jar
+RUN python3 generate-versions.py net.jami.jams.server.Server $JAMS_VERSION jams-server.jar
+RUN python3 generate-versions.py net.jami.jams.ad.connector.ADConnector $JAMS_VERSION libs/ad-connector.jar
+RUN python3 generate-versions.py net.jami.jams.ldap.connector.LDAPConnector $JAMS_VERSION libs/ldap-connector.jar
+
+RUN ./build-doc.sh
+CMD ["cp", "-r", "jams/.", "/jams"]
