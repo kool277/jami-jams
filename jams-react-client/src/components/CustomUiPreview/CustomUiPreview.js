@@ -2,7 +2,6 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import customUiBackgroundImage from "assets/img/CustomUiBg.jpg";
 import logoImage from "assets/img/logo-jami-net.svg";
 
 import TipBox from "./TipBox";
@@ -12,10 +11,7 @@ import { url_path } from "../../globalUrls";
 import { url_port } from "../../globalUrls";
 
 const styles = {
-  backgroundImage: {
-    backgroundImage: `url(${customUiBackgroundImage})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
+  root: {
     height: "250px",
     position: (props) => (props.isOldPreview ? "relative" : "absolute"),
     left: 0,
@@ -30,8 +26,8 @@ const styles = {
     left: "50%",
     top: "50%",
     transform: "translate(-50%, -50%)",
-    width: "80%",
-    height: "200px",
+    width: "100%",
+    height: "250px",
 
     borderRadius: "5px",
     backgroundColor: "white",
@@ -57,10 +53,12 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    alignItems: "center",
   },
   welcomeRow: {
     display: "flex",
     flexDirection: (props) => (props.isCompactDisplay ? "column" : "row"),
+    width: "400px",
     height: "100px",
     justifyContent: "center",
     alignItems: "center",
@@ -81,13 +79,16 @@ const styles = {
   title: {
     margin: 0,
     fontWeight: 500,
+    fontSize: "10px",
   },
   description: {
-    fontSize: "5px",
+    fontSize: "8px",
   },
   tipRow: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    width: "400px",
+    marginTop: "0.5rem",
   },
 };
 
@@ -156,7 +157,7 @@ export default function CustomUiPreview({
   const tip3 = i18next.t("preview_tip3", "How to set shortcuts?");
 
   return (
-    <div className={classes.backgroundImage}>
+    <div className={classes.root}>
       <div className={classes.previewWindow}>
         <div className={classes.sidebar}></div>
         <div className={classes.mainContent}>

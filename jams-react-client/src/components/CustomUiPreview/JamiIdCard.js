@@ -11,8 +11,8 @@ import { infoColor } from "assets/jss/material-dashboard-react";
 const styles = {
   root: {
     backgroundColor: (props) => (props.isCompactDisplay ? "#f4f4f4" : "white"),
-    maxWidth: (props) => (props.isCompactDisplay ? "100%" : "110px"),
-    width: (props) => (props.isCompactDisplay ? "100%" : "110px"),
+    maxWidth: (props) => (props.isCompactDisplay ? "100%" : "150px"),
+    width: (props) => (props.isCompactDisplay ? "100%" : "150px"),
     height: (props) => (props.isCompactDisplay ? "20px" : "40px"),
     position: "relative",
     borderRadius: "9px",

@@ -73,7 +73,7 @@ function CustomImgDropZone(props) {
 }
 
 CustomImgDropZone.defaultProps = {
-  accept: { "image/*": [".png", ".jpeg", ".jpg"] },
+  accept: { "image/*": [".png", ".jpeg", ".jpg", ".svg"] },
   maxFiles: 1,
 };
 

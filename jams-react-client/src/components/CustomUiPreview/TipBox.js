@@ -5,12 +5,10 @@ import tipLightBulbImage from "assets/img/tip_light_bulb.svg";
 
 const styles = {
   root: {
-    width: "80px",
-    maxWidth: "80px",
+    maxWidth: "115px",
     flexBasis: "100%",
     backgroundColor: "#f4f4f4",
     padding: "0px 5px 5px 5px",
-    margin: "2px",
     borderRadius: "10px",
   },
   img: {
@@ -18,11 +16,11 @@ const styles = {
   },
   title: {
     verticalAlign: "middle",
-    fontSize: 6,
+    fontSize: "8px",
     marginLeft: "0.5rem",
   },
   text: {
-    fontSize: 5,
+    fontSize: "6px",
     margin: 0,
   },
 };

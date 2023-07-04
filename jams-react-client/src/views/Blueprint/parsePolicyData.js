@@ -73,7 +73,7 @@ const setCustomizationSettings = (policyData) => {
   ui.title = result.title;
   ui.hasDescription = result.description !== "";
   ui.description = result.description;
-  ui.hasTips = result.hasTips;
+  ui.hasTips = result.areTipsEnabled;
 
   if (result.backgroundType === "default") {
     ui.hasBackground = false;

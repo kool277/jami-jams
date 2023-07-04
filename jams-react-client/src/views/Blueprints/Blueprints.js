@@ -401,7 +401,7 @@ export default function Blueprints() {
                 </Link>
                 <CardFooter>
                   <IconButton
-                    color="secondary"
+                    color="primary"
                     onClick={() => {
                       handleRemoveBlueprint(blueprint.name);
                     }}
