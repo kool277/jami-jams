@@ -37,7 +37,7 @@ CMD java -jar jams-launcher.jar & npm start --prefix ../jams-react-client
 FROM build as prod
 WORKDIR /app/jams-react-client
 RUN npm run build
-RUN mv build ../jams-server/src/main/resources/webapp
+RUN mv build/* ../jams-server/src/main/resources/webapp
 WORKDIR /app
 RUN mvn package
 
@@ -49,4 +49,5 @@ RUN python3 generate-versions.py net.jami.jams.ad.connector.ADConnector $JAMS_VE
 RUN python3 generate-versions.py net.jami.jams.ldap.connector.LDAPConnector $JAMS_VERSION libs/ldap-connector.jar
 
 RUN ./build-doc.sh
-CMD ["cp", "-r", "jams/.", "/jams"]
+WORKDIR /app/jams
+CMD ["java", "-jar", "jams-launcher.jar"]

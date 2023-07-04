@@ -75,12 +75,12 @@ will need to restart the server.
 ## Generate jams with Docker
 The following commands will generate the userguide and the jars needed:
 ```
-docker build -f Dockerfile -t jams:latest --target prod .
-docker run -v $(pwd)/jams:/jams --rm jams:latest
-USER=$(whoami)
-sudo chown -R $USER jams
-cd jams
-java -jar jams-launcher.jar
+docker build -f Dockerfile -t jams:latest --target prod . \
+    && CONTAINER=$(docker create jams:latest) \
+    && docker cp $CONTAINER:/app/jams jams \
+    && docker rm -v $CONTAINER \
+    && cd jams \
+    && java -jar jams-launcher.jar
 ```
 
 ## About jams-server/src/main/java/net/jami/jams/server/filters
