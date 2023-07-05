@@ -78,6 +78,7 @@ The following commands will generate the userguide and the jars needed:
 docker build -f Dockerfile -t jams:latest --target prod . \
     && CONTAINER=$(docker create jams:latest) \
     && docker cp $CONTAINER:/app/jams/. jams \
+    && docker cp $CONTAINER:/app/versions.json . \
     && docker rm -v $CONTAINER \
     && cd jams \
     && java -jar jams-launcher.jar
