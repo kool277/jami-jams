@@ -37,7 +37,8 @@ CMD java -jar jams-launcher.jar & npm start --prefix ../jams-react-client
 FROM build as prod
 WORKDIR /app/jams-react-client
 RUN npm run build
-RUN mv build/* ../jams-server/src/main/resources/webapp
+RUN mkdir -p ../jams-server/src/main/resources/webapp \
+    && mv build/* ../jams-server/src/main/resources/webapp
 WORKDIR /app
 RUN mvn package
 
