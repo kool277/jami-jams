@@ -6,7 +6,6 @@ import { makeStyles } from "@mui/styles";
 import i18next from "i18next";
 
 function countryToFlag(isoCode) {
-  console.log("isoCode: ", isoCode);
   return isoCode
     .toUpperCase()
     .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397));
@@ -22,30 +21,25 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CountrySelect(props) {
+export default function CountrySelect({ setFieldValue, handleBlur }) {
   const classes = useStyles();
 
   return (
     <Autocomplete
       id="country-select"
       options={countries}
-      classes={{
-        option: classes.option,
-      }}
+      classes={{ option: classes.option }}
       onChange={(e, value) => {
         value != null
-          ? props.setFieldValue("country", value.code)
-          : props.setFieldValue("country", "");
+          ? setFieldValue("country", value.code)
+          : setFieldValue("country", "");
       }}
       autoHighlight
-      getOptionLabel={(option) =>
-        countryToFlag(option.code) + " " + option.label
-      }
-      renderOption={(option) => (
-        <React.Fragment>
+      renderOption={(props, option) => (
+        <Box component="li" {...props}>
           <span>{countryToFlag(option.code)}</span>
           {option.label}
-        </React.Fragment>
+        </Box>
       )}
       renderInput={(params) => (
         <TextField
@@ -53,7 +47,7 @@ export default function CountrySelect(props) {
           label={i18next.t("choose_a_country", "Choose a country")}
           name="country"
           variant="outlined"
-          onBlur={props.handleBlur}
+          onBlur={handleBlur}
           inputProps={{
             ...params.inputProps,
             autoComplete: "country", // disable autocomplete and autofill
