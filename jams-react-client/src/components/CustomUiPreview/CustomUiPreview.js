@@ -71,10 +71,13 @@ const styles = {
     marginRight: "1rem",
   },
   welcomeCard: {
+    display: "flex",
+    flexDirection: (props) => (props.hasLogo ? "column" : "row"),
     borderRadius: "9px",
-    backgroundColor: (props) => (props.isCompactDisplay ? "white" : "#f4f4f4"),
+    backgroundColor: (props) =>
+      props.isCompactDisplay ? "transparent" : "#f4f4f4",
     padding: "10px",
-    width: "50%",
+    width: (props) => (props.hasLogo ? "50%" : "100%"),
   },
   title: {
     margin: 0,
@@ -147,6 +150,7 @@ export default function CustomUiPreview({
     isOldPreview,
     opacity,
     hasTitle,
+    hasLogo,
   });
 
   const tip1 = i18next.t(
@@ -166,10 +170,12 @@ export default function CustomUiPreview({
               <img src={logoUrl} alt="logo" className={classes.logo}></img>
             ) : null}
             <div className={classes.welcomeCard}>
-              {hasTitle ? <h4 className={classes.title}>{title}</h4> : null}
-              {hasDescription ? (
-                <p className={classes.description}>{description}</p>
-              ) : null}
+              <div>
+                {hasTitle ? <h4 className={classes.title}>{title}</h4> : null}
+                {hasDescription ? (
+                  <p className={classes.description}>{description}</p>
+                ) : null}
+              </div>
               <JamiIdCard isCompactDisplay={isCompactDisplay} />
             </div>
           </div>
