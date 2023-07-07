@@ -32,8 +32,8 @@ export default function LanguagePicker(props) {
       .then((result) => {
         const response = result.data.map(({ attributes }) => attributes);
         let translates_languages = [
-          ...response,
           { code: "en", name: "English" },
+          ...response,
         ];
 
         const exists = translates_languages

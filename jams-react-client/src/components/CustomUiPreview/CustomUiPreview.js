@@ -138,7 +138,7 @@ export default function CustomUiPreview({
     backgroundColor = "white";
   }
   if (backgroundUrl) {
-    backgroundUrl = `${url_path}:${url_port}/${backgroundUrl}`;
+    backgroundUrl = encodeURI(`${url_path}:${url_port}/${backgroundUrl}`);
   }
 
   const isCompactDisplay = !hasTitle && !hasDescription && !hasTips;

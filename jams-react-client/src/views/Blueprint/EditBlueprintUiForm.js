@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import Checkbox from "@material-ui/core/Checkbox";
+import Switch from "@material-ui/core/Switch";
 import { SketchPicker } from "react-color";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -43,7 +44,7 @@ const IsCustomizationEnabledForm = ({
     <FormGroup row>
       <FormControlLabel
         control={
-          <Checkbox
+          <Switch
             checked={isCustomizationEnabled}
             color="primary"
             onChange={(e) => {

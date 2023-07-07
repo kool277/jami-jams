@@ -4,7 +4,7 @@ export const DEFAULT_UI_CUSTOMIZATION = {
   title: "",
   hasDescription: true,
   description: "",
-  hasTips: false,
+  hasTips: true,
 
   hasBackground: false,
   backgroundColor: "",

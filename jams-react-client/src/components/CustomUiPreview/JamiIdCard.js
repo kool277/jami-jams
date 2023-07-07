@@ -21,11 +21,10 @@ const styles = {
   },
   logo: {
     position: "absolute",
-    left: 0,
+    left: "-1px",
     top: 0,
     backgroundColor: infoColor[0],
-    borderRadius: (props) =>
-      props.isCompactDisplay ? "20px" : "20px 20px 20px 0px",
+    borderRadius: "20px 20px 20px 0px",
     padding: "0px 5px 0px 5px",
   },
   nameplate: {
