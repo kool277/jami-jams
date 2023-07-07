@@ -59,7 +59,7 @@ export default function configApiCall(
     config["headers"]["Authorization"] = "Bearer " + jwt;
   }
 
-  config["headers"]["Content-type"] = "application/json";
+  config["headers"]["Content-type"] = "application/json;charset=UTF-8";
 
   // pass data in the header
   if (data) {
