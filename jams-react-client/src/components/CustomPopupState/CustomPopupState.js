@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 
 export default function CustomPopupState(props) {
   return (
-    <IconButton>
+    <IconButton size="large">
       <PopupState variant="popover" popupId="demo-popup-popover">
         {(popupState) => (
           <div>

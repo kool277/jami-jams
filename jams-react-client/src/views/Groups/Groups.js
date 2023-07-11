@@ -513,6 +513,7 @@ export default function Groups() {
                         onClick={() => {
                           handleRemoveGroup(group);
                         }}
+                        size="large"
                       >
                         <DeleteOutlineIcon />
                       </IconButton>

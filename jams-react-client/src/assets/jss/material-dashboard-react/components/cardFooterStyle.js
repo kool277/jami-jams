@@ -11,7 +11,7 @@ const cardFooterStyle = (theme) => ({
     display: "flex",
     backgroundColor: "transparent",
     border: "0",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       flexDirection: "column",
       "& div": {

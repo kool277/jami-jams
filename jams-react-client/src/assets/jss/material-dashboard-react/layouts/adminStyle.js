@@ -24,7 +24,7 @@ const appStyle = (theme) => ({
   },
   content: {
     marginTop: "0px",
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("lg")]: {
       marginTop: "30px",
     },
     padding: "30px 15px",

@@ -136,7 +136,7 @@ const styles = (theme) => ({
   },
   alignRight: {
     float: "right",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       flexDirection: "column",
       "& button": {
@@ -176,7 +176,7 @@ const styles = (theme) => ({
     alignItems: "center",
   },
   sliderLabel: {
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       minWidth: 65,
     },
   },
@@ -191,14 +191,14 @@ const styles = (theme) => ({
     },
   },
   profileEditHeaderMobile: {
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
     },
   },
   profileEditAvatarMobile: {
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -206,7 +206,7 @@ const styles = (theme) => ({
     },
   },
   profileEditAvatarInputMobile: {
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       flexDirection: "row",
       justifyContent: "center",
@@ -665,6 +665,7 @@ export default function EditCreateUserProfile(props) {
                                 id="change-profile-picture"
                                 aria-label="upload picture"
                                 component="span"
+                                size="large"
                               >
                                 <PhotoCamera />
                               </IconButton>{" "}
@@ -725,6 +726,7 @@ export default function EditCreateUserProfile(props) {
                                     aria-label="toggle password visibility"
                                     onMouseDown={handleMouseDownPassword}
                                     onMouseUp={handleMouseUpPassword}
+                                    size="large"
                                   >
                                     {passwordVisible ? (
                                       <VisibilityIcon />
@@ -764,6 +766,7 @@ export default function EditCreateUserProfile(props) {
                                     aria-label="toggle password visibility"
                                     onMouseDown={handleMouseDownPassword}
                                     onMouseUp={handleMouseUpPassword}
+                                    size="large"
                                   >
                                     {passwordVisible ? (
                                       <VisibilityIcon />

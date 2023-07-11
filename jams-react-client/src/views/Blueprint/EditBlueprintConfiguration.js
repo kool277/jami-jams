@@ -361,6 +361,7 @@ export default function EditBlueprintConfiguration(props) {
                                   aria-label="toggle password visibility"
                                   onMouseDown={handleMouseDownPassword}
                                   onMouseUp={handleMouseUpPassword}
+                                  size="large"
                                 >
                                   {turnPasswordVisible ? (
                                     <VisibilityIcon />

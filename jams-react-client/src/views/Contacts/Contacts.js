@@ -489,6 +489,7 @@ export default function Users(props) {
                       onClick={() => {
                         handleRemoveContact(contact.uri, contact.username);
                       }}
+                      size="large"
                     >
                       <DeleteOutlineIcon />
                     </IconButton>

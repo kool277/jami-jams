@@ -180,6 +180,7 @@ export default function General(props) {
                             aria-label="toggle password visibility"
                             onMouseDown={handleMouseDownPassword}
                             onMouseUp={handleMouseUpPassword}
+                            size="large"
                           >
                             {passwordVisible ? (
                               <VisibilityIcon />
@@ -217,6 +218,7 @@ export default function General(props) {
                             aria-label="toggle password visibility"
                             onMouseDown={handleMouseDownPassword}
                             onMouseUp={handleMouseUpPassword}
+                            size="large"
                           >
                             {passwordVisible ? (
                               <VisibilityIcon />

@@ -37,6 +37,7 @@ export default function Header(props) {
             color="default"
             aria-label="open drawer"
             onClick={props.handleDrawerToggle}
+            size="large"
           >
             <Menu />
           </IconButton>

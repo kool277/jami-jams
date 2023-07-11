@@ -128,7 +128,7 @@ const styles = (theme) => ({
     maxWidth: "80vh",
   },
   profileFooter: {
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("lg")]: {
       display: "flex",
       flexDirection: "column",
     },
@@ -140,7 +140,7 @@ const styles = (theme) => ({
     "& button": {
       marginRight: "1rem",
     },
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("lg")]: {
       flexDirection: "column",
       alignItems: "stretch",
       "& button": {
@@ -153,7 +153,7 @@ const styles = (theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "end",
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("lg")]: {
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "stretch",
@@ -166,7 +166,7 @@ const styles = (theme) => ({
   userProfileHeader: {
     display: "flex",
     justifyContent: "space-between",
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("lg")]: {
       display: "flex",
       flexDirection: "column",
       textAlign: "center",
@@ -181,7 +181,7 @@ const styles = (theme) => ({
     },
   },
   cardAvatarMobile: {
-    [theme.breakpoints.down("md")]: {
+    [theme.breakpoints.down("lg")]: {
       textAlign: "center",
     },
   },

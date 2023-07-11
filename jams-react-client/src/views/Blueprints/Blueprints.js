@@ -404,6 +404,7 @@ export default function Blueprints() {
                     onClick={() => {
                       handleRemoveBlueprint(blueprint.name);
                     }}
+                    size="large"
                   >
                     <DeleteOutlineIcon />
                   </IconButton>

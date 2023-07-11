@@ -23,7 +23,11 @@ import { ProtectedRoute } from "protected.route";
 import { ConfiguredRoute } from "configured.route";
 import auth from "./auth";
 
-import { ThemeProvider, createTheme } from "@mui/material";
+import {
+  ThemeProvider,
+  StyledEngineProvider,
+  createTheme,
+} from "@mui/material";
 
 // core components
 import UsersRoute from "routes/UsersRoute.js";
@@ -65,39 +69,44 @@ auth.checkServerInstalled(() => {
     auth.checkLastKnownStep(() => {
       ReactDOM.render(
         <StrictMode>
-          <ThemeProvider theme={theme}>
-            <Suspense fallback={<div>Loading...</div>}>
-              <Router history={hist}>
-                <Switch>
-                  <ConfiguredRoute path="/signin" component={SignIn} />
-                  <ProtectedRoute path="/users" component={UsersRoute} />
-                  <ProtectedRoute
-                    path="/user/:username"
-                    component={UserRoute}
-                  />
-                  <ProtectedRoute
-                    path="/createuser"
-                    component={CreateUserRoute}
-                  />
-                  <ProtectedRoute path="/groups" component={GroupsRoute} />
-                  <ProtectedRoute
-                    path="/group/:groupid"
-                    component={GroupRoute}
-                  />
-                  <ProtectedRoute
-                    path="/blueprints"
-                    component={BlueprintsRoute}
-                  />
-                  <ProtectedRoute
-                    path="/blueprint/:blueprintname"
-                    component={BlueprintRoute}
-                  />
-                  <ProtectedRoute path="/settings" component={SettingsRoute} />
-                  <Redirect from="/" to="/signin" />
-                </Switch>
-              </Router>
-            </Suspense>
-          </ThemeProvider>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Router history={hist}>
+                  <Switch>
+                    <ConfiguredRoute path="/signin" component={SignIn} />
+                    <ProtectedRoute path="/users" component={UsersRoute} />
+                    <ProtectedRoute
+                      path="/user/:username"
+                      component={UserRoute}
+                    />
+                    <ProtectedRoute
+                      path="/createuser"
+                      component={CreateUserRoute}
+                    />
+                    <ProtectedRoute path="/groups" component={GroupsRoute} />
+                    <ProtectedRoute
+                      path="/group/:groupid"
+                      component={GroupRoute}
+                    />
+                    <ProtectedRoute
+                      path="/blueprints"
+                      component={BlueprintsRoute}
+                    />
+                    <ProtectedRoute
+                      path="/blueprint/:blueprintname"
+                      component={BlueprintRoute}
+                    />
+                    <ProtectedRoute
+                      path="/settings"
+                      component={SettingsRoute}
+                    />
+                    <Redirect from="/" to="/signin" />
+                  </Switch>
+                </Router>
+              </Suspense>
+            </ThemeProvider>
+          </StyledEngineProvider>
         </StrictMode>,
         document.getElementById("root")
       );

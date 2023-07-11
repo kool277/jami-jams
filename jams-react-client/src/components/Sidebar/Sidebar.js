@@ -193,7 +193,7 @@ export default function Sidebar(props) {
           ) : null}
         </Drawer>
       </Hidden>
-      <Hidden smDown implementation="css">
+      <Hidden mdDown implementation="css">
         <Drawer
           anchor={props.rtlActive ? "right" : "left"}
           variant="permanent"

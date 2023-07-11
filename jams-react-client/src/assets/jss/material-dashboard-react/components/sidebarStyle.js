@@ -29,7 +29,7 @@ const sidebarStyle = (theme) => ({
       position: "fixed",
       height: "100%",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       width: drawerWidth,
       ...boxShadow,
       position: "fixed",
@@ -54,7 +54,7 @@ const sidebarStyle = (theme) => ({
       left: "auto !important",
       right: "0 !important",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       left: "0  !important",
       right: "auto !important",
     },

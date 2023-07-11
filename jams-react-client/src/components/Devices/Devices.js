@@ -279,6 +279,7 @@ export default function Devices(props) {
                         aria-label="Edit"
                         className={classes.tableActionButton}
                         onClick={(e) => handleClickEdit(e, device)}
+                        size="large"
                       >
                         <Edit
                           className={
@@ -297,6 +298,7 @@ export default function Devices(props) {
                         aria-label="Close"
                         className={classes.tableActionButton}
                         onClick={(e) => handleClickRevoke(e, device)}
+                        size="large"
                       >
                         <Close
                           className={

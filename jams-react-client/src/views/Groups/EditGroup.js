@@ -411,6 +411,7 @@ export default function EditGroup(props) {
                               updateGroup();
                             }}
                             disabled={groupNameExits || name === newName}
+                            size="large"
                           >
                             <SaveIcon />
                           </IconButton>
