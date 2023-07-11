@@ -6,37 +6,40 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  FormControl,
-  InputLabel,
-  Input,
   InputAdornment,
   DialogActions,
-  Button,
   debounce,
+  TextField,
 } from "@mui/material";
 import { AllInbox } from "@mui/icons-material";
-import { makeStyles } from "@mui/styles";
 
 import configApiCall from "api";
 import { api_path_blueprints } from "globalUrls";
-import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle";
 
-const styles = {
-  ...headerLinksStyle,
-  whiteButtonText: {
-    color: "white",
-  },
+import Button from "components/CustomButtons/Button.js";
+
+const getHelperText = (disableCreate, blueprintName) => {
+  if (disableCreate && blueprintName.length > 0) {
+    return i18next.t(
+      "blueprint_name_already_exists",
+      "Blueprint name already exists!"
+    );
+  }
+  if (disableCreate && blueprintName.length === 0) {
+    return i18next.t("blueprint_name_is_empty", "Blueprint name is empty");
+  }
+
+  return "";
 };
-
-const useStyles = makeStyles(styles);
 
 export default function CreateBlueprintDialog({ open, setOpen }) {
   const history = useHistory();
-  const classes = useStyles();
 
   const [blueprintName, setBlueprintName] = useState("");
-  const [blueprintNameExits, setBlueprintNameExits] = useState(false);
+  const [blueprintNameExists, setBlueprintNameExists] = useState(false);
   const [disableCreate, setDisableCreate] = useState(true);
+
+  const helperText = getHelperText(disableCreate, blueprintName);
 
   const handleClose = () => {
     setOpen(false);
@@ -54,11 +57,11 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
     )
       .then(() => {
         setDisableCreate(true);
-        setBlueprintNameExits(true);
+        setBlueprintNameExists(true);
       })
       .catch(() => {
         setDisableCreate(false);
-        setBlueprintNameExits(false);
+        setBlueprintNameExists(false);
       });
   };
 
@@ -119,41 +122,27 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
         {i18next.t("create_blueprint", "Create blueprint")}
       </DialogTitle>
       <DialogContent>
-        <FormControl
-          className={classes.margin}
-          size="medium"
-          error={blueprintNameExits}
-        >
-          <InputLabel htmlFor="blueprintName">
-            {i18next.t("blueprint_name", "Blueprint name")}
-          </InputLabel>
-          <Input
-            id="blueprintName"
-            placeholder={i18next.t("blueprint_name", "Blueprint name")}
-            startAdornment={
+        <TextField
+          autoFocus
+          error={blueprintNameExists}
+          margin="dense"
+          id="blueprintName"
+          label={i18next.t("blueprint_name", "Blueprint name")}
+          helperText={helperText}
+          type="text"
+          variant="standard"
+          InputProps={{
+            startAdornment: (
               <InputAdornment position="start">
                 <AllInbox />
               </InputAdornment>
-            }
-            onChange={(e) => {
-              setBlueprintName(e.target.value);
-              initCheckBlueprintNameExists(e.target.value);
-            }}
-          />
-        </FormControl>
-        {disableCreate && blueprintName.length > 0 && (
-          <p>
-            {i18next.t(
-              "blueprint_name_already_exists",
-              "Blueprint name already exists!"
-            )}
-          </p>
-        )}
-        {disableCreate && blueprintName.length === 0 && (
-          <p>
-            {i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}
-          </p>
-        )}
+            ),
+          }}
+          onChange={(e) => {
+            setBlueprintName(e.target.value);
+            initCheckBlueprintNameExists(e.target.value);
+          }}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
@@ -162,9 +151,7 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
         <Button
           onClick={handleCreateBlueprint}
           color="info"
-          className={classes.whiteButtonText}
           disabled={disableCreate}
-          autoFocus
         >
           {i18next.t("create_blueprint", "Create blueprint")}
         </Button>

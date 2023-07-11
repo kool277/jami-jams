@@ -5,12 +5,9 @@ import {
   DialogTitle,
   DialogContent,
   Grid,
-  FormControl,
-  InputLabel,
-  Input,
   InputAdornment,
-  Select,
   DialogActions,
+  TextField,
 } from "@mui/material";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import axios from "axios";
@@ -28,6 +25,17 @@ import auth from "auth";
 import * as tool from "../../tools";
 import Button from "components/CustomButtons/Button.js";
 
+const getHelperText = (disableCreate, groupName) => {
+  if (disableCreate && groupName.length > 0) {
+    return i18next.t("group_name_already_exists", "Group name already exists!");
+  }
+  if (disableCreate && groupName.length === 0) {
+    return i18next.t("group_name_is_empty", "Group name is empty");
+  }
+
+  return "";
+};
+
 export default function CreateGroupDialog({
   openCreate,
   setOpenCreate,
@@ -44,6 +52,8 @@ export default function CreateGroupDialog({
     value: 0,
     label: "No blueprint",
   });
+
+  const helperText = getHelperText(disableCreate, groupName);
 
   const handleCheckGroupNameExists = (searchGroupNameValue) => {
     setDisableCreate(true);
@@ -151,57 +161,39 @@ export default function CreateGroupDialog({
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={12}>
-            <FormControl
-              className={classes.margin}
+            <TextField
+              autoFocus
               error={groupNameExits}
+              id="groupName"
+              label={i18next.t("group_name", "Group name")}
+              helperText={helperText}
+              type="text"
               fullWidth
-            >
-              <InputLabel htmlFor="groupName">
-                {i18next.t("group_name", "Group name")}
-              </InputLabel>
-              <Input
-                id="groupName"
-                placeholder={i18next.t("group_name", "Group name")}
-                startAdornment={
+              variant="standard"
+              InputProps={{
+                startAdornment: (
                   <InputAdornment position="start">
                     <PeopleOutlineIcon />
                   </InputAdornment>
-                }
-                onChange={(e) => {
-                  setGroupName(e.target.value);
-                  initCheckGroupNameExists(e.target.value);
-                }}
-              />
-            </FormControl>
-            {disableCreate && groupName.length > 0 && (
-              <p>
-                {i18next.t(
-                  "group_name_already_exists",
-                  "Group name already exists!"
-                )}
-              </p>
-            )}
-            {disableCreate && groupName.length === 0 && (
-              <p>{i18next.t("group_name_is_empty", "Group name is empty")}</p>
-            )}
+                ),
+              }}
+              onChange={(e) => {
+                setGroupName(e.target.value);
+                initCheckGroupNameExists(e.target.value);
+              }}
+            />
           </Grid>
           <Grid item xs={12} sm={12} md={12}>
-            <InputLabel
-              className={classes.inputBottomMargin}
-              htmlFor="blueprint"
-            >
-              {i18next.t("select_blueprint", "Select a blueprint")}
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
+            <TextField
+              select
               fullWidth
+              label={i18next.t("select_blueprint", "Select a blueprint")}
               value={selectedBlueprint.value}
               onChange={handleBlueprintsChange}
-              variant="outlined"
               disabled={blueprints.length === 0}
             >
               {blueprintsOptionsItems}
-            </Select>
+            </TextField>
           </Grid>
         </Grid>
       </DialogContent>

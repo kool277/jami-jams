@@ -315,7 +315,7 @@ export default function Groups() {
                     </Link>
                     <CardFooter>
                       <IconButton
-                        color="secondary"
+                        color="primary"
                         onClick={() => {
                           handleRemoveGroup(group);
                         }}
