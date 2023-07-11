@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
-import InputLabel from "@mui/material/InputLabel";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -13,17 +12,12 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 
-import FormControl from "@mui/material/FormControl";
-import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-
 import GroupIcon from "@mui/icons-material/Group";
 import PersonIcon from "@mui/icons-material/Person";
 import Search from "@mui/icons-material/Search";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import InfoIcon from "@mui/icons-material/Info";
 
-import AllInbox from "@mui/icons-material/AllInbox";
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from "auth.js";
@@ -41,9 +35,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { debounce } from "lodash";
-
 import i18next from "i18next";
+import CreateBlueprintDialog from "./CreateBlueprintDialog";
 
 const styles = {
   ...headerLinksStyle,
@@ -77,9 +70,6 @@ const styles = {
     display: "flex",
     alignItems: "center",
   },
-  whiteButtonText: {
-    color: "white",
-  },
 };
 
 const useStyles = makeStyles(styles);
@@ -92,11 +82,7 @@ export default function Blueprints() {
   const [zeroBlueprint, setZeroBlueprint] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const [blueprintName, setBlueprintName] = useState("");
-  const [blueprintNameExits, setBlueprintNameExits] = useState(false);
   const [open, setOpen] = useState(false);
-
-  const [disableCreate, setDisableCreate] = useState(true);
 
   const [removedBlueprint, setRemovedBlueprint] = useState("");
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
@@ -132,76 +118,6 @@ export default function Blueprints() {
     };
   }, [history, open, openRemoveDialog]);
 
-  const handleCheckBlueprintNameExists = (searchBlueprintNameValue) => {
-    setDisableCreate(true);
-    axios(
-      configApiCall(
-        api_path_blueprints + "?name=" + searchBlueprintNameValue,
-        "GET",
-        null,
-        null
-      )
-    )
-      .then(() => {
-        setDisableCreate(true);
-        setBlueprintNameExits(true);
-      })
-      .catch(() => {
-        setDisableCreate(false);
-        setBlueprintNameExits(false);
-      });
-  };
-
-  const initCheckBlueprintNameExists = useCallback(
-    debounce(
-      (searchBlueprintNameValue) =>
-        handleCheckBlueprintNameExists(searchBlueprintNameValue),
-      500
-    ),
-    []
-  );
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleCreateBlueprint = () => {
-    let defaultPolicyData = {
-      videoEnabled: true,
-      publicInCalls: false,
-      allowCertFromContact: true,
-      allowCertFromHistory: true,
-      allowCertFromTrusted: true,
-      autoAnswer: false,
-      peerDiscovery: true,
-      accountDiscovery: true,
-      accountPublish: true,
-      rendezVous: false,
-      defaultModerators: "",
-      upnpEnabled: true,
-      allowLookup: true,
-    };
-
-    axios(
-      configApiCall(
-        api_path_blueprints + "?name=" + blueprintName,
-        "POST",
-        defaultPolicyData,
-        null
-      )
-    )
-      .then(() => {
-        setOpen(false);
-        setDisableCreate(true);
-        console.log("Successfully created " + blueprintName);
-      })
-      .catch((error) => {
-        setOpen(false);
-        console.log("Could not create " + blueprintName + " " + error);
-      });
-    history.push(`/blueprint/${blueprintName}`);
-  };
-
   const handleRemoveBlueprint = (blueprintRemovedName) => {
     setRemovedBlueprint(blueprintRemovedName);
     setOpenRemoveDialog(true);
@@ -217,7 +133,7 @@ export default function Blueprints() {
       )
     )
       .then(() => {
-        console.log("Successfully  create " + removedBlueprint);
+        console.log("Successfully created " + removedBlueprint);
         setOpenRemoveDialog(false);
       })
       .catch((error) => {
@@ -229,67 +145,7 @@ export default function Blueprints() {
 
   return (
     <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {i18next.t("create_blueprint", "Create blueprint")}
-        </DialogTitle>
-        <DialogContent>
-          <FormControl
-            className={classes.margin}
-            size="medium"
-            error={blueprintNameExits}
-          >
-            <InputLabel htmlFor="blueprintName">
-              {i18next.t("blueprint_name", "Blueprint name")}
-            </InputLabel>
-            <Input
-              id="blueprintName"
-              placeholder={i18next.t("blueprint_name", "Blueprint name")}
-              startAdornment={
-                <InputAdornment position="start">
-                  <AllInbox />
-                </InputAdornment>
-              }
-              onChange={(e) => {
-                setBlueprintName(e.target.value);
-                initCheckBlueprintNameExists(e.target.value);
-              }}
-            />
-          </FormControl>
-          {disableCreate && blueprintName.length > 0 && (
-            <p>
-              {i18next.t(
-                "blueprint_name_already_exists",
-                "Blueprint name already exists!"
-              )}
-            </p>
-          )}
-          {disableCreate && blueprintName.length === 0 && (
-            <p>
-              {i18next.t("blueprint_name_is_empty", "Blueprint name is empty")}
-            </p>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            {i18next.t("cancel", "Cancel")}
-          </Button>
-          <Button
-            onClick={handleCreateBlueprint}
-            color="info"
-            className={classes.whiteButtonText}
-            disabled={disableCreate}
-            autoFocus
-          >
-            {i18next.t("create_blueprint", "Create blueprint")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CreateBlueprintDialog open={open} setOpen={setOpen} />
       <Dialog
         open={openRemoveDialog}
         onClose={() => setOpenRemoveDialog(false)}

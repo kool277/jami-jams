@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
-import InputLabel from "@mui/material/InputLabel";
 // core components
-import Grid from "@mui/material/Grid";
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Button from "components/CustomButtons/Button.js";
@@ -16,30 +14,20 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import IconButton from "@mui/material/IconButton";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Search from "@mui/icons-material/Search";
-import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
 
-import Select from "@mui/material/Select";
-
-import * as tool from "../../tools";
 import axios from "axios";
 import configApiCall from "api.js";
 import auth from "auth.js";
 import {
-  api_path_post_create_group,
   api_path_get_list_group,
   api_path_delete_group,
-  api_path_blueprints,
   api_path_get_group_members,
 } from "globalUrls";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
-import FormControl from "@mui/material/FormControl";
-import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -47,13 +35,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { debounce } from "lodash";
-
 import LinearProgress from "@mui/material/LinearProgress";
 
 import i18next from "i18next";
 
-import { getBlueprintsOptions } from "./getBlueprintsOptions";
+import CreateGroupDialog from "./CreateGroupDialog";
 
 const styles = {
   cardCategoryWhite: {
@@ -105,19 +91,13 @@ export default function Groups() {
   const [progress, setProgress] = useState(0);
   const [searchValue, setSearchValue] = useState(null);
 
-  const [blueprints, setBlueprints] = useState([]);
-
   const [openCreate, setOpenCreate] = useState(false);
-  const [groupName, setGroupName] = useState("");
-  const [groupNameExits, setGroupNameExits] = useState(false);
 
   const [removedGroup, setRemovedGroup] = useState({
     id: 0,
     name: "groupeName",
   });
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
-
-  const [disableCreate, setDisableCreate] = useState(true);
 
   const handleRemoveGroup = (group) => {
     setRemovedGroup(group);
@@ -143,23 +123,6 @@ export default function Groups() {
       });
 
     history.push("/groups");
-  };
-
-  const getBlueprints = () => {
-    axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
-      .then((response) => {
-        setBlueprints(response.data);
-        setSelectedBlueprint(getBlueprintsOptions(response.data)[0]);
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          auth.authenticated = false;
-          history.push("/signin");
-        }
-        if (error.response.status === 500) {
-          setBlueprints([]);
-        }
-      });
   };
 
   useEffect(() => {
@@ -201,7 +164,6 @@ export default function Groups() {
             });
         });
         setGroups(allGroups);
-        getBlueprints();
         setLoading(false);
       })
       .catch((error) => {
@@ -210,7 +172,6 @@ export default function Groups() {
           history.push("/signin");
         }
         if (error.response.status === 404) {
-          getBlueprints();
           setZeroGroup(true);
         }
       });
@@ -218,83 +179,6 @@ export default function Groups() {
       clearInterval(timer);
     };
   }, [openCreate, openRemoveDialog, history]);
-
-  const handleCheckGroupNameExists = (searchGroupNameValue) => {
-    setDisableCreate(true);
-    axios(
-      configApiCall(
-        api_path_get_list_group + "?groupName=" + searchGroupNameValue,
-        "GET",
-        null,
-        null
-      )
-    )
-      .then((response) => {
-        let allGroups = response.data;
-        setDisableCreate(false);
-        setGroupNameExits(false);
-        allGroups.forEach((group) => {
-          if (searchGroupNameValue === group.name) {
-            setDisableCreate(true);
-            setGroupNameExits(true);
-          }
-        });
-      })
-      .catch(() => {
-        setDisableCreate(false);
-        setGroupNameExits(false);
-      });
-  };
-
-  const initCheckGroupNameExists = useCallback(
-    debounce(
-      (searchGroupNameValue) =>
-        handleCheckGroupNameExists(searchGroupNameValue),
-      500
-    ),
-    []
-  );
-
-  const handleCloseCreate = () => {
-    setOpenCreate(false);
-  };
-
-  const handleCreateGroup = () => {
-    let blueprintName = "";
-    if (selectedBlueprint.label !== "No blueprint")
-      blueprintName = selectedBlueprint.label;
-
-    axios(
-      configApiCall(
-        api_path_post_create_group,
-        "POST",
-        { name: groupName, blueprintName },
-        null
-      )
-    )
-      .then((response) => {
-        console.log("Successfully created " + groupName);
-        setOpenCreate(false);
-        history.push(`/group/${response.data.id}`);
-      })
-      .catch((error) => {
-        alert("Error creating group: " + error);
-        setOpenCreate(false);
-      });
-  };
-
-  const blueprintsOptionsItems = tool.buildSelectMenuItems(
-    getBlueprintsOptions(blueprints)
-  );
-
-  const [selectedBlueprint, setSelectedBlueprint] = useState({
-    value: 0,
-    label: "No blueprint",
-  });
-
-  const handleBlueprintsChange = (e) => {
-    setSelectedBlueprint(getBlueprintsOptions(blueprints)[e.target.value]);
-  };
 
   if (!auth.hasAdminScope()) {
     return (
@@ -310,89 +194,11 @@ export default function Groups() {
   } else {
     return (
       <div>
-        <Dialog
-          open={openCreate}
-          onClose={handleCloseCreate}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {i18next.t("create_group", "Create group")}
-          </DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12} md={12}>
-                <FormControl
-                  className={classes.margin}
-                  error={groupNameExits}
-                  fullWidth
-                >
-                  <InputLabel htmlFor="groupName">
-                    {i18next.t("group_name", "Group name")}
-                  </InputLabel>
-                  <Input
-                    id="groupName"
-                    placeholder={i18next.t("group_name", "Group name")}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <PeopleOutlineIcon />
-                      </InputAdornment>
-                    }
-                    onChange={(e) => {
-                      setGroupName(e.target.value);
-                      initCheckGroupNameExists(e.target.value);
-                    }}
-                  />
-                </FormControl>
-                {disableCreate && groupName.length > 0 && (
-                  <p>
-                    {i18next.t(
-                      "group_name_already_exists",
-                      "Group name already exists!"
-                    )}
-                  </p>
-                )}
-                {disableCreate && groupName.length === 0 && (
-                  <p>
-                    {i18next.t("group_name_is_empty", "Group name is empty")}
-                  </p>
-                )}
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <InputLabel
-                  className={classes.inputBottomMargin}
-                  htmlFor="blueprint"
-                >
-                  {i18next.t("select_blueprint", "Select a blueprint")}
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  fullWidth
-                  value={selectedBlueprint.value}
-                  onChange={handleBlueprintsChange}
-                  variant="outlined"
-                  disabled={blueprints.length === 0}
-                >
-                  {blueprintsOptionsItems}
-                </Select>
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseCreate} color="primary">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleCreateGroup}
-              color="info"
-              className={classes.whiteButtonText}
-              disabled={disableCreate}
-              autoFocus
-            >
-              Create
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <CreateGroupDialog
+          openCreate={openCreate}
+          setOpenCreate={setOpenCreate}
+          classes={classes}
+        />
         <Dialog
           open={openRemoveDialog}
           onClose={() => setOpenRemoveDialog(false)}
