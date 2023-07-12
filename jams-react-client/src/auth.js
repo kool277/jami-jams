@@ -173,12 +173,17 @@ class Auth {
 
   checkForUpdates(cb) {
     if (this.installed && this.authenticated) {
-      axios(
-        configApiCall(api_path_get_subscription_status, "GET", null, null)
-      ).then((response) => {
-        this.activated = response.data["activated"];
-        cb();
-      });
+      axios(configApiCall(api_path_get_subscription_status, "GET", null, null))
+        .then((response) => {
+          this.activated = response.data["activated"];
+          cb();
+        })
+        .catch((error) => {
+          if (error.response.status === 401) {
+            this.authenticated = false;
+          }
+          cb();
+        });
     } else {
       axios(
         configApiCall(api_path_get_install_lastKnownStep, "GET", null, null)
