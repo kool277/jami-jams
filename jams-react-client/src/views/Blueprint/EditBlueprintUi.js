@@ -33,7 +33,7 @@ import { PolicyDataContext } from "./PolicyDataContext";
 const styles = {
   ...dashboardStyle,
   card: {
-    minWidth: "500px",
+    minWidth: "600px",
   },
   cardBody: {
     flexGrow: 1,
@@ -110,7 +110,15 @@ export default function EditBlueprintUi({ blueprintName }) {
   const [opacity, setOpacity] = useState(0);
 
   const handleUpdateUi = (field, value) => {
-    const newUiCustomization = { ...uiCustomization, [field]: value };
+    let newUiCustomization;
+
+    if (typeof field === "object") {
+      // If field is an object, it means that the whole uiCustomization object is passed
+      newUiCustomization = field;
+    } else {
+      newUiCustomization = { ...uiCustomization, [field]: value };
+    }
+
     const newUi = newUiCustomization.isCustomizationEnabled
       ? newUiCustomization
       : DEFAULT_UI_CUSTOMIZATION;
@@ -118,7 +126,10 @@ export default function EditBlueprintUi({ blueprintName }) {
     if (
       field === "title" ||
       field === "description" ||
-      field === "backgroundColor"
+      field === "backgroundColor" ||
+      field === "tipBoxAndIdColor" ||
+      field === "mainBoxColor" ||
+      field === "logoSize"
     ) {
       // Don't fade in for those fields
       setOldUiCustomization(newUiCustomization);
@@ -149,18 +160,16 @@ export default function EditBlueprintUi({ blueprintName }) {
         const newUrl = `${api_path_get_image}/${blueprintName}/${imgType}/${acceptedFiles[0].name}`;
 
         if (imgType === "background") {
-          setUiCustomization({
+          handleUpdateUi({
             ...uiCustomization,
             backgroundUrl: newUrl,
             backgroundColor: "",
           });
-          handleUpdateUi("backgroundUrl", newUrl);
         } else if (imgType === "logo") {
-          setUiCustomization({
+          handleUpdateUi({
             ...uiCustomization,
             logoUrl: newUrl,
           });
-          handleUpdateUi("logoUrl", newUrl);
         }
       })
       .catch((error) => {

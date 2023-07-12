@@ -7,9 +7,9 @@ const styles = {
   root: {
     maxWidth: "115px",
     flexBasis: "100%",
-    backgroundColor: "#f4f4f4",
+    backgroundColor: (props) => props.color,
     padding: "0px 5px 5px 5px",
-    borderRadius: "10px",
+    borderRadius: "3px",
   },
   img: {
     verticalAlign: "middle",
@@ -27,8 +27,8 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function TipBox({ text }) {
-  const classes = useStyles();
+export default function TipBox({ color, text }) {
+  const classes = useStyles({ color });
 
   return (
     <div className={classes.root}>

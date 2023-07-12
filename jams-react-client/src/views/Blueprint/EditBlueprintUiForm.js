@@ -1,41 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Checkbox from "@mui/material/Checkbox";
 import Switch from "@mui/material/Switch";
-import { HexColorPicker } from "react-colorful";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { TextField } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Box, Button, Slider, TextField } from "@mui/material";
 
 import Typography from "@mui/material/Typography";
 import CustomImgDropZone from "components/CustomImgDropZone/CustomImgDropZone";
 
 import i18next from "i18next";
-
-const styles = {
-  colorButtonStyle: {
-    borderRadius: "50%",
-    width: "20px",
-    height: "20px",
-    border: "1px solid grey",
-    outline: "none",
-    cursor: "pointer",
-  },
-  popover: {
-    position: "absolute",
-    zIndex: "2",
-  },
-  cover: {
-    position: "fixed",
-    top: "0px",
-    right: "0px",
-    bottom: "0px",
-    left: "0px",
-  },
-};
-
-const useStyles = makeStyles(styles);
+import ColorPickerPopup from "./ColorPickerPopup";
+import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
 
 const IsCustomizationEnabledForm = ({
   isCustomizationEnabled,
@@ -102,6 +78,7 @@ const TitleForm = ({ uiCustomization, handleUpdateUi }) => {
         }}
         fullWidth
         inputProps={{ maxLength: 40 }}
+        variant="standard"
       />
     </FormGroup>
   );
@@ -150,6 +127,7 @@ const DescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
             }}
             fullWidth
             inputProps={{ maxLength: 100 }}
+            variant="standard"
           />
         </>
       )}
@@ -204,90 +182,113 @@ const CustomBackgroundForm = ({
   handleImgDrop,
   bgFile,
 }) => {
-  const classes = useStyles();
-
-  const [displayColorPicker, setDisplayColorPicker] = useState(false);
-
-  const handleClickColor = () => {
-    setDisplayColorPicker(!displayColorPicker);
-  };
-
   const setBgFile = (value) => {
     handleUpdateUi("bgFile", value);
   };
 
-  const handleCloseColor = () => {
-    setDisplayColorPicker(false);
-  };
-
   return (
-    <FormGroup row>
-      {uiCustomization.hasBackground && (
-        <>
-          <span>
-            {i18next.t(
-              "instruction_background",
-              "Choose a background color or a background image"
-            )}
-          </span>
-          <FormGroup
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "left",
-              flexDirection: "row",
-              padding: "10px 0",
+    <>
+      <span>
+        {i18next.t(
+          "instruction_background",
+          "Choose a background color or a background image"
+        )}
+      </span>
+      <FormGroup
+        row
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "left",
+          flexDirection: "row",
+          padding: "10px 0",
+        }}
+      >
+        <ColorPickerPopup
+          color={uiCustomization.backgroundColor}
+          onChange={(color) => {
+            handleColorChange(color);
+            handleUpdateUi("backgroundColor", color);
+          }}
+        />
+
+        <div style={{ padding: "0 20px" }}>
+          <Typography>{i18next.t("or", "or")}</Typography>
+        </div>
+
+        <div style={{ padding: "0 20px" }}>
+          <CustomImgDropZone
+            onDrop={(files) => {
+              handleImgDrop(files, "background");
             }}
-          >
-            <div style={{ padding: "0 20px" }}>
-              <button
-                style={{
-                  backgroundColor: uiCustomization.backgroundColor,
-                }}
-                className={classes.colorButtonStyle}
-                onClick={() => {
-                  handleClickColor();
-                }}
-              />
-              {displayColorPicker && (
-                <div className={classes.popover}>
-                  <div className={classes.cover} onClick={handleCloseColor} />
-                  <HexColorPicker
-                    color={uiCustomization.backgroundColor}
-                    onChange={(color) => {
-                      handleColorChange(color);
-                      handleUpdateUi("backgroundColor", color);
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+            label={i18next
+              .t("upload_an_image", "Upload an image")
+              .toUpperCase()}
+            file={bgFile}
+            setFile={setBgFile}
+            handleDelete={(e) => {
+              handleUpdateUi("backgroundUrl", "");
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          />
+        </div>
+      </FormGroup>
+    </>
+  );
+};
 
-            <div style={{ padding: "0 20px" }}>
-              <Typography>{i18next.t("or", "or")}</Typography>
-            </div>
+const TipBoxAndIdColorForm = ({ uiCustomization, handleUpdateUi }) => {
+  return (
+    <>
+      <span>
+        {i18next.t("tip_box_id_color", "Tip Box's and Jami ID color")}
+      </span>
+      <ColorPickerPopup
+        hasAlphaChannel
+        color={uiCustomization.tipBoxAndIdColor}
+        onChange={(color) => {
+          handleUpdateUi("tipBoxAndIdColor", color);
+        }}
+      />
+    </>
+  );
+};
 
-            <div style={{ padding: "0 20px" }}>
-              <CustomImgDropZone
-                onDrop={(files) => {
-                  handleImgDrop(files, "background");
-                }}
-                label={i18next
-                  .t("upload_an_image", "Upload an image")
-                  .toUpperCase()}
-                file={bgFile}
-                setFile={setBgFile}
-                handleDelete={(e) => {
-                  handleUpdateUi("backgroundUrl", "");
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              />
-            </div>
-          </FormGroup>
+const MainBoxColorForm = ({ uiCustomization, handleUpdateUi }) => {
+  return (
+    <>
+      <FormGroup row>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={uiCustomization.hasMainBoxColor}
+              color="primary"
+              onChange={(e) => {
+                handleUpdateUi("hasMainBoxColor", e.target.checked);
+              }}
+              name="hasMainBoxColor"
+            />
+          }
+          label={i18next.t(
+            "enable_main_box",
+            "Add a box behind the title, description and the Jami ID"
+          )}
+        />
+      </FormGroup>
+      {uiCustomization.hasMainBoxColor && (
+        <>
+          <span>{i18next.t("main_box_color", "Box color")}</span>
+          <ColorPickerPopup
+            hasAlphaChannel
+            color={uiCustomization.mainBoxColor}
+            onChange={(color) => {
+              handleUpdateUi("mainBoxColor", color);
+            }}
+          />
         </>
       )}
-    </FormGroup>
+    </>
   );
 };
 
@@ -345,6 +346,25 @@ const LogoForm = ({
         />
       </FormGroup>
     </>
+  );
+};
+
+const LogoSizeForm = ({ uiCustomization, handleUpdateUi }) => {
+  return (
+    <Box sx={{ width: "200px" }}>
+      <span>{i18next.t("logo_size", "Size")}</span>
+      <Slider
+        size="small"
+        min={10}
+        max={100}
+        valueLabelDisplay="auto"
+        value={uiCustomization.logoSize}
+        onChange={(e, value) => {
+          handleUpdateUi("logoSize", value);
+        }}
+        sx={{ marginLeft: "1rem" }}
+      />
+    </Box>
   );
 };
 
@@ -409,25 +429,55 @@ const EditBlueprintUiForm = ({
             uiCustomization={uiCustomization}
             handleUpdateUi={handleUpdateUi}
           />
-          <CustomBackgroundForm
+          {uiCustomization.hasBackground && (
+            <CustomBackgroundForm
+              uiCustomization={uiCustomization}
+              handleColorChange={handleColorChange}
+              handleUpdateUi={handleUpdateUi}
+              handleImgDrop={handleImgDrop}
+              bgFile={bgFile}
+            />
+          )}
+          <TipBoxAndIdColorForm
             uiCustomization={uiCustomization}
-            handleColorChange={handleColorChange}
             handleUpdateUi={handleUpdateUi}
-            handleImgDrop={handleImgDrop}
-            bgFile={bgFile}
           />
+
+          <MainBoxColorForm
+            uiCustomization={uiCustomization}
+            handleUpdateUi={handleUpdateUi}
+          />
+
           <HasLogoForm
             uiCustomization={uiCustomization}
             handleUpdateUi={handleUpdateUi}
           />
           {uiCustomization.hasLogo && (
-            <LogoForm
-              handleImgDrop={handleImgDrop}
-              handleDeleteLogo={handleDeleteLogo}
-              handleUpdateUi={handleUpdateUi}
-              logoFile={logoFile}
-            />
+            <>
+              <LogoForm
+                handleImgDrop={handleImgDrop}
+                handleDeleteLogo={handleDeleteLogo}
+                handleUpdateUi={handleUpdateUi}
+                logoFile={logoFile}
+              />
+              <LogoSizeForm
+                uiCustomization={uiCustomization}
+                handleUpdateUi={handleUpdateUi}
+              />
+            </>
           )}
+
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleUpdateUi({
+                ...DEFAULT_UI_CUSTOMIZATION,
+                isCustomizationEnabled: true,
+              });
+            }}
+          >
+            {i18next.t("default_settings", "Default Settings").toUpperCase()}
+          </Button>
         </>
       )}
     </>

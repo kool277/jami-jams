@@ -4,6 +4,7 @@ import i18next from "i18next";
 import configApiCall from "api";
 import { api_path_blueprints } from "globalUrls";
 import { debounce } from "lodash";
+import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
 
 const updatePerms = (data, field, value) => {
   data.defaultModerators = data.blueprintModerators
@@ -50,6 +51,17 @@ const updateConfig = (data) => {
   return data;
 };
 
+const convertRgbaToArgb = (rgba) => {
+  if (rgba.length === 7) {
+    return rgba;
+  }
+  if (rgba.length !== 9) {
+    throw new Error(`Invalid rgba value: "${rgba}}"`);
+  }
+
+  return "#" + rgba.substr(7, 2) + rgba.substr(1, 6);
+};
+
 const updateUiCustomization = (data) => {
   if (data.uiCustomization.isCustomizationEnabled === false) {
     return data;
@@ -66,8 +78,13 @@ const updateUiCustomization = (data) => {
     backgroundColor,
     backgroundUrl,
 
+    tipBoxAndIdColor,
+    hasMainBoxColor,
+    mainBoxColor,
+
     hasLogo,
     logoUrl,
+    logoSize,
   } = data.uiCustomization;
   const ui = {};
 
@@ -87,7 +104,7 @@ const updateUiCustomization = (data) => {
 
   if (hasBackground === false) {
     ui.backgroundType = "default";
-  } else if (backgroundUrl !== "") {
+  } else if (backgroundUrl) {
     ui.backgroundType = "image";
     ui.backgroundColorOrUrl = backgroundUrl;
   } else if (backgroundColor !== "") {
@@ -97,10 +114,20 @@ const updateUiCustomization = (data) => {
     ui.backgroundType = "default";
   }
 
+  if (tipBoxAndIdColor !== DEFAULT_UI_CUSTOMIZATION.tipBoxAndIdColor) {
+    ui.tipBoxAndIdColor = convertRgbaToArgb(tipBoxAndIdColor);
+  }
+  if (hasMainBoxColor === true && mainBoxColor) {
+    ui.mainBoxColor = convertRgbaToArgb(mainBoxColor);
+  }
+
   if (hasLogo === false) {
     ui.logoUrl = "";
   } else if (logoUrl !== "") {
     ui.logoUrl = logoUrl;
+  }
+  if (logoSize !== DEFAULT_UI_CUSTOMIZATION.logoSize) {
+    ui.logoSize = logoSize;
   }
 
   console.log("updateUiCustomization", ui);

@@ -10,8 +10,13 @@ export const DEFAULT_UI_CUSTOMIZATION = {
   backgroundColor: "",
   backgroundUrl: "",
 
+  tipBoxAndIdColor: "#ffffffff",
+  hasMainBoxColor: false,
+  mainBoxColor: "#ffffff80",
+
   hasLogo: true,
   logoUrl: "",
+  logoSize: 100,
 };
 
 export const DEFAULT_POLICY_DATA = {

@@ -4,49 +4,53 @@ import { makeStyles } from "@mui/styles";
 
 import jamiIdImage from "assets/img/jami_id.svg";
 import copySvg from "assets/img/BTN_Copy.svg";
-import editSvg from "assets/img/BTN_Edit.svg";
 import shareSvg from "assets/img/BTN_Share.svg";
 import { infoColor } from "assets/jss/material-dashboard-react";
 
 const styles = {
   root: {
-    backgroundColor: (props) => (props.isCompactDisplay ? "#f4f4f4" : "white"),
-    maxWidth: (props) => (props.isCompactDisplay ? "100%" : "150px"),
-    width: (props) => (props.isCompactDisplay ? "100%" : "150px"),
-    height: (props) => (props.isCompactDisplay ? "20px" : "40px"),
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     position: "relative",
-    borderRadius: "9px",
-    overflow: "hidden",
-    margin: "auto",
+    width: "150px",
+    height: "20px",
+    borderRadius: "5px",
+  },
+  main: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "4px",
+    width: "100px",
+    height: "100%",
+    borderRadius: "5px 0px 0px 5px",
+    backgroundColor: (props) => props.color,
   },
   logo: {
-    position: "absolute",
-    left: "-1px",
-    top: 0,
-    backgroundColor: infoColor[0],
-    borderRadius: "20px 20px 20px 0px",
-    padding: "0px 5px 0px 5px",
+    marginLeft: "5px",
+    height: "12px",
   },
   nameplate: {
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    transform: (props) =>
-      props.isCompactDisplay ? "translate(-50%, -50%)" : "translate(-50%, 50%)",
+    flex: 2,
     textAlign: "center",
-    fontSize: "5px",
+    fontSize: "12px",
+    color: infoColor[0],
   },
   icons: {
-    position: "absolute",
-    right: "0",
-    height: "16px",
-    top: (props) => (props.isCompactDisplay ? "50%" : "0"),
-    transform: (props) =>
-      props.isCompactDisplay ? "translate(0%, -50%)" : "none",
-    marginRight: "2px",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "6px",
+    padding: "0px 6px 0px 6px",
+    height: "100%",
+    marginLeft: "1px",
+    borderRadius: "0px 5px 5px 0px",
+    backgroundColor: (props) => props.color,
   },
   icon: {
-    margin: "5px",
     width: "6px",
     height: "6px",
   },
@@ -54,19 +58,16 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function JamiIdCard({ isCompactDisplay }) {
-  const classes = useStyles({ isCompactDisplay });
+export default function JamiIdCard({ color, isCompactDisplay }) {
+  const classes = useStyles({ color, isCompactDisplay });
 
   return (
     <div className={classes.root}>
-      <div className={classes.logo}>
-        <img src={jamiIdImage} alt="jami id" />
+      <div className={classes.main}>
+        <img className={classes.logo} src={jamiIdImage} alt="jami id" />
+        <div className={classes.nameplate}>placeholder</div>
       </div>
-
-      <div className={classes.nameplate}>placeholder</div>
-
       <div className={classes.icons}>
-        <img src={editSvg} alt="edit" className={classes.icon} />
         <img src={copySvg} alt="copy" className={classes.icon} />
         <img src={shareSvg} alt="share" className={classes.icon} />
       </div>

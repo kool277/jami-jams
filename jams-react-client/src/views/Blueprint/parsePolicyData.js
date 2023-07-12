@@ -60,6 +60,17 @@ const setConfigurationSettings = (policyData) => {
   return policyData;
 };
 
+const convertArgbToRgba = (argb) => {
+  if (argb.length === 7) {
+    return argb;
+  }
+  if (argb.length !== 9) {
+    throw new Error(`Invalid argb value: "${argb}}"`);
+  }
+
+  return "#" + argb.substr(3, 6) + argb.substr(1, 2);
+};
+
 const setCustomizationSettings = (policyData) => {
   if (!policyData.uiCustomization) {
     policyData.uiCustomization = DEFAULT_UI_CUSTOMIZATION;
@@ -85,11 +96,19 @@ const setCustomizationSettings = (policyData) => {
     ui.backgroundUrl = result.backgroundColorOrUrl;
   }
 
+  ui.tipBoxAndIdColor = result.tipBoxAndIdColor
+    ? convertArgbToRgba(result.tipBoxAndIdColor)
+    : DEFAULT_UI_CUSTOMIZATION.tipBoxAndIdColor;
+
+  ui.hasMainBoxColor = result.mainBoxColor !== undefined;
+  ui.mainBoxColor = result.mainBoxColor
+    ? convertArgbToRgba(result.mainBoxColor)
+    : DEFAULT_UI_CUSTOMIZATION.mainBoxColor;
+
   // Get the name of the file from the url
   ui.hasLogo = result.logoUrl !== "";
-  if (ui.hasLogo) {
-    ui.logoUrl = result.logoUrl;
-  }
+  ui.logoUrl = result.logoUrl;
+  ui.logoSize = result.logoSize;
 
   policyData.uiCustomization = ui;
   return policyData;
