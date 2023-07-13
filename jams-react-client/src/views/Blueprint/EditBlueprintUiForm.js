@@ -88,7 +88,7 @@ const TitleForm = ({ uiCustomization, handleUpdateUi }) => {
       <span>
         {i18next.t(
           "instruction_title",
-          "Use Jami title or personalize it (max 30 characters)"
+          "Use Jami title or personalize it (max 40 characters)"
         )}
       </span>
       <TextField
@@ -99,7 +99,7 @@ const TitleForm = ({ uiCustomization, handleUpdateUi }) => {
           handleUpdateUi("title", e.target.value);
         }}
         fullWidth
-        inputProps={{ maxLength: 30 }}
+        inputProps={{ maxLength: 40 }}
       />
     </FormGroup>
   );
