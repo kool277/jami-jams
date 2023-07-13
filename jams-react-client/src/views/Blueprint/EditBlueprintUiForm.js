@@ -270,7 +270,7 @@ const CustomBackgroundForm = ({
                 onDrop={(files) => {
                   handleImgDrop(files, "background");
                 }}
-                label={i18next.t("upload_an_image", "UPLOAD AN IMAGE")}
+                label={i18next.t("upload_an_image", "Upload an image").toUpperCase()}
                 file={bgFile}
                 setFile={setBgFile}
                 handleDelete={(e) => {
@@ -329,7 +329,7 @@ const LogoForm = ({
       <FormGroup row style={{ padding: "10px 0" }}>
         <CustomImgDropZone
           onDrop={(files) => handleImgDrop(files, "logo")}
-          label={i18next.t("upload_a_logotype", "UPLOAD A LOGOTYPE")}
+          label={i18next.t("upload_a_logotype", "Upload a logotype").toUpperCase()}
           file={logoFile}
           setFile={setLogoFile}
           handleDelete={(e) => {
