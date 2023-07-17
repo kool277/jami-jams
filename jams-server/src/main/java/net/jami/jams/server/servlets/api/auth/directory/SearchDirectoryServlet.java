@@ -149,10 +149,7 @@ public class SearchDirectoryServlet extends HttpServlet {
         JSONObject obj = new JSONObject();
         obj.put("profiles", userProfiles);
         obj.put("numPages", dataStore.NUM_PAGES);
-        if (!userProfiles.isEmpty()) {
-            resp.getOutputStream().write((obj.toString()).getBytes());
-            resp.setStatus(200);
-        } else
-            resp.sendError(204, "No users were found!");
+        resp.getOutputStream().write((obj.toString()).getBytes());
+        resp.setStatus(200);
     }
 }

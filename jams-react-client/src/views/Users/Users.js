@@ -73,7 +73,7 @@ export default function Users() {
   const classes = useStyles();
   const history = useHistory();
   const [users, setUsers] = useState([]);
-  const [noUsersFound, setNoUsersFound] = useState(false);
+  const noUsersFound = users.length === 0;
   const [noMatchFound, setNoMatchFound] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -104,13 +104,8 @@ export default function Users() {
       )
     )
       .then((response) => {
-        if (response.status !== 204) {
-          setUsers(response.data.profiles);
-
-          setNumberPages(response.data.numPages);
-        } else {
-          setNoUsersFound(true);
-        }
+        setUsers(response.data.profiles);
+        setNumberPages(response.data.numPages);
         setLoading(false);
       })
       .catch((error) => {
@@ -140,16 +135,12 @@ export default function Users() {
     )
       .then((response) => {
         setLoading(false);
-        if (response.status !== 204) {
-          setUsers(response.data.profiles);
-          setNumberPages(response.data.numPages);
-        } else {
-          setNoMatchFound(true);
-        }
+        setUsers(response.data.profiles);
+        setNumberPages(response.data.numPages);
+        setNoMatchFound(response.data.profiles.length === 0);
       })
       .catch((error) => {
         setUsers([]);
-        setNoMatchFound(true);
         setLoading(false);
         if (error.response.status === 401) {
           auth.authenticated = false;

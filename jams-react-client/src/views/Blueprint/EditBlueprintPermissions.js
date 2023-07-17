@@ -130,11 +130,6 @@ export default function EditBlueprintPermissions(props) {
       )
     )
       .then((response) => {
-        if (response.status === 204) {
-          setUsers([]);
-          return;
-        }
-
         const profilesResults = response.data.profiles;
         const usernames = users.map((user) => user.username);
 
