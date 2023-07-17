@@ -260,7 +260,7 @@
     "welcome_has_description": "Leírás",
     "welcome_Description": "Oszd meg ennek a fióknak a Jami-azonosítóját, hogy mások könnyebben kapcsolatba léphessenek Veled!",
     "welcome_has_Tips": "Tippek megjelenítésének engedélyezése",
-    "instruction_title": "Use Jami title or personalize it (max 30 characters)",
+    "instruction_title": "Use Jami title or personalize it (max 40 characters)",
     "instruction_description": "Jami leírásának használata vagy személyre szabása (legfeljebb 100 karakter)",
     "welcome_has_BackgroundCustom": "Háttér",
     "instruction_background": "Válasszon egy háttérszínt vagy egy háttérképet",

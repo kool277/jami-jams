@@ -260,7 +260,7 @@
     "welcome_has_description": "Description",
     "welcome_Description": "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!",
     "welcome_has_Tips": "Enable Tips display",
-    "instruction_title": "Use Jami title or personalize it (max 30 characters)",
+    "instruction_title": "Use Jami title or personalize it (max 40 characters)",
     "instruction_description": "Use Jami description or personalize it (max 100 characters)",
     "welcome_has_BackgroundCustom": "Background",
     "instruction_background": "Choose a background color or a background image",
