@@ -10,7 +10,6 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-import { infoColor } from "assets/jss/material-dashboard-react.js";
 import MuiAlert from "@mui/material/Alert";
 
 import auth from "auth.js";
@@ -43,10 +42,11 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
+function a11yProps(value, index) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
+    style: { color: index === value ? "inherit" : "#ffffff80" },
   };
 }
 
@@ -77,16 +77,21 @@ export default function Settings() {
   } else {
     return (
       <div>
-        <AppBar position="static" style={{ background: infoColor[0] }}>
+        <AppBar position="static" color="primary">
           <Tabs
             value={value}
             onChange={handleChange}
-            aria-label="simple tabs example"
+            aria-label="settings tabs"
+            textColor="secondary"
+            indicatorColor="secondary"
           >
-            <Tab label={i18next.t("general", "General")} {...a11yProps(0)} />
+            <Tab
+              label={i18next.t("general", "General")}
+              {...a11yProps(value, 0)}
+            />
             <Tab
               label={i18next.t("subscription", "Subscription")}
-              {...a11yProps(1)}
+              {...a11yProps(value, 1)}
             />
           </Tabs>
         </AppBar>

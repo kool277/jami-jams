@@ -12,8 +12,6 @@ import EditBlueprintConfiguration from "./EditBlueprintConfiguration";
 import EditBlueprintUi from "./EditBlueprintUi";
 import { PolicyDataContextProvider } from "./PolicyDataContext";
 
-import { infoColor } from "assets/jss/material-dashboard-react.js";
-
 import i18next from "i18next";
 
 function TabPanel(props) {
@@ -42,10 +40,11 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-const a11yProps = (index) => {
+const a11yProps = (value, index) => {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
+    style: { color: index === value ? "inherit" : "#ffffff80" },
   };
 };
 
@@ -58,23 +57,25 @@ export default function Blueprint({ blueprintName }) {
 
   return (
     <div>
-      <AppBar position="static" style={{ background: infoColor[0] }}>
+      <AppBar position="static" color="primary">
         <Tabs
           value={openedTab}
           onChange={handleChange}
-          aria-label="simple tabs example"
+          aria-label="blueprint tabs"
+          textColor="secondary"
+          indicatorColor="secondary"
         >
           <Tab
             label={i18next.t("permissions", "Permissions")}
-            {...a11yProps(0)}
+            {...a11yProps(openedTab, 0)}
           />
           <Tab
             label={i18next.t("configuration", "Configuration")}
-            {...a11yProps(1)}
+            {...a11yProps(openedTab, 1)}
           />
           <Tab
             label={i18next.t("customization", "Customization")}
-            {...a11yProps(2)}
+            {...a11yProps(openedTab, 2)}
           />
         </Tabs>
       </AppBar>

@@ -14,7 +14,6 @@ import EditCreateUserProfile from "./EditCreateUserProfile";
 
 import Contacts from "views/Contacts/Contacts";
 
-import { infoColor } from "assets/jss/material-dashboard-react.js";
 import DisplayUserProfile from "./DisplayUserProfile";
 
 import i18next from "i18next";
@@ -45,10 +44,11 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
+function a11yProps(value, index) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
+    style: { color: index === value ? "inherit" : "#ffffff80" },
   };
 }
 
@@ -70,15 +70,26 @@ export default function UserProfile(props) {
 
   return (
     <div>
-      <AppBar position="static" style={{ background: infoColor[0] }}>
+      <AppBar position="static" color="primary">
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="simple tabs example"
+          aria-label="user profile tabs"
+          textColor="secondary"
+          indicatorColor="secondary"
         >
-          <Tab label={i18next.t("profile", "Profile")} {...a11yProps(0)} />
-          <Tab label={i18next.t("devices", "Devices")} {...a11yProps(1)} />
-          <Tab label={i18next.t("contacts", "Contacts")} {...a11yProps(2)} />
+          <Tab
+            label={i18next.t("profile", "Profile")}
+            {...a11yProps(value, 0)}
+          />
+          <Tab
+            label={i18next.t("devices", "Devices")}
+            {...a11yProps(value, 1)}
+          />
+          <Tab
+            label={i18next.t("contacts", "Contacts")}
+            {...a11yProps(value, 2)}
+          />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
