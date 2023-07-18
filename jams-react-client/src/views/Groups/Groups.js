@@ -298,7 +298,7 @@ export default function Groups() {
                             <strong style={{ marginRight: "5px" }}>
                               {group.groupMembersLength}
                             </strong>
-                            {i18next.t("users", "users")}
+                            {i18next.t("users", "Users")}
                           </li>
                           <li>
                             <MailOutlineIcon
