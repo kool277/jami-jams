@@ -97,17 +97,11 @@ public class RegisterDeviceFlow {
             }
 
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
-            if (!group.isEmpty() && group.hasBlueprint()) {
-                StatementElement st2 = new StatementElement("name", "=", group.getBlueprint(), "");
-                StatementList statementList2 = new StatementList();
-                statementList2.addStatement((st2));
-                try {
-                    Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
-                    response.setPolicyData(policy.getPolicyData());
-                } catch (Exception e1) {
-                    log.warn("No policy available for user - not adding a policy component to response");
-                }
+            String policyData = getPolicyData(group);
+            if (policyData != null) {
+                response.setPolicyData(policyData);
             }
+
             // Device receipt
             String[] devReceipt = DeviceReceiptGenerator.generateReceipt(user.getPrivateKey(),
                     user.getCertificate().getPublicKey(), device.getCertificate().getPublicKey(), user.getEthAddress());
@@ -126,5 +120,21 @@ public class RegisterDeviceFlow {
             log.error("An exception has occurred while trying to enroll a device with error {}", e.getMessage());
             return null;
         }
+    }
+
+    private static String getPolicyData(Group group) {
+        if (!group.isEmpty() && group.hasBlueprint()) {
+            StatementElement st2 = new StatementElement("name", "=", group.getBlueprint(), "");
+            StatementList statementList2 = new StatementList();
+            statementList2.addStatement((st2));
+            try {
+                Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
+                return policy.getPolicyData();
+            } catch (Exception e1) {
+                log.warn("No policy available for user - not adding a policy component to response");
+            }
+        }
+
+        return null;
     }
 }

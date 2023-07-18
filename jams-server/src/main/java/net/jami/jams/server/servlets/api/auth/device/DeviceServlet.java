@@ -22,10 +22,16 @@
  */
 package net.jami.jams.server.servlets.api.auth.device;
 
+import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.Server.dataStore;
+
+import java.io.IOException;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -43,13 +49,6 @@ import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
-import com.google.gson.Gson;
-
-import java.io.IOException;
-
-import static net.jami.jams.server.Server.certificateAuthority;
-import static net.jami.jams.server.Server.dataStore;
-
 @WebServlet("/api/auth/device/*")
 public class DeviceServlet extends HttpServlet {
 
@@ -63,26 +62,27 @@ public class DeviceServlet extends HttpServlet {
      *
      * @apiSuccess (200) {body} Device device information
      * @apiSuccessExample {json} Success-Response:
-     * {
-     *     "certificate":"pem_encoded_certificate",
-     *     "displayName":"My Galaxy S8",
-     *     "deviceId":"6aec6252ad",
-     *     "revoked":true
-     * }
+     *                    {
+     *                    "certificate":"pem_encoded_certificate",
+     *                    "displayName":"My Galaxy S8",
+     *                    "deviceId":"6aec6252ad",
+     *                    "revoked":true
+     *                    }
      * @apiError (500) {null} null Device could not be retrieved
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
-        String deviceId = req.getPathInfo().replace("/","");
+        String deviceId = req.getPathInfo().replace("/", "");
         StatementList statementList = new StatementList();
-        StatementElement st1 = new StatementElement("owner","=",username,"AND");
-        StatementElement st2 = new StatementElement("deviceId","=",deviceId,"");
+        StatementElement st1 = new StatementElement("owner", "=", username, "AND");
+        StatementElement st2 = new StatementElement("deviceId", "=", deviceId, "");
         statementList.addStatement(st1);
         statementList.addStatement(st2);
         Device device = dataStore.getDeviceDao().getObjects(statementList).get(0);
-        if(certificateAuthority.getLatestCRL().get() !=  null)
-            device.setRevoked(certificateAuthority.getLatestCRL().get().getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
+        if (certificateAuthority.getLatestCRL().get() != null)
+            device.setRevoked(certificateAuthority.getLatestCRL().get()
+                    .getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
         else
             device.setRevoked(false);
 
@@ -97,113 +97,85 @@ public class DeviceServlet extends HttpServlet {
      *
      * @apiParam {body} DeviceRegistrationRequest device registration request
      * @apiParamExample {json} Request-Example:
-     * {
-     *     "csr":"pem_encoded_csr",
-     *     "deviceName":"My Galaxy S8"
-     * }
+     *                  {
+     *                  "csr":"pem_encoded_csr",
+     *                  "deviceName":"My Galaxy S8"
+     *                  }
      *
      * @apiSuccess (200) {body} DeviceRegistrationResponse registration response
      * @apiError (500) {null} null Device could not be enrolled
      * @apiSuccessExample {json} Success-Response:
-     * {
-     *     "certificateChain":"pem_encoded_certificate_chain"
-     *     "displayName":"John Doe"
-     *     "nameServer":"https://mydomain.com"
-     *     "deviceReceipt": "device_receipt_object"
-     *     "receiptSignature":"receipt_signature_object"
-     *     "userPhoto":"base64_encoded_photo"
-     * }
+     *                    {
+     *                    "certificateChain":"pem_encoded_certificate_chain"
+     *                    "displayName":"John Doe"
+     *                    "nameServer":"https://mydomain.com"
+     *                    "deviceReceipt": "device_receipt_object"
+     *                    "receiptSignature":"receipt_signature_object"
+     *                    "userPhoto":"base64_encoded_photo"
+     *                    }
      */
     @Override
-    @ScopedServletMethod(securityGroups = {AccessLevel.USER})
+    @ScopedServletMethod(securityGroups = { AccessLevel.USER })
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
-        DeviceRegistrationResponse devResponse = RegisterDeviceFlow.registerDevice(req.getAttribute("username").toString(),request);
-        if(devResponse != null) {
-            Gson gson = new Gson();
-            String filteredJson = gson.toJson(devResponse);
-            JsonObject obj = gson.fromJson(filteredJson, JsonObject.class);
+        DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(),
+                DeviceRegistrationRequest.class);
+        DeviceRegistrationResponse devResponse = RegisterDeviceFlow
+                .registerDevice(req.getAttribute("username").toString(), request);
 
-            if (obj.get("videoEnabled") != null) {
-                obj.add("Account.videoEnabled", obj.get("videoEnabled"));
-                obj.remove("videoEnabled");
-            }
-
-            if (obj.get("publicInCalls") != null) {
-                obj.add("DHT.PublicInCalls", obj.get("publicInCalls"));
-                obj.remove("publicInCalls");
-            }
-
-            if (obj.get("autoAnswer") != null) {
-                obj.add("Account.autoAnswer", obj.get("autoAnswer"));
-                obj.remove("autoAnswer");
-            }
-            if (obj.get("peerDiscovery") != null) {
-                obj.add("Account.peerDiscovery", obj.get("peerDiscovery"));
-                obj.remove("peerDiscovery");
-            }
-            if (obj.get("accountDiscovery") != null) {
-                obj.add("Account.accountDiscovery", obj.get("accountDiscovery"));
-                obj.remove("accountDiscovery");
-            }
-            if (obj.get("accountPublish") != null) {
-                obj.add("Account.accountPublish", obj.get("accountPublish"));
-                obj.remove("accountPublish");
-            }
-
-            if (obj.get("rendezVous") != null) {
-                obj.add("Account.rendezVous", obj.get("rendezVous"));
-                obj.remove("rendezVous");
-            }
-            if (obj.get("upnpEnabled") != null) {
-                obj.add("Account.upnpEnabled", obj.get("upnpEnabled"));
-                obj.remove("upnpEnabled");
-            }
-
-            if (obj.get("turnEnabled") != null) {
-                obj.add("TURN.enable", obj.get("turnEnabled"));
-                obj.remove("turnEnabled");
-            }
-            if (obj.get("turnServer") != null) {
-                obj.add("TURN.server", obj.get("turnServer"));
-                obj.remove("turnServer");
-            }
-            if (obj.get("turnServerUserName") != null) {
-                obj.add("TURN.username", obj.get("turnServerUserName"));
-                obj.remove("turnServerUserName");
-            }
-            if (obj.get("turnServerPassword") != null) {
-                obj.add("TURN.password", obj.get("turnServerPassword"));
-                obj.remove("turnServerPassword");
-            }
-            if (obj.get("proxyEnabled") != null) {
-                obj.add("Account.proxyEnabled", obj.get("proxyEnabled"));
-                obj.remove("proxyEnabled");
-            }
-            if (obj.get("proxyServer") != null) {
-                obj.add("Account.proxyServer", obj.get("proxyServer"));
-                obj.remove("proxyServer");
-            }
-            if (obj.get("dhtProxyListUrl") != null) {
-                obj.add("Account.dhtProxyListUrl", obj.get("dhtProxyListUrl"));
-                obj.remove("dhtProxyListUrl");
-            }
-            if (obj.get("displayName") != null) {
-                obj.add("Account.displayName", obj.get("displayName"));
-                obj.remove("displayName");
-            }
-            if (obj.get("defaultModerators") != null) {
-                obj.add("Account.defaultModerators", obj.get("defaultModerators"));
-                obj.remove("defaultModerators");
-            }
-            if (obj.get("uiCustomization") != null) {
-                obj.add("Account.uiCustomization", obj.get("uiCustomization"));
-                obj.remove("uiCustomization");
-            }
-
-            resp.getOutputStream().write((obj.toString()).getBytes());
+        if (devResponse == null) {
+            TomcatCustomErrorHandler.sendCustomError(resp, 500, "could not enroll a device due to server-side error");
+            return;
         }
-        else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not enroll a device due to server-side error");
+
+        Gson gson = new Gson();
+        String filteredJson = gson.toJson(devResponse);
+        JsonObject obj = gson.fromJson(filteredJson, JsonObject.class);
+
+        renameKeys(obj);
+
+        resp.getOutputStream().write((obj.toString()).getBytes());
+    }
+
+    /**
+     * Modifies in place obj to rename a key
+     *
+     * @param obj
+     * @param oldKey
+     * @param newKey
+     */
+    private static void renameKey(JsonObject obj, String oldKey, String newKey) {
+        if (obj.get(oldKey) != null) {
+            obj.add(newKey, obj.get(oldKey));
+            obj.remove(oldKey);
+        }
+    }
+
+    /**
+     * Modifies in place obj to rename keys
+     *
+     * @param obj
+     */
+    public static void renameKeys(JsonObject obj) {
+        renameKey(obj, "videoEnabled", "Account.videoEnabled");
+        renameKey(obj, "publicInCalls", "DHTRelay.PublicInCalls");
+        renameKey(obj, "autoAnswer", "Account.autoAnswer");
+        renameKey(obj, "peerDiscovery", "Account.peerDiscovery");
+        renameKey(obj, "accountDiscovery", "Account.accountDiscovery");
+        renameKey(obj, "accountPublish", "Account.accountPublish");
+
+        renameKey(obj, "rendezVous", "Account.rendezVous");
+        renameKey(obj, "upnpEnabled", "Account.upnpEnabled");
+
+        renameKey(obj, "turnEnabled", "TURN.enable");
+        renameKey(obj, "turnServer", "TURN.server");
+        renameKey(obj, "turnServerUserName", "TURN.username");
+        renameKey(obj, "turnServerPassword", "TURN.password");
+        renameKey(obj, "proxyEnabled", "Account.proxyEnabled");
+        renameKey(obj, "proxyServer", "Account.proxyServer");
+        renameKey(obj, "dhtProxyListUrl", "Account.dhtProxyListUrl");
+        renameKey(obj, "displayName", "Account.displayName");
+        renameKey(obj, "defaultModerators", "Account.defaultModerators");
+        renameKey(obj, "uiCustomization", "Account.uiCustomization");
     }
 
     /**
@@ -221,18 +193,21 @@ public class DeviceServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
-        String deviceId = req.getPathInfo().replace("/","");
+        String deviceId = req.getPathInfo().replace("/", "");
         String deviceName = req.getParameter("deviceName");
         StatementList update = new StatementList();
-        StatementElement st0 = new StatementElement("deviceName","=",deviceName,"");
+        StatementElement st0 = new StatementElement("deviceName", "=", deviceName, "");
         update.addStatement(st0);
         StatementList constraint = new StatementList();
-        StatementElement st1 = new StatementElement("owner","=",username,"AND");
-        StatementElement st2 = new StatementElement("deviceId","=",deviceId,"");
+        StatementElement st1 = new StatementElement("owner", "=", username, "AND");
+        StatementElement st2 = new StatementElement("deviceId", "=", deviceId, "");
         update.addStatement(st1);
         update.addStatement(st2);
-        if(dataStore.getDeviceDao().updateObject(update,constraint)) resp.setStatus(200);
-        else TomcatCustomErrorHandler.sendCustomError(resp,500,"could not update device information due to server-side error");
+        if (dataStore.getDeviceDao().updateObject(update, constraint))
+            resp.setStatus(200);
+        else
+            TomcatCustomErrorHandler.sendCustomError(resp, 500,
+                    "could not update device information due to server-side error");
     }
 
     /**
@@ -247,21 +222,25 @@ public class DeviceServlet extends HttpServlet {
      * @apiError (500) {null} null device could not be deactivated
      */
     @Override
-    @ScopedServletMethod(securityGroups = {AccessLevel.USER})
+    @ScopedServletMethod(securityGroups = { AccessLevel.USER })
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String deviceId = req.getPathInfo().replace("/","");
-        //If the device does not belong to the user throw a 403
+        String deviceId = req.getPathInfo().replace("/", "");
+        // If the device does not belong to the user throw a 403
         StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("owner","=",req.getAttribute("username").toString(),"");
+        StatementElement statementElement = new StatementElement("owner", "=", req.getAttribute("username").toString(),
+                "");
         statementList.addStatement(statementElement);
-        if(dataStore.getDeviceDao().getObjects(statementList).stream().filter(device ->
-                device.getDeviceId().equals(deviceId)).count() == 0){
-            TomcatCustomErrorHandler.sendCustomError(resp,403,"You do not have sufficient rights to revoke this device!");
+        if (dataStore.getDeviceDao().getObjects(statementList).stream()
+                .filter(device -> device.getDeviceId().equals(deviceId)).count() == 0) {
+            TomcatCustomErrorHandler.sendCustomError(resp, 403,
+                    "You do not have sufficient rights to revoke this device!");
             return;
         }
-        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),deviceId);
-        if(devResponse != null) resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),
+                deviceId);
+        if (devResponse != null)
+            resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         else
-            TomcatCustomErrorHandler.sendCustomError(resp,500,"could not revoke device due to server-side error");
+            TomcatCustomErrorHandler.sendCustomError(resp, 500, "could not revoke device due to server-side error");
     }
 }

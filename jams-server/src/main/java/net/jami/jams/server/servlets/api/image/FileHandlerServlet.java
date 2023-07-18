@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import jakarta.servlet.ServletException;
@@ -28,8 +29,8 @@ public class FileHandlerServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {post} /api/image/filehandler/<blueprintName>/<imageType> Upload an
-     *      image
+     * @api {post} /api/image/filehandler/<blueprintName>/<imageType>
+     *      Upload an image
      * @apiName postImage
      * @apiGroup Images
      *
@@ -96,8 +97,8 @@ public class FileHandlerServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {get} /api/image/filehandler/<blueprintName>/<imageType>/<fileName> Get
-     *      an image
+     * @api {get} /api/image/filehandler/<blueprintName>/<imageType>/<fileName>
+     *      Get an image
      * @apiName getImage
      * @apiGroup Images
      *
@@ -133,27 +134,19 @@ public class FileHandlerServlet extends HttpServlet {
             String imageType = pathParts[2];
             String fileName = pathParts[3];
 
-            File file = new File(IMAGES_DIR + File.separator + blueprintName + File.separator + imageType
-                    + File.separator + fileName);
+            Path imageFilePath = Paths.get(IMAGES_DIR, blueprintName, imageType, fileName);
+            byte[] imageData = Files.readAllBytes(imageFilePath);
 
-            String mimeType = Files.probeContentType(Paths.get(file.getAbsolutePath()));
+            String mimeType = Files.probeContentType(imageFilePath);
             if (mimeType == null) {
                 mimeType = "application/octet-stream";
             }
 
             response.setContentType(mimeType);
-            response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
 
-            OutputStream out = response.getOutputStream();
-            FileInputStream in = new FileInputStream(file);
-            byte[] buffer = new byte[4096];
-            int length;
-
-            while ((length = in.read(buffer)) > 0) {
-                out.write(buffer, 0, length);
+            try (OutputStream out = response.getOutputStream()) {
+                out.write(imageData);
             }
-            in.close();
-            out.flush();
         } catch (FileNotFoundException e) {
             log.error("FileHandlerServlet: Error while processing request", e);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);

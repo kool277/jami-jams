@@ -22,13 +22,17 @@
 */
 package net.jami.jams.common.objects.requests;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class RevocationRequest {
     private BigInteger identifier;
     private RevocationType revocationType;

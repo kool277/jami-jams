@@ -30,19 +30,23 @@ import java.security.interfaces.RSAPublicKey;
 
 public class Validator {
 
-    public static boolean validateCARequests(CreateCARequest request){
-        if(request.getCertificate() != null && request.getPrivateKey() != null){
-            if(request.getCertificate().getBasicConstraints() != -1){
-                RSAPublicKey rsaPublicKey = (RSAPublicKey) request.getCertificate().getPublicKey();
-                RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) request.getPrivateKey();
-                return rsaPublicKey.getModulus().equals( rsaPrivateKey.getModulus() )
-                        && BigInteger.valueOf( 2 ).modPow( rsaPublicKey.getPublicExponent()
-                                .multiply( rsaPrivateKey.getPrivateExponent() ).subtract( BigInteger.ONE ),
-                        rsaPublicKey.getModulus() ).equals( BigInteger.ONE );
-            }
+    public static boolean validateCARequests(CreateCARequest request) {
+        if (request.getCertificate() == null || request.getPrivateKey() == null) {
+            return true;
+        }
+
+        if (request.getCertificate().getBasicConstraints() == -1) {
             return false;
         }
-        return true;
-    }
 
+        RSAPublicKey rsaPublicKey = (RSAPublicKey) request.getCertificate().getPublicKey();
+        RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) request.getPrivateKey();
+
+        return rsaPublicKey.getModulus().equals(rsaPrivateKey.getModulus())
+                // https://en.wikipedia.org/wiki/RSA_(cryptosystem)
+                // 2 ** (e * d - 1) mod n == 1
+                && BigInteger.valueOf(2).modPow(rsaPublicKey.getPublicExponent()
+                        .multiply(rsaPrivateKey.getPrivateExponent()).subtract(BigInteger.ONE),
+                        rsaPublicKey.getModulus()).equals(BigInteger.ONE);
+    }
 }

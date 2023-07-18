@@ -22,7 +22,23 @@
  */
 package net.jami.jams.server.servlets.api.auth.directory;
 
+import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.nameServer;
+import static net.jami.jams.server.Server.userAuthenticationModule;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.json.JSONObject;
+
 import com.jsoniter.JsonIterator;
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,16 +50,13 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.objects.user.*;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static net.jami.jams.server.Server.dataStore;
-import static net.jami.jams.server.Server.nameServer;
-import static net.jami.jams.server.Server.userAuthenticationModule;
+import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.objects.user.Group;
+import net.jami.jams.common.objects.user.Policy;
+import net.jami.jams.common.objects.user.PolicyData;
+import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.objects.user.UserGroupMapping;
+import net.jami.jams.common.objects.user.UserProfile;
 
 @Slf4j
 @WebServlet("/api/auth/directory/search")
@@ -75,10 +88,10 @@ public class SearchDirectoryServlet extends HttpServlet {
         StatementList statementList1 = new StatementList();
 
         statementList1.addStatement(new StatementElement("username", "=", req.getAttribute("username").toString(), ""));
-        if (dataStore.getUserGroupMappingsDao().getObjects(statementList1) != null && !dataStore.getUserGroupMappingsDao().getObjects(statementList1).isEmpty()) {
-            UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList1).get(0);
+        List<UserGroupMapping> mappings = dataStore.getUserGroupMappingsDao().getObjects(statementList1);
+        if (mappings != null && !mappings.isEmpty()) {
             statementList1 = new StatementList();
-            statementList1.addStatement(new StatementElement("id", "=", mapping.getGroupId(), ""));
+            statementList1.addStatement(new StatementElement("id", "=", mappings.get(0).getGroupId(), ""));
             group =  dataStore.getGroupDao().getObjects(statementList1).get(0);
         }
 

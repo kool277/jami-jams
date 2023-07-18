@@ -108,7 +108,7 @@ const setCustomizationSettings = (policyData) => {
   // Get the name of the file from the url
   ui.hasLogo = result.logoUrl !== "";
   ui.logoUrl = result.logoUrl;
-  ui.logoSize = result.logoSize;
+  ui.logoSize = result.logoSize || DEFAULT_UI_CUSTOMIZATION.logoSize;
 
   policyData.uiCustomization = ui;
   return policyData;

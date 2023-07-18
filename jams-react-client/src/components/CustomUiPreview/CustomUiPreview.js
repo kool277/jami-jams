@@ -141,7 +141,7 @@ export default function CustomUiPreview({
     backgroundColor = "";
     backgroundUrl = backgroundImage;
   } else if (backgroundUrl) {
-    backgroundUrl = encodeURI(`${url_path}:${url_port}/${backgroundUrl}`);
+    backgroundUrl = encodeURI(`${url_path}:${url_port}${backgroundUrl}`);
   }
 
   if (!hasMainBoxColor) {

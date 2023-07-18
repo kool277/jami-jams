@@ -33,6 +33,8 @@ import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
+import java.math.BigInteger;
+
 @Slf4j
 public class RevokeDeviceFlow {
 
@@ -49,13 +51,15 @@ public class RevokeDeviceFlow {
                 log.error("Could not find device!");
                 return null;
             }
-            RevocationRequest request = new RevocationRequest();
-            request.setRevocationType(RevocationType.DEVICE);
-            request.setIdentifier(device.getCertificate().getSerialNumber());
+
+            BigInteger serialNumber = device.getCertificate().getSerialNumber();
+
+            RevocationRequest request = new RevocationRequest(serialNumber, RevocationType.DEVICE);
             certificateAuthority.revokeCertificate(request);
+
             long statTime = System.currentTimeMillis();
             while(certificateAuthority.getLatestCRL().get()
-                    .getRevokedCertificate(device.getCertificate().getSerialNumber()) == null){
+                    .getRevokedCertificate(serialNumber) == null){
                 log.warn("Certificate has not yet appeared in CRL!");
                 if(System.currentTimeMillis() - statTime > 1000){
                     log.error("The certificate has not appeared within 1 second, we are considering the operation has failed");
