@@ -22,9 +22,18 @@
 */
 package net.jami.jams.server.core.workflows;
 
-import com.jsoniter.JsonIterator;
-import lombok.extern.slf4j.Slf4j;
+import static net.jami.jams.authmodule.UserAuthenticationModule.datastore;
+import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.nameServer;
+import static net.jami.jams.server.Server.userAuthenticationModule;
 
+import java.security.cert.X509Certificate;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.authmodule.UserAuthenticationModule;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
@@ -32,24 +41,12 @@ import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
-import net.jami.jams.common.objects.roots.X509Fields;
-import net.jami.jams.common.objects.user.*;
-import net.jami.jams.dht.DeviceReceiptGenerator;
 import net.jami.jams.common.objects.user.Group;
-import net.jami.jams.dht.ETHAddressGenerator;
-
-
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import static net.jami.jams.authmodule.UserAuthenticationModule.datastore;
-import static net.jami.jams.server.Server.certificateAuthority;
-import static net.jami.jams.server.Server.dataStore;
-import static net.jami.jams.server.Server.nameServer;
-import static net.jami.jams.server.Server.userAuthenticationModule;
+import net.jami.jams.common.objects.user.Policy;
+import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.objects.user.UserGroupMapping;
+import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.dht.DeviceReceiptGenerator;
 
 @Slf4j
 public class RegisterDeviceFlow {
@@ -60,6 +57,7 @@ public class RegisterDeviceFlow {
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
+
             UserProfile userProfile = userAuthenticationModule.getAuthSources()
                     .get(new AuthModuleKey(user.getRealm(), user.getUserType()))
                     .searchUserProfiles(username, "LOGON_NAME", Optional.empty()).get(0);
@@ -69,7 +67,7 @@ public class RegisterDeviceFlow {
             }
 
             // Renew user certificate if expired with same private key
-            if(!user.getCertificate().getNotAfter().after(new Date())) {
+            if (!user.getCertificate().getNotAfter().after(new Date())) {
                 user = UserAuthenticationModule.certificateAuthority.getRefreshedCertificate(user);
                 datastore.updateUserCertificate(user);
             }
@@ -85,16 +83,7 @@ public class RegisterDeviceFlow {
             }
             dataStore.getDeviceDao().storeObject(device);
 
-            Group group = new Group();
-
-            statementList = new StatementList();
-            statementList.addStatement(new StatementElement("username", "=", username, ""));
-            if (dataStore.getUserGroupMappingsDao().getObjects(statementList) != null && !dataStore.getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
-                UserGroupMapping mapping = dataStore.getUserGroupMappingsDao().getObjects(statementList).get(0);
-                statementList = new StatementList();
-                statementList.addStatement(new StatementElement("id", "=", mapping.getGroupId(), ""));
-                group =  dataStore.getGroupDao().getObjects(statementList).get(0);
-            }
+            Group group = getGroupByUsername(username);
 
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
             String policyData = getPolicyData(group);
@@ -122,15 +111,32 @@ public class RegisterDeviceFlow {
         }
     }
 
-    private static String getPolicyData(Group group) {
+    public static Group getGroupByUsername(String username) {
+        Group group = new Group();
+
+        StatementList statementList = new StatementList();
+        statementList.addStatement(new StatementElement("username", "=", username, ""));
+        List<UserGroupMapping> userGroupMappings = dataStore.getUserGroupMappingsDao().getObjects(statementList);
+
+        if (userGroupMappings != null && !userGroupMappings.isEmpty()) {
+            UserGroupMapping mapping = userGroupMappings.get(0);
+            statementList = new StatementList();
+            statementList.addStatement(new StatementElement("id", "=", mapping.getGroupId(), ""));
+            group = dataStore.getGroupDao().getObjects(statementList).get(0);
+        }
+
+        return group;
+    }
+
+    public static String getPolicyData(Group group) {
         if (!group.isEmpty() && group.hasBlueprint()) {
-            StatementElement st2 = new StatementElement("name", "=", group.getBlueprint(), "");
-            StatementList statementList2 = new StatementList();
-            statementList2.addStatement((st2));
+            StatementElement statementElement = new StatementElement("name", "=", group.getBlueprint(), "");
+            StatementList statementList = new StatementList();
+            statementList.addStatement(statementElement);
             try {
-                Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
+                Policy policy = dataStore.getPolicyDao().getObjects(statementList).get(0);
                 return policy.getPolicyData();
-            } catch (Exception e1) {
+            } catch (Exception e) {
                 log.warn("No policy available for user - not adding a policy component to response");
             }
         }

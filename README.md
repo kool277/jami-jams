@@ -34,6 +34,10 @@ In order to generate a pair of pem and key use the following command using opens
 
 `openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem`
 
+## Run with the debugger enabled
+
+`java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=localhost:35000 -jar jams-server.jar 8080`
+
 ## Generate documentation
 
 To generate the documentation you will need `apidoc` installed on your system.
@@ -61,7 +65,7 @@ chmod +x .git/hooks/pre-commit
 A development environment with react hot reloading can be created using:
 ```
 docker build -f Dockerfile -t jams:dev --target dev .
-docker run -it -p 3000:3000 -p 8080:8080 \
+docker run -it -p 3000:3000 -p 8080:8080 -p 35000:35000 \
     -v $(pwd)/jams-react-client/src:/app/jams-react-client/src \
     -v $(pwd)/jams-react-client/public:/app/jams-react-client/public \
     --rm jams:dev

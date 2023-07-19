@@ -73,10 +73,8 @@ public class TomcatLauncher {
     public TomcatLauncher(int port, String certificateFile, String keyFile) {
         if (!Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + certificateFile))
                 || !Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + keyFile))) {
-            log.info("Could not find certificate or keyfile, starting in plain HTTP connector as fallback!");
-            tomcat.getService().addConnector(TomcatConnectorFactory.getNoSSLConnector(port));
-            this.startServer();
-            return;
+            log.info("Could not find certificate or keyfile, exiting");
+            System.exit(1);
         }
         if (Files.exists(Paths.get(System.getProperty("user.dir") + File.separator + "keystore.jks"))) {
             log.info("Found a valid trust store, injecting into tomcat!");

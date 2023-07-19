@@ -101,7 +101,6 @@ jams-react-client/package-lock.json
 jams-server/src/main/resources/webapp/
 
 # VScode
-.vscode/
 *.factorypath
 
 jams-server/doc/

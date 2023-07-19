@@ -31,8 +31,10 @@ RUN mkdir -p /app/jams-server/src/main/resources/webapp \
     > /app/jams-server/src/main/resources/webapp/index.html
 RUN mvn package
 WORKDIR /app/jams
-EXPOSE 3000 8080
-CMD java -jar jams-launcher.jar & npm start --prefix ../jams-react-client
+EXPOSE 3000 8080 35000
+ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:35000
+CMD java -jar jams-server.jar 8080 \
+    & npm start --prefix ../jams-react-client
 
 FROM build as prod
 WORKDIR /app/jams-react-client
