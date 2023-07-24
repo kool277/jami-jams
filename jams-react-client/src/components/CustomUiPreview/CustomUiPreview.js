@@ -10,6 +10,7 @@ import JamiIdCard from "./JamiIdCard";
 import i18next from "i18next";
 import { url_path } from "../../globalUrls";
 import { url_port } from "../../globalUrls";
+import { luma } from "./luma";
 
 const styles = {
   root: {
@@ -80,6 +81,7 @@ const styles = {
     backgroundColor: (props) => props.mainBoxColor,
     padding: "10px",
     width: "50%",
+    color: (props) => (luma(props.mainBoxColor) ? "#ffffff" : "#000000"),
   },
   title: {
     margin: 0,

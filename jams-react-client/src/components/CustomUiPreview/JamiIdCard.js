@@ -6,6 +6,7 @@ import jamiIdImage from "assets/img/jami_id.svg";
 import copySvg from "assets/img/BTN_Copy.svg";
 import shareSvg from "assets/img/BTN_Share.svg";
 import { infoColor } from "assets/jss/material-dashboard-react";
+import { luma } from "./luma";
 
 const styles = {
   root: {
@@ -37,7 +38,7 @@ const styles = {
     flex: 2,
     textAlign: "center",
     fontSize: "12px",
-    color: infoColor[0],
+    color: (props) => (luma(props.color) ? "#03B9E9" : "#005699"),
   },
   icons: {
     display: "flex",

@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@mui/styles";
 
 import tipLightBulbImage from "assets/img/tip_light_bulb.svg";
+import { luma } from "./luma";
 
 const styles = {
   root: {
@@ -18,17 +19,21 @@ const styles = {
     verticalAlign: "middle",
     fontSize: "8px",
     marginLeft: "0.5rem",
+    color: (props) => props.fontColor,
   },
   text: {
     fontSize: "6px",
     margin: 0,
+    color: (props) => props.fontColor,
   },
 };
 
 const useStyles = makeStyles(styles);
 
 export default function TipBox({ color, text }) {
-  const classes = useStyles({ color });
+  const fontColor = luma(color) ? "#ffffff" : "#000000";
+
+  const classes = useStyles({ color, fontColor });
 
   return (
     <div className={classes.root}>
