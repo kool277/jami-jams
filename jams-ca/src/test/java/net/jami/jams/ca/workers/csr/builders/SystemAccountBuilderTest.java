@@ -54,8 +54,8 @@ class SystemAccountBuilderTest {
 
     @BeforeAll
     static void setUp() throws Exception {
-        // Delete the crl.pem file if it exists.
-        File file = new File(System.getProperty("user.dir") + File.separator + "crl.pem");
+        // Delete the jams.crl file if it exists.
+        File file = new File(System.getProperty("user.dir") + File.separator + "jams.crl");
         file.delete();
         InputStream path;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -158,7 +158,7 @@ class SystemAccountBuilderTest {
 
     @AfterAll
     static void afterAll() {
-        File file = new File(System.getProperty("user.dir") + File.separator + "crl.pem");
+        File file = new File(System.getProperty("user.dir") + File.separator + "jams.crl");
         file.delete();
     }
 }

@@ -50,7 +50,7 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
 
     @Getter
     private final CRLFileStorage crlFileStorage =
-            new CRLFileStorage(System.getProperty("user.dir") + File.separator + "crl.pem");
+            new CRLFileStorage(System.getProperty("user.dir") + File.separator + "jams.crl");
 
     @Getter @Setter private AtomicBoolean stop = new AtomicBoolean(false);
 
