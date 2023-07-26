@@ -9,14 +9,14 @@
 
 Clone the contents of this repository and run
 
-```
+```sh
 mvn clean package
 ```
 
 This will create a distribution folder called `jams` in the root folder. You can
 then launch the server by running
 
-```
+```sh
 cd jams
 java -jar jams-launcher.jar
 ```
@@ -88,12 +88,19 @@ chmod +x .git/hooks/pre-commit
 ## Development Docker container
 
 A development environment with react hot reloading can be created using:
-```
+```sh
 docker build -f Dockerfile -t jams:dev --target dev .
 docker run -it -p 3000:3000 -p 8080:8080 -p 35000:35000 \
     -v $(pwd)/jams-react-client/src:/app/jams-react-client/src \
     -v $(pwd)/jams-react-client/public:/app/jams-react-client/public \
     --rm jams:dev
+```
+
+`setup_jams.sh` can be used to quickly do the initial setup.
+The script creates user alice, bob, charlie and danny, all with the password "a",
+and they all belong to the group "defaultGroup".
+```sh
+./extras/scripts/setup_jams.sh
 ```
 
 Note: It is possible that after 15 minutes, the user's token expires, the server
@@ -103,7 +110,7 @@ will need to restart the server.
 
 ## Generate jams with Docker
 The following commands will generate the userguide and the jars needed:
-```
+```sh
 docker build -f Dockerfile -t jams:latest --target prod . \
     && CONTAINER=$(docker create jams:latest) \
     && docker cp $CONTAINER:/app/jams/. jams \
