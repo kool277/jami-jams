@@ -11,7 +11,6 @@ import jakarta.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -162,6 +161,11 @@ public class FileHandlerServlet extends HttpServlet {
             String fileName = pathParts[3];
 
             Path imageFilePath = Paths.get(IMAGES_DIR, blueprintName, imageType, fileName);
+            if (!imageFilePath.toFile().exists()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
             byte[] imageData = Files.readAllBytes(imageFilePath);
 
             String mimeType = Files.probeContentType(imageFilePath);
@@ -174,9 +178,6 @@ public class FileHandlerServlet extends HttpServlet {
             try (OutputStream out = response.getOutputStream()) {
                 out.write(imageData);
             }
-        } catch (FileNotFoundException e) {
-            log.error("FileHandlerServlet: Error while processing request", e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         } catch (IOException e) {
             log.error("FileHandlerServlet: Error while processing request", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

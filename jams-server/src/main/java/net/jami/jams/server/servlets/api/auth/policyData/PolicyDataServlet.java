@@ -26,6 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.objects.user.Group;
+import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.servlets.api.auth.device.DeviceServlet;
 
@@ -60,6 +61,7 @@ public class PolicyDataServlet extends HttpServlet {
      *                    "Account.uiCustomization":
      *                    "{\"areTipsEnabled\":false,\"backgroundType\":\"default\"}"
      *                    }]
+     * @apiError (404) {null} null Policy Data could not be retrieved
      * @apiError (500) {null} null Policy Data could not be retrieved
      */
     @Override
@@ -71,7 +73,8 @@ public class PolicyDataServlet extends HttpServlet {
         String policyData = RegisterDeviceFlow.getPolicyData(group);
 
         if (policyData == null) {
-            resp.setStatus(404);
+            TomcatCustomErrorHandler.sendCustomError(
+                    resp, 404, "Policy Data not found for this user");
             return;
         }
 
