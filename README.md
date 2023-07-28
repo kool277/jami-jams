@@ -120,6 +120,16 @@ docker build -f Dockerfile -t jams:latest --target prod . \
     && java -jar jams-launcher.jar
 ```
 
+## Visualize the derby database
+The IntelliJ Ultimate Edition Database view can help visualize the database schema.
+Don't forget to launch jams locally at least once before proceeding.
+1. Open this project in IntelliJ
+2. View -> Tool Windows -> Database
+3. Plus icon -> Data Source from Path
+4. Select the jami-jams/jams/jams folder
+5. Select the Apache Derby (Embedded) driver
+6. Select No auth, click Ok, refresh the database window and the tables should appear!
+
 ## About jams-server/src/main/java/net/jami/jams/server/filters
 The files in the `filters` folder are prefixed "A", "B", "C" and "D" so that the
 order of execution of the filters are right (jakarta registers filters in

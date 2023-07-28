@@ -112,11 +112,11 @@ public class DeviceServlet extends HttpServlet {
      * @apiError (500) {null} null Device could not be enrolled
      * @apiSuccessExample {json} Success-Response:
      *                    {
-     *                    "certificateChain":"pem_encoded_certificate_chain"
-     *                    "displayName":"John Doe"
-     *                    "nameServer":"https://mydomain.com"
-     *                    "deviceReceipt": "device_receipt_object"
-     *                    "receiptSignature":"receipt_signature_object"
+     *                    "certificateChain":"pem_encoded_certificate_chain",
+     *                    "displayName":"John Doe",
+     *                    "nameServer":"https://mydomain.com",
+     *                    "deviceReceipt": "device_receipt_object",
+     *                    "receiptSignature":"receipt_signature_object",
      *                    "userPhoto":"base64_encoded_photo"
      *                    }
      */

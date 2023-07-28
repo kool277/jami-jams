@@ -30,7 +30,7 @@
         <maven.compiler.version>3.8.1</maven.compiler.version>
         <java.version>11</java.version>
         <bouncy.castle.version>1.65</bouncy.castle.version>
-        <lombok.version>1.18.12</lombok.version>
+        <lombok.version>1.18.28</lombok.version>
         <log4j.version>1.7.30</log4j.version>
         <jupiter.api.version>5.7.0-M1</jupiter.api.version>
         <tomcat.version>10.0.0-M5</tomcat.version>
@@ -58,7 +58,7 @@
         <embedded.ldap.unit>0.8.1</embedded.ldap.unit>
         <maven.exec.version>1.1.1</maven.exec.version>
         <zmq.version>0.5.2</zmq.version>
-        <flyway.version>6.5.1</flyway.version>
+        <flyway.version>9.21.1</flyway.version>
     </properties>
 
     <dependencies>
@@ -152,6 +152,47 @@
                     </filesets>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.10</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>PACKAGE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
