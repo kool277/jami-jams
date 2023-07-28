@@ -30,13 +30,38 @@ Where the `pem` and `key` files are a pem encoded certificate and key.
 
 ## How to generate server.pem and server.key pair
 
-In order to generate a pair of pem and key use the following command using openssl
+In order to generate a pair of pem and key use the following command using openssl.
 
 `openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem`
+
+Note that a self signed certificate will be rejected from opendht,
+QNetworkAccessManager and other curl-like program by default. The following
+changes should disable those checks.
+
+```diff
+// opendht/src/http.cpp void Request::connect
+- conn_->set_ssl_verification(get_url().host, asio::ssl::verify_peer | asio::ssl::verify_fail_if_no_peer_cert);
++ conn_->set_ssl_verification(get_url().host, asio::ssl::verify_none);
+```
+
+```cpp
+// jami-client-qt/src/app/networkmanager.cpp NetworkManager::NetworkManager
+QSslConfiguration sslConfig = QSslConfiguration::defaultConfiguration();
+sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+QSslConfiguration::setDefaultConfiguration(sslConfig);
+```
 
 ## Run with the debugger enabled
 
 `java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=localhost:35000 -jar jams-server.jar 8080`
+
+## Format java file
+
+The code was formatted using
+[google-java-format](https://github.com/google/google-java-format)
+using the following command:
+
+`google-java-format -i -a --skip-reflowing-long-strings --skip-javadoc-formatting **/*.java `
 
 ## Generate documentation
 
@@ -53,8 +78,8 @@ You can then open `doc/index.html`. Click on 1.0.0 in the top right corner if th
 
 ## Pre-commit hook
 
-The `extras` folder contains a pre-commit hook that formats every js file in
-`jams-react-client`. To enable it, run:
+The `extras` folder contains a pre-commit hook that formats every js and java
+file. To enable it, run:
 ```sh
 cp extras/scripts/pre-commit .git/hooks
 chmod +x .git/hooks/pre-commit

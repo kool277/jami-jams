@@ -2,3 +2,5 @@
 
 cd jams-react-client
 npm run format
+
+google-java-format -i -a **/*.java
