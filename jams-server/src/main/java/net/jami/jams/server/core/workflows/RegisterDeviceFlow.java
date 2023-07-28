@@ -1,25 +1,25 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.server.core.workflows;
 
 import static net.jami.jams.authmodule.UserAuthenticationModule.datastore;
@@ -28,12 +28,8 @@ import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import java.security.cert.X509Certificate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.authmodule.UserAuthenticationModule;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
@@ -48,22 +44,31 @@ import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.dht.DeviceReceiptGenerator;
 
+import java.security.cert.X509Certificate;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 @Slf4j
 public class RegisterDeviceFlow {
 
-    public static DeviceRegistrationResponse registerDevice(String username,
-            DeviceRegistrationRequest registrationRequest) {
+    public static DeviceRegistrationResponse registerDevice(
+            String username, DeviceRegistrationRequest registrationRequest) {
         try {
             StatementList statementList = new StatementList();
             statementList.addStatement(new StatementElement("username", "=", username, ""));
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
 
-            UserProfile userProfile = userAuthenticationModule.getAuthSources()
-                    .get(new AuthModuleKey(user.getRealm(), user.getUserType()))
-                    .searchUserProfiles(username, "LOGON_NAME", Optional.empty()).get(0);
+            UserProfile userProfile =
+                    userAuthenticationModule
+                            .getAuthSources()
+                            .get(new AuthModuleKey(user.getRealm(), user.getUserType()))
+                            .searchUserProfiles(username, "LOGON_NAME", Optional.empty())
+                            .get(0);
 
             if (user == null) {
-                log.error("Tried to enroll a device, but could not find a user, this is impossible!");
+                log.error(
+                        "Tried to enroll a device, but could not find a user, this is impossible!");
             }
 
             // Renew user certificate if expired with same private key
@@ -92,8 +97,12 @@ public class RegisterDeviceFlow {
             }
 
             // Device receipt
-            String[] devReceipt = DeviceReceiptGenerator.generateReceipt(user.getPrivateKey(),
-                    user.getCertificate().getPublicKey(), device.getCertificate().getPublicKey(), user.getEthAddress());
+            String[] devReceipt =
+                    DeviceReceiptGenerator.generateReceipt(
+                            user.getPrivateKey(),
+                            user.getCertificate().getPublicKey(),
+                            device.getCertificate().getPublicKey(),
+                            user.getEthAddress());
             response.setDeviceReceipt(devReceipt[0]);
             response.setReceiptSignature(devReceipt[1]);
             response.setDisplayName(userProfile.getFirstName() + " " + userProfile.getLastName());
@@ -102,11 +111,15 @@ public class RegisterDeviceFlow {
             if (userProfile.getProfilePicture() != null)
                 response.setUserPhoto(userProfile.getProfilePicture());
             // Chain certificate
-            response.setCertificateChain(new X509Certificate[] { certificateAuthority.getCA(), user.getCertificate(),
-                    device.getCertificate() });
+            response.setCertificateChain(
+                    new X509Certificate[] {
+                        certificateAuthority.getCA(), user.getCertificate(), device.getCertificate()
+                    });
             return response;
         } catch (Exception e) {
-            log.error("An exception has occurred while trying to enroll a device with error {}", e.getMessage());
+            log.error(
+                    "An exception has occurred while trying to enroll a device with error {}",
+                    e.getMessage());
             return null;
         }
     }
@@ -116,7 +129,8 @@ public class RegisterDeviceFlow {
 
         StatementList statementList = new StatementList();
         statementList.addStatement(new StatementElement("username", "=", username, ""));
-        List<UserGroupMapping> userGroupMappings = dataStore.getUserGroupMappingsDao().getObjects(statementList);
+        List<UserGroupMapping> userGroupMappings =
+                dataStore.getUserGroupMappingsDao().getObjects(statementList);
 
         if (userGroupMappings != null && !userGroupMappings.isEmpty()) {
             UserGroupMapping mapping = userGroupMappings.get(0);
@@ -130,14 +144,16 @@ public class RegisterDeviceFlow {
 
     public static String getPolicyData(Group group) {
         if (!group.isEmpty() && group.hasBlueprint()) {
-            StatementElement statementElement = new StatementElement("name", "=", group.getBlueprint(), "");
+            StatementElement statementElement =
+                    new StatementElement("name", "=", group.getBlueprint(), "");
             StatementList statementList = new StatementList();
             statementList.addStatement(statementElement);
             try {
                 Policy policy = dataStore.getPolicyDao().getObjects(statementList).get(0);
                 return policy.getPolicyData();
             } catch (Exception e) {
-                log.warn("No policy available for user - not adding a policy component to response");
+                log.warn(
+                        "No policy available for user - not adding a policy component to response");
             }
         }
 

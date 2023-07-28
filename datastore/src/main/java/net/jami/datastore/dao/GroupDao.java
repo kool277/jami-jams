@@ -1,6 +1,7 @@
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
@@ -10,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @Slf4j
-public class GroupDao extends AbstractDao<Group>{
+public class GroupDao extends AbstractDao<Group> {
 
     public GroupDao() {
         this.setTableName("groups");
@@ -20,17 +21,19 @@ public class GroupDao extends AbstractDao<Group>{
     @Override
     public boolean storeObject(Group object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try{
-            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO groups " +
-                    "(id, name, blueprint) VALUES (?, ?, ?)");
+        try {
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "INSERT INTO groups "
+                                            + "(id, name, blueprint) VALUES (?, ?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
-        }
-        catch (SQLException e){
-            log.error("An error has occurred while trying to store a group: " + e.toString());
+        } catch (SQLException e) {
+            log.error("An error has occurred while trying to store a group: " + e);
             return false;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
@@ -44,18 +47,20 @@ public class GroupDao extends AbstractDao<Group>{
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
-        try{
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE groups SET name = ?, blueprint = ? WHERE id = ?");
+        try {
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "UPDATE groups SET name = ?, blueprint = ? WHERE id = ?");
             ps.setString(1, name);
             ps.setString(2, blueprint);
             ps.setString(3, id);
             return ps.executeUpdate() != 0;
-        }
-        catch (SQLException e){
-            log.error("An error has occurred while trying to update a group: " + e.toString());
+        } catch (SQLException e) {
+            log.error("An error has occurred while trying to update a group: " + e);
             return false;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
@@ -67,15 +72,15 @@ public class GroupDao extends AbstractDao<Group>{
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("DELETE FROM groups WHERE id = ?");
+            PreparedStatement ps =
+                    connection.getConnection().prepareStatement("DELETE FROM groups WHERE id = ?");
             ps.setString(1, id);
             return ps.executeUpdate() != 0;
-        } catch (SQLException e){
-            log.error("An error has occurred while trying to delete a group: " + e.toString());
+        } catch (SQLException e) {
+            log.error("An error has occurred while trying to delete a group: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
-
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import net.jami.jams.common.serialization.database.DatabaseObject;
 
 import java.sql.PreparedStatement;

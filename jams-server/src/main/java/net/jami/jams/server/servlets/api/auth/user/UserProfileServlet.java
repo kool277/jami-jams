@@ -22,42 +22,46 @@
  */
 package net.jami.jams.server.servlets.api.auth.user;
 
+import static net.jami.jams.server.Server.userAuthenticationModule;
+
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.io.IOException;
 
-import static net.jami.jams.server.Server.dataStore;
-import static net.jami.jams.server.Server.userAuthenticationModule;
-
 @WebServlet("/api/auth/userprofile/*")
 @JsonContent
 public class UserProfileServlet extends HttpServlet {
 
-    //Get the user profile
+    // Get the user profile
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         final UserProfile[] profile = new UserProfile[1];
-        String username = req.getPathInfo().replace("/","");
+        String username = req.getPathInfo().replace("/", "");
 
-        userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-            if (v.getUserProfile(username) != null)
-                profile[0] = v.getUserProfile(username);
-        });
+        userAuthenticationModule
+                .getAuthSources()
+                .forEach(
+                        (k, v) -> {
+                            if (v.getUserProfile(username) != null)
+                                profile[0] = v.getUserProfile(username);
+                        });
 
         if (profile[0] != null) {
             resp.getOutputStream().write(JsonStream.serialize(profile[0]).getBytes());
             resp.setStatus(200);
         } else {
-            resp.sendError(500,"User profile was not found!");
-            return;
+            resp.sendError(500, "User profile was not found!");
         }
     }
 }

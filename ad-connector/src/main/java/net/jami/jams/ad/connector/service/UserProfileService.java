@@ -23,6 +23,8 @@
 
 package net.jami.jams.ad.connector.service;
 
+import static net.jami.jams.server.Server.dataStore;
+
 import com.imperva.ddc.core.Connector;
 import com.imperva.ddc.core.language.PhraseOperator;
 import com.imperva.ddc.core.language.QueryAssembler;
@@ -36,7 +38,10 @@ import com.imperva.ddc.core.query.FieldType;
 import com.imperva.ddc.core.query.ObjectType;
 import com.imperva.ddc.core.query.QueryRequest;
 import com.imperva.ddc.core.query.QueryResponse;
+
 import lombok.extern.slf4j.Slf4j;
+
+import net.jami.datastore.main.DataStore;
 import net.jami.jams.ad.connector.ADConnector;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
@@ -46,35 +51,58 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static net.jami.jams.server.Server.dataStore;
-
 @Slf4j
 public class UserProfileService {
 
-    private static final ConcurrentHashMap<String, String> fieldMap = ADConnector.settings.getFieldMappings();
+    private static final ConcurrentHashMap<String, String> fieldMap =
+            ADConnector.settings.getFieldMappings();
 
-    public List<UserProfile> getUserProfile(String queryString, String field, boolean exactMatch, Optional<Integer> page) {
+    public List<UserProfile> getUserProfile(
+            String queryString, String field, boolean exactMatch, Optional<Integer> page) {
         Endpoint endpoint = ADConnector.getConnection();
         try {
             QueryRequest queryRequest = buildRequest(endpoint);
             Sentence sentence = null;
             if (queryString.equals("*")) {
-                sentence = new QueryAssembler().addPhrase(FieldType.OBJECT_CLASS, PhraseOperator.EQUAL, ObjectType.USER.toString()).closeSentence();
+                sentence =
+                        new QueryAssembler()
+                                .addPhrase(
+                                        FieldType.OBJECT_CLASS,
+                                        PhraseOperator.EQUAL,
+                                        ObjectType.USER.toString())
+                                .closeSentence();
             } else {
                 if (field.equals("LOGON_NAME")) {
-                    if(exactMatch){
-                        sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.EQUAL, queryString)
-                            .closeSentence();
-                    }
-                    else {
-                        sentence = new QueryAssembler().addPhrase(FieldType.LOGON_NAME, PhraseOperator.CONTAINS, queryString)
-                            .closeSentence();
+                    if (exactMatch) {
+                        sentence =
+                                new QueryAssembler()
+                                        .addPhrase(
+                                                FieldType.LOGON_NAME,
+                                                PhraseOperator.EQUAL,
+                                                queryString)
+                                        .closeSentence();
+                    } else {
+                        sentence =
+                                new QueryAssembler()
+                                        .addPhrase(
+                                                FieldType.LOGON_NAME,
+                                                PhraseOperator.CONTAINS,
+                                                queryString)
+                                        .closeSentence();
                     }
                 }
                 if (field.equals("FULL_TEXT_NAME")) {
-                    sentence = new QueryAssembler().addPhrase(FieldType.FIRST_NAME, PhraseOperator.CONTAINS, queryString)
-                        .addPhrase(FieldType.LAST_NAME, PhraseOperator.CONTAINS, queryString)
-                        .closeSentence(SentenceOperator.OR);
+                    sentence =
+                            new QueryAssembler()
+                                    .addPhrase(
+                                            FieldType.FIRST_NAME,
+                                            PhraseOperator.CONTAINS,
+                                            queryString)
+                                    .addPhrase(
+                                            FieldType.LAST_NAME,
+                                            PhraseOperator.CONTAINS,
+                                            queryString)
+                                    .closeSentence(SentenceOperator.OR);
                 }
             }
             queryRequest.addSearchSentence(sentence);
@@ -82,24 +110,34 @@ public class UserProfileService {
             try (Connector connector = new Connector(queryRequest)) {
                 queryResponse = connector.execute();
             }
-            List<List<Field>> results = queryResponse.getAll().stream().map(EntityResponse::getValue).collect(Collectors.toList());
+            List<List<Field>> results =
+                    queryResponse.getAll().stream()
+                            .map(EntityResponse::getValue)
+                            .collect(Collectors.toList());
 
-            dataStore.NUM_PAGES = (Integer) results.size() / dataStore.RESULTS_PER_PAGE;
-            if (results.size() % dataStore.RESULTS_PER_PAGE != 0)
-                dataStore.NUM_PAGES++;
+            DataStore.NUM_PAGES = (Integer) results.size() / DataStore.RESULTS_PER_PAGE;
+            if (results.size() % DataStore.RESULTS_PER_PAGE != 0) DataStore.NUM_PAGES++;
 
             if (page.isPresent() && !results.isEmpty()) {
-                if (results.size() < dataStore.RESULTS_PER_PAGE)
+                if (results.size() < DataStore.RESULTS_PER_PAGE)
                     results = results.subList(0, results.size());
-                else if (page.get() * dataStore.RESULTS_PER_PAGE > results.size())
-                    results = results.subList((page.get()-1) * dataStore.RESULTS_PER_PAGE, results.size());
+                else if (page.get() * DataStore.RESULTS_PER_PAGE > results.size())
+                    results =
+                            results.subList(
+                                    (page.get() - 1) * DataStore.RESULTS_PER_PAGE, results.size());
                 else
-                    results = results.subList((page.get()-1) * dataStore.RESULTS_PER_PAGE, (page.get() * dataStore.RESULTS_PER_PAGE));
+                    results =
+                            results.subList(
+                                    (page.get() - 1) * DataStore.RESULTS_PER_PAGE,
+                                    (page.get() * DataStore.RESULTS_PER_PAGE));
             }
 
             if (results.size() == 0) return new ArrayList<>();
-            List<UserProfile> profilesFromResponse = results.stream().map(UserProfileService::profileFromResponse).collect(Collectors.toList());
-            for (UserProfile p: profilesFromResponse) {
+            List<UserProfile> profilesFromResponse =
+                    results.stream()
+                            .map(UserProfileService::profileFromResponse)
+                            .collect(Collectors.toList());
+            for (UserProfile p : profilesFromResponse) {
                 StatementList statementList = new StatementList();
                 StatementElement st = new StatementElement("username", "=", p.getUsername(), "");
                 statementList.addStatement(st);
@@ -120,9 +158,12 @@ public class UserProfileService {
     public static QueryRequest buildRequest(Endpoint endpoint) {
         QueryRequest queryRequest = new QueryRequest();
         queryRequest.setDirectoryType(DirectoryType.MS_ACTIVE_DIRECTORY);
-        queryRequest.setEndpoints(new ArrayList<>() {{
-            add(endpoint);
-        }});
+        queryRequest.setEndpoints(
+                new ArrayList<>() {
+                    {
+                        add(endpoint);
+                    }
+                });
         queryRequest.setSizeLimit(1000);
         queryRequest.setTimeLimit(1000);
         queryRequest.setObjectType(ObjectType.USER);
@@ -133,30 +174,34 @@ public class UserProfileService {
     }
 
     public static UserProfile profileFromResponse(List<Field> fields) {
-        fieldMap.forEach((k, v) -> {
-            String temp = v;
-            fieldMap.put(k.toLowerCase(), temp);
-        });
-        fieldMap.forEach((k, v) -> {
-            char[] charArray = k.toCharArray();
-            for(int i=0; i < charArray.length; i++) {
-                if(Character.isUpperCase( charArray[i] )) {
-                    fieldMap.remove(k);
-                    break;
-                }
-            }
-        });
+        fieldMap.forEach(
+                (k, v) -> {
+                    String temp = v;
+                    fieldMap.put(k.toLowerCase(), temp);
+                });
+        fieldMap.forEach(
+                (k, v) -> {
+                    char[] charArray = k.toCharArray();
+                    for (int i = 0; i < charArray.length; i++) {
+                        if (Character.isUpperCase(charArray[i])) {
+                            fieldMap.remove(k);
+                            break;
+                        }
+                    }
+                });
 
         try {
             UserProfile userProfile = new UserProfile();
             for (Field field : fields) {
                 if (fieldMap.containsKey(field.getName())) {
-                    UserProfile.exposedMethods.get("set" + fieldMap.get(field.getName())).invoke(userProfile, field.getValue());
+                    UserProfile.exposedMethods
+                            .get("set" + fieldMap.get(field.getName()))
+                            .invoke(userProfile, field.getValue());
                 }
             }
             return userProfile;
         } catch (Exception e) {
-            log.error("An error occured while trying to invoke methods: " + e.toString());
+            log.error("An error occured while trying to invoke methods: " + e);
             return null;
         }
     }

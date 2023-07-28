@@ -2,6 +2,7 @@ package net.jami.jams.server.update;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
@@ -24,20 +25,19 @@ public class UpdateInterface extends Thread {
         this.start();
     }
 
-    public void approveUpdate(){
+    public void approveUpdate() {
         sender.send("DO-UPDATE");
     }
 
     @Override
     public void run() {
-        while(true){
-            try{
+        while (true) {
+            try {
                 receiver.recv();
                 updateAvailable.set(true);
                 versions = receiver.recvStr();
-            }
-            catch (Exception e){
-                System.out.println(e.toString());
+            } catch (Exception e) {
+                System.out.println(e);
             }
         }
     }

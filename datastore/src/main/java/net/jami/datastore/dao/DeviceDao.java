@@ -24,6 +24,7 @@
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
@@ -43,14 +44,18 @@ public class DeviceDao extends AbstractDao<Device> {
     public boolean storeObject(Device object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO devices " +
-                "(deviceId, owner, displayName, certificate, privatekey) " +
-                "VALUES " +
-                "(?, ?, ?, ?, ?)");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "INSERT INTO devices "
+                                            + "(deviceId, owner, displayName, certificate, privatekey) "
+                                            + "VALUES "
+                                            + "(?, ?, ?, ?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to store a user: " + e.toString());
+            log.error("An error has occurred while trying to store a user: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
@@ -66,13 +71,17 @@ public class DeviceDao extends AbstractDao<Device> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE devices SET displayName = ? WHERE owner = ? AND deviceId = ?");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "UPDATE devices SET displayName = ? WHERE owner = ? AND deviceId = ?");
             ps.setString(1, deviceName);
             ps.setString(2, user);
             ps.setString(3, deviceId);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to update a user: " + e.toString());
+            log.error("An error has occurred while trying to update a user: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

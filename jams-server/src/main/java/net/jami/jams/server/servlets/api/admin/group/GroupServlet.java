@@ -1,38 +1,40 @@
 package net.jami.jams.server.servlets.api.admin.group;
 
+import static net.jami.jams.server.Server.dataStore;
+
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Group;
-import net.jami.jams.common.objects.user.UserProfile;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Collectors;
-
-import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/admin/group/*")
 @Slf4j
 public class GroupServlet extends HttpServlet {
 
-
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         Group singleGroup = null;
-        String id = req.getPathInfo().replace("/","");
+        String id = req.getPathInfo().replace("/", "");
 
         StatementList statementList = new StatementList();
         StatementElement st = new StatementElement("id", "=", id, "");
@@ -44,9 +46,8 @@ public class GroupServlet extends HttpServlet {
         if (singleGroup != null) {
             resp.getOutputStream().write(JsonStream.serialize(singleGroup).getBytes());
             resp.setStatus(200);
-        }
-        else {
-            log.info("No group with this id was found!" );
+        } else {
+            log.info("No group with this id was found!");
             resp.setStatus(404);
         }
     }
@@ -56,9 +57,13 @@ public class GroupServlet extends HttpServlet {
     @JsonContent
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        String id = req.getPathInfo().replace("/","");
+        String id = req.getPathInfo().replace("/", "");
 
-        final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
+        final JSONObject obj =
+                new JSONObject(
+                        req.getReader()
+                                .lines()
+                                .collect(Collectors.joining(System.lineSeparator())));
 
         String name = obj.getString("name");
         String blueprint = obj.getString("blueprint");
@@ -84,7 +89,7 @@ public class GroupServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String id = req.getPathInfo().replace("/","");
+        String id = req.getPathInfo().replace("/", "");
 
         StatementElement statementElement = new StatementElement("id", "=", id, "");
 
@@ -98,10 +103,8 @@ public class GroupServlet extends HttpServlet {
             constraintMapping.addStatement(statementElement2);
             if (dataStore.getUserGroupMappingsDao().deleteObject(constraintMapping))
                 resp.setStatus(200);
-            else
-                resp.sendError(500, "Could not delete the group mappings successfully!");
-        }
-        else {
+            else resp.sendError(500, "Could not delete the group mappings successfully!");
+        } else {
             resp.sendError(500, "Could not delete the group successfully!");
         }
     }

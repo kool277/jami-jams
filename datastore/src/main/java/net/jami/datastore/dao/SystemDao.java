@@ -24,6 +24,7 @@
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
@@ -43,14 +44,18 @@ public class SystemDao extends AbstractDao<SystemAccount> {
     public boolean storeObject(SystemAccount object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO system " +
-                "(entity,certificate,privatekey)" +
-                "VALUES " +
-                "(?, ?, ?)");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "INSERT INTO system "
+                                            + "(entity,certificate,privatekey)"
+                                            + "VALUES "
+                                            + "(?, ?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to store a system entity: " + e.toString());
+            log.error("An error has occurred while trying to store a system entity: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

@@ -24,6 +24,7 @@
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
@@ -34,7 +35,7 @@ import java.sql.PreparedStatement;
 @Slf4j
 public class UserProfileDao extends AbstractDao<UserProfile> {
 
-    //Fis this to include the fields from AD/LDAP.
+    // Fis this to include the fields from AD/LDAP.
     public UserProfileDao() {
         this.setTableName("local_directory");
         this.setTClass(UserProfile.class);
@@ -45,13 +46,18 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO local_directory " +
-                "(username, firstName, lastName, email, profilePicture, organization, phoneNumber, phoneNumberExtension, faxNumber, mobileNumber)" +
-                " VALUES " + "(?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "INSERT INTO local_directory "
+                                            + "(username, firstName, lastName, email, profilePicture, organization, phoneNumber, phoneNumberExtension, faxNumber, mobileNumber)"
+                                            + " VALUES "
+                                            + "(?,?,?,?,?,?,?,?,?,?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to store a user profile: " + e.toString());
+            log.error("An error has occurred while trying to store a user profile: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
@@ -63,14 +69,18 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE local_directory SET firstname = ?, lastName = ?, email = ?, profilePicture = ?, organization = ?, phoneNumber = ?, phoneNumberExtension = ?, faxNumber = ?, mobileNumber = ? WHERE username = ?");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "UPDATE local_directory SET firstname = ?, lastName = ?, email = ?, profilePicture = ?, organization = ?, phoneNumber = ?, phoneNumberExtension = ?, faxNumber = ?, mobileNumber = ? WHERE username = ?");
             for (int i = 1; i < update.getStatements().size(); i++) {
                 ps.setString(i, update.getStatements().get(i).getValue());
             }
             ps.setString(update.getStatements().size(), update.getStatements().get(0).getValue());
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to update a user profile: " + e.toString());
+            log.error("An error has occurred while trying to update a user profile: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

@@ -24,10 +24,12 @@
 package net.jami.jams.common.objects.contacts;
 
 import com.jsoniter.annotation.JsonIgnore;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import net.jami.jams.common.serialization.database.DatabaseObject;
 
 import java.sql.PreparedStatement;
@@ -39,12 +41,12 @@ import java.sql.ResultSet;
 @EqualsAndHashCode
 public class Contact implements DatabaseObject {
 
-    @JsonIgnore //Ignore the owner because he is irrelevant.
+    @JsonIgnore // Ignore the owner because he is irrelevant.
     private String owner;
     private String uri;
     private String displayName;
     private Long timestamp;
-    private Character status; //A = added, D = deleted.
+    private Character status; // A = added, D = deleted.
     private Boolean banned = false;
     private Boolean confirmed = false;
     private String conversationId;
@@ -64,12 +66,12 @@ public class Contact implements DatabaseObject {
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
         ps.setString(1, owner);
         ps.setString(2, uri);
-        if(displayName != null) ps.setString(3, displayName);
+        if (displayName != null) ps.setString(3, displayName);
         else ps.setString(3, "");
-        ps.setLong(4,timestamp);
-        ps.setInt(5,status);
-        ps.setBoolean(6,banned);
-        ps.setBoolean(7,confirmed);
+        ps.setLong(4, timestamp);
+        ps.setInt(5, status);
+        ps.setBoolean(6, banned);
+        ps.setBoolean(7, confirmed);
         ps.setString(8, conversationId);
         return ps;
     }

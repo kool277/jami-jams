@@ -1,39 +1,41 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.server.servlets.api.jaminameserver;
 
+import static net.jami.jams.server.Server.nameServer;
+
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import net.jami.jams.common.jami.NameLookupResponse;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
 import java.io.IOException;
-
-import static net.jami.jams.server.Server.nameServer;
 
 @WebServlet("/api/nameserver/name/*")
 public class NameServlet extends HttpServlet {
@@ -56,10 +58,13 @@ public class NameServlet extends HttpServlet {
      * @apiError (500) {null} null could not fetch user information
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        NameLookupResponse nameLookupResponse = nameServer.getAddressFromName(req.getPathInfo().replace("/",""));
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        NameLookupResponse nameLookupResponse =
+                nameServer.getAddressFromName(req.getPathInfo().replace("/", ""));
         resp.setContentType("application/json;charset=UTF-8");
-        if(nameLookupResponse == null) TomcatCustomErrorHandler.sendCustomError(resp,404,"name not found");
+        if (nameLookupResponse == null)
+            TomcatCustomErrorHandler.sendCustomError(resp, 404, "name not found");
         else resp.getOutputStream().write(JsonStream.serialize(nameLookupResponse).getBytes());
     }
 }

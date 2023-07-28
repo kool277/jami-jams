@@ -1,25 +1,25 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.common.annotations;
 
 import javassist.ClassPool;
@@ -29,19 +29,20 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.AttributeInfo;
 import javassist.bytecode.MethodInfo;
 import javassist.bytecode.annotation.Annotation;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 
 @Slf4j
 public class ScopedServletAnnotationScanner {
-    public void processClasses(String jarFile){
+    public void processClasses(String jarFile) {
         try {
             ArrayList<String> classNames = PackageScanner.getClasses(jarFile);
             classNames.parallelStream().forEach(this::processClass);
 
         } catch (Exception e) {
-            log.info("Could not modify a target class with error {}",e.getMessage());
+            log.info("Could not modify a target class with error {}", e.getMessage());
         }
     }
 
@@ -54,20 +55,25 @@ public class ScopedServletAnnotationScanner {
             boolean classChanged = false;
             for (int i = 0; i < ctMethods.length; i++) {
                 MethodInfo minfo = ctMethods[i].getMethodInfo();
-                for(AttributeInfo ai : minfo.getAttributes()) {
+                for (AttributeInfo ai : minfo.getAttributes()) {
                     if (ai.getClass().getName().contains("AnnotationsAttribute")) {
                         AnnotationsAttribute aa = (AnnotationsAttribute) ai;
 
                         for (Annotation a : aa.getAnnotations()) {
                             if (a.getTypeName().equals(JsonContent.class.getName())) {
-                                log.info("[{}] has secured method {}, modifying method... ", cc.getSimpleName(), ctMethods[i].getName());
-                                //Build the code block that enforces security.
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("{\n");
-                                //So this does not play nice when trying to use hash sets...
-                                sb.append("resp.setContentType(\"application/json\");\n");
-                                sb.append("}\n");
-                                ctMethods[i].insertBefore(sb.toString());
+                                log.info(
+                                        "[{}] has secured method {}, modifying method... ",
+                                        cc.getSimpleName(),
+                                        ctMethods[i].getName());
+                                // Build the code block that enforces security.
+                                String sb =
+                                        "{\n"
+                                                +
+                                                // So this does not play nice when trying to use
+                                                // hash sets...
+                                                "resp.setContentType(\"application/json\");\n"
+                                                + "}\n";
+                                ctMethods[i].insertBefore(sb);
                                 classChanged = true;
                             }
                         }
@@ -75,11 +81,12 @@ public class ScopedServletAnnotationScanner {
                 }
             }
 
-            if(classChanged) {
+            if (classChanged) {
                 if (cc.isFrozen()) cc.defrost();
                 cc.toClass();
             }
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 }

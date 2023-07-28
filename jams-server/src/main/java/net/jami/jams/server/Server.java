@@ -23,8 +23,11 @@
 package net.jami.jams.server;
 
 import com.jsoniter.JsonIterator;
+
 import javassist.ClassPool;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.annotations.ScopedServletAnnotationScanner;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -55,8 +58,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 // a thread.
 public class Server {
 
-    public final static AtomicBoolean isInstalled = new AtomicBoolean(false);
-    public final static AtomicBoolean activated = new AtomicBoolean(false);
+    public static final AtomicBoolean isInstalled = new AtomicBoolean(false);
+    public static final AtomicBoolean activated = new AtomicBoolean(false);
 
     public static DataStore dataStore;
     // This one gets loaded via JAR, to make it more flexible.
@@ -73,7 +76,13 @@ public class Server {
         ClassPool.getDefault().clearImportedPackages();
         ScopedServletAnnotationScanner scanner = new ScopedServletAnnotationScanner();
         scanner.processClasses(
-                new java.io.File(Server.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName());
+                new java.io.File(
+                                Server.class
+                                        .getProtectionDomain()
+                                        .getCodeSource()
+                                        .getLocation()
+                                        .getPath())
+                        .getName());
         switch (args.length) {
             case 1:
                 tomcatLauncher = new TomcatLauncher(Integer.parseInt(args[0]));
@@ -104,44 +113,63 @@ public class Server {
             }
         }
 
-        isInstalled.set(new File(System.getProperty("user.dir") + File.separator + "config.json").exists());
+        isInstalled.set(
+                new File(System.getProperty("user.dir") + File.separator + "config.json").exists());
         log.info("Server is already installed: " + isInstalled.get());
         ServerSettings serverSettings = null;
         if (isInstalled.get()) {
             try {
-                InputStream path = new FileInputStream(
-                        new File(System.getProperty("user.dir") + File.separator + "config.json"));
-                serverSettings = JsonIterator.deserialize(path.readAllBytes(), ServerSettings.class);
-                certificateAuthority = CryptoEngineLoader.loadCertificateAuthority(serverSettings.getCaConfiguration(),
-                        dataStore);
-                userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
+                InputStream path =
+                        new FileInputStream(
+                                new File(
+                                        System.getProperty("user.dir")
+                                                + File.separator
+                                                + "config.json"));
+                serverSettings =
+                        JsonIterator.deserialize(path.readAllBytes(), ServerSettings.class);
+                certificateAuthority =
+                        CryptoEngineLoader.loadCertificateAuthority(
+                                serverSettings.getCaConfiguration(), dataStore);
+                userAuthenticationModule =
+                        AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
                 if (serverSettings.getLdapConfiguration() != null)
-                    userAuthenticationModule.attachAuthSource(AuthenticationSourceType.LDAP,
-                            serverSettings.getLdapConfiguration());
+                    userAuthenticationModule.attachAuthSource(
+                            AuthenticationSourceType.LDAP, serverSettings.getLdapConfiguration());
                 if (serverSettings.getActiveDirectoryConfiguration() != null) {
-                    userAuthenticationModule.attachAuthSource(AuthenticationSourceType.AD,
+                    userAuthenticationModule.attachAuthSource(
+                            AuthenticationSourceType.AD,
                             serverSettings.getActiveDirectoryConfiguration());
                 }
                 if (serverSettings.getLocalDirectoryConfiguration() != null) {
-                    LocalAuthSettings settings = JsonIterator
-                            .deserialize(serverSettings.getLocalDirectoryConfiguration(), LocalAuthSettings.class);
+                    LocalAuthSettings settings =
+                            JsonIterator.deserialize(
+                                    serverSettings.getLocalDirectoryConfiguration(),
+                                    LocalAuthSettings.class);
                     if (settings.getPublicNames())
                         nameServer = new PublicNameServer(settings.getPublicNameServer());
                     else
-                        nameServer = new LocalNameServer(dataStore, userAuthenticationModule,
-                                serverSettings.getServerPublicURI());
+                        nameServer =
+                                new LocalNameServer(
+                                        dataStore,
+                                        userAuthenticationModule,
+                                        serverSettings.getServerPublicURI());
                 } else
-                    nameServer = new LocalNameServer(dataStore, userAuthenticationModule,
-                            serverSettings.getServerPublicURI());
+                    nameServer =
+                            new LocalNameServer(
+                                    dataStore,
+                                    userAuthenticationModule,
+                                    serverSettings.getServerPublicURI());
 
                 licenseService.loadLicense();
                 log.info("All services are UP and ready for use...");
             } catch (Exception e) {
-                log.error("Could not load configuration file or initialize some components - this is critical");
+                log.error(
+                        "Could not load configuration file or initialize some components - this is critical");
             }
         } else {
             certificateAuthority = CryptoEngineLoader.loadCertificateAuthority(null, dataStore);
-            userAuthenticationModule = AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
+            userAuthenticationModule =
+                    AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
             log.info("Started server with empty modules waiting for setup...");
         }
         // Now pop-up the GUI
@@ -152,7 +180,6 @@ public class Server {
         } catch (Exception e) {
             log.error("Could not start GUI with error {}", e.getMessage());
         }
-
     }
 
     public static void startGUI() throws Exception {
@@ -164,12 +191,20 @@ public class Server {
             }
         }
         log.info("Authentication module is ready!");
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop.getDesktop().browse(new URI(tomcatLauncher.getTomcat().getConnector().getScheme() + "://localhost:"
-                    + tomcatLauncher.getTomcat().getService().findConnectors()[0].getPort()));
+        if (Desktop.isDesktopSupported()
+                && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            Desktop.getDesktop()
+                    .browse(
+                            new URI(
+                                    tomcatLauncher.getTomcat().getConnector().getScheme()
+                                            + "://localhost:"
+                                            + tomcatLauncher
+                                                    .getTomcat()
+                                                    .getService()
+                                                    .findConnectors()[0]
+                                                    .getPort()));
         } else {
             log.info("There is no graphical interface on this system - please connect remotely!");
         }
     }
-
 }

@@ -1,25 +1,25 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.dht;
 
 /*
@@ -42,6 +42,7 @@ package net.jami.jams.dht;
  */
 import net.jami.jams.dht.hashutils.HexBin;
 import net.jami.jams.dht.hashutils.Keccak256;
+
 import org.apache.commons.codec.binary.Hex;
 
 import java.security.KeyPair;
@@ -52,32 +53,29 @@ import java.security.spec.ECGenParameterSpec;
 
 public class ETHAddressGenerator {
 
-
-    public static String[] generateAddress(){
+    public static String[] generateAddress() {
         try {
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC","SunEC");
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("EC", "SunEC");
             keyGen.initialize(new ECGenParameterSpec("secp256k1"));
-            //Generate the Public and Private Keys
+            // Generate the Public and Private Keys
             KeyPair pair = keyGen.generateKeyPair();
             ECPrivateKey ecpriv = (ECPrivateKey) pair.getPrivate();
-            ECPublicKey ecpub  = (ECPublicKey)  pair.getPublic();
+            ECPublicKey ecpub = (ECPublicKey) pair.getPublic();
 
-            //Get the hex representations we need.
-            String hexPubKey = ecpub.getW().getAffineX().toString(16) + ecpub.getW().getAffineY().toString(16);
-            String hexPrvKey =  ecpriv.getS().toString(16);
+            // Get the hex representations we need.
+            String hexPubKey =
+                    ecpub.getW().getAffineX().toString(16) + ecpub.getW().getAffineY().toString(16);
+            String hexPrvKey = ecpriv.getS().toString(16);
 
-            //In ethereum the private key is just 0x + private key, so nothing to do here.
+            // In ethereum the private key is just 0x + private key, so nothing to do here.
             Keccak256 keccak256 = new Keccak256();
             byte[] addressData = keccak256.digest(HexBin.decode(hexPubKey));
             String address = Hex.encodeHexString(addressData);
             address = "0x" + address.substring(24);
-            //Return the address and the private key - we just store them for now.
-            return new String[]{address,hexPrvKey};
-        }
-        catch (Exception e){
+            // Return the address and the private key - we just store them for now.
+            return new String[] {address, hexPrvKey};
+        } catch (Exception e) {
             return null;
         }
     }
-
-
 }

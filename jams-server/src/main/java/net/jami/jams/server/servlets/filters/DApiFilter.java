@@ -23,6 +23,8 @@
 
 package net.jami.jams.server.servlets.filters;
 
+import static net.jami.jams.server.servlets.filters.FilterUtils.doAuthCheck;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,29 +33,32 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
 
-import static net.jami.jams.server.servlets.filters.FilterUtils.doAuthCheck;
-
 /**
  * Since we have the @ScopedServletMethod annotation, the admin filter became absolutely useless
  * as we can simply scope things.
  */
-@WebFilter(urlPatterns = {"/api/auth/*","/api/admin/*"})
+@WebFilter(urlPatterns = {"/api/auth/*", "/api/admin/*"})
 @Slf4j
 public class DApiFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(
+            ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setContentType("application/json;charset=UTF-8");
         if (!Server.isInstalled.get()) {
-            TomcatCustomErrorHandler.sendCustomError(response,404,"Setup has not yet been completed!");
+            TomcatCustomErrorHandler.sendCustomError(
+                    response, 404, "Setup has not yet been completed!");
         } else {
             boolean authsuccess = false;
             boolean isLogin = false;
@@ -65,7 +70,8 @@ public class DApiFilter implements Filter {
             if (authsuccess || isLogin || isOCSPCheck) {
                 filterChain.doFilter(servletRequest, servletResponse);
             } else {
-                TomcatCustomErrorHandler.sendCustomError(response,401,"You are not authenticated!");
+                TomcatCustomErrorHandler.sendCustomError(
+                        response, 401, "You are not authenticated!");
             }
         }
     }

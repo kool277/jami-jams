@@ -24,6 +24,7 @@
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
@@ -41,13 +42,14 @@ public class ContactDao extends AbstractDao<Contact> {
         this.setTClass(Contact.class);
     }
 
-    //Not used because the strategy here is different.
+    // Not used because the strategy here is different.
     @Override
     public boolean storeObject(Contact object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            String insert = "INSERT INTO contacts (owner, uri, displayName, `timestamp`, status) VALUES " +
-                "(?, ?, ?, ?, ?)";
+            String insert =
+                    "INSERT INTO contacts (owner, uri, displayName, `timestamp`, status) VALUES "
+                            + "(?, ?, ?, ?, ?)";
             PreparedStatement ps = connection.getConnection().prepareStatement(insert);
             object.getInsert(ps);
             ps.executeQuery();
@@ -67,8 +69,9 @@ public class ContactDao extends AbstractDao<Contact> {
             PreparedStatement ps = connection.getConnection().prepareStatement(delete);
             ps.setString(1, contactList.get(0).getOwner());
             ps.executeUpdate();
-            String insert = "INSERT INTO contacts (owner, uri, displayName, timestamp, status, banned, confirmed, conversationId) VALUES " +
-                "(?, ?, ?, ?, ?, ?, ?, ?)";
+            String insert =
+                    "INSERT INTO contacts (owner, uri, displayName, timestamp, status, banned, confirmed, conversationId) VALUES "
+                            + "(?, ?, ?, ?, ?, ?, ?, ?)";
             for (Contact contact : contactList) {
                 ps = connection.getConnection().prepareStatement(insert);
                 contact.getInsert(ps);
@@ -76,7 +79,7 @@ public class ContactDao extends AbstractDao<Contact> {
             }
             return true;
         } catch (Exception e) {
-            log.error("Could not update contacts: {}",e.getMessage());
+            log.error("Could not update contacts: {}", e.getMessage());
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
@@ -88,12 +91,15 @@ public class ContactDao extends AbstractDao<Contact> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("DELETE FROM contacts WHERE owner = ? AND uri = ?");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement("DELETE FROM contacts WHERE owner = ? AND uri = ?");
             ps.setString(1, constraints.getStatements().get(0).getValue());
             ps.setString(2, constraints.getStatements().get(1).getValue());
             return ps.executeUpdate() != 0;
-        } catch (SQLException e){
-            log.error("Could not delete contact: " + e.toString());
+        } catch (SQLException e) {
+            log.error("Could not delete contact: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

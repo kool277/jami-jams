@@ -24,7 +24,9 @@
 package net.jami.datastore.dao;
 
 import com.nimbusds.jwt.SignedJWT;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.dao.StatementList;
 
 import java.util.List;
@@ -32,8 +34,10 @@ import java.util.List;
 @Slf4j
 public class JwtDao extends AbstractDao<SignedJWT> {
 
-    private static final String SQL_STORE_TOKEN = "INSERT INTO tokens (userid,deviceId,token) VALUES (?,?,?)";
-    private static final String SQL_DELETE_TOKEN = "DELETE FROM tokens WHERE userid = ? AND deviceId = ?";
+    private static final String SQL_STORE_TOKEN =
+            "INSERT INTO tokens (userid,deviceId,token) VALUES (?,?,?)";
+    private static final String SQL_DELETE_TOKEN =
+            "DELETE FROM tokens WHERE userid = ? AND deviceId = ?";
     private static final String SQL_GET_TOKEN = "SELECT COUNT(token) FROM tokens WHERE token = ?";
 
     public JwtDao() {
@@ -43,23 +47,23 @@ public class JwtDao extends AbstractDao<SignedJWT> {
 
     @Override
     public boolean storeObject(SignedJWT object) {
-        //TODO: Implement this.
+        // TODO: Implement this.
         return true;
     }
 
     public boolean validateToken(SignedJWT signedJWT) {
-        //TODO: Implement this.
+        // TODO: Implement this.
         return true;
     }
 
-    //This method is not needed because we are only concerned with the existence of a token,
-    //we never actually look them up.
+    // This method is not needed because we are only concerned with the existence of a token,
+    // we never actually look them up.
     @Override
     public List<SignedJWT> getObjects(StatementList constraints) {
         return null;
     }
 
-    //TODO: Implement this method.
+    // TODO: Implement this method.
     @Override
     public boolean deleteObject(StatementList delete) {
         return false;

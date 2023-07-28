@@ -1,28 +1,29 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.StatementElement;
@@ -31,6 +32,7 @@ import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
+
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Assertions;
@@ -52,7 +54,7 @@ class DAOTest {
     static String refreshedCertificate;
 
     @BeforeAll
-    static void setUp() throws Exception{
+    static void setUp() throws Exception {
         DataStore dataStore = new DataStore("jdbc:derby:testdb;create=true");
         Assertions.assertNotNull(DataStore.connectionPool.getConnection());
         InputStream path;
@@ -86,10 +88,10 @@ class DAOTest {
         userDAO.storeObject(user);
 
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username","=","fsidokhine",""));
+        statementList.addStatement(new StatementElement("username", "=", "fsidokhine", ""));
         User user1 = userDAO.getObjects(statementList).get(0);
         Assertions.assertNotNull(user1);
-        Assertions.assertEquals(user1.getAccessLevel(),AccessLevel.ADMIN);
+        Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.ADMIN);
     }
 
     @Test
@@ -109,19 +111,22 @@ class DAOTest {
         userDAO.storeObject(user);
 
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username","=","TestUser",""));
+        statementList.addStatement(new StatementElement("username", "=", "TestUser", ""));
         User user1 = userDAO.getObjects(statementList).get(0);
         Assertions.assertNotNull(user1);
-        Assertions.assertEquals(user1.getAccessLevel(),AccessLevel.USER);
+        Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.USER);
 
-        userDAO.updateUserCertificate("TestUser", X509Utils.getPEMStringFromCertificate(X509Utils.getCertificateFromPEMString(refreshedCertificate)));
+        userDAO.updateUserCertificate(
+                "TestUser",
+                X509Utils.getPEMStringFromCertificate(
+                        X509Utils.getCertificateFromPEMString(refreshedCertificate)));
 
         User user2 = userDAO.getObjects(statementList).get(0);
         Assertions.assertNotEquals(user1.getCertificate(), user2.getCertificate());
     }
 
     @Test
-    void storeDevice(){
+    void storeDevice() {
         Device device = new Device();
         device.setDeviceId("01929833");
         device.setOwner("fsidokhine");
@@ -131,13 +136,13 @@ class DAOTest {
         deviceDAO.storeObject(device);
 
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner","=","fsidokhine",""));
+        statementList.addStatement(new StatementElement("owner", "=", "fsidokhine", ""));
         Device device1 = deviceDAO.getObjects(statementList).get(0);
         Assertions.assertNotNull(device1);
     }
 
     @Test
-    void storeAdminUser() throws Exception{
+    void storeAdminUser() throws Exception {
         User user = new User();
         user.setUsername("admin");
         user.setUserType(AuthenticationSourceType.LOCAL);
@@ -151,20 +156,19 @@ class DAOTest {
         userDAO.storeObject(user);
 
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username","=","admin",""));
+        statementList.addStatement(new StatementElement("username", "=", "admin", ""));
         User user1 = userDAO.getObjects(statementList).get(0);
         Assertions.assertNotNull(user1);
-        Assertions.assertEquals(user1.getAccessLevel(),AccessLevel.ADMIN);
+        Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.ADMIN);
     }
 
-    public static String hashPassword(String password, byte[] salt){
+    public static String hashPassword(String password, byte[] salt) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(salt);
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             return new String(Hex.encode(hash));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

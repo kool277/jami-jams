@@ -1,28 +1,28 @@
 package net.jami.jams.server.servlets.api.admin.group;
 
-import com.google.gson.JsonObject;
+import static net.jami.jams.server.Server.dataStore;
+
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.UserGroupMapping;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/admin/group/members/*")
 @Slf4j
@@ -45,17 +45,17 @@ public class UserGroupServlet extends HttpServlet {
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        String groupId = req.getPathInfo().replace("/","");
+        String groupId = req.getPathInfo().replace("/", "");
 
         StatementList statementList = new StatementList();
         StatementElement st = new StatementElement("groupId", "=", groupId, "");
 
         statementList.addStatement(st);
 
-        List<UserGroupMapping> result = dataStore.getUserGroupMappingsDao().getObjects(statementList);
+        List<UserGroupMapping> result =
+                dataStore.getUserGroupMappingsDao().getObjects(statementList);
 
-        if (result.isEmpty())
-            resp.sendError(404, "No users found for this group!");
+        if (result.isEmpty()) resp.sendError(404, "No users found for this group!");
         else {
             resp.getOutputStream().write(JsonStream.serialize(result).getBytes());
             resp.setStatus(200);
@@ -67,9 +67,13 @@ public class UserGroupServlet extends HttpServlet {
     @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        String groupId = req.getPathInfo().replace("/","");
+        String groupId = req.getPathInfo().replace("/", "");
 
-        final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
+        final JSONObject obj =
+                new JSONObject(
+                        req.getReader()
+                                .lines()
+                                .collect(Collectors.joining(System.lineSeparator())));
 
         String username = obj.getString("username");
 
@@ -78,7 +82,7 @@ public class UserGroupServlet extends HttpServlet {
         statementList.addStatement(new StatementElement("username", "=", username, ""));
 
         if (!dataStore.getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
-            resp.sendError( 409, "The user already part of the group!");
+            resp.sendError(409, "The user already part of the group!");
             return;
         }
 
@@ -89,10 +93,7 @@ public class UserGroupServlet extends HttpServlet {
 
         if (dataStore.getUserGroupMappingsDao().storeObject(mapping)) {
             resp.setStatus(200);
-        }
-        else
-            resp.sendError(500, "Could not add user to group!");
-
+        } else resp.sendError(500, "Could not add user to group!");
     }
 
     @Override
@@ -100,12 +101,15 @@ public class UserGroupServlet extends HttpServlet {
     @JsonContent
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        String groupId = req.getPathInfo().replace("/","");
+        String groupId = req.getPathInfo().replace("/", "");
 
-        final JSONObject obj = new JSONObject(req.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
+        final JSONObject obj =
+                new JSONObject(
+                        req.getReader()
+                                .lines()
+                                .collect(Collectors.joining(System.lineSeparator())));
 
         String username = obj.getString("username");
-
 
         StatementElement statementElement1 = new StatementElement("username", "=", username, "AND");
         StatementElement statementElement2 = new StatementElement("groupId", "=", groupId, "");
@@ -115,8 +119,7 @@ public class UserGroupServlet extends HttpServlet {
         constraint.addStatement(statementElement2);
         if (dataStore.getUserGroupMappingsDao().deleteObject(constraint)) {
             resp.setStatus(200);
-        }
-        else {
+        } else {
             resp.sendError(500, "Could not delete mapping between user and group!");
         }
     }

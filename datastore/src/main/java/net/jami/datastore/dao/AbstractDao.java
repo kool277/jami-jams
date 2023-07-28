@@ -1,30 +1,31 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.datastore.dao;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.DeleteStatementBuilder;
 import net.jami.jams.common.dao.SelectStatementBuilder;
@@ -41,83 +42,77 @@ import java.util.List;
 @Slf4j
 public abstract class AbstractDao<T> {
 
-    @Getter @Setter
-    private String tableName;
-    @Getter @Setter
-    private Class<T> tClass;
+    @Getter @Setter private String tableName;
+    @Getter @Setter private Class<T> tClass;
 
     public abstract boolean storeObject(T object);
 
-    public List<T> getObjects(StatementList constraints){
+    public List<T> getObjects(StatementList constraints) {
         List<T> result = new ArrayList<>();
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try{
-            PreparedStatement ps = SelectStatementBuilder.buildStatement(tableName,constraints,null,connection);
+        try {
+            PreparedStatement ps =
+                    SelectStatementBuilder.buildStatement(tableName, constraints, null, connection);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
             }
             return result;
-        }
-        catch (Exception e){
-            log.error("An error has occurred while trying to fetch an object: " + e.toString());
+        } catch (Exception e) {
+            log.error("An error has occurred while trying to fetch an object: " + e);
             return null;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
 
-
-    public List<T> getObjects(StatementList constraints,StatementConstraints statementConstraints){
+    public List<T> getObjects(
+            StatementList constraints, StatementConstraints statementConstraints) {
         List<T> result = new ArrayList<>();
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try{
-            PreparedStatement ps = SelectStatementBuilder.buildStatement(tableName,constraints,statementConstraints,connection);
+        try {
+            PreparedStatement ps =
+                    SelectStatementBuilder.buildStatement(
+                            tableName, constraints, statementConstraints, connection);
             ResultSet rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
             }
             return result;
-        }
-        catch (Exception e){
-            log.error("An error has occurred while trying to fetch a device: " + e.toString());
+        } catch (Exception e) {
+            log.error("An error has occurred while trying to fetch a device: " + e);
             return null;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
 
-
-    public boolean updateObject(StatementList update, StatementList constraints){
+    public boolean updateObject(StatementList update, StatementList constraints) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try{
-            PreparedStatement ps = UpdateStatementBuilder.buildStatement(tableName,update,constraints,connection);
+        try {
+            PreparedStatement ps =
+                    UpdateStatementBuilder.buildStatement(
+                            tableName, update, constraints, connection);
             return ps.execute();
-        }
-        catch (Exception e){
-            log.error("An error has occurred while trying to fetch a device: " + e.toString());
+        } catch (Exception e) {
+            log.error("An error has occurred while trying to fetch a device: " + e);
             return false;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
 
-    public boolean deleteObject(StatementList delete){
+    public boolean deleteObject(StatementList delete) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try{
-            PreparedStatement ps = DeleteStatementBuilder.buildStatement(tableName,delete,connection);
+        try {
+            PreparedStatement ps =
+                    DeleteStatementBuilder.buildStatement(tableName, delete, connection);
             return ps.executeUpdate() != 0;
-        }
-        catch (Exception e){
-            log.error("An error has occurred while trying to fetch a device: " + e.toString());
+        } catch (Exception e) {
+            log.error("An error has occurred while trying to fetch a device: " + e);
             return false;
-        }
-        finally {
+        } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
-
 }

@@ -1,29 +1,31 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.authmodule;
 
 import com.nimbusds.jwt.SignedJWT;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -38,6 +40,7 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.common.utils.X509Utils;
+
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.cert.X509CRLHolder;
 
@@ -54,52 +57,58 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 @Slf4j
 public class UserAuthenticationModule implements AuthenticationModule {
-    //This contains the DOMAIN-SOURCE.
-    //In general there is at most 2 here.
-    private final static String LDAP_CONNECTOR_CLASS = "net.jami.jams.ldap.connector.LDAPConnector";
-    private final static String AD_CONNECTOR_CLASS = "net.jami.jams.ad.connector.ADConnector";
+    // This contains the DOMAIN-SOURCE.
+    // In general there is at most 2 here.
+    private static final String LDAP_CONNECTOR_CLASS = "net.jami.jams.ldap.connector.LDAPConnector";
+    private static final String AD_CONNECTOR_CLASS = "net.jami.jams.ad.connector.ADConnector";
     public static DataStore datastore;
     public static CertificateAuthority certificateAuthority;
     private final TokenController tokenController;
     private PrivateKey privateKey = null;
     private PublicKey publicKey = null;
-    //The data storage layer for tokens.
+    // The data storage layer for tokens.
 
-    private final ConcurrentHashMap<AuthModuleKey, AuthenticationSource> authenticationSources = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<AuthModuleKey, AuthenticationSource> authenticationSources =
+            new ConcurrentHashMap<>();
 
-    public UserAuthenticationModule(DataStore dataStore, CertificateAuthority certificateAuthority) throws Exception{
+    public UserAuthenticationModule(DataStore dataStore, CertificateAuthority certificateAuthority)
+            throws Exception {
         UserAuthenticationModule.datastore = dataStore;
         UserAuthenticationModule.certificateAuthority = certificateAuthority;
-        authenticationSources.put(new AuthModuleKey("LOCAL",AuthenticationSourceType.LOCAL),datastore);
+        authenticationSources.put(
+                new AuthModuleKey("LOCAL", AuthenticationSourceType.LOCAL), datastore);
         log.info("Started authentication module - default local source is already enabled!");
 
         File pubkeyFile = new File(System.getProperty("user.dir") + File.separator + "oauth.pub");
-        File privateKeyFile = new File(System.getProperty("user.dir") + File.separator + "oauth.key");
+        File privateKeyFile =
+                new File(System.getProperty("user.dir") + File.separator + "oauth.key");
 
-        if(!privateKeyFile.exists() || !pubkeyFile.exists()){
+        if (!privateKeyFile.exists() || !pubkeyFile.exists()) {
             log.info("Generating first time private/public keys for OAuth!");
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(4096);
             KeyPair kp = keyPairGenerator.generateKeyPair();
             privateKey = kp.getPrivate();
             publicKey = kp.getPublic();
-            //Store these to file.
+            // Store these to file.
             OutputStream os;
-            os = new FileOutputStream(System.getProperty("user.dir") + File.separator + "oauth.key");
+            os =
+                    new FileOutputStream(
+                            System.getProperty("user.dir") + File.separator + "oauth.key");
             os.write(X509Utils.getPEMStringFromPrivateKey(privateKey).getBytes());
             os.flush();
             os.close();
             log.info("Succesfully stored OAuth private key for future use...");
-            os = new FileOutputStream(System.getProperty("user.dir") + File.separator + "oauth.pub");
+            os =
+                    new FileOutputStream(
+                            System.getProperty("user.dir") + File.separator + "oauth.pub");
             os.write(X509Utils.getPEMStringFromPubKey(publicKey).getBytes());
             os.flush();
             os.close();
             log.info("Succesfully stored OAuth public key for future use...");
-        }
-        else{
+        } else {
             InputStream privateInput = new FileInputStream(privateKeyFile);
             privateKey = X509Utils.getKeyFromPEMString(new String(privateInput.readAllBytes()));
             privateInput.close();
@@ -110,29 +119,39 @@ public class UserAuthenticationModule implements AuthenticationModule {
             publicInput.close();
             log.info("Succesfully loaded OAuth public key!");
         }
-        //TODO: Read signing key, if file does not exist create it (also create the corresponding public key)
+        // TODO: Read signing key, if file does not exist create it (also create the corresponding
+        // public key)
         tokenController = new TokenController(privateKey);
-        //Also expose the public key programatically.
+        // Also expose the public key programatically.
         log.info("OAuth2 Token System instantiated succesfully!");
     }
 
     @Override
     public void attachAuthSource(AuthenticationSourceType type, String settings) {
-        switch (type){
-            case AD: loadAuthConnector(AD_CONNECTOR_CLASS,settings); break;
-            case LDAP: loadAuthConnector(LDAP_CONNECTOR_CLASS,settings); break;
-            default: break;
+        switch (type) {
+            case AD:
+                loadAuthConnector(AD_CONNECTOR_CLASS, settings);
+                break;
+            case LDAP:
+                loadAuthConnector(LDAP_CONNECTOR_CLASS, settings);
+                break;
+            default:
+                break;
         }
     }
 
-    private void loadAuthConnector(String className, String settings){
+    private void loadAuthConnector(String className, String settings) {
         try {
             Class<?> cls = LibraryLoader.classLoader.loadClass(className);
-            AuthenticationSource source = (AuthenticationSource) cls.getConstructor(String.class).newInstance(settings);
-            authenticationSources.put(new AuthModuleKey(source.getInfo().getRealm(),source.getInfo().getAuthenticationSourceType()), source);
-        }
-        catch (Exception e){
-            log.error("Could not load connector " + className + " with reason: " + e.toString());
+            AuthenticationSource source =
+                    (AuthenticationSource) cls.getConstructor(String.class).newInstance(settings);
+            authenticationSources.put(
+                    new AuthModuleKey(
+                            source.getInfo().getRealm(),
+                            source.getInfo().getAuthenticationSourceType()),
+                    source);
+        } catch (Exception e) {
+            log.error("Could not load connector " + className + " with reason: " + e);
         }
     }
 
@@ -140,64 +159,71 @@ public class UserAuthenticationModule implements AuthenticationModule {
     public AuthTokenResponse authenticateUser(String username, String password) {
         AuthTokenResponse res = null;
         String hashPass = "";
-        if(datastore.userExists(username)){
+        if (datastore.userExists(username)) {
             StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username","=",username,"");
+            StatementElement statementElement = new StatementElement("username", "=", username, "");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
-            if((user.getUserType() == AuthenticationSourceType.LOCAL)) hashPass = PasswordUtil.hashPassword(password, Base64.decodeBase64(user.getSalt()));
+            if ((user.getUserType() == AuthenticationSourceType.LOCAL))
+                hashPass = PasswordUtil.hashPassword(password, Base64.decodeBase64(user.getSalt()));
             else hashPass = password;
 
-            if(hashPass != null && authenticationSources.get(new AuthModuleKey(user.getRealm(),user.getUserType()))
-                    .authenticate(username,hashPass))
-                return tokenController.getToken(user,null);
+            if (hashPass != null
+                    && authenticationSources
+                            .get(new AuthModuleKey(user.getRealm(), user.getUserType()))
+                            .authenticate(username, hashPass))
+                return tokenController.getToken(user, null);
         }
-        //The second case is much more violent, because we don't know in advance "where" this user comes
-        //from, so we have to infer (this is only really true for "users", all others are usually pre-marked)
-        //This is also the case when we store the user into the DAO - because he never existed before.
-        for(AuthModuleKey key : authenticationSources.keySet()){
-            if(authenticationSources.get(key).authenticate(username,password)){
+        // The second case is much more violent, because we don't know in advance "where" this user
+        // comes
+        // from, so we have to infer (this is only really true for "users", all others are usually
+        // pre-marked)
+        // This is also the case when we store the user into the DAO - because he never existed
+        // before.
+        for (AuthModuleKey key : authenticationSources.keySet()) {
+            if (authenticationSources.get(key).authenticate(username, password)) {
                 User user = new User();
                 user.setUsername(username);
                 user.setAccessLevel(AccessLevel.USER);
                 user.setRealm(key.getRealm());
                 user.setUserType(key.getType());
-                //This is legal with a null ONLY because in this case there is no relation with a external server.
-                RegisterUserFlow.createUser(user,null);
-                return tokenController.getToken(user,null);
+                // This is legal with a null ONLY because in this case there is no relation with a
+                // external server.
+                RegisterUserFlow.createUser(user, null);
+                return tokenController.getToken(user, null);
             }
         }
         return res;
     }
 
     @Override
-    public AuthTokenResponse authenticateUser(X509Certificate[] certificates, X509CRLHolder crl,
-                                              X509Certificate ca) {
-        //Extract the username for the certificate and verify that it is not revoked.
+    public AuthTokenResponse authenticateUser(
+            X509Certificate[] certificates, X509CRLHolder crl, X509Certificate ca) {
+        // Extract the username for the certificate and verify that it is not revoked.
         X509Certificate clientCert = certificates[1];
         X509Certificate deviceCert = certificates[0];
         try {
-            //Check if the certificate is even valid.
+            // Check if the certificate is even valid.
             clientCert.checkValidity();
-            //Check if the certificate was provided by a valid authority.
+            // Check if the certificate was provided by a valid authority.
             clientCert.verify(ca.getPublicKey());
-            //Here we need to make a request to the CRL to find out if it has been revoked.
-            if(crl.getRevokedCertificate(clientCert.getSerialNumber()) != null) return null;
+            // Here we need to make a request to the CRL to find out if it has been revoked.
+            if (crl.getRevokedCertificate(clientCert.getSerialNumber()) != null) return null;
             String username = X509Utils.extractDNFromCertificate(clientCert).get("CN");
-            //We need to extract the deviceId from the certificate
+            // We need to extract the deviceId from the certificate
             StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username","=",username,"");
+            StatementElement statementElement = new StatementElement("username", "=", username, "");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
-            return tokenController.getToken(user,X509Utils.extractDNFromCertificate(deviceCert).get("UID"));
-        }
-        catch (Exception e){
+            return tokenController.getToken(
+                    user, X509Utils.extractDNFromCertificate(deviceCert).get("UID"));
+        } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public ConcurrentHashMap<AuthModuleKey, AuthenticationSource> getAuthSources(){
+    public ConcurrentHashMap<AuthModuleKey, AuthenticationSource> getAuthSources() {
         return authenticationSources;
     }
 
@@ -208,21 +234,24 @@ public class UserAuthenticationModule implements AuthenticationModule {
             if (type.equals(AuthenticationSourceType.AD)) className = AD_CONNECTOR_CLASS;
             if (type.equals(AuthenticationSourceType.LDAP)) className = LDAP_CONNECTOR_CLASS;
             Class<?> cls = LibraryLoader.classLoader.loadClass(className);
-            AuthenticationSource source = (AuthenticationSource) cls.getConstructor(String.class).newInstance(settings);
+            AuthenticationSource source =
+                    (AuthenticationSource) cls.getConstructor(String.class).newInstance(settings);
             return source.test();
-        }
-        catch (Exception e){
-            log.error("The testing of the source was unsuccessful: " + e.toString());
+        } catch (Exception e) {
+            log.error("The testing of the source was unsuccessful: " + e);
             return false;
         }
     }
 
     @Override
-    public boolean createUser(AuthenticationSourceType type, String realm, NameServer nameServer, User user) {
-        //This concept doesn't exist for LDAP or AD or any other hosted directory, in this case we simply run
-        //very theoretically, we should allow LDAP to publish to the public registry, but this is a lot
-        //more complex.
-        return RegisterUserFlow.createUser(user,nameServer);
+    public boolean createUser(
+            AuthenticationSourceType type, String realm, NameServer nameServer, User user) {
+        // This concept doesn't exist for LDAP or AD or any other hosted directory, in this case we
+        // simply run
+        // very theoretically, we should allow LDAP to publish to the public registry, but this is a
+        // lot
+        // more complex.
+        return RegisterUserFlow.createUser(user, nameServer);
     }
 
     @Override
@@ -232,9 +261,9 @@ public class UserAuthenticationModule implements AuthenticationModule {
 
     @Override
     public char[] getOTP(String username) {
-        if(datastore.userExists(username)){
+        if (datastore.userExists(username)) {
             StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username","=",username,"");
+            StatementElement statementElement = new StatementElement("username", "=", username, "");
             statementList.addStatement(statementElement);
             User user = datastore.getUserDao().getObjects(statementList).get(0);
             return (user.getPassword()).toCharArray();
@@ -248,7 +277,5 @@ public class UserAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public void deleteToken(SignedJWT token) {
-
-    }
+    public void deleteToken(SignedJWT token) {}
 }

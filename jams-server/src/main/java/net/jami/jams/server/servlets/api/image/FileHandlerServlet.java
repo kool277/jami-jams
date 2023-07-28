@@ -1,14 +1,5 @@
 package net.jami.jams.server.servlets.api.image;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,7 +7,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @MultipartConfig
 @Slf4j
@@ -24,8 +24,18 @@ import lombok.extern.slf4j.Slf4j;
 public class FileHandlerServlet extends HttpServlet {
 
     private static final String IMAGES_DIR = "images";
-    private static final String SAVE_DIR = ".." + File.separator + ".." + File.separator + ".." + File.separator + ".."
-            + File.separator + ".." + File.separator + IMAGES_DIR;
+    private static final String SAVE_DIR =
+            ".."
+                    + File.separator
+                    + ".."
+                    + File.separator
+                    + ".."
+                    + File.separator
+                    + ".."
+                    + File.separator
+                    + ".."
+                    + File.separator
+                    + IMAGES_DIR;
 
     /**
      * @apiVersion 1.0.0
@@ -70,9 +80,20 @@ public class FileHandlerServlet extends HttpServlet {
 
                 imagesFolder.mkdirs();
 
-                File imagesFolderLogo = new File(IMAGES_DIR + File.separator + blueprintName + File.separator + "logo");
-                File imagesFolderBackground = new File(
-                        IMAGES_DIR + File.separator + blueprintName + File.separator + "background");
+                File imagesFolderLogo =
+                        new File(
+                                IMAGES_DIR
+                                        + File.separator
+                                        + blueprintName
+                                        + File.separator
+                                        + "logo");
+                File imagesFolderBackground =
+                        new File(
+                                IMAGES_DIR
+                                        + File.separator
+                                        + blueprintName
+                                        + File.separator
+                                        + "background");
 
                 imagesFolderLogo.mkdirs();
                 imagesFolderBackground.mkdirs();
@@ -82,8 +103,14 @@ public class FileHandlerServlet extends HttpServlet {
             String fileName = filePart.getSubmittedFileName();
 
             for (Part part : request.getParts()) {
-                part.write(SAVE_DIR + File.separator + blueprintName + File.separator + imageType + File.separator
-                        + fileName);
+                part.write(
+                        SAVE_DIR
+                                + File.separator
+                                + blueprintName
+                                + File.separator
+                                + imageType
+                                + File.separator
+                                + fileName);
             }
 
             response.setStatus(HttpServletResponse.SC_OK);

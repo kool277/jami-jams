@@ -5,6 +5,7 @@ import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
 import com.jsoniter.spi.Decoder;
 import com.jsoniter.spi.Encoder;
+
 import net.jami.jams.common.objects.contacts.Contact;
 
 import java.io.IOException;
@@ -28,21 +29,21 @@ public class ContactCodec implements Encoder, Decoder {
         contact.setConversationId(input.get("conversationId").toString());
         long timeAdded = 0L;
         long timeRemoved = 0L;
-        if(!input.get("added").toString().isBlank())
-            timeAdded = input.get("added").toLong();
-        if(!input.get("removed").toString().isBlank()){
+        if (!input.get("added").toString().isBlank()) timeAdded = input.get("added").toLong();
+        if (!input.get("removed").toString().isBlank()) {
             timeRemoved = input.get("removed").toLong();
         }
-        if(timeAdded >= timeRemoved){
+        if (timeAdded >= timeRemoved) {
             contact.setStatus('A');
             contact.setTimestamp(input.get("added").toLong());
-        }
-        else{
+        } else {
             contact.setStatus('D');
             contact.setTimestamp(input.get("removed").toLong());
         }
-        if(!input.get("banned").toString().isBlank()) contact.setBanned(input.get("banned").as(Boolean.class));
-        if(!input.get("confirmed").toString().isBlank()) contact.setConfirmed(input.get("confirmed").as(Boolean.class));
+        if (!input.get("banned").toString().isBlank())
+            contact.setBanned(input.get("banned").as(Boolean.class));
+        if (!input.get("confirmed").toString().isBlank())
+            contact.setConfirmed(input.get("confirmed").as(Boolean.class));
         return contact;
     }
 
@@ -52,14 +53,15 @@ public class ContactCodec implements Encoder, Decoder {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"uri\":\"").append(ct.getUri()).append("\",");
         sb.append("\"conversationId\":\"").append(ct.getConversationId()).append("\",");
-        switch (ct.getStatus()){
+        switch (ct.getStatus()) {
             case 'A':
                 sb.append("\"added\":").append(ct.getTimestamp());
                 sb.append(",");
                 sb.append("\"confirmed\":").append(ct.getConfirmed());
                 break;
-            case 'D': sb.append("\"removed\":").append(ct.getTimestamp());
-                if(ct.getBanned()) sb.append(",").append("\"banned\":").append(ct.getBanned());
+            case 'D':
+                sb.append("\"removed\":").append(ct.getTimestamp());
+                if (ct.getBanned()) sb.append(",").append("\"banned\":").append(ct.getBanned());
                 break;
         }
         sb.append("}");

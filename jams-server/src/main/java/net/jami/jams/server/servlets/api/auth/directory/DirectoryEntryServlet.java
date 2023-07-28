@@ -1,33 +1,38 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.server.servlets.api.auth.directory;
 
+import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.userAuthenticationModule;
+
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.dao.StatementElement;
@@ -40,10 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static net.jami.jams.server.Server.dataStore;
-import static net.jami.jams.server.Server.userAuthenticationModule;
-
-//This is an endpoint to manipulate directory entry-data, this make sense only for local setups.
+// This is an endpoint to manipulate directory entry-data, this make sense only for local setups.
 
 @WebServlet("/api/auth/directory/entry")
 public class DirectoryEntryServlet extends HttpServlet {
@@ -195,44 +197,66 @@ public class DirectoryEntryServlet extends HttpServlet {
      * @apiError (500) {null} null could not return any authentication sources
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getParameter("jamiId") != null){
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        if (req.getParameter("jamiId") != null) {
             StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("jamiId","=",req.getParameter("jamiId"),null);
+            StatementElement statementElement =
+                    new StatementElement("jamiId", "=", req.getParameter("jamiId"), null);
             statementList.addStatement(statementElement);
             User user = dataStore.getUserDao().getObjects(statementList).get(0);
             List<UserProfile> userProfiles = new ArrayList<>();
-            userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-                userProfiles.addAll(v.searchUserProfiles(user.getUsername(), "LOGON_NAME", Optional.empty()));
-            });
-            if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
+            userAuthenticationModule
+                    .getAuthSources()
+                    .forEach(
+                            (k, v) -> {
+                                userProfiles.addAll(
+                                        v.searchUserProfiles(
+                                                user.getUsername(),
+                                                "LOGON_NAME",
+                                                Optional.empty()));
+                            });
+            if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
                 resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
-            }
-            else resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
+            } else
+                resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
             return;
         }
         if (req.getParameter("directory") != null && req.getParameter("directoryType") != null) {
-            List<UserProfile> profiles = userAuthenticationModule.getAuthSources()
-                    .get(new AuthModuleKey(req.getParameter("directory"), AuthenticationSourceType.fromString(req.getParameter("directoryType"))))
-                    .searchUserProfiles(req.getParameter("username"), "LOGON_NAME", Optional.empty());
-            if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
+            List<UserProfile> profiles =
+                    userAuthenticationModule
+                            .getAuthSources()
+                            .get(
+                                    new AuthModuleKey(
+                                            req.getParameter("directory"),
+                                            AuthenticationSourceType.fromString(
+                                                    req.getParameter("directoryType"))))
+                            .searchUserProfiles(
+                                    req.getParameter("username"), "LOGON_NAME", Optional.empty());
+            if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
                 resp.getOutputStream().write(profiles.get(0).getAsVCard().getBytes());
-            }
-            else resp.getOutputStream().write(JsonStream.serialize(profiles.get(0)).getBytes());
+            } else resp.getOutputStream().write(JsonStream.serialize(profiles.get(0)).getBytes());
             return;
         }
         List<UserProfile> userProfiles = new ArrayList<>();
-        userAuthenticationModule.getAuthSources().forEach((k, v) -> {
-            userProfiles.addAll(v.searchUserProfiles(req.getParameter("username"), "LOGON_NAME", Optional.empty()));
-        });
-        if(req.getParameter("format") != null && req.getParameter("format").equals("vcard")){
+        userAuthenticationModule
+                .getAuthSources()
+                .forEach(
+                        (k, v) -> {
+                            userProfiles.addAll(
+                                    v.searchUserProfiles(
+                                            req.getParameter("username"),
+                                            "LOGON_NAME",
+                                            Optional.empty()));
+                        });
+        if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
             resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
-        }
-        else resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
+        } else resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //This should work to modify a profile only in the case of a LOCAL directory.
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        // This should work to modify a profile only in the case of a LOCAL directory.
     }
 }

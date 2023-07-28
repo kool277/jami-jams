@@ -25,7 +25,9 @@ package net.jami.jams.ad.connector;
 
 import com.imperva.ddc.core.query.Endpoint;
 import com.jsoniter.JsonIterator;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.ad.connector.service.AuthenticationService;
 import net.jami.jams.ad.connector.service.UserProfileService;
 import net.jami.jams.common.authentication.AuthenticationSource;
@@ -67,7 +69,12 @@ public class ADConnector implements AuthenticationSource {
         while (endpoint == null) {
             endpoint = endpoints.poll();
         }
-        endpoint.setUserAccountName(ADConnector.settings.getRealm() + "\\" + settings.getUsername()); //* You can use the user's Distinguished Name as well
+        endpoint.setUserAccountName(
+                ADConnector.settings.getRealm()
+                        + "\\"
+                        + settings
+                                .getUsername()); // * You can use the user's Distinguished Name as
+                                                 // well
         endpoint.setPassword(settings.getPassword());
         return endpoint;
     }
@@ -77,13 +84,17 @@ public class ADConnector implements AuthenticationSource {
         while (endpoint == null) {
             endpoint = endpoints.poll();
         }
-        endpoint.setUserAccountName(ADConnector.settings.getRealm() + "\\" + username); //* You can use the user's Distinguished Name as well
+        endpoint.setUserAccountName(
+                ADConnector.settings.getRealm()
+                        + "\\"
+                        + username); // * You can use the user's Distinguished Name as well
         endpoint.setPassword(password);
         return endpoint;
     }
 
     public static void returnConnection(Endpoint connection) {
-        connection.setUserAccountName(ADConnector.settings.getRealm() + "\\" + settings.getUsername());
+        connection.setUserAccountName(
+                ADConnector.settings.getRealm() + "\\" + settings.getUsername());
         connection.setPassword(settings.getPassword());
         endpoints.add(connection);
     }
@@ -94,20 +105,22 @@ public class ADConnector implements AuthenticationSource {
     }
 
     @Override
-    public List<UserProfile> searchUserProfiles(String queryString, String field, Optional<Integer> page) {
+    public List<UserProfile> searchUserProfiles(
+            String queryString, String field, Optional<Integer> page) {
         return userProfileService.getUserProfile(queryString, field, false, page);
     }
 
     @Override
     public UserProfile getUserProfile(String username) {
-        List<UserProfile> result = userProfileService.getUserProfile(username, "LOGON_NAME",true, Optional.empty());
-        if(result == null || result.size() != 1) return null;
+        List<UserProfile> result =
+                userProfileService.getUserProfile(username, "LOGON_NAME", true, Optional.empty());
+        if (result == null || result.size() != 1) return null;
         return result.get(0);
     }
 
     @Override
     public boolean setUserProfile(UserProfile userProfile) {
-        //does nothing as we cannot edit user profiles.
+        // does nothing as we cannot edit user profiles.
         return false;
     }
 

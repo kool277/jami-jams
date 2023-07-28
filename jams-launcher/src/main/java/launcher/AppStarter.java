@@ -24,9 +24,11 @@
 package launcher;
 
 import launcher.zmq.MessageReceiver;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
@@ -53,18 +55,20 @@ public class AppStarter extends Thread {
      * The problematic here is whenever we will fire up a JAR (but then we need to be able to
      * kill and restart his PID, or whenever we fork via a main).
      */
-    private void setupZmqBridge(){
+    private void setupZmqBridge() {
         publisher = context.socket(SocketType.PUB);
         publisher.bind("tcp://*:4572");
-        //Use this to updater.
+        // Use this to updater.
         receiver = context.socket(SocketType.REP);
         receiver.bind("tcp://*:4573");
         messageReceiver = new MessageReceiver(receiver, doUpdate);
         messageReceiver.start();
     }
 
-    private void unpackUpdate(){
-        for (File f : Objects.requireNonNull(new File(System.getProperty("user.dir") + "/tmp/").listFiles())) {
+    private void unpackUpdate() {
+        for (File f :
+                Objects.requireNonNull(
+                        new File(System.getProperty("user.dir") + "/tmp/").listFiles())) {
             if (f.getName().contains("jams-server")) {
                 if (!f.renameTo(new File(System.getProperty("user.dir") + "/" + f.getName()))) {
                     log.info("An error occurred while attempting to move the file!");
@@ -72,7 +76,8 @@ public class AppStarter extends Thread {
                     f.delete();
                 }
             } else {
-                if (!f.renameTo(new File(System.getProperty("user.dir") + "/libs/" + f.getName()))) {
+                if (!f.renameTo(
+                        new File(System.getProperty("user.dir") + "/libs/" + f.getName()))) {
                     log.info("An error occurred while attempting to move the file!");
                 } else {
                     f.delete();
@@ -83,18 +88,21 @@ public class AppStarter extends Thread {
         new File(System.getProperty("user.dir") + "/tmp/").delete();
     }
 
-
     public AppStarter(String[] args) {
         parentArgs = args;
         try {
             jamsProcessId = startAccountManagementServer(args);
             setupZmqBridge();
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                log.info("Shutting down...");
-                ProcessHandle.of(jamsProcessId).get().destroyForcibly();
-            }));
+            Runtime.getRuntime()
+                    .addShutdownHook(
+                            new Thread(
+                                    () -> {
+                                        log.info("Shutting down...");
+                                        ProcessHandle.of(jamsProcessId).get().destroyForcibly();
+                                    }));
         } catch (Exception e) {
-            log.warn("Could not create and bind publisher and/or receiver! Please contact software developer");
+            log.warn(
+                    "Could not create and bind publisher and/or receiver! Please contact software developer");
             System.exit(-1);
         }
     }
@@ -104,11 +112,11 @@ public class AppStarter extends Thread {
         appStarter.start();
     }
 
-    //How this works - once the JAMSUpdater has notified back upstream to do an update, we lockdown
-    //and run the good old routine
+    // How this works - once the JAMSUpdater has notified back upstream to do an update, we lockdown
+    // and run the good old routine
     @Override
     public void run() {
-        //TODO: Hack this a bit to get it to work better - passing arguments damnit.
+        // TODO: Hack this a bit to get it to work better - passing arguments damnit.
         while (true) {
             try {
                 if (doUpdate.get()) {
@@ -116,7 +124,7 @@ public class AppStarter extends Thread {
                     ProcessHandle.of(jamsProcessId).get().destroyForcibly();
                     // transfer newly downloaded files to the right folder.
                     doUpdate.set(false);
-                    //Upack the update.
+                    // Upack the update.
                     unpackUpdate();
                     // Restart the main JAR and set the processId to it.
                     jamsProcessId = startAccountManagementServer(parentArgs);
@@ -126,8 +134,10 @@ public class AppStarter extends Thread {
                     doUpdate.wait();
                 }
             } catch (Exception e) {
-                log.error("An error occurred. Either while attempting to verify if an update was available, or" +
-                    "when attempting to reload a library: {}", e.getMessage());
+                log.error(
+                        "An error occurred. Either while attempting to verify if an update was available, or"
+                                + "when attempting to reload a library: {}",
+                        e.getMessage());
             }
         }
     }
@@ -140,8 +150,15 @@ public class AppStarter extends Thread {
                 pb = new ProcessBuilder("java", "-jar", "jams-server.jar", parentArgs[0]);
                 break;
             case 3:
-                pb = new ProcessBuilder("java", "-Dorg.ldaptive.sortSearchResults=true", "-jar", "jams-server.jar",
-                                        parentArgs[0], parentArgs[1], parentArgs[2]);
+                pb =
+                        new ProcessBuilder(
+                                "java",
+                                "-Dorg.ldaptive.sortSearchResults=true",
+                                "-jar",
+                                "jams-server.jar",
+                                parentArgs[0],
+                                parentArgs[1],
+                                parentArgs[2]);
                 break;
             default:
                 pb = new ProcessBuilder("java", "-jar", "jams-server.jar", "8080");

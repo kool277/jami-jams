@@ -1,29 +1,29 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.common.objects.user;
 
 import com.jsoniter.annotation.JsonIgnore;
-import com.jsoniter.output.JsonStream;
+
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -32,11 +32,14 @@ import ezvcard.parameter.ImageType;
 import ezvcard.parameter.TelephoneType;
 import ezvcard.property.Photo;
 import ezvcard.property.StructuredName;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import net.jami.jams.common.serialization.database.DatabaseObject;
+
 import org.bouncycastle.util.encoders.Base64;
 
 import java.lang.reflect.Method;
@@ -44,10 +47,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -63,7 +63,8 @@ public class UserProfile implements DatabaseObject {
         }
     }
 
-    //We sort of need the username here, because it's our only way of creating users which never existed.
+    // We sort of need the username here, because it's our only way of creating users which never
+    // existed.
     private String username;
     private String firstName;
     private String lastName;
@@ -90,25 +91,28 @@ public class UserProfile implements DatabaseObject {
     }
 
     @JsonIgnore
-    //Ignore this if we pass through JSON iterator.
-    public String getAsVCard(){
+    // Ignore this if we pass through JSON iterator.
+    public String getAsVCard() {
         VCard vCard = new VCard();
 
-        //We assume these always exist...
+        // We assume these always exist...
         StructuredName structuredName = new StructuredName();
         structuredName.setFamily(URLEncoder.encode(this.getLastName(), StandardCharsets.UTF_8));
         structuredName.setGiven(URLEncoder.encode(this.getFirstName(), StandardCharsets.UTF_8));
         vCard.setStructuredName(structuredName);
 
-        if(this.getPhoneNumber() != null) vCard.addTelephoneNumber(this.getPhoneNumber(), TelephoneType.WORK);
-        if(this.getMobileNumber() != null) vCard.addTelephoneNumber(this.getMobileNumber(),TelephoneType.CELL);
-        if(this.getFaxNumber() != null) vCard.addTelephoneNumber(this.getFaxNumber(), TelephoneType.FAX);
-        if(this.getEmail() != null) vCard.addEmail(this.getEmail(), EmailType.WORK);
-        if(this.getOrganization() != null) vCard.setOrganization(this.getOrganization());
-        if(this.getId() != null) vCard.setExtendedProperty("id",this.id);
+        if (this.getPhoneNumber() != null)
+            vCard.addTelephoneNumber(this.getPhoneNumber(), TelephoneType.WORK);
+        if (this.getMobileNumber() != null)
+            vCard.addTelephoneNumber(this.getMobileNumber(), TelephoneType.CELL);
+        if (this.getFaxNumber() != null)
+            vCard.addTelephoneNumber(this.getFaxNumber(), TelephoneType.FAX);
+        if (this.getEmail() != null) vCard.addEmail(this.getEmail(), EmailType.WORK);
+        if (this.getOrganization() != null) vCard.setOrganization(this.getOrganization());
+        if (this.getId() != null) vCard.setExtendedProperty("id", this.id);
 
         /*I think this is how Base64 will work in this case*/
-        if(this.getProfilePicture() != null) {
+        if (this.getProfilePicture() != null) {
             Photo photo = new Photo(Base64.decode(this.getProfilePicture()), ImageType.JPEG);
             vCard.addPhoto(photo);
         }
@@ -146,30 +150,20 @@ public class UserProfile implements DatabaseObject {
 
         UserProfile profile = (UserProfile) obj;
 
-        return (profile.getUsername().equals(this.username) &&
-                profile.getFirstName().equals(this.firstName) &&
-                profile.getLastName().equals(this.lastName));
+        return (profile.getUsername().equals(this.username)
+                && profile.getFirstName().equals(this.firstName)
+                && profile.getLastName().equals(this.lastName));
     }
 
     public void setDefaultValues() {
-        if (this.firstName == null)
-            this.firstName = "";
-        if (this.lastName == null)
-            this.lastName = "";
-        if (this.email == null)
-            this.email = "";
-        if (this.profilePicture == null)
-            this.profilePicture = "";
-        if (this.organization == null)
-            this.organization = "";
-        if (this.phoneNumber == null)
-            this.phoneNumber = "";
-        if (this.phoneNumberExtension == null)
-            this.phoneNumberExtension = "";
-        if (this.faxNumber == null)
-            this.faxNumber = "";
-        if (this.mobileNumber == null)
-            this.mobileNumber = "";
+        if (this.firstName == null) this.firstName = "";
+        if (this.lastName == null) this.lastName = "";
+        if (this.email == null) this.email = "";
+        if (this.profilePicture == null) this.profilePicture = "";
+        if (this.organization == null) this.organization = "";
+        if (this.phoneNumber == null) this.phoneNumber = "";
+        if (this.phoneNumberExtension == null) this.phoneNumberExtension = "";
+        if (this.faxNumber == null) this.faxNumber = "";
+        if (this.mobileNumber == null) this.mobileNumber = "";
     }
-
 }

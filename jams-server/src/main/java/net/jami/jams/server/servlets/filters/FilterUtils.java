@@ -23,22 +23,24 @@
 
 package net.jami.jams.server.servlets.filters;
 
+import static net.jami.jams.server.Server.*;
+import static net.jami.jams.server.Server.certificateAuthority;
+import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
+
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.SignedJWT;
+
 import jakarta.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
 import java.util.Date;
-
-import static net.jami.jams.server.Server.*;
-import static net.jami.jams.server.Server.certificateAuthority;
-import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 
 @Slf4j
 public class FilterUtils {
@@ -56,10 +58,12 @@ public class FilterUtils {
 
     public static AuthRequestType classifyRequest(HttpServletRequest request) {
         if (request.getHeader("authorization") != null) {
-            if (request.getHeader("authorization").contains("basic") || request.getHeader("authorization").contains("Basic")) {
+            if (request.getHeader("authorization").contains("basic")
+                    || request.getHeader("authorization").contains("Basic")) {
                 return AuthRequestType.BASIC;
             }
-            if (request.getHeader("authorization").contains("bearer") || request.getHeader("authorization").contains("Bearer")) {
+            if (request.getHeader("authorization").contains("bearer")
+                    || request.getHeader("authorization").contains("Bearer")) {
                 return AuthRequestType.BEARER_TOKEN;
             }
             return null;
@@ -67,7 +71,7 @@ public class FilterUtils {
         return null;
     }
 
-    public static boolean doAuthCheck(HttpServletRequest request){
+    public static boolean doAuthCheck(HttpServletRequest request) {
         AuthRequestType requestType = FilterUtils.classifyRequest(request);
         if (requestType == null) {
             return false;
@@ -76,35 +80,49 @@ public class FilterUtils {
             SignedJWT token = null;
             switch (requestType) {
                 case BASIC:
-                    token = SignedJWT.parse(processUsernamePasswordAuth(request.getHeader("authorization")).getAccess_token());
+                    token =
+                            SignedJWT.parse(
+                                    processUsernamePasswordAuth(request.getHeader("authorization"))
+                                            .getAccess_token());
                     break;
                 case BEARER_TOKEN:
-                    token = SignedJWT.parse(request.getHeader("authorization").
-                        replace("bearer", "")
-                        .replace("Bearer", ""));
+                    token =
+                            SignedJWT.parse(
+                                    request.getHeader("authorization")
+                                            .replace("bearer", "")
+                                            .replace("Bearer", ""));
                     break;
                 default:
                     return false;
             }
             StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
+            StatementElement statementElement =
+                    new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
             statementList.addStatement(statementElement);
             log.info("Getting user from database");
-            User user =  dataStore.getUserDao().getObjects(statementList).get(0);
+            User user = dataStore.getUserDao().getObjects(statementList).get(0);
             log.info("User retrieved from database: {}", user);
-            if(!user.getAccessLevelName().equals("ADMIN") && certificateAuthority.getLatestCRL().get() != null) {
-                if(certificateAuthority.getLatestCRL().get().getRevokedCertificate(user.getCertificate().getSerialNumber()) != null)
-                    return false;
+            if (!user.getAccessLevelName().equals("ADMIN")
+                    && certificateAuthority.getLatestCRL().get() != null) {
+                if (certificateAuthority
+                                .getLatestCRL()
+                                .get()
+                                .getRevokedCertificate(user.getCertificate().getSerialNumber())
+                        != null) return false;
             }
-            JWSVerifier jwsVerifier = new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
+            JWSVerifier jwsVerifier =
+                    new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
             if (token.verify(jwsVerifier) && verifyValidity(token)) {
                 request.setAttribute(USERNAME_ATTR, token.getJWTClaimsSet().getSubject());
-                request.setAttribute(ACCESS_LEVEL_ATTR, AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
+                request.setAttribute(
+                        ACCESS_LEVEL_ATTR,
+                        AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));
                 return true;
             }
-        }
-        catch (Exception e){
-            log.info("Failed to process authentication request and denying access: {}",e.getMessage());
+        } catch (Exception e) {
+            log.info(
+                    "Failed to process authentication request and denying access: {}",
+                    e.getMessage());
         }
 
         return false;

@@ -9,7 +9,7 @@ public class PolicyData {
 
     private Boolean publicInCalls;
     private Boolean proxyEnabled;
-    private String  dhtProxyListUrl;
+    private String dhtProxyListUrl;
     private String proxyServer;
     private Boolean accountPublish;
     private Boolean autoAnswer;

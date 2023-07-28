@@ -1,39 +1,44 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.server.servlets.api.auth.contacts;
+
+import static net.jami.jams.server.Server.dataStore;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.common.utils.ContactMerger;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -41,8 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-
-import static net.jami.jams.server.Server.dataStore;
 
 @WebServlet("/api/auth/contacts")
 public class ContactServlet extends HttpServlet {
@@ -59,9 +62,11 @@ public class ContactServlet extends HttpServlet {
      *                    "removed": 12387873 }, ]
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner", "=", req.getAttribute("username").toString(), ""));
+        statementList.addStatement(
+                new StatementElement("owner", "=", req.getAttribute("username").toString(), ""));
         List<Contact> contactList = dataStore.getContactDao().getObjects(statementList);
         resp.getOutputStream().write(JsonStream.serialize(contactList).getBytes());
     }
@@ -80,7 +85,8 @@ public class ContactServlet extends HttpServlet {
      * @apiError (500) {null} null contact could not be successfully added
      */
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
         String res = s.hasNext() ? s.next() : "";
         final JSONObject obj = new JSONObject(res);
@@ -92,15 +98,16 @@ public class ContactServlet extends HttpServlet {
         contact.setOwner(req.getAttribute("username").toString());
         contact.setUri(obj.get("uri").toString());
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner", "=", req.getAttribute("username").toString(), ""));
+        statementList.addStatement(
+                new StatementElement("owner", "=", req.getAttribute("username").toString(), ""));
         List<Contact> localList = dataStore.getContactDao().getObjects(statementList);
         List<Contact> remoteList = new ArrayList<>();
         remoteList.add(contact);
         List<Contact> result = ContactMerger.mergeContacts(localList, remoteList);
-        if (dataStore.getContactDao().storeContactList(result))
-            resp.setStatus(200);
+        if (dataStore.getContactDao().storeContactList(result)) resp.setStatus(200);
         else
-            TomcatCustomErrorHandler.sendCustomError(resp, 500, "could not store a contact due to server-side error");
+            TomcatCustomErrorHandler.sendCustomError(
+                    resp, 500, "could not store a contact due to server-side error");
     }
 
     /**
@@ -115,9 +122,11 @@ public class ContactServlet extends HttpServlet {
      * @apiError (500) {null} null contact could not be successfully deleted
      */
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner", "=", req.getAttribute("username").toString(), "AND"));
+        statementList.addStatement(
+                new StatementElement("owner", "=", req.getAttribute("username").toString(), "AND"));
         statementList.addStatement(new StatementElement("uri", "=", req.getParameter("uri"), ""));
         /*
          * List<Contact> remoteList =
@@ -130,10 +139,10 @@ public class ContactServlet extends HttpServlet {
          * dataStore.getContactDao().getObjects(statementList); List<Contact> result =
          * ContactMerger.mergeContacts(localList,remoteList);
          */
-        if (dataStore.getContactDao().deleteObject(statementList))
-            resp.setStatus(200);
+        if (dataStore.getContactDao().deleteObject(statementList)) resp.setStatus(200);
         else
-            TomcatCustomErrorHandler.sendCustomError(resp, 500, "could not delete a contact due to server-side error");
+            TomcatCustomErrorHandler.sendCustomError(
+                    resp, 500, "could not delete a contact due to server-side error");
     }
 
     /**
@@ -151,17 +160,20 @@ public class ContactServlet extends HttpServlet {
      * @apiError (500) {null} null contact could not be successfully added
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner", "=", req.getAttribute("username").toString(), ""));
+        statementList.addStatement(
+                new StatementElement("owner", "=", req.getAttribute("username").toString(), ""));
         List<Contact> localList = dataStore.getContactDao().getObjects(statementList);
-        List<Contact> remoteList = Arrays
-                .asList(JsonIterator.deserialize(req.getInputStream().readAllBytes(), Contact[].class));
+        List<Contact> remoteList =
+                Arrays.asList(
+                        JsonIterator.deserialize(
+                                req.getInputStream().readAllBytes(), Contact[].class));
         remoteList.forEach(contact -> contact.setOwner(req.getAttribute("username").toString()));
         List<Contact> result = ContactMerger.mergeContacts(localList, remoteList);
         if (!dataStore.getContactDao().storeContactList(result))
             TomcatCustomErrorHandler.sendCustomError(resp, 500, "Could not store contacts!");
-        else
-            resp.getOutputStream().write(JsonStream.serialize(result).getBytes());
+        else resp.getOutputStream().write(JsonStream.serialize(result).getBytes());
     }
 }

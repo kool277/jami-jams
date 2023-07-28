@@ -25,8 +25,6 @@ package net.jami.jams.server.servlets.api.auth.device;
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
-import java.io.IOException;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.jsoniter.JsonIterator;
@@ -37,6 +35,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
@@ -48,6 +47,8 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
+
+import java.io.IOException;
 
 @WebServlet("/api/auth/device/*")
 public class DeviceServlet extends HttpServlet {
@@ -71,7 +72,8 @@ public class DeviceServlet extends HttpServlet {
      * @apiError (500) {null} null Device could not be retrieved
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
         String deviceId = req.getPathInfo().replace("/", "");
         StatementList statementList = new StatementList();
@@ -81,10 +83,14 @@ public class DeviceServlet extends HttpServlet {
         statementList.addStatement(st2);
         Device device = dataStore.getDeviceDao().getObjects(statementList).get(0);
         if (certificateAuthority.getLatestCRL().get() != null)
-            device.setRevoked(certificateAuthority.getLatestCRL().get()
-                    .getRevokedCertificate(device.getCertificate().getSerialNumber()) != null);
-        else
-            device.setRevoked(false);
+            device.setRevoked(
+                    certificateAuthority
+                                    .getLatestCRL()
+                                    .get()
+                                    .getRevokedCertificate(
+                                            device.getCertificate().getSerialNumber())
+                            != null);
+        else device.setRevoked(false);
 
         resp.getOutputStream().write(JsonStream.serialize(device).getBytes());
     }
@@ -115,15 +121,17 @@ public class DeviceServlet extends HttpServlet {
      *                    }
      */
     @Override
-    @ScopedServletMethod(securityGroups = { AccessLevel.USER })
+    @ScopedServletMethod(securityGroups = {AccessLevel.USER})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        DeviceRegistrationRequest request = JsonIterator.deserialize(req.getInputStream().readAllBytes(),
-                DeviceRegistrationRequest.class);
-        DeviceRegistrationResponse devResponse = RegisterDeviceFlow
-                .registerDevice(req.getAttribute("username").toString(), request);
+        DeviceRegistrationRequest request =
+                JsonIterator.deserialize(
+                        req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
+        DeviceRegistrationResponse devResponse =
+                RegisterDeviceFlow.registerDevice(req.getAttribute("username").toString(), request);
 
         if (devResponse == null) {
-            TomcatCustomErrorHandler.sendCustomError(resp, 500, "could not enroll a device due to server-side error");
+            TomcatCustomErrorHandler.sendCustomError(
+                    resp, 500, "could not enroll a device due to server-side error");
             return;
         }
 
@@ -191,7 +199,8 @@ public class DeviceServlet extends HttpServlet {
      * @apiError (500) {null} null device name could not be changed
      */
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
         String deviceId = req.getPathInfo().replace("/", "");
         String deviceName = req.getParameter("deviceName");
@@ -203,11 +212,10 @@ public class DeviceServlet extends HttpServlet {
         StatementElement st2 = new StatementElement("deviceId", "=", deviceId, "");
         update.addStatement(st1);
         update.addStatement(st2);
-        if (dataStore.getDeviceDao().updateObject(update, constraint))
-            resp.setStatus(200);
+        if (dataStore.getDeviceDao().updateObject(update, constraint)) resp.setStatus(200);
         else
-            TomcatCustomErrorHandler.sendCustomError(resp, 500,
-                    "could not update device information due to server-side error");
+            TomcatCustomErrorHandler.sendCustomError(
+                    resp, 500, "could not update device information due to server-side error");
     }
 
     /**
@@ -222,25 +230,29 @@ public class DeviceServlet extends HttpServlet {
      * @apiError (500) {null} null device could not be deactivated
      */
     @Override
-    @ScopedServletMethod(securityGroups = { AccessLevel.USER })
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @ScopedServletMethod(securityGroups = {AccessLevel.USER})
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         String deviceId = req.getPathInfo().replace("/", "");
         // If the device does not belong to the user throw a 403
         StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("owner", "=", req.getAttribute("username").toString(),
-                "");
+        StatementElement statementElement =
+                new StatementElement("owner", "=", req.getAttribute("username").toString(), "");
         statementList.addStatement(statementElement);
         if (dataStore.getDeviceDao().getObjects(statementList).stream()
-                .filter(device -> device.getDeviceId().equals(deviceId)).count() == 0) {
-            TomcatCustomErrorHandler.sendCustomError(resp, 403,
-                    "You do not have sufficient rights to revoke this device!");
+                        .filter(device -> device.getDeviceId().equals(deviceId))
+                        .count()
+                == 0) {
+            TomcatCustomErrorHandler.sendCustomError(
+                    resp, 403, "You do not have sufficient rights to revoke this device!");
             return;
         }
-        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(),
-                deviceId);
+        DeviceRevocationResponse devResponse =
+                RevokeDeviceFlow.revokeDevice(req.getAttribute("username").toString(), deviceId);
         if (devResponse != null)
             resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         else
-            TomcatCustomErrorHandler.sendCustomError(resp, 500, "could not revoke device due to server-side error");
+            TomcatCustomErrorHandler.sendCustomError(
+                    resp, 500, "could not revoke device due to server-side error");
     }
 }

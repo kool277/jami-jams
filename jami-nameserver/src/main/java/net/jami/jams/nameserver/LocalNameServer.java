@@ -1,28 +1,29 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.nameserver;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.authmodule.AuthenticationModule;
@@ -46,13 +47,14 @@ public class LocalNameServer implements NameServer {
     private final String nameserverURI;
     private final AuthenticationModule authenticationModule;
 
-    public LocalNameServer(DataStore dataStore, AuthenticationModule authenticationModule, String nameserverURI) {
+    public LocalNameServer(
+            DataStore dataStore, AuthenticationModule authenticationModule, String nameserverURI) {
         this.dataStore = dataStore;
         this.nameserverURI = nameserverURI;
         this.authenticationModule = authenticationModule;
     }
 
-    //This always returns 200, for obvious reasons.
+    // This always returns 200, for obvious reasons.
     @Override
     public Integer registerName(String username, NameRegistrationRequest nameRegistrationRequest) {
         return 200;
@@ -62,28 +64,31 @@ public class LocalNameServer implements NameServer {
     public NameLookupResponse getAddressFromName(String username) {
         NameLookupResponse nameLookupResponse = null;
         StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("username","=",username,"");
+        StatementElement statementElement = new StatementElement("username", "=", username, "");
         statementList.addStatement(statementElement);
         List<User> results = dataStore.getUserDao().getObjects(statementList);
-        if(results.size() == 0){
-            //Reattempt resolution via directory lookups.
+        if (results.size() == 0) {
+            // Reattempt resolution via directory lookups.
             final User user = new User();
-            for(AuthModuleKey key : authenticationModule.getAuthSources().keySet()){
-                UserProfile profile = authenticationModule.getAuthSources().get(key).getUserProfile(username);
-                if(profile != null){
-                    //Use the username from the profile, not the one supplied otherwise phantom users will be created.
+            for (AuthModuleKey key : authenticationModule.getAuthSources().keySet()) {
+                UserProfile profile =
+                        authenticationModule.getAuthSources().get(key).getUserProfile(username);
+                if (profile != null) {
+                    // Use the username from the profile, not the one supplied otherwise phantom
+                    // users will be created.
                     user.setUsername(profile.getUsername());
                     user.setRealm(key.getRealm());
                     user.setUserType(key.getType());
                     user.setAccessLevel(AccessLevel.USER);
-                    authenticationModule.createUser(user.getUserType(),user.getRealm(),this,user);
+                    authenticationModule.createUser(
+                            user.getUserType(), user.getRealm(), this, user);
                     break;
                 }
             }
-            if(user.getUsername() == null) return null;
-            //resolve again in the database to be sure.
+            if (user.getUsername() == null) return null;
+            // resolve again in the database to be sure.
             results = dataStore.getUserDao().getObjects(statementList);
-            if(results.size() == 0) return null;
+            if (results.size() == 0) return null;
         }
         nameLookupResponse = new NameLookupResponse();
         nameLookupResponse.setName(results.get(0).getUsername());
@@ -94,10 +99,10 @@ public class LocalNameServer implements NameServer {
     @Override
     public String getNameFromAddress(String address) {
         StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("jamiId","=",address,"");
+        StatementElement statementElement = new StatementElement("jamiId", "=", address, "");
         statementList.addStatement(statementElement);
         List<User> results = dataStore.getUserDao().getObjects(statementList);
-        if(results.size() == 0) return null;
+        if (results.size() == 0) return null;
         return results.get(0).getUsername();
     }
 

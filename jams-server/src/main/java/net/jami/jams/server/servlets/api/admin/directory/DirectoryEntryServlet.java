@@ -23,14 +23,20 @@
 
 package net.jami.jams.server.servlets.api.admin.directory;
 
+import static net.jami.jams.server.Server.dataStore;
+import static net.jami.jams.server.Server.userAuthenticationModule;
+
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -39,18 +45,13 @@ import net.jami.jams.common.dao.StatementElement;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
-
-import static net.jami.jams.server.Server.dataStore;
-import static net.jami.jams.server.Server.userAuthenticationModule;
 
 @Slf4j
 @WebServlet("/api/admin/directory/entry")
@@ -60,7 +61,7 @@ public class DirectoryEntryServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //Create a user profile.
+        // Create a user profile.
         String realm = "LOCAL";
         Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
         String result = s.hasNext() ? s.next() : "";
@@ -79,8 +80,10 @@ public class DirectoryEntryServlet extends HttpServlet {
         userProfile.setMobileNumber(obj.get("mobileNumber").toString());
         userProfile.setId(obj.get("jamiId").toString());
 
-        userAuthenticationModule.getAuthSources().get(new AuthModuleKey(realm, AuthenticationSourceType.LOCAL))
-            .setUserProfile(userProfile);
+        userAuthenticationModule
+                .getAuthSources()
+                .get(new AuthModuleKey(realm, AuthenticationSourceType.LOCAL))
+                .setUserProfile(userProfile);
         resp.setStatus(200);
         HashMap<String, String> profileName = new HashMap<>();
         profileName.put("username", userProfile.getUsername());
@@ -88,10 +91,12 @@ public class DirectoryEntryServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException, SecurityException {
-        //Update a user's profile.
-        //Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
-        UserProfile userProfile = JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException, SecurityException {
+        // Update a user's profile.
+        // Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
+        UserProfile userProfile =
+                JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
         StatementList select = new StatementList();
         StatementElement st = new StatementElement("username", "=", userProfile.getUsername(), "");
         select.addStatement(st);
@@ -104,26 +109,30 @@ public class DirectoryEntryServlet extends HttpServlet {
         User callingUser = dataStore.getUserDao().getObjects(select).get(0);
 
         if (targetUser.getUserType() != AuthenticationSourceType.LOCAL) {
-            resp.sendError(403, "The user is not a local user, therefore we cannot change his data!");
+            resp.sendError(
+                    403, "The user is not a local user, therefore we cannot change his data!");
             return;
         }
 
-        if (callingUser.getAccessLevel() == AccessLevel.ADMIN || (callingUser.getAccessLevel() == AccessLevel.USER && callingUser.getUsername().equals(targetUser.getUsername()))) {
+        if (callingUser.getAccessLevel() == AccessLevel.ADMIN
+                || (callingUser.getAccessLevel() == AccessLevel.USER
+                        && callingUser.getUsername().equals(targetUser.getUsername()))) {
             select = new StatementList();
-            select.addStatement(new StatementElement("username", "=", userProfile.getUsername(), ""));
-            if (dataStore.updateUserProfile(userProfile))
-                resp.setStatus(200);
-            else
-                resp.sendError(500, "Could not update the users's profile information");
+            select.addStatement(
+                    new StatementElement("username", "=", userProfile.getUsername(), ""));
+            if (dataStore.updateUserProfile(userProfile)) resp.setStatus(200);
+            else resp.sendError(500, "Could not update the users's profile information");
         } else {
-            resp.sendError(403, "The user is either not an admin account or is attempting to edit a profile that is not his own!");
-            return;
+            resp.sendError(
+                    403,
+                    "The user is either not an admin account or is attempting to edit a profile that is not his own!");
         }
     }
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //This method will probably never be implemented.
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        // This method will probably never be implemented.
     }
 }

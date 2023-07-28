@@ -23,8 +23,11 @@
 package net.jami.jams.common.utils;
 
 import com.jsoniter.JsonIterator;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.updater.subscription.LicenseInformation;
+
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -32,8 +35,6 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -49,6 +50,9 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Vector;
+
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 @Slf4j
 public class X509Utils {
@@ -66,14 +70,17 @@ public class X509Utils {
             Object parsedObject = parser.readObject();
             if (parsedObject instanceof PEMKeyPair) {
                 PEMKeyPair pk = (PEMKeyPair) parsedObject;
-                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pk.getPrivateKeyInfo().getEncoded());
+                PKCS8EncodedKeySpec keySpec =
+                        new PKCS8EncodedKeySpec(pk.getPrivateKeyInfo().getEncoded());
                 return KeyFactory.getInstance("RSA").generatePrivate(keySpec);
             } else {
                 JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
                 return converter.getPrivateKey((PrivateKeyInfo) parsedObject);
             }
         } catch (Exception e) {
-            log.error("An error has occured trying to convert the PEM to PrivateKey, stack trace: " + e.toString());
+            log.error(
+                    "An error has occured trying to convert the PEM to PrivateKey, stack trace: "
+                            + e);
             return null;
         }
     }
@@ -84,7 +91,8 @@ public class X509Utils {
             Object parsedObject = parser.readObject();
             if (parsedObject instanceof PEMKeyPair) {
                 PEMKeyPair pk = (PEMKeyPair) parsedObject;
-                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pk.getPublicKeyInfo().getEncoded());
+                PKCS8EncodedKeySpec keySpec =
+                        new PKCS8EncodedKeySpec(pk.getPublicKeyInfo().getEncoded());
                 return KeyFactory.getInstance("RSA").generatePublic(keySpec);
             } else {
                 JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
@@ -96,14 +104,13 @@ public class X509Utils {
         }
     }
 
-
     public static X509Certificate getCertificateFromPEMString(String certificateString) {
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             InputStream inputStream = new ByteArrayInputStream(certificateString.getBytes());
             return (X509Certificate) certificateFactory.generateCertificate(inputStream);
         } catch (Exception e) {
-            log.error("An error has occured trying to convert the PEM to X509, stack trace: " + e.toString());
+            log.error("An error has occured trying to convert the PEM to X509, stack trace: " + e);
             return null;
         }
     }
@@ -116,7 +123,9 @@ public class X509Utils {
             stringBuilder.append(PVK_TAIL);
             return stringBuilder.toString();
         } catch (Exception e) {
-            log.error("An error has occured trying to convert the Private Key to PEM, stack trace: " + e.toString());
+            log.error(
+                    "An error has occured trying to convert the Private Key to PEM, stack trace: "
+                            + e);
             return null;
         }
     }
@@ -129,7 +138,9 @@ public class X509Utils {
             stringBuilder.append(CERT_TAIL);
             return stringBuilder.toString();
         } catch (Exception e) {
-            log.error("An error has occured trying to convert the Certificate Key to PEM, stack trace: " + e.toString());
+            log.error(
+                    "An error has occured trying to convert the Certificate Key to PEM, stack trace: "
+                            + e);
             return null;
         }
     }
@@ -142,25 +153,31 @@ public class X509Utils {
             stringBuilder.append(PPK_TAIL);
             return stringBuilder.toString();
         } catch (Exception e) {
-            log.error("An error has occured trying to convert the Public Key to PEM, stack trace: " + e.toString());
+            log.error(
+                    "An error has occured trying to convert the Public Key to PEM, stack trace: "
+                            + e);
             return null;
         }
     }
 
     public static PKCS10CertificationRequest getCSRFromString(String pkcs10StringRequest) {
         try {
-            ByteArrayInputStream pemStream = new ByteArrayInputStream(pkcs10StringRequest.getBytes(StandardCharsets.UTF_8));
-            PEMParser pemParser = new PEMParser(new BufferedReader(new InputStreamReader(pemStream)));
+            ByteArrayInputStream pemStream =
+                    new ByteArrayInputStream(pkcs10StringRequest.getBytes(StandardCharsets.UTF_8));
+            PEMParser pemParser =
+                    new PEMParser(new BufferedReader(new InputStreamReader(pemStream)));
             Object parsedObj = pemParser.readObject();
-            if (parsedObj instanceof PKCS10CertificationRequest) return (PKCS10CertificationRequest) parsedObj;
+            if (parsedObj instanceof PKCS10CertificationRequest)
+                return (PKCS10CertificationRequest) parsedObj;
             log.error("The request does not seem to be a CSR request!");
             return null;
         } catch (Exception e) {
-            log.error("An error has occured trying to convert a string to a PKCS10 Certification Request, stack trace: " + e.toString());
+            log.error(
+                    "An error has occured trying to convert a string to a PKCS10 Certification Request, stack trace: "
+                            + e);
             return null;
         }
     }
-
 
     public static Vector<Object> loadLicenseFromDatFile(String fileContents) {
         Vector<Object> res = new Vector<>();
@@ -173,12 +190,14 @@ public class X509Utils {
         return res;
     }
 
-    public static LicenseInformation extractSubscriptionTypeFromCertificate(X509Certificate certificate) {
+    public static LicenseInformation extractSubscriptionTypeFromCertificate(
+            X509Certificate certificate) {
         try {
             LdapName ln = new LdapName(certificate.getSubjectDN().toString());
             for (Rdn rdn : ln.getRdns()) {
                 try {
-                    return JsonIterator.deserialize(Base64.getDecoder().decode(rdn.getValue().toString().getBytes()),
+                    return JsonIterator.deserialize(
+                            Base64.getDecoder().decode(rdn.getValue().toString().getBytes()),
                             LicenseInformation.class);
                 } catch (Exception e) {
                 }
@@ -189,13 +208,13 @@ public class X509Utils {
         }
     }
 
-    public static HashMap<String,String> extractDNFromCertificate(X509Certificate certificate) throws Exception{
-        HashMap<String,String> subjectMap = new HashMap<>();
+    public static HashMap<String, String> extractDNFromCertificate(X509Certificate certificate)
+            throws Exception {
+        HashMap<String, String> subjectMap = new HashMap<>();
         LdapName ln = new LdapName(certificate.getSubjectDN().toString());
         for (Rdn rdn : ln.getRdns()) {
-            subjectMap.put(rdn.getType(),rdn.getValue().toString());
+            subjectMap.put(rdn.getType(), rdn.getValue().toString());
         }
         return subjectMap;
     }
-
 }

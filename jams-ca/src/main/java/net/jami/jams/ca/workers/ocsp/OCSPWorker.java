@@ -1,35 +1,37 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.ca.workers.ocsp;
 
+import static net.jami.jams.ca.JamsCA.*;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.ca.workers.X509Worker;
 import net.jami.jams.ca.workers.crl.CRLWorker;
 import net.jami.jams.common.cryptoengineapi.ocsp.CertificateStatus;
 import net.jami.jams.common.cryptoengineapi.ocsp.CertificateSummary;
 import net.jami.jams.common.cryptoengineapi.ocsp.OCSPCertificateStatusMapper;
-import net.jami.jams.common.objects.devices.Device;
-import net.jami.jams.common.objects.user.User;
+
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
@@ -54,102 +56,132 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import static net.jami.jams.ca.JamsCA.*;
-
 @Slf4j
 public class OCSPWorker extends X509Worker<String> {
 
     private final CRLWorker crlWorker;
     private final RespID responderID;
     private final ContentSigner contentSigner;
-    private final JcaContentVerifierProviderBuilder contentVerifierProvider = new JcaContentVerifierProviderBuilder().setProvider("BC");
+    private final JcaContentVerifierProviderBuilder contentVerifierProvider =
+            new JcaContentVerifierProviderBuilder().setProvider("BC");
 
-    //To process OCSP requests we need access to the CRL, hence we might as well just pass it here.
-    public OCSPWorker(PrivateKey privateKey, X509Certificate certificate, CRLWorker crlWorker) throws Exception {
+    // To process OCSP requests we need access to the CRL, hence we might as well just pass it here.
+    public OCSPWorker(PrivateKey privateKey, X509Certificate certificate, CRLWorker crlWorker)
+            throws Exception {
         super(privateKey, certificate);
         this.crlWorker = crlWorker;
-        DigestCalculatorProvider digestCalculatorProvider = new JcaDigestCalculatorProviderBuilder().setProvider("BC").build();
+        DigestCalculatorProvider digestCalculatorProvider =
+                new JcaDigestCalculatorProviderBuilder().setProvider("BC").build();
         // only SHA-1 is supported for responder IDs.
-        this.responderID = new RespID(SubjectPublicKeyInfo.getInstance(CA.getCertificate().getPublicKey().getEncoded()), digestCalculatorProvider.get(new DefaultDigestAlgorithmIdentifierFinder().find ("SHA-1")));
-        this.contentSigner = new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build(CA.getPrivateKey());
+        this.responderID =
+                new RespID(
+                        SubjectPublicKeyInfo.getInstance(
+                                CA.getCertificate().getPublicKey().getEncoded()),
+                        digestCalculatorProvider.get(
+                                new DefaultDigestAlgorithmIdentifierFinder().find("SHA-1")));
+        this.contentSigner =
+                new JcaContentSignerBuilder("SHA256withRSA")
+                        .setProvider("BC")
+                        .build(CA.getPrivateKey());
         log.info("Instantiated OCSP Worker...");
     }
 
-    public OCSPResp getOCSPResponse(OCSPReq ocspRequest, X509Certificate certificate, PrivateKey privateKey, Boolean unknown) throws OCSPException {
+    public OCSPResp getOCSPResponse(
+            OCSPReq ocspRequest,
+            X509Certificate certificate,
+            PrivateKey privateKey,
+            Boolean unknown)
+            throws OCSPException {
         try {
-            if(validateRequest(ocspRequest) != null) throw new OCSPException("Request is not valid"); //this means the request is invalid and we should notify the client.
-            //If the request was valid, we move on to other things.
+            if (validateRequest(ocspRequest) != null)
+                throw new OCSPException(
+                        "Request is not valid"); // this means the request is invalid and we should
+                                                 // notify the client.
+            // If the request was valid, we move on to other things.
             BasicOCSPRespBuilder responseBuilder = new BasicOCSPRespBuilder(responderID);
             // Add appropriate extensions
             Collection<Extension> responseExtensions = new ArrayList<>();
             // nonce
-            Extension nonceExtension = ocspRequest.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+            Extension nonceExtension =
+                    ocspRequest.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
             if (nonceExtension != null) responseExtensions.add(nonceExtension);
-            Extension[] extensions = responseExtensions.toArray(new Extension[responseExtensions.size()]);
+            Extension[] extensions =
+                    responseExtensions.toArray(new Extension[responseExtensions.size()]);
             responseBuilder.setResponseExtensions(new Extensions(extensions));
 
             for (Req request : ocspRequest.getRequestList())
                 addResponse(responseBuilder, request, unknown);
 
-            BasicOCSPResp basicResponse = responseBuilder.build(
-                    new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build(privateKey),
-                    new X509CertificateHolder[]{new JcaX509CertificateHolder(certificate)},
-                    new Date()
-            );
+            BasicOCSPResp basicResponse =
+                    responseBuilder.build(
+                            new JcaContentSignerBuilder("SHA256withRSA")
+                                    .setProvider("BC")
+                                    .build(privateKey),
+                            new X509CertificateHolder[] {new JcaX509CertificateHolder(certificate)},
+                            new Date());
             return new OCSPRespBuilder().build(OCSPRespBuilder.SUCCESSFUL, basicResponse);
-        }
-        catch (Exception e){
-            log.error("Could not verify the signature on the OCSP request with error {}",e.getMessage());
+        } catch (Exception e) {
+            log.error(
+                    "Could not verify the signature on the OCSP request with error {}",
+                    e.getMessage());
             return null;
         }
     }
 
     private OCSPResp validateRequest(OCSPReq ocspRequest) throws Exception {
-        if (ocspRequest == null || (ocspRequest.isSigned() &&
-                !ocspRequest.isSignatureValid(contentVerifierProvider.build(ocspRequest.getCerts()[0])))) {
+        if (ocspRequest == null
+                || (ocspRequest.isSigned()
+                        && !ocspRequest.isSignatureValid(
+                                contentVerifierProvider.build(ocspRequest.getCerts()[0])))) {
             return new OCSPRespBuilder().build(OCSPRespBuilder.MALFORMED_REQUEST, null);
         }
         return null;
     }
 
-
     private CertificateSummary getCertificateSummary(BigInteger serial, Boolean unknown) {
 
-        if(unknown) {
+        if (unknown) {
             return CertificateSummary.newBuilder()
                     .withStatus(CertificateStatus.UNKNOWN)
                     .withSerialNumber(serial)
                     .build();
         }
 
-        X509CRLEntryHolder x509CRLEntryHolder = crlWorker.getExistingCRL().get().getRevokedCertificate(serial);
+        X509CRLEntryHolder x509CRLEntryHolder =
+                crlWorker.getExistingCRL().get().getRevokedCertificate(serial);
 
-        if(x509CRLEntryHolder != null) return CertificateSummary.newBuilder()
-                .withStatus(CertificateStatus.REVOKED)
-                .withSerialNumber(serial)
-                .withRevocationTime(LocalDateTime.ofInstant(x509CRLEntryHolder.getRevocationDate().toInstant(), ZoneId.systemDefault()))
-                .build();
-        return CertificateSummary.newBuilder()
-                    .withStatus(CertificateStatus.VALID)
+        if (x509CRLEntryHolder != null)
+            return CertificateSummary.newBuilder()
+                    .withStatus(CertificateStatus.REVOKED)
                     .withSerialNumber(serial)
+                    .withRevocationTime(
+                            LocalDateTime.ofInstant(
+                                    x509CRLEntryHolder.getRevocationDate().toInstant(),
+                                    ZoneId.systemDefault()))
                     .build();
+        return CertificateSummary.newBuilder()
+                .withStatus(CertificateStatus.VALID)
+                .withSerialNumber(serial)
+                .build();
     }
 
-
-    private void addResponse(BasicOCSPRespBuilder responseBuilder, Req request, Boolean unknown) throws OCSPException{
+    private void addResponse(BasicOCSPRespBuilder responseBuilder, Req request, Boolean unknown)
+            throws OCSPException {
         CertificateID certificateID = request.getCertID();
         // Build Extensions
-        Extensions extensions = new Extensions(new Extension[]{});
+        Extensions extensions = new Extensions(new Extension[] {});
         Extensions requestExtensions = request.getSingleRequestExtensions();
         if (requestExtensions != null) {
-            Extension nonceExtension = requestExtensions.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+            Extension nonceExtension =
+                    requestExtensions.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
             if (nonceExtension != null) extensions = new Extensions(nonceExtension);
         }
-        responseBuilder.addResponse(certificateID,
-                OCSPCertificateStatusMapper.getStatus(getCertificateSummary(request.getCertID().getSerialNumber(), unknown)),
+        responseBuilder.addResponse(
+                certificateID,
+                OCSPCertificateStatusMapper.getStatus(
+                        getCertificateSummary(request.getCertID().getSerialNumber(), unknown)),
                 new Date(),
                 new Date(new Date().getTime() + crlLifetime),
                 extensions);
     }
-
 }

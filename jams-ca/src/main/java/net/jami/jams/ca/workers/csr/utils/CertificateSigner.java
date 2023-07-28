@@ -1,29 +1,31 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.ca.workers.csr.utils;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.ca.JamsCA;
+
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -44,27 +46,38 @@ import java.security.cert.X509Certificate;
 @Slf4j
 public class CertificateSigner {
 
-    public static X509Certificate signCertificate(PrivateKey privateKey, X509v3CertificateBuilder certificateBuilder,
-                                                  CertificateExtendedData certificateExtendedData){
+    public static X509Certificate signCertificate(
+            PrivateKey privateKey,
+            X509v3CertificateBuilder certificateBuilder,
+            CertificateExtendedData certificateExtendedData) {
         try {
-            //Appose the extended data from the template.
-            for(Object[] extensions : certificateExtendedData.getExtensions()){
-                certificateBuilder.addExtension((ASN1ObjectIdentifier) extensions[0],(boolean) extensions[1],(ASN1Encodable) extensions[2]);
+            // Appose the extended data from the template.
+            for (Object[] extensions : certificateExtendedData.getExtensions()) {
+                certificateBuilder.addExtension(
+                        (ASN1ObjectIdentifier) extensions[0],
+                        (boolean) extensions[1],
+                        (ASN1Encodable) extensions[2]);
             }
-            //Initialize the signing.
-            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(JamsCA.signingAlgorithm);
-            AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-            AsymmetricKeyParameter asymmetricKeyParameter = PrivateKeyFactory.createKey(privateKey.getEncoded());
-            //Sign the certificate.
-            ContentSigner sigGen = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(asymmetricKeyParameter);
-            Certificate eeX509CertificateStructure = certificateBuilder.build(sigGen).toASN1Structure();
-            return (X509Certificate) new CertificateFactory().engineGenerateCertificate(new ByteArrayInputStream(eeX509CertificateStructure.getEncoded()));
-        }
-        catch (Exception e){
-            log.error("Could not sign a certificate with error: " + e.toString());
+            // Initialize the signing.
+            AlgorithmIdentifier sigAlgId =
+                    new DefaultSignatureAlgorithmIdentifierFinder().find(JamsCA.signingAlgorithm);
+            AlgorithmIdentifier digAlgId =
+                    new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
+            AsymmetricKeyParameter asymmetricKeyParameter =
+                    PrivateKeyFactory.createKey(privateKey.getEncoded());
+            // Sign the certificate.
+            ContentSigner sigGen =
+                    new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(asymmetricKeyParameter);
+            Certificate eeX509CertificateStructure =
+                    certificateBuilder.build(sigGen).toASN1Structure();
+            return (X509Certificate)
+                    new CertificateFactory()
+                            .engineGenerateCertificate(
+                                    new ByteArrayInputStream(
+                                            eeX509CertificateStructure.getEncoded()));
+        } catch (Exception e) {
+            log.error("Could not sign a certificate with error: " + e);
             return null;
         }
     }
-
-
 }

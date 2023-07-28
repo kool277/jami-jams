@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import net.jami.jams.common.serialization.database.DatabaseObject;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,12 +45,10 @@ public class Group implements DatabaseObject {
     }
 
     public boolean isEmpty() {
-        if(this.id == null && this.name  == null) return true;
-        return false;
+        return this.id == null && this.name == null;
     }
 
     public boolean hasBlueprint() {
-        if(this.blueprint == null || this.blueprint.equals("")) return false;
-        return true;
+        return this.blueprint != null && !this.blueprint.equals("");
     }
 }

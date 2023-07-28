@@ -1,31 +1,32 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.common.objects.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.roots.BlockchainEntity;
 import net.jami.jams.common.objects.roots.X509Entity;
@@ -34,7 +35,6 @@ import net.jami.jams.common.utils.X509Utils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,7 +45,7 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
     private String username;
     private String password;
     private AuthenticationSourceType userType;
-    private String realm; //sort of the domain.
+    private String realm; // sort of the domain.
     private AccessLevel accessLevel = AccessLevel.USER;
     private Boolean needsPasswordReset = false;
     private String salt;
@@ -65,10 +65,10 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
         this.ethAddress = rs.getString("ethAddress");
         this.ethKey = rs.getString("ethKey");
         this.jamiId = rs.getString("jamiId");
-        if(rs.getString("certificate") != null && !rs.getString("certificate").isBlank()) {
+        if (rs.getString("certificate") != null && !rs.getString("certificate").isBlank()) {
             this.setCertificate(X509Utils.getCertificateFromPEMString(rs.getString("certificate")));
         }
-        if(rs.getString("privatekey") != null && !rs.getString("privatekey").isBlank()) {
+        if (rs.getString("privatekey") != null && !rs.getString("privatekey").isBlank()) {
             this.setPrivateKey(X509Utils.getKeyFromPEMString(rs.getString("privatekey")));
         }
     }
@@ -100,10 +100,11 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
         ps.setString(1, username);
-        //We don't store the user's password if he is remote.
-        if(userType != null && userType.equals(AuthenticationSourceType.LOCAL)) ps.setString(2, password);
+        // We don't store the user's password if he is remote.
+        if (userType != null && userType.equals(AuthenticationSourceType.LOCAL))
+            ps.setString(2, password);
         else ps.setString(2, null);
-        if(userType != null) ps.setString(3, userType.toString());
+        if (userType != null) ps.setString(3, userType.toString());
         else ps.setString(3, null);
         ps.setString(4, realm);
         ps.setString(5, ethAddress);
@@ -119,9 +120,9 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
         } else {
             ps.setString(9, "");
         }
-        ps.setString(10,accessLevel.toString());
-        ps.setString(11,needsPasswordReset.toString());
-        ps.setString(12,salt);
+        ps.setString(10, accessLevel.toString());
+        ps.setString(11, needsPasswordReset.toString());
+        ps.setString(12, salt);
         return ps;
     }
 
@@ -135,11 +136,11 @@ public class User extends X509Entity implements BlockchainEntity, DatabaseObject
         return null;
     }
 
-    public void setPassword(char[] password){
+    public void setPassword(char[] password) {
         this.password = new String(password);
     }
 
-    public void setPassword(String password){
+    public void setPassword(String password) {
         this.password = password;
     }
 }

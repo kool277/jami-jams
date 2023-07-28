@@ -1,30 +1,32 @@
 /*
-* Copyright (C) 2020 by Savoir-faire Linux
-* Authors: William Enright <william.enright@savoirfairelinux.com>
-*          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
-*          Johnny Flores <johnny.flores@savoirfairelinux.com>
-*          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
-*          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
-*
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2020 by Savoir-faire Linux
+ * Authors: William Enright <william.enright@savoirfairelinux.com>
+ *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
+ *          Johnny Flores <johnny.flores@savoirfairelinux.com>
+ *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
+ *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package net.jami.jams.nameserver;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.jami.NameLookupResponse;
 import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
@@ -46,14 +48,13 @@ public class PublicNameServer implements NameServer {
     @Override
     public Integer registerName(String username, NameRegistrationRequest nameRegistrationRequest) {
         try {
-            URL url = new URL(nameserverURI+"/name/" + username);
+            URL url = new URL(nameserverURI + "/name/" + username);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setDoOutput(true);
             con.getOutputStream().write(JsonStream.serialize(nameRegistrationRequest).getBytes());
             return con.getResponseCode();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return 500;
         }
     }
@@ -61,10 +62,10 @@ public class PublicNameServer implements NameServer {
     @Override
     public NameLookupResponse getAddressFromName(String username) {
         try {
-            URL url = new URL(nameserverURI+"/name/" + username);
+            URL url = new URL(nameserverURI + "/name/" + username);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            if(con.getResponseCode() == 200) {
+            if (con.getResponseCode() == 200) {
                 StringBuilder responseData = new StringBuilder();
                 int respSize = Integer.parseInt(con.getHeaderField("Content-Length"));
                 int currentSize = 0;
@@ -72,12 +73,11 @@ public class PublicNameServer implements NameServer {
                     responseData.append((char) con.getInputStream().read());
                     currentSize++;
                 }
-                log.info("Response received from public nameserver {} ", responseData.toString());
-                return JsonIterator.deserialize(responseData.toString(),NameLookupResponse.class);
+                log.info("Response received from public nameserver {} ", responseData);
+                return JsonIterator.deserialize(responseData.toString(), NameLookupResponse.class);
             }
             return null;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             log.info("An error occurred while querying the public nameserver {} ", e.toString());
             return null;
         }
@@ -86,10 +86,10 @@ public class PublicNameServer implements NameServer {
     @Override
     public String getNameFromAddress(String address) {
         try {
-            URL url = new URL(nameserverURI+"/addr/" + address);
+            URL url = new URL(nameserverURI + "/addr/" + address);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            if(con.getResponseCode() == 200) {
+            if (con.getResponseCode() == 200) {
                 StringBuilder responseData = new StringBuilder();
                 int respSize = Integer.parseInt(con.getHeaderField("Content-Length"));
                 int currentSize = 0;
@@ -97,15 +97,14 @@ public class PublicNameServer implements NameServer {
                     responseData.append((char) con.getInputStream().read());
                     currentSize++;
                 }
-                log.info("Response received from public nameserver {} ",responseData.toString());
+                log.info("Response received from public nameserver {} ", responseData);
                 JSONParser parser = new JSONParser();
                 JSONObject json = (JSONObject) parser.parse(responseData.toString());
                 return json.getAsString("name");
             }
             return null;
-        }
-        catch (Exception e){
-            log.info("An error occurred while querying the public nameserver {} ",e.toString());
+        } catch (Exception e) {
+            log.info("An error occurred while querying the public nameserver {} ", e.toString());
             return null;
         }
     }

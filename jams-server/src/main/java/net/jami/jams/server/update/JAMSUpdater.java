@@ -24,9 +24,11 @@ package net.jami.jams.server.update;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.server.Server;
@@ -52,16 +54,16 @@ public class JAMSUpdater implements AppUpdater {
     private final UpdateCheckTask updateCheckTask = new UpdateCheckTask();
     private final UpdateDownloader updateDownloader = new UpdateDownloader();
     private final Timer timer = new Timer();
-    //These get written to from the server, so we set them to volatile for visibility purposes.
-    public volatile static X509Certificate certificate;
-    public volatile static PrivateKey privateKey;
-
+    // These get written to from the server, so we set them to volatile for visibility purposes.
+    public static volatile X509Certificate certificate;
+    public static volatile PrivateKey privateKey;
 
     public JAMSUpdater(AtomicBoolean doUpdate) {
 
         // read config json
         try {
-            InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
+            InputStream input =
+                    this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
             Any any = JsonIterator.deserialize(input.readAllBytes());
             UPDATE_SERVER_URI = any.get("UPDATE_URL").toString();
             UPDATE_INTERVAL = any.get("UPDATE_INTERVAL").toLong();
@@ -70,7 +72,7 @@ public class JAMSUpdater implements AppUpdater {
         }
 
         this.doUpdate = doUpdate;
-        timer.schedule(updateCheckTask,0,UPDATE_INTERVAL);
+        timer.schedule(updateCheckTask, 0, UPDATE_INTERVAL);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class JAMSUpdater implements AppUpdater {
     }
 
     @Override
-    public HashMap<String,FileDescription> getRemoteVersions() {
+    public HashMap<String, FileDescription> getRemoteVersions() {
         return updateCheckTask.getRemoteData();
     }
 
@@ -96,12 +98,10 @@ public class JAMSUpdater implements AppUpdater {
 
     @Override
     public void doUpdate() {
-        //Some logic here about replacing the existing files.
+        // Some logic here about replacing the existing files.
         boolean res = updateDownloader.downloadFiles(getRemoteVersions());
-        //Notify back up-stream to the launcher that we want the update to happen.
-        if(res)
-            Server.updateInterface.approveUpdate();
-        else
-            log.error("Could not perform update - the downloaded files may have been invalid!");
+        // Notify back up-stream to the launcher that we want the update to happen.
+        if (res) Server.updateInterface.approveUpdate();
+        else log.error("Could not perform update - the downloaded files may have been invalid!");
     }
 }

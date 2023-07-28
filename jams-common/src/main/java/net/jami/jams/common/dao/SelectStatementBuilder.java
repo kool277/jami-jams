@@ -28,25 +28,28 @@ import java.sql.PreparedStatement;
 
 public class SelectStatementBuilder {
 
-    public static PreparedStatement buildStatement(String table, StatementList statementElements,
-                                                   StatementConstraints statementConstraints,
-                                                   SQLConnection connection) throws Exception
-    {
+    public static PreparedStatement buildStatement(
+            String table,
+            StatementList statementElements,
+            StatementConstraints statementConstraints,
+            SQLConnection connection)
+            throws Exception {
         PreparedStatement ps = null;
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT * FROM ").append(table);
-        if(statementElements != null) {
+        if (statementElements != null) {
             stringBuilder.append(" WHERE ");
             for (StatementElement statementElement : statementElements.getStatements()) {
 
-                stringBuilder.append("lower(" + statementElement.getColumn() + ")")
-                             .append(" ")
-                             .append(statementElement.getOperator())
-                             .append(" ")
-                             .append("?")
-                             .append(" ")
-                             .append(statementElement.getNextStatementRelation())
-                             .append(" ");
+                stringBuilder
+                        .append("lower(" + statementElement.getColumn() + ")")
+                        .append(" ")
+                        .append(statementElement.getOperator())
+                        .append(" ")
+                        .append("?")
+                        .append(" ")
+                        .append(statementElement.getNextStatementRelation())
+                        .append(" ");
             }
             ps = connection.getConnection().prepareStatement(stringBuilder.toString());
             int i = 1;
@@ -54,16 +57,16 @@ public class SelectStatementBuilder {
                 ps.setString(i, (statementElement.getValue()).toLowerCase());
                 i++;
             }
-        }
-        else{
-            if(statementConstraints != null){
-                stringBuilder.append(" LIMIT ").append(statementConstraints.getRowCount())
-                        .append(" OFFSET ").append(statementConstraints.getOffset());
+        } else {
+            if (statementConstraints != null) {
+                stringBuilder
+                        .append(" LIMIT ")
+                        .append(statementConstraints.getRowCount())
+                        .append(" OFFSET ")
+                        .append(statementConstraints.getOffset());
             }
             ps = connection.getConnection().prepareStatement(stringBuilder.toString());
         }
         return ps;
     }
-
-
 }

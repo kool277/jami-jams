@@ -1,6 +1,7 @@
 package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
@@ -21,12 +22,15 @@ public class PolicyDao extends AbstractDao<Policy> {
     public boolean storeObject(Policy object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("INSERT INTO policies " +
-                    "(name, policyData) VALUES (?, ?)");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "INSERT INTO policies " + "(name, policyData) VALUES (?, ?)");
             ps = object.getInsert(ps);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to store a blueprint: " + e.toString());
+            log.error("An error has occurred while trying to store a blueprint: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
@@ -42,13 +46,17 @@ public class PolicyDao extends AbstractDao<Policy> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("UPDATE policies SET name = ?, policyData = ? WHERE name = ?");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement(
+                                    "UPDATE policies SET name = ?, policyData = ? WHERE name = ?");
             ps.setString(1, name);
             ps.setString(2, policyData);
             ps.setString(3, oldName);
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to update a blueprint: " + e.toString());
+            log.error("An error has occurred while trying to update a blueprint: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
@@ -62,11 +70,14 @@ public class PolicyDao extends AbstractDao<Policy> {
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
         try {
-            PreparedStatement ps = connection.getConnection().prepareStatement("DELETE FROM policies WHERE name = ?");
+            PreparedStatement ps =
+                    connection
+                            .getConnection()
+                            .prepareStatement("DELETE FROM policies WHERE name = ?");
             ps.setString(1, name);
             return ps.executeUpdate() != 0;
-        } catch (SQLException e){
-            log.error("An error has occurred while trying to delete a blueprint: " + e.toString());
+        } catch (SQLException e) {
+            log.error("An error has occurred while trying to delete a blueprint: " + e);
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

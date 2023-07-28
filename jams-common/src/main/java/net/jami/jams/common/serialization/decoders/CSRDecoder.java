@@ -25,6 +25,7 @@ package net.jami.jams.common.serialization.decoders;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.spi.Decoder;
+
 import net.jami.jams.common.utils.X509Utils;
 
 import java.io.IOException;
@@ -36,14 +37,15 @@ public class CSRDecoder implements Decoder {
 
     @Override
     public Object decode(JsonIterator jsonIterator) throws IOException {
-        //This is legacy code, we need to sanitize the string
+        // This is legacy code, we need to sanitize the string
         String input = jsonIterator.readString();
         if (input == null) return null;
         input = input.replace(CSR_HEAD, "");
         input = input.replace(CSR_TAIL, "");
         input = input.replace("\n", "");
         input = CSR_HEAD + input + CSR_TAIL;
-        //Once all legacy clients stop existing, this can safely be removed leaving only the jsonIter.readString()
+        // Once all legacy clients stop existing, this can safely be removed leaving only the
+        // jsonIter.readString()
         return X509Utils.getCSRFromString(input);
     }
 }

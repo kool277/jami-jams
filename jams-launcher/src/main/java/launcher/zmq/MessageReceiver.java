@@ -1,6 +1,7 @@
 package launcher.zmq;
 
 import lombok.Getter;
+
 import org.zeromq.ZMQ;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,21 +19,19 @@ public class MessageReceiver extends Thread {
 
     @Override
     public void run() {
-        while(true){
-            try{
+        while (true) {
+            try {
                 String message = socket.recvStr();
-                if(message.equals("DO-UPDATE")) {
-                    //Use wait-notify mechanism to avoid burning CPU cycles.
+                if (message.equals("DO-UPDATE")) {
+                    // Use wait-notify mechanism to avoid burning CPU cycles.
                     synchronized (atomicBoolean) {
                         atomicBoolean.set(true);
                         atomicBoolean.notify();
                     }
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("Some exception occurred!");
             }
         }
     }
 }
-
