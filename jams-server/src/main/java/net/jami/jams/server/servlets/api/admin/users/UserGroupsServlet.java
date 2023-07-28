@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 
@@ -45,13 +43,7 @@ public class UserGroupsServlet extends HttpServlet {
 
         String username = req.getPathInfo().replace("/", "");
 
-        StatementList statementList = new StatementList();
-        StatementElement st = new StatementElement("username", "=", username, "");
-
-        statementList.addStatement(st);
-
-        List<UserGroupMapping> result =
-                dataStore.getUserGroupMappingsDao().getObjects(statementList);
+        List<UserGroupMapping> result = dataStore.getUserGroupMappingsDao().getByUsername(username);
 
         if (result.isEmpty()) resp.sendError(404, "No groups found for this user!");
         else {

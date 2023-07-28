@@ -41,8 +41,6 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
@@ -97,16 +95,12 @@ public class DirectoryEntryServlet extends HttpServlet {
         // Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
         UserProfile userProfile =
                 JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
-        StatementList select = new StatementList();
-        StatementElement st = new StatementElement("username", "=", userProfile.getUsername(), "");
-        select.addStatement(st);
 
-        User targetUser = dataStore.getUserDao().getObjects(select).get(0);
-        select = new StatementList();
-        st = new StatementElement("username", "=", req.getAttribute("username").toString(), "");
-        select.addStatement(st);
+        String username = req.getAttribute("username").toString();
 
-        User callingUser = dataStore.getUserDao().getObjects(select).get(0);
+        User targetUser =
+                dataStore.getUserDao().getByUsername(userProfile.getUsername()).orElseThrow();
+        User callingUser = dataStore.getUserDao().getByUsername(username).orElseThrow();
 
         if (targetUser.getUserType() != AuthenticationSourceType.LOCAL) {
             resp.sendError(
@@ -117,16 +111,14 @@ public class DirectoryEntryServlet extends HttpServlet {
         if (callingUser.getAccessLevel() == AccessLevel.ADMIN
                 || (callingUser.getAccessLevel() == AccessLevel.USER
                         && callingUser.getUsername().equals(targetUser.getUsername()))) {
-            select = new StatementList();
-            select.addStatement(
-                    new StatementElement("username", "=", userProfile.getUsername(), ""));
             if (dataStore.updateUserProfile(userProfile)) resp.setStatus(200);
             else resp.sendError(500, "Could not update the users's profile information");
-        } else {
-            resp.sendError(
-                    403,
-                    "The user is either not an admin account or is attempting to edit a profile that is not his own!");
+
+            return;
         }
+        resp.sendError(
+                403,
+                "The user is either not an admin account or is attempting to edit a profile that is not his own!");
     }
 
     @Override

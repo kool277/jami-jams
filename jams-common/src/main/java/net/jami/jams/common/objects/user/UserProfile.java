@@ -122,16 +122,16 @@ public class UserProfile implements DatabaseObject {
 
     @Override
     public PreparedStatement getInsert(PreparedStatement ps) throws Exception {
-        ps.setString(1, username);
-        ps.setString(2, firstName);
-        ps.setString(3, lastName);
-        ps.setString(4, email);
-        ps.setString(5, profilePicture);
-        ps.setString(6, organization);
-        ps.setString(7, phoneNumber);
-        ps.setString(8, phoneNumberExtension);
-        ps.setString(9, faxNumber);
-        ps.setString(10, mobileNumber);
+        ps.setString(1, firstName);
+        ps.setString(2, lastName);
+        ps.setString(3, email);
+        ps.setString(4, profilePicture);
+        ps.setString(5, organization);
+        ps.setString(6, phoneNumber);
+        ps.setString(7, phoneNumberExtension);
+        ps.setString(8, faxNumber);
+        ps.setString(9, mobileNumber);
+        ps.setString(10, username);
         return ps;
     }
 

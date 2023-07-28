@@ -27,8 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.authmodule.AuthenticationModule;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.jami.NameLookupResponse;
 import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
@@ -37,6 +35,7 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class LocalNameServer implements NameServer {
@@ -62,12 +61,8 @@ public class LocalNameServer implements NameServer {
 
     @Override
     public NameLookupResponse getAddressFromName(String username) {
-        NameLookupResponse nameLookupResponse = null;
-        StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("username", "=", username, "");
-        statementList.addStatement(statementElement);
-        List<User> results = dataStore.getUserDao().getObjects(statementList);
-        if (results.size() == 0) {
+        Optional<User> result = dataStore.getUserDao().getByUsername(username);
+        if (result.isEmpty()) {
             // Reattempt resolution via directory lookups.
             final User user = new User();
             for (AuthModuleKey key : authenticationModule.getAuthSources().keySet()) {
@@ -87,22 +82,19 @@ public class LocalNameServer implements NameServer {
             }
             if (user.getUsername() == null) return null;
             // resolve again in the database to be sure.
-            results = dataStore.getUserDao().getObjects(statementList);
-            if (results.size() == 0) return null;
+            result = dataStore.getUserDao().getByUsername(username);
+            if (result.isEmpty()) return null;
         }
-        nameLookupResponse = new NameLookupResponse();
-        nameLookupResponse.setName(results.get(0).getUsername());
-        nameLookupResponse.setAddr(results.get(0).getJamiId());
+        NameLookupResponse nameLookupResponse = new NameLookupResponse();
+        nameLookupResponse.setName(result.get().getUsername());
+        nameLookupResponse.setAddr(result.get().getJamiId());
         return nameLookupResponse;
     }
 
     @Override
     public String getNameFromAddress(String address) {
-        StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("jamiId", "=", address, "");
-        statementList.addStatement(statementElement);
-        List<User> results = dataStore.getUserDao().getObjects(statementList);
-        if (results.size() == 0) return null;
+        List<User> results = dataStore.getUserDao().getByJamiId(address);
+        if (results.isEmpty()) return null;
         return results.get(0).getUsername();
     }
 

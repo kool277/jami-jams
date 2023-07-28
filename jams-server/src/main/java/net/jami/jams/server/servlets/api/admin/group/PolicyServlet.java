@@ -2,8 +2,6 @@ package net.jami.jams.server.servlets.api.admin.group;
 
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,15 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Policy;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
@@ -34,27 +29,8 @@ public class PolicyServlet extends HttpServlet {
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
-        List<Policy> policies;
         String name = req.getParameter("name");
-
-        if (!name.equals("*")) {
-            StatementList statementList = new StatementList();
-            StatementElement st = new StatementElement("name", "=", name, "");
-            statementList.addStatement(st);
-            policies = dataStore.getPolicyDao().getObjects(statementList);
-            if (!policies.isEmpty()) {
-                resp.getOutputStream().write(JsonStream.serialize(policies.get(0)).getBytes());
-                resp.setStatus(200);
-            } else {
-                resp.setStatus(404); // 404 status code for Not Found
-                resp.getWriter().write("{\"message\": \"No policy found.\"}");
-            }
-        } else {
-            policies = dataStore.getPolicyDao().getObjects(null);
-            resp.getOutputStream().write(JsonStream.serialize(policies).getBytes());
-            resp.setStatus(200);
-        }
+        PolicyProfileServlet.getPolicyAndSendResponse(resp, name);
     }
 
     @Override
@@ -65,17 +41,9 @@ public class PolicyServlet extends HttpServlet {
         Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
         String result = s.hasNext() ? s.next() : "";
         final JSONObject obj = new JSONObject(result);
-        final String jsonString = obj.toString();
+        final String policyData = obj.toString();
 
-        StatementList update = new StatementList();
-        StatementElement st0 = new StatementElement("name", "=", name, "");
-        update.addStatement(st0);
-        StatementElement st2 = new StatementElement("policyData", "=", jsonString, "");
-        update.addStatement(st2);
-        StatementList constraint = new StatementList();
-        StatementElement st3 = new StatementElement("name", "=", name, "");
-        constraint.addStatement(st3);
-        if (dataStore.getPolicyDao().updateObject(update, constraint)) resp.setStatus(200);
+        if (dataStore.getPolicyDao().updateObject(name, policyData)) resp.setStatus(200);
         else resp.sendError(500, "could not update the group's name!");
     }
 
@@ -102,10 +70,10 @@ public class PolicyServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("name");
 
-        StatementElement statementElement = new StatementElement("name", "=", name, "");
-        StatementList constraint = new StatementList();
-        constraint.addStatement(statementElement);
-        if (dataStore.getPolicyDao().deleteObject(constraint)) resp.setStatus(200);
+        if (dataStore.getPolicyDao().deleteObject(name)) {
+            resp.setStatus(200);
+            return;
+        }
 
         resp.sendError(500, "Could not delete the blueprint successfully!");
     }

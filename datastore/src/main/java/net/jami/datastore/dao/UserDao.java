@@ -25,12 +25,11 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.User;
 
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class UserDao extends AbstractDao<User> {
@@ -40,74 +39,45 @@ public class UserDao extends AbstractDao<User> {
         this.setTClass(User.class);
     }
 
+    public List<User> getAll() {
+        ResultSet rs = executeQuery("SELECT * FROM users");
+        return getObjectsFromResultSet(rs);
+    }
+
+    public Optional<User> getByUsername(String username) {
+        ResultSet rs = executeQuery("SELECT * FROM users WHERE username = ?", username);
+        return getFirstObjectFromResultSet(rs);
+    }
+
+    public List<User> getByJamiId(String jamiId) {
+        ResultSet rs = executeQuery("SELECT * FROM users WHERE jamiId = ?", jamiId);
+        return getObjectsFromResultSet(rs);
+    }
+
     @Override
     public boolean storeObject(User object) {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "INSERT INTO users "
-                                            + "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel, needsPasswordReset, salt) "
-                                            + " VALUES "
-                                            + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            ps = object.getInsert(ps);
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to store a user: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+        String query =
+                "INSERT INTO users "
+                        + "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel, needsPasswordReset, salt) "
+                        + " VALUES "
+                        + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        return executeInsert(query, object);
     }
 
     public boolean updateUserCertificate(String username, String certificate) {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "UPDATE users SET certificate = ? WHERE username = ?");
-            ps.setString(1, certificate);
-            ps.setString(2, username);
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to update a user certificate: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+        String query = "UPDATE users SET certificate = ? WHERE username = ?";
+        return executeUpdate(query, List.of(certificate, username));
     }
 
-    @Override
-    public boolean updateObject(StatementList update, StatementList constraints) {
+    public boolean updateObject(String password, String username) {
+        String query =
+                "UPDATE users SET password = ?, needsPasswordReset = 'true' WHERE username = ?";
+        return executeUpdate(query, List.of(password, username));
+    }
 
-        String pw = update.getStatements().get(0).getValue();
-        String salt = "";
-        if (update.getStatements().size() > 1) salt = update.getStatements().get(1).getValue();
-
-        String user = constraints.getStatements().get(0).getValue();
-
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "UPDATE users SET password = ?, salt = ? WHERE username = ?");
-            ps.setString(1, pw);
-            ps.setString(2, salt);
-            ps.setString(3, user);
-
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to update a user: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public boolean updateObject(String password, String salt, String username) {
+        String query = "UPDATE users SET password = ?, salt = ? WHERE username = ?";
+        return executeUpdate(query, List.of(password, salt, username));
     }
 }

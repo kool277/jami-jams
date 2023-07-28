@@ -30,8 +30,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.ca.JamsCA;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.User;
 
@@ -63,8 +61,10 @@ public class OCSPServlet extends HttpServlet {
             String issuerId = req.getPathInfo().replace("/", "");
 
             /*
-             * If there is no issue id we are dealing with a certificate signed byt the CA root
-             * Else the certificate is a device certificate signed by a user with and the issuerId is his Jami Id
+             * If there is no issue id we are dealing with a certificate signed byt the CA
+             * root
+             * Else the certificate is a device certificate signed by a user with and the
+             * issuerId is his Jami Id
              */
 
             if (issuerId == "") {
@@ -79,56 +79,32 @@ public class OCSPServlet extends HttpServlet {
                     byte[] respBytes = response.getEncoded();
                     resp.getOutputStream().write(respBytes);
                 } else resp.setStatus(404);
-            } else {
-                User targetUser = null;
-                StatementList userStatementsList = new StatementList();
-                StatementElement usernameStatement =
-                        new StatementElement("jamiId", "=", issuerId, "");
-                userStatementsList.addStatement(usernameStatement);
 
-                try {
-                    targetUser = dataStore.getUserDao().getObjects(userStatementsList).get(0);
-                    StatementList deviceStatementsList = new StatementList();
-                    StatementElement deviceOwnerStatement =
-                            new StatementElement("owner", "=", targetUser.getUsername(), "");
-                    deviceStatementsList.addStatement(deviceOwnerStatement);
-                    List<Device> devices =
-                            dataStore.getDeviceDao().getObjects(deviceStatementsList);
+                return;
+            }
 
-                    boolean deviceDoesNotExist = true;
-                    for (Device d : devices) {
-                        for (BigInteger id : ids) {
-                            if (d.getCertificate().getSerialNumber().equals(id)) {
-                                deviceDoesNotExist = false;
-                            }
-                        }
+            User targetUser = dataStore.getUserDao().getByJamiId(issuerId).get(0);
+            List<Device> devices = dataStore.getDeviceDao().getByOwner(targetUser.getUsername());
+
+            boolean deviceDoesNotExist = true;
+            for (Device d : devices) {
+                for (BigInteger id : ids) {
+                    if (d.getCertificate().getSerialNumber().equals(id)) {
+                        deviceDoesNotExist = false;
                     }
-                    OCSPResp response = null;
-
-                    if (deviceDoesNotExist) {
-                        response =
-                                JamsCA.getOCSPResponse(
-                                        ocspReq,
-                                        targetUser.getCertificate(),
-                                        targetUser.getPrivateKey(),
-                                        true);
-                    } else {
-                        response =
-                                JamsCA.getOCSPResponse(
-                                        ocspReq,
-                                        targetUser.getCertificate(),
-                                        targetUser.getPrivateKey(),
-                                        false);
-                    }
-
-                    if (response != null) {
-                        byte[] respBytes = response.getEncoded();
-                        resp.getOutputStream().write(respBytes);
-                    } else resp.setStatus(404);
-                } catch (Exception e) {
-                    resp.sendError(404, "Could not find the requested certificate!");
                 }
             }
+            OCSPResp response =
+                    JamsCA.getOCSPResponse(
+                            ocspReq,
+                            targetUser.getCertificate(),
+                            targetUser.getPrivateKey(),
+                            deviceDoesNotExist);
+
+            if (response != null) {
+                byte[] respBytes = response.getEncoded();
+                resp.getOutputStream().write(respBytes);
+            } else resp.setStatus(404);
 
         } catch (Exception e) {
             resp.sendError(404, "Could not find the requested certificate!");

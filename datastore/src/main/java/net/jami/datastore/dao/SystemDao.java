@@ -25,12 +25,10 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.system.SystemAccount;
 
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Optional;
 
 @Slf4j
 public class SystemDao extends AbstractDao<SystemAccount> {
@@ -40,30 +38,20 @@ public class SystemDao extends AbstractDao<SystemAccount> {
         this.setTClass(SystemAccount.class);
     }
 
-    @Override
-    public boolean storeObject(SystemAccount object) {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "INSERT INTO system "
-                                            + "(entity,certificate,privatekey)"
-                                            + "VALUES "
-                                            + "(?, ?, ?)");
-            ps = object.getInsert(ps);
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to store a system entity: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public Optional<SystemAccount> getCA() {
+        ResultSet rs = executeQuery("SELECT * FROM system WHERE entity = 'CA'");
+        return getFirstObjectFromResultSet(rs);
+    }
+
+    public Optional<SystemAccount> getOCSP() {
+        ResultSet rs = executeQuery("SELECT * FROM system WHERE entity = 'OCSP'");
+        return getFirstObjectFromResultSet(rs);
     }
 
     @Override
-    public boolean updateObject(StatementList update, StatementList constraints) {
-        return false;
+    public boolean storeObject(SystemAccount object) {
+        String query =
+                "INSERT INTO system " + "(entity,certificate,privatekey)" + "VALUES " + "(?, ?, ?)";
+        return executeInsert(query, object);
     }
 }

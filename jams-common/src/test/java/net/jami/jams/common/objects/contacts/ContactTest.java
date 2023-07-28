@@ -25,8 +25,8 @@ class ContactTest {
     @Test
     public void deserialize() {
         String str =
-                "[{\"uri\":\"tcp://def@local\",\"added\":1594742298377,\"banned\":false,\"confirmed\":true,\"confirmed\":6a61013979964f70c8fb9183a8b238d58a1846ed},"
-                        + "{\"uri\":\"tcp://abc@19293.com\",\"removed\":1594742298377,\"banned\":true,\"confirmed\":true,\"confirmed\":2b61024119964f70c8fb9183a8b238d58a1846ed}]";
+                "[{\"uri\":\"tcp://def@local\",\"added\":1594742298377,\"banned\":false,\"confirmed\":true,\"conversationId\":\"6a61013979964f70c8fb9183a8b238d58a1846ed\"},"
+                        + "{\"uri\":\"tcp://abc@19293.com\",\"removed\":1594742298377,\"banned\":true,\"confirmed\":true,\"conversationId\":\"2b61024119964f70c8fb9183a8b238d58a1846e\"}]";
         Contact[] contacts = JsonIterator.deserialize(str, Contact[].class);
         Assertions.assertEquals(2, contacts.length);
     }

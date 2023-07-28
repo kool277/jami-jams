@@ -72,9 +72,8 @@ public class ADConnector implements AuthenticationSource {
         endpoint.setUserAccountName(
                 ADConnector.settings.getRealm()
                         + "\\"
-                        + settings
-                                .getUsername()); // * You can use the user's Distinguished Name as
-                                                 // well
+                        + settings.getUsername()); // * You can use the user's Distinguished Name as
+        // well
         endpoint.setPassword(settings.getPassword());
         return endpoint;
     }

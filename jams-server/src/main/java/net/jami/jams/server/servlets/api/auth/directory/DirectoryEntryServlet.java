@@ -32,11 +32,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 
@@ -203,11 +203,7 @@ public class DirectoryEntryServlet extends HttpServlet {
 
         String jamiId = req.getParameter("jamiId");
         if (jamiId != null) {
-            StatementList statementList = new StatementList();
-            StatementElement statementElement =
-                    new StatementElement("jamiId", "=", jamiId, null);
-            statementList.addStatement(statementElement);
-            User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            User user = dataStore.getUserDao().getByJamiId(jamiId).get(0);
             List<UserProfile> userProfiles = new ArrayList<>();
             userAuthenticationModule
                     .getAuthSources()

@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 
@@ -22,6 +20,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet("/api/admin/group/members/*")
@@ -47,13 +46,7 @@ public class UserGroupServlet extends HttpServlet {
 
         String groupId = req.getPathInfo().replace("/", "");
 
-        StatementList statementList = new StatementList();
-        StatementElement st = new StatementElement("groupId", "=", groupId, "");
-
-        statementList.addStatement(st);
-
-        List<UserGroupMapping> result =
-                dataStore.getUserGroupMappingsDao().getObjects(statementList);
+        List<UserGroupMapping> result = dataStore.getUserGroupMappingsDao().getByGroupId(groupId);
 
         if (result.isEmpty()) resp.sendError(404, "No users found for this group!");
         else {
@@ -77,17 +70,15 @@ public class UserGroupServlet extends HttpServlet {
 
         String username = obj.getString("username");
 
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("groupId", "=", groupId, "AND"));
-        statementList.addStatement(new StatementElement("username", "=", username, ""));
+        Optional<UserGroupMapping> existingMapping =
+                dataStore.getUserGroupMappingsDao().getByGroupIdAndUsername(groupId, username);
 
-        if (!dataStore.getUserGroupMappingsDao().getObjects(statementList).isEmpty()) {
+        if (existingMapping.isPresent()) {
             resp.sendError(409, "The user already part of the group!");
             return;
         }
 
         UserGroupMapping mapping = new UserGroupMapping();
-
         mapping.setGroupId(groupId);
         mapping.setUsername(username);
 
@@ -111,13 +102,7 @@ public class UserGroupServlet extends HttpServlet {
 
         String username = obj.getString("username");
 
-        StatementElement statementElement1 = new StatementElement("username", "=", username, "AND");
-        StatementElement statementElement2 = new StatementElement("groupId", "=", groupId, "");
-
-        StatementList constraint = new StatementList();
-        constraint.addStatement(statementElement1);
-        constraint.addStatement(statementElement2);
-        if (dataStore.getUserGroupMappingsDao().deleteObject(constraint)) {
+        if (dataStore.getUserGroupMappingsDao().deleteObject(username, groupId)) {
             resp.setStatus(200);
         } else {
             resp.sendError(500, "Could not delete mapping between user and group!");

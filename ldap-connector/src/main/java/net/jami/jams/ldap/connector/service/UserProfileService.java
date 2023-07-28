@@ -27,8 +27,6 @@ import static net.jami.jams.server.Server.dataStore;
 import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.ldap.connector.LDAPConnector;
 
@@ -91,13 +89,7 @@ public class UserProfileService {
                                 .map(UserProfileService::profileFromResponse)
                                 .collect(Collectors.toList());
                 for (UserProfile p : profilesFromResponse) {
-                    StatementList statementList = new StatementList();
-                    StatementElement st =
-                            new StatementElement("username", "=", p.getUsername(), "");
-                    statementList.addStatement(st);
-
-                    if (dataStore.getUserProfileDao().getObjects(statementList).isEmpty())
-                        dataStore.getUserProfileDao().storeObject(p);
+                    dataStore.getUserProfileDao().insertIfNotExists(p);
                 }
 
                 return profilesFromResponse;

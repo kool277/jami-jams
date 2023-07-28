@@ -40,14 +40,10 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
-import net.jami.jams.common.objects.user.Group;
 import net.jami.jams.common.objects.user.Policy;
 import net.jami.jams.common.objects.user.PolicyData;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import org.json.JSONObject;
@@ -71,50 +67,31 @@ public class SearchDirectoryServlet extends HttpServlet {
     // requires changes on the name server as well.
     List<UserProfile> userProfiles = new ArrayList<>();
 
-    /**
-     *
-     */
     @Override
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pageParam = req.getParameter("page");
         Optional<Integer> page;
-        if (req.getParameter("page") == null) page = Optional.empty();
-        else page = Optional.ofNullable(Integer.parseInt(req.getParameter("page")));
+        if (pageParam == null) page = Optional.empty();
+        else page = Optional.ofNullable(Integer.parseInt(pageParam));
 
         ConcurrentHashMap<AuthModuleKey, AuthenticationSource> authSources =
                 new ConcurrentHashMap<>(userAuthenticationModule.getAuthSources());
 
         // Check if the actual user is allowed to lookup in the directory
-        Group group = new Group();
-        StatementList statementList1 = new StatementList();
+        String username = req.getAttribute("username").toString();
 
-        statementList1.addStatement(
-                new StatementElement("username", "=", req.getAttribute("username").toString(), ""));
-        List<UserGroupMapping> mappings =
-                dataStore.getUserGroupMappingsDao().getObjects(statementList1);
-        if (mappings != null && !mappings.isEmpty()) {
-            statementList1 = new StatementList();
-            statementList1.addStatement(
-                    new StatementElement("id", "=", mappings.get(0).getGroupId(), ""));
-            group = dataStore.getGroupDao().getObjects(statementList1).get(0);
-        }
+        try {
+            Policy policy = dataStore.getPolicyDao().getByUsername(username).orElseThrow();
+            PolicyData policyData =
+                    JsonIterator.deserialize(policy.getPolicyData(), PolicyData.class);
 
-        if (!group.isEmpty() && group.hasBlueprint()) {
-            StatementElement st2 = new StatementElement("name", "=", group.getBlueprint(), "");
-            StatementList statementList2 = new StatementList();
-            statementList2.addStatement((st2));
-            try {
-                Policy policy = dataStore.getPolicyDao().getObjects(statementList2).get(0);
-                PolicyData policyData =
-                        JsonIterator.deserialize(policy.getPolicyData(), PolicyData.class);
-                if (!policyData.getAllowLookup()) {
-                    resp.sendError(403, "Operation not allowed!");
-                    return;
-                }
-            } catch (Exception e1) {
-                log.warn(
-                        "No policy available for user - not adding a policy component to response");
+            if (!policyData.getAllowLookup()) {
+                resp.sendError(403, "Operation not allowed!");
+                return;
             }
+        } catch (Exception e1) {
+            log.warn("No policy available for user - not adding a policy component to response");
         }
 
         if (authSources.size() > 1) {
@@ -124,51 +101,42 @@ public class SearchDirectoryServlet extends HttpServlet {
                     });
         }
 
+        String queryString = req.getParameter("queryString");
+
         authSources.forEach(
                 (k, v) -> {
-                    if (req.getParameter("queryString").equals("*"))
-                        userProfiles =
-                                v.searchUserProfiles(
-                                        req.getParameter("queryString"), "FULL_TEXT_NAME", page);
-                    else {
-                        userProfiles =
-                                v.searchUserProfiles(
-                                        req.getParameter("queryString"), "FULL_TEXT_NAME", page);
-                        if (userProfiles.isEmpty()
-                                && userProfiles.addAll(
-                                        v.searchUserProfiles(
-                                                req.getParameter("queryString"),
-                                                "LOGON_NAME",
-                                                page))) {
-                            Set<UserProfile> s =
-                                    new TreeSet<UserProfile>(
-                                            new Comparator<UserProfile>() {
-                                                @Override
-                                                public int compare(UserProfile o1, UserProfile o2) {
-                                                    if (o1.getUsername().equals(o2.getUsername()))
-                                                        return 0;
-                                                    return 1;
-                                                }
-                                            });
-                            s.addAll(userProfiles);
-                            userProfiles = new ArrayList<>(s);
-                        }
+                    if (queryString.equals("*")) {
+                        userProfiles = v.searchUserProfiles(queryString, "FULL_TEXT_NAME", page);
+                    }
+                    userProfiles = v.searchUserProfiles(queryString, "FULL_TEXT_NAME", page);
+                    if (userProfiles.isEmpty()
+                            && userProfiles.addAll(
+                                    v.searchUserProfiles(queryString, "LOGON_NAME", page))) {
+                        Set<UserProfile> s =
+                                new TreeSet<UserProfile>(
+                                        new Comparator<UserProfile>() {
+                                            @Override
+                                            public int compare(UserProfile o1, UserProfile o2) {
+                                                if (o1.getUsername().equals(o2.getUsername()))
+                                                    return 0;
+                                                return 1;
+                                            }
+                                        });
+                        s.addAll(userProfiles);
+                        userProfiles = new ArrayList<>(s);
                     }
                     userProfiles.parallelStream()
                             .forEach(
                                     profile -> {
-                                        StatementList statementList = new StatementList();
-                                        StatementElement statementElement =
-                                                new StatementElement(
-                                                        "username", "=", profile.getUsername(), "");
-                                        statementList.addStatement(statementElement);
                                         List<User> results = new ArrayList<>();
-                                        while (results.size() == 0) {
+                                        while (results.isEmpty()) {
                                             results =
                                                     dataStore
                                                             .getUserDao()
-                                                            .getObjects(statementList);
-                                            if (results.size() == 0) {
+                                                            .getByUsername(profile.getUsername())
+                                                            .map(user -> List.of(user))
+                                                            .orElseGet(() -> List.of());
+                                            if (results.isEmpty()) {
                                                 User user = new User();
                                                 user.setUsername(profile.getUsername());
                                                 user.setRealm(k.getRealm());

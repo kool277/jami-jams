@@ -35,8 +35,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.AccessLevel;
 
@@ -53,9 +51,7 @@ public class DevicesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String username = req.getParameter("username");
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner", "=", username, ""));
-        List<Device> devices = dataStore.getDeviceDao().getObjects(statementList);
+        List<Device> devices = dataStore.getDeviceDao().getByOwner(username);
         if (certificateAuthority.getLatestCRL() != null) {
             devices.forEach(
                     device -> {

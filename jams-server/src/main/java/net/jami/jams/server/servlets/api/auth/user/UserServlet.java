@@ -35,12 +35,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet("/api/auth/user")
 public class UserServlet extends HttpServlet {
@@ -74,24 +73,24 @@ public class UserServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.USER})
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        StatementList statementList = new StatementList();
-        StatementElement st =
-                new StatementElement("username", "=", req.getAttribute("username").toString(), "");
-        statementList.addStatement(st);
-        if (!dataStore.getUserDao().getObjects(statementList).isEmpty()) {
-            User user = dataStore.getUserDao().getObjects(statementList).get(0);
-            if (certificateAuthority.getLatestCRL().get() != null) {
-                user.setRevoked(
-                        certificateAuthority
-                                        .getLatestCRL()
-                                        .get()
-                                        .getRevokedCertificate(
-                                                user.getCertificate().getSerialNumber())
-                                != null);
-            } else user.setRevoked(false);
-            resp.setStatus(200);
-            resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
-        } else resp.sendError(404, "User was not found!");
+        String username = req.getAttribute("username").toString();
+        Optional<User> result = dataStore.getUserDao().getByUsername(username);
+        if (result.isEmpty()) {
+            resp.sendError(404, "User was not found!");
+            return;
+        }
+
+        User user = result.get();
+        if (certificateAuthority.getLatestCRL().get() != null) {
+            user.setRevoked(
+                    certificateAuthority
+                                    .getLatestCRL()
+                                    .get()
+                                    .getRevokedCertificate(user.getCertificate().getSerialNumber())
+                            != null);
+        } else user.setRevoked(false);
+        resp.setStatus(200);
+        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
     }
 
     // The user can update 3 fields: password,privatekey,publickey
@@ -110,24 +109,18 @@ public class UserServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = AccessLevel.USER)
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String username = req.getAttribute("username").toString();
+
         // Check if he is AD/LDAP - then return a 403, because we can't set such password.
-        StatementList select = new StatementList();
-        StatementElement st = new StatementElement("username", "=", username, "");
-        select.addStatement(st);
-        if (dataStore.getUserDao().getObjects(select).get(0).getUserType()
-                != AuthenticationSourceType.LOCAL) {
+        User user = dataStore.getUserDao().getByUsername(username).orElseThrow();
+        if (user.getUserType() != AuthenticationSourceType.LOCAL) {
             resp.sendError(
                     403, "The user is not a local user, therefore we cannot change his data!");
             return;
         }
-        StatementList update = new StatementList();
-        StatementElement st0 =
-                new StatementElement("password", "=", req.getParameter("password"), "");
-        update.addStatement(st0);
-        StatementList constraint = new StatementList();
-        StatementElement st1 = new StatementElement("username", "=", username, "");
-        constraint.addStatement(st1);
-        if (dataStore.getUserDao().updateObject(update, constraint)) resp.setStatus(200);
+
+        String password = req.getParameter("password");
+
+        if (dataStore.getUserDao().updateObject(password, username)) resp.setStatus(200);
         else resp.sendError(500, "could not update the users's data field!");
     }
 }

@@ -35,8 +35,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 
@@ -95,13 +93,12 @@ public class FilterUtils {
                 default:
                     return false;
             }
-            StatementList statementList = new StatementList();
-            StatementElement statementElement =
-                    new StatementElement("username", "=", token.getJWTClaimsSet().getSubject(), "");
-            statementList.addStatement(statementElement);
+
+            String username = token.getJWTClaimsSet().getSubject();
             log.info("Getting user from database");
-            User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            User user = dataStore.getUserDao().getByUsername(username).orElseThrow();
             log.info("User retrieved from database: {}", user);
+
             if (!user.getAccessLevelName().equals("ADMIN")
                     && certificateAuthority.getLatestCRL().get() != null) {
                 if (certificateAuthority
@@ -110,10 +107,12 @@ public class FilterUtils {
                                 .getRevokedCertificate(user.getCertificate().getSerialNumber())
                         != null) return false;
             }
+
             JWSVerifier jwsVerifier =
                     new RSASSAVerifier(userAuthenticationModule.getAuthModulePubKey());
+
             if (token.verify(jwsVerifier) && verifyValidity(token)) {
-                request.setAttribute(USERNAME_ATTR, token.getJWTClaimsSet().getSubject());
+                request.setAttribute(USERNAME_ATTR, username);
                 request.setAttribute(
                         ACCESS_LEVEL_ATTR,
                         AccessLevel.valueOf(token.getJWTClaimsSet().getClaim("scope").toString()));

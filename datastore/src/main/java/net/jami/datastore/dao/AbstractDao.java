@@ -27,89 +27,113 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.DeleteStatementBuilder;
-import net.jami.jams.common.dao.SelectStatementBuilder;
-import net.jami.jams.common.dao.StatementConstraints;
-import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.dao.UpdateStatementBuilder;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
+import net.jami.jams.common.serialization.database.DatabaseObject;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public abstract class AbstractDao<T> {
 
     @Getter @Setter private String tableName;
-    @Getter @Setter private Class<T> tClass;
+    @Getter @Setter protected Class<T> tClass;
 
     public abstract boolean storeObject(T object);
 
-    public List<T> getObjects(StatementList constraints) {
-        List<T> result = new ArrayList<>();
+    protected ResultSet executeQuery(String query) {
+        return executeQuery(query, new ArrayList<>());
+    }
+
+    protected ResultSet executeQuery(String query, String param) {
+        return executeQuery(query, List.of(param));
+    }
+
+    protected ResultSet executeQuery(String query, List<String> params) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            PreparedStatement ps =
-                    SelectStatementBuilder.buildStatement(tableName, constraints, null, connection);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
+            PreparedStatement ps = connection.getConnection().prepareStatement(query);
+            for (int i = 0; i < params.size(); i++) {
+                ps.setString(i + 1, params.get(i));
             }
-            return result;
+            return ps.executeQuery();
         } catch (Exception e) {
-            log.error("An error has occurred while trying to fetch an object: " + e);
+            log.error("An error has occurred while trying to fetch an object:");
+            e.printStackTrace();
             return null;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
 
-    public List<T> getObjects(
-            StatementList constraints, StatementConstraints statementConstraints) {
-        List<T> result = new ArrayList<>();
-        SQLConnection connection = DataStore.connectionPool.getConnection();
+    protected Optional<T> getFirstObjectFromResultSet(ResultSet rs) {
         try {
-            PreparedStatement ps =
-                    SelectStatementBuilder.buildStatement(
-                            tableName, constraints, statementConstraints, connection);
-            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                T obj = tClass.getConstructor(ResultSet.class).newInstance(rs);
+                rs.close();
+                return Optional.of(obj);
+            }
+        } catch (Exception e) {
+            log.error(
+                    "An error has occurred while trying to get the first result from the database:");
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    protected List<T> getObjectsFromResultSet(ResultSet rs) {
+        List<T> result = new ArrayList<>();
+
+        try {
             while (rs.next()) {
                 result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
             }
-            return result;
+
+            rs.close();
         } catch (Exception e) {
-            log.error("An error has occurred while trying to fetch a device: " + e);
-            return null;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
+            log.error("An error has occurred while trying to get results from the database:");
+            e.printStackTrace();
         }
+
+        return result;
     }
 
-    public boolean updateObject(StatementList update, StatementList constraints) {
+    protected boolean executeUpdate(String query, List<String> params) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
+
         try {
-            PreparedStatement ps =
-                    UpdateStatementBuilder.buildStatement(
-                            tableName, update, constraints, connection);
-            return ps.execute();
+            PreparedStatement ps = connection.getConnection().prepareStatement(query);
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setString(i + 1, params.get(i));
+            }
+
+            return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to fetch a device: " + e);
+            log.error("An error has occurred while trying to execute update:");
+            e.printStackTrace();
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
     }
 
-    public boolean deleteObject(StatementList delete) {
+    protected boolean executeInsert(String query, DatabaseObject object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
+
         try {
-            PreparedStatement ps =
-                    DeleteStatementBuilder.buildStatement(tableName, delete, connection);
+            PreparedStatement ps = connection.getConnection().prepareStatement(query);
+
+            ps = object.getInsert(ps);
+
             return ps.executeUpdate() != 0;
         } catch (Exception e) {
-            log.error("An error has occurred while trying to fetch a device: " + e);
+            log.error("An error has occurred while trying to execute insert:");
+            e.printStackTrace();
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

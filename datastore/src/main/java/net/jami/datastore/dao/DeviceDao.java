@@ -25,12 +25,11 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.devices.Device;
 
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class DeviceDao extends AbstractDao<Device> {
@@ -40,51 +39,30 @@ public class DeviceDao extends AbstractDao<Device> {
         this.setTClass(Device.class);
     }
 
-    @Override
-    public boolean storeObject(Device object) {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "INSERT INTO devices "
-                                            + "(deviceId, owner, displayName, certificate, privatekey) "
-                                            + "VALUES "
-                                            + "(?, ?, ?, ?, ?)");
-            ps = object.getInsert(ps);
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to store a user: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public List<Device> getByOwner(String owner) {
+        ResultSet rs = executeQuery("SELECT * FROM devices WHERE owner = ?", List.of(owner));
+        return getObjectsFromResultSet(rs);
+    }
+
+    public Optional<Device> getByDeviceIdAndOwner(String deviceId, String owner) {
+        // TODO deviceId is the primary key, owner is possibly a useless field
+        String query = "SELECT * FROM devices WHERE deviceId = ? AND owner = ?";
+        ResultSet rs = executeQuery(query, List.of(deviceId, owner));
+        return getFirstObjectFromResultSet(rs);
     }
 
     @Override
-    public boolean updateObject(StatementList update, StatementList constraints) {
-        String deviceName = update.getStatements().get(0).getValue();
-        String user = update.getStatements().get(1).getValue();
-        String deviceId = update.getStatements().get(2).getValue();
+    public boolean storeObject(Device object) {
+        String query =
+                "INSERT INTO devices "
+                        + "(deviceId, owner, displayName, certificate, privatekey) "
+                        + "VALUES "
+                        + "(?, ?, ?, ?, ?)";
+        return executeInsert(query, object);
+    }
 
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "UPDATE devices SET displayName = ? WHERE owner = ? AND deviceId = ?");
-            ps.setString(1, deviceName);
-            ps.setString(2, user);
-            ps.setString(3, deviceId);
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to update a user: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public boolean updateObject(String deviceName, String username, String deviceId) {
+        String query = "UPDATE devices SET displayName = ? WHERE owner = ? AND deviceId = ?";
+        return executeUpdate(query, List.of(deviceName, username, deviceId));
     }
 }

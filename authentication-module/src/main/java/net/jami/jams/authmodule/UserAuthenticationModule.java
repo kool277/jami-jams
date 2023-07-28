@@ -33,8 +33,6 @@ import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
@@ -55,6 +53,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -159,11 +158,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
     public AuthTokenResponse authenticateUser(String username, String password) {
         AuthTokenResponse res = null;
         String hashPass = "";
-        if (datastore.userExists(username)) {
-            StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username", "=", username, "");
-            statementList.addStatement(statementElement);
-            User user = datastore.getUserDao().getObjects(statementList).get(0);
+        if (datastore.getUserDao().getByUsername(username).isPresent()) {
+            User user = datastore.getUserDao().getByUsername(username).orElseThrow();
             if ((user.getUserType() == AuthenticationSourceType.LOCAL))
                 hashPass = PasswordUtil.hashPassword(password, Base64.decodeBase64(user.getSalt()));
             else hashPass = password;
@@ -174,12 +170,11 @@ public class UserAuthenticationModule implements AuthenticationModule {
                             .authenticate(username, hashPass))
                 return tokenController.getToken(user, null);
         }
-        // The second case is much more violent, because we don't know in advance "where" this user
-        // comes
-        // from, so we have to infer (this is only really true for "users", all others are usually
-        // pre-marked)
-        // This is also the case when we store the user into the DAO - because he never existed
-        // before.
+        // The second case is much more violent, because we don't know in
+        // advance "where" this user comes from, so we have to infer
+        // (this is only really true for "users", all others are usually pre-marked)
+        // This is also the case when we store the user into the DAO
+        // - because he never existed before.
         for (AuthModuleKey key : authenticationSources.keySet()) {
             if (authenticationSources.get(key).authenticate(username, password)) {
                 User user = new User();
@@ -211,10 +206,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
             if (crl.getRevokedCertificate(clientCert.getSerialNumber()) != null) return null;
             String username = X509Utils.extractDNFromCertificate(clientCert).get("CN");
             // We need to extract the deviceId from the certificate
-            StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username", "=", username, "");
-            statementList.addStatement(statementElement);
-            User user = datastore.getUserDao().getObjects(statementList).get(0);
+            User user = datastore.getUserDao().getByUsername(username).orElseThrow();
             return tokenController.getToken(
                     user, X509Utils.extractDNFromCertificate(deviceCert).get("UID"));
         } catch (Exception e) {
@@ -261,14 +253,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
 
     @Override
     public char[] getOTP(String username) {
-        if (datastore.userExists(username)) {
-            StatementList statementList = new StatementList();
-            StatementElement statementElement = new StatementElement("username", "=", username, "");
-            statementList.addStatement(statementElement);
-            User user = datastore.getUserDao().getObjects(statementList).get(0);
-            return (user.getPassword()).toCharArray();
-        }
-        return new char[0];
+        Optional<User> user = datastore.getUserDao().getByUsername(username);
+        return user.map(u -> u.getPassword().toCharArray()).orElse(new char[0]);
     }
 
     @Override

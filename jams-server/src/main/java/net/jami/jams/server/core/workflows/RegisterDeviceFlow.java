@@ -32,21 +32,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.authmodule.UserAuthenticationModule;
 import net.jami.jams.common.authmodule.AuthModuleKey;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
-import net.jami.jams.common.objects.user.Group;
-import net.jami.jams.common.objects.user.Policy;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.dht.DeviceReceiptGenerator;
 
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -55,9 +49,7 @@ public class RegisterDeviceFlow {
     public static DeviceRegistrationResponse registerDevice(
             String username, DeviceRegistrationRequest registrationRequest) {
         try {
-            StatementList statementList = new StatementList();
-            statementList.addStatement(new StatementElement("username", "=", username, ""));
-            User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            User user = dataStore.getUserDao().getByUsername(username).orElseThrow();
 
             UserProfile userProfile =
                     userAuthenticationModule
@@ -65,11 +57,6 @@ public class RegisterDeviceFlow {
                             .get(new AuthModuleKey(user.getRealm(), user.getUserType()))
                             .searchUserProfiles(username, "LOGON_NAME", Optional.empty())
                             .get(0);
-
-            if (user == null) {
-                log.error(
-                        "Tried to enroll a device, but could not find a user, this is impossible!");
-            }
 
             // Renew user certificate if expired with same private key
             if (!user.getCertificate().getNotAfter().after(new Date())) {
@@ -88,10 +75,8 @@ public class RegisterDeviceFlow {
             }
             dataStore.getDeviceDao().storeObject(device);
 
-            Group group = getGroupByUsername(username);
-
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();
-            String policyData = getPolicyData(group);
+            String policyData = getPolicyData(username);
             if (policyData != null) {
                 response.setPolicyData(policyData);
             }
@@ -124,39 +109,17 @@ public class RegisterDeviceFlow {
         }
     }
 
-    public static Group getGroupByUsername(String username) {
-        Group group = new Group();
-
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username", "=", username, ""));
-        List<UserGroupMapping> userGroupMappings =
-                dataStore.getUserGroupMappingsDao().getObjects(statementList);
-
-        if (userGroupMappings != null && !userGroupMappings.isEmpty()) {
-            UserGroupMapping mapping = userGroupMappings.get(0);
-            statementList = new StatementList();
-            statementList.addStatement(new StatementElement("id", "=", mapping.getGroupId(), ""));
-            group = dataStore.getGroupDao().getObjects(statementList).get(0);
+    public static String getPolicyData(String username) {
+        String policy =
+                dataStore
+                        .getPolicyDao()
+                        .getByUsername(username)
+                        .map(p -> p.getPolicyData())
+                        .orElse(null);
+        if (policy == null) {
+            log.warn("No policy available for user - not adding a policy component to response");
         }
 
-        return group;
-    }
-
-    public static String getPolicyData(Group group) {
-        if (!group.isEmpty() && group.hasBlueprint()) {
-            StatementElement statementElement =
-                    new StatementElement("name", "=", group.getBlueprint(), "");
-            StatementList statementList = new StatementList();
-            statementList.addStatement(statementElement);
-            try {
-                Policy policy = dataStore.getPolicyDao().getObjects(statementList).get(0);
-                return policy.getPolicyData();
-            } catch (Exception e) {
-                log.warn(
-                        "No policy available for user - not adding a policy component to response");
-            }
-        }
-
-        return null;
+        return policy;
     }
 }

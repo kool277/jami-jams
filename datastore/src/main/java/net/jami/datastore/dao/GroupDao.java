@@ -2,13 +2,11 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.Group;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class GroupDao extends AbstractDao<Group> {
@@ -18,69 +16,29 @@ public class GroupDao extends AbstractDao<Group> {
         this.setTClass(Group.class);
     }
 
+    public List<Group> getAll() {
+        ResultSet rs = executeQuery("SELECT * FROM groups");
+        return getObjectsFromResultSet(rs);
+    }
+
+    public Optional<Group> getById(String id) {
+        ResultSet rs = executeQuery("SELECT * FROM groups WHERE id = ?", List.of(id));
+        return getFirstObjectFromResultSet(rs);
+    }
+
     @Override
     public boolean storeObject(Group object) {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "INSERT INTO groups "
-                                            + "(id, name, blueprint) VALUES (?, ?, ?)");
-            ps = object.getInsert(ps);
-            return ps.executeUpdate() != 0;
-        } catch (SQLException e) {
-            log.error("An error has occurred while trying to store a group: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+        String query = "INSERT INTO groups " + "(id, name, blueprint) VALUES (?, ?, ?)";
+        return executeInsert(query, object);
     }
 
-    @Override
-    public boolean updateObject(StatementList update, StatementList constraints) {
-
-        String id = update.getStatements().get(0).getValue();
-        String name = update.getStatements().get(1).getValue();
-        String blueprint = update.getStatements().get(2).getValue();
-
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "UPDATE groups SET name = ?, blueprint = ? WHERE id = ?");
-            ps.setString(1, name);
-            ps.setString(2, blueprint);
-            ps.setString(3, id);
-            return ps.executeUpdate() != 0;
-        } catch (SQLException e) {
-            log.error("An error has occurred while trying to update a group: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public boolean updateObject(String id, String name, String blueprint) {
+        String query = "UPDATE groups SET name = ?, blueprint = ? WHERE id = ?";
+        return executeUpdate(query, List.of(id, name, blueprint));
     }
 
-    @Override
-    public boolean deleteObject(StatementList constraints) {
-
-        String id = constraints.getStatements().get(0).getValue();
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-
-        try {
-            PreparedStatement ps =
-                    connection.getConnection().prepareStatement("DELETE FROM groups WHERE id = ?");
-            ps.setString(1, id);
-            return ps.executeUpdate() != 0;
-        } catch (SQLException e) {
-            log.error("An error has occurred while trying to delete a group: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public boolean deleteObject(String id) {
+        String query = "DELETE FROM groups WHERE id = ?";
+        return executeUpdate(query, List.of(id));
     }
 }

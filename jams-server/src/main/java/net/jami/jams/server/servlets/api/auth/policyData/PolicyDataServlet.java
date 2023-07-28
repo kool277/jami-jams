@@ -25,7 +25,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import net.jami.jams.common.objects.user.Group;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.servlets.api.auth.device.DeviceServlet;
@@ -69,8 +68,7 @@ public class PolicyDataServlet extends HttpServlet {
             throws ServletException, IOException {
         String username = req.getAttribute("username").toString();
 
-        Group group = RegisterDeviceFlow.getGroupByUsername(username);
-        String policyData = RegisterDeviceFlow.getPolicyData(group);
+        String policyData = RegisterDeviceFlow.getPolicyData(username);
 
         if (policyData == null) {
             TomcatCustomErrorHandler.sendCustomError(

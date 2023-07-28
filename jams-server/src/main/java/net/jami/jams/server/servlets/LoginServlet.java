@@ -37,15 +37,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
 
 import java.io.IOException;
 import java.security.cert.X509Certificate;
-import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/api/login")
 // This method returns the token which is used for all the next calls to the
@@ -86,19 +84,15 @@ public class LoginServlet extends HttpServlet {
                             req.getInputStream().readAllBytes(), LoginRequest.class);
             if (object.getUsername() != null && object.getPassword() != null) {
                 res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());
-                StatementList statementList = new StatementList();
-                StatementElement statementElement =
-                        new StatementElement("username", "=", object.getUsername(), "");
-                statementList.addStatement(statementElement);
-                List<User> users = dataStore.getUserDao().getObjects(statementList);
-                if (users.size() != 0
+                Optional<User> user = dataStore.getUserDao().getByUsername(object.getUsername());
+                if (user.isPresent()
                         && certificateAuthority.getLatestCRL().get() != null
-                        && !users.get(0).getAccessLevelName().equals("ADMIN")
+                        && !user.get().getAccessLevelName().equals("ADMIN")
                         && certificateAuthority
                                         .getLatestCRL()
                                         .get()
                                         .getRevokedCertificate(
-                                                users.get(0).getCertificate().getSerialNumber())
+                                                user.get().getCertificate().getSerialNumber())
                                 != null) {
                     TomcatCustomErrorHandler.sendCustomError(
                             resp, 401, "Invalid credentials provided!");

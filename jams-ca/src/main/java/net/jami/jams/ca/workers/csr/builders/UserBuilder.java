@@ -56,11 +56,10 @@ public class UserBuilder {
             keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-            user.getX509Fields()
-                    .setUid(
-                            Hex.encodeHexString(
-                                    MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1)
-                                            .digest(keyPair.getPublic().getEncoded())));
+            byte[] digest =
+                    MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1)
+                            .digest(keyPair.getPublic().getEncoded());
+            user.getX509Fields().setUid(Hex.encodeHexString(digest));
 
             X509v3CertificateBuilder builder =
                     new X509v3CertificateBuilder(
@@ -90,13 +89,13 @@ public class UserBuilder {
     }
 
     public static User refreshUser(User user, long userLifeTime) {
+        long now = System.currentTimeMillis();
+        X509Fields x509 = new X509Fields();
+        x509.setCommonName(user.getUsername());
+        x509.setUid(user.getJamiId());
+        user.setX509Fields(x509);
+
         try {
-            long now = System.currentTimeMillis();
-
-            user.setX509Fields(new X509Fields());
-            user.getX509Fields().setCommonName(user.getUsername());
-            user.getX509Fields().setUid(user.getJamiId());
-
             X509v3CertificateBuilder builder =
                     new X509v3CertificateBuilder(
                             new JcaX509CertificateHolder(JamsCA.CA.getCertificate()).getSubject(),

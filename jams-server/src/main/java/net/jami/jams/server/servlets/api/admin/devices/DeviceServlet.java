@@ -33,8 +33,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.ScopedServletMethod;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
+import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
@@ -51,16 +50,9 @@ public class DeviceServlet extends HttpServlet {
             throws ServletException, IOException {
         String username = req.getParameter("username");
         String deviceId = req.getParameter("deviceId");
-        StatementList statementList = new StatementList();
-        StatementElement st1 = new StatementElement("owner", "=", username, "AND");
-        StatementElement st2 = new StatementElement("deviceId", "=", deviceId, "");
-        statementList.addStatement(st1);
-        statementList.addStatement(st2);
-        resp.getOutputStream()
-                .write(
-                        JsonStream.serialize(
-                                        dataStore.getDeviceDao().getObjects(statementList).get(0))
-                                .getBytes());
+        Device device =
+                dataStore.getDeviceDao().getByDeviceIdAndOwner(deviceId, username).orElseThrow();
+        resp.getOutputStream().write(JsonStream.serialize(device).getBytes());
     }
 
     // Update device data.
@@ -71,15 +63,9 @@ public class DeviceServlet extends HttpServlet {
         String username = req.getParameter("username");
         String deviceId = req.getParameter("deviceId");
         String deviceName = req.getParameter("deviceName");
-        StatementList update = new StatementList();
-        StatementElement st0 = new StatementElement("deviceName", "=", deviceName, "");
-        update.addStatement(st0);
-        StatementList constraint = new StatementList();
-        StatementElement st1 = new StatementElement("owner", "=", username, "AND");
-        StatementElement st2 = new StatementElement("deviceId", "=", deviceId, "");
-        update.addStatement(st1);
-        update.addStatement(st2);
-        if (dataStore.getDeviceDao().updateObject(update, constraint)) resp.setStatus(200);
+
+        if (dataStore.getDeviceDao().updateObject(deviceName, username, deviceId))
+            resp.setStatus(200);
         else resp.sendError(500, "could not update the device's information!");
     }
 
@@ -88,9 +74,9 @@ public class DeviceServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        DeviceRevocationResponse devResponse =
-                RevokeDeviceFlow.revokeDevice(
-                        req.getParameter("username"), req.getParameter("deviceId"));
+        String username = req.getParameter("username");
+        String deviceId = req.getParameter("deviceId");
+        DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(username, deviceId);
         if (devResponse != null)
             resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
         else resp.sendError(500, "An exception has occurred while trying to revoke a device!");

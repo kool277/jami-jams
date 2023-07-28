@@ -14,13 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Policy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/api/admin/policy/*")
 @Slf4j
@@ -31,29 +30,26 @@ public class PolicyProfileServlet extends HttpServlet {
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
-        List<Policy> policies;
         String name = req.getPathInfo().replace("/", "");
+        getPolicyAndSendResponse(resp, name);
+    }
 
-        if (!name.equals("*")) {
-            StatementList statementList = new StatementList();
-            StatementElement st = new StatementElement("name", "=", name, "");
-            statementList.addStatement(st);
-            if (!dataStore.getPolicyDao().getObjects(statementList).isEmpty()) {
-                resp.getOutputStream()
-                        .write(
-                                JsonStream.serialize(
-                                                dataStore
-                                                        .getPolicyDao()
-                                                        .getObjects(statementList)
-                                                        .get(0))
-                                        .getBytes());
-                resp.setStatus(200);
-            }
-        } else {
-            policies = dataStore.getPolicyDao().getObjects(null);
+    public static void getPolicyAndSendResponse(HttpServletResponse resp, String name)
+            throws IOException {
+        if (name.equals("*")) {
+            List<Policy> policies = dataStore.getPolicyDao().getAll();
             resp.getOutputStream().write(JsonStream.serialize(policies).getBytes());
             resp.setStatus(200);
+            return;
+        }
+
+        Optional<Policy> policy = dataStore.getPolicyDao().getByName(name);
+        if (policy.isPresent()) {
+            byte[] bytes = JsonStream.serialize(policy.orElseThrow()).getBytes();
+            resp.getOutputStream().write(bytes);
+            resp.setStatus(200);
+        } else {
+            resp.sendError(404, "{\"message\": \"No policy found.\"}");
         }
     }
 }

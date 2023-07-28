@@ -72,7 +72,6 @@ public class TokenController {
         SignedJWT signedJWT = new SignedJWT(jwsHeader, jwtClaims);
         try {
             signedJWT.sign(new RSASSASigner(signingKey));
-            UserAuthenticationModule.datastore.getJwtDao().storeObject(signedJWT);
             authTokenResponse.setAccess_token(signedJWT.serialize());
             authTokenResponse.setExpires_in(30 * 60L);
             authTokenResponse.setToken_type("Bearer");

@@ -42,7 +42,8 @@ import net.jami.jams.server.Server;
 import java.io.IOException;
 
 /**
- * Since we have the @ScopedServletMethod annotation, the admin filter became absolutely useless
+ * Since we have the @ScopedServletMethod annotation, the admin filter became
+ * absolutely useless
  * as we can simply scope things.
  */
 @WebFilter(urlPatterns = {"/api/auth/*", "/api/admin/*"})
@@ -56,23 +57,25 @@ public class DApiFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setContentType("application/json;charset=UTF-8");
+
         if (!Server.isInstalled.get()) {
             TomcatCustomErrorHandler.sendCustomError(
                     response, 404, "Setup has not yet been completed!");
-        } else {
-            boolean authsuccess = false;
-            boolean isLogin = false;
-            boolean isOCSPCheck = false;
-
-            if (request.getServletPath().contains("login")) isLogin = true;
-            else if (request.getServletPath().contains("ocsp")) isOCSPCheck = true;
-            else authsuccess = doAuthCheck(request);
-            if (authsuccess || isLogin || isOCSPCheck) {
-                filterChain.doFilter(servletRequest, servletResponse);
-            } else {
-                TomcatCustomErrorHandler.sendCustomError(
-                        response, 401, "You are not authenticated!");
-            }
+            return;
         }
+
+        boolean authsuccess = false;
+        boolean isLogin = false;
+        boolean isOCSPCheck = false;
+
+        if (request.getServletPath().contains("login")) isLogin = true;
+        else if (request.getServletPath().contains("ocsp")) isOCSPCheck = true;
+        else authsuccess = doAuthCheck(request);
+        if (authsuccess || isLogin || isOCSPCheck) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
+        TomcatCustomErrorHandler.sendCustomError(response, 401, "You are not authenticated!");
     }
 }

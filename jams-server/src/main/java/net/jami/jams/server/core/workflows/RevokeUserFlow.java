@@ -27,8 +27,6 @@ import static net.jami.jams.server.Server.dataStore;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.requests.RevocationRequest;
 import net.jami.jams.common.objects.requests.RevocationType;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
@@ -40,10 +38,7 @@ public class RevokeUserFlow {
     public static DeviceRevocationResponse revokeUser(String username) {
         DeviceRevocationResponse response = new DeviceRevocationResponse();
         try {
-            StatementList statementList = new StatementList();
-            StatementElement st1 = new StatementElement("username", "=", username, "");
-            statementList.addStatement(st1);
-            User user = dataStore.getUserDao().getObjects(statementList).get(0);
+            User user = dataStore.getUserDao().getByUsername(username).get();
             if (user == null) {
                 log.error("Could not find user!");
                 return null;

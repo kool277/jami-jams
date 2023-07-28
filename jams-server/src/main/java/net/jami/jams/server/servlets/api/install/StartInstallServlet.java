@@ -60,11 +60,12 @@ public class StartInstallServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         // Here we must decide which page to show - login or sign-up
-        if (dataStore != null
-                && dataStore.getUserDao() != null
-                && !dataStore.getUserDao().getObjects(null).isEmpty())
-            resp.setHeader("showLogin", "true");
-        else resp.setHeader("showLogin", "false");
+        boolean showLogin =
+                dataStore != null
+                        && dataStore.getUserDao() != null
+                        && !dataStore.getUserDao().getAll().isEmpty();
+
+        resp.setHeader("showLogin", showLogin ? "true" : "false");
     }
 
     @Override
@@ -89,7 +90,7 @@ public class StartInstallServlet extends HttpServlet {
     @JsonContent
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        if (dataStore.getUserDao().getObjects(null).size() != 0) {
+        if (!dataStore.getUserDao().getAll().isEmpty()) {
             resp.sendError(
                     500,
                     "We have tried to create an administrative account where one already exists!");

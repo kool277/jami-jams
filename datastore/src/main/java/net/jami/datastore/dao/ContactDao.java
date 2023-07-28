@@ -26,12 +26,11 @@ package net.jami.datastore.dao;
 import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.contacts.Contact;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.util.List;
 
 @Slf4j
@@ -42,24 +41,18 @@ public class ContactDao extends AbstractDao<Contact> {
         this.setTClass(Contact.class);
     }
 
+    public List<Contact> getByOwner(String owner) {
+        ResultSet rs = executeQuery("SELECT * FROM contacts WHERE owner = ?", owner);
+        return getObjectsFromResultSet(rs);
+    }
+
     // Not used because the strategy here is different.
     @Override
     public boolean storeObject(Contact object) {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            String insert =
-                    "INSERT INTO contacts (owner, uri, displayName, `timestamp`, status) VALUES "
-                            + "(?, ?, ?, ?, ?)";
-            PreparedStatement ps = connection.getConnection().prepareStatement(insert);
-            object.getInsert(ps);
-            ps.executeQuery();
-            return true;
-        } catch (Exception e) {
-            log.error("Could not update contacts!");
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+        String query =
+                "INSERT INTO contacts (owner, uri, displayName, timestamp, status)"
+                        + " VALUES (?, ?, ?, ?, ?)";
+        return executeInsert(query, object);
     }
 
     public boolean storeContactList(List<Contact> contactList) {
@@ -86,23 +79,8 @@ public class ContactDao extends AbstractDao<Contact> {
         }
     }
 
-    @Override
-    public boolean deleteObject(StatementList constraints) {
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement("DELETE FROM contacts WHERE owner = ? AND uri = ?");
-            ps.setString(1, constraints.getStatements().get(0).getValue());
-            ps.setString(2, constraints.getStatements().get(1).getValue());
-            return ps.executeUpdate() != 0;
-        } catch (SQLException e) {
-            log.error("Could not delete contact: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public boolean deleteObject(String owner, String uri) {
+        String query = "DELETE FROM contacts WHERE owner = ? AND uri = ?";
+        return executeUpdate(query, List.of(owner, uri));
     }
 }

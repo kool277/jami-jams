@@ -26,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
@@ -87,9 +85,7 @@ class DAOTest {
         UserDao userDAO = new UserDao();
         userDAO.storeObject(user);
 
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username", "=", "fsidokhine", ""));
-        User user1 = userDAO.getObjects(statementList).get(0);
+        User user1 = userDAO.getByUsername("fsidokhine").get();
         Assertions.assertNotNull(user1);
         Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.ADMIN);
     }
@@ -110,9 +106,7 @@ class DAOTest {
         UserDao userDAO = new UserDao();
         userDAO.storeObject(user);
 
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username", "=", "TestUser", ""));
-        User user1 = userDAO.getObjects(statementList).get(0);
+        User user1 = userDAO.getByUsername("TestUser").get();
         Assertions.assertNotNull(user1);
         Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.USER);
 
@@ -121,7 +115,7 @@ class DAOTest {
                 X509Utils.getPEMStringFromCertificate(
                         X509Utils.getCertificateFromPEMString(refreshedCertificate)));
 
-        User user2 = userDAO.getObjects(statementList).get(0);
+        User user2 = userDAO.getByUsername("TestUser").get();
         Assertions.assertNotEquals(user1.getCertificate(), user2.getCertificate());
     }
 
@@ -135,9 +129,7 @@ class DAOTest {
         DeviceDao deviceDAO = new DeviceDao();
         deviceDAO.storeObject(device);
 
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("owner", "=", "fsidokhine", ""));
-        Device device1 = deviceDAO.getObjects(statementList).get(0);
+        Device device1 = deviceDAO.getByOwner("fsidokhine").get(0);
         Assertions.assertNotNull(device1);
     }
 
@@ -155,9 +147,7 @@ class DAOTest {
         UserDao userDAO = new UserDao();
         userDAO.storeObject(user);
 
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username", "=", "admin", ""));
-        User user1 = userDAO.getObjects(statementList).get(0);
+        User user1 = userDAO.getByUsername("admin").get();
         Assertions.assertNotNull(user1);
         Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.ADMIN);
     }

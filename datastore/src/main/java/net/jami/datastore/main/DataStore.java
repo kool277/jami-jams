@@ -28,7 +28,6 @@ import lombok.Setter;
 import net.jami.datastore.dao.ContactDao;
 import net.jami.datastore.dao.DeviceDao;
 import net.jami.datastore.dao.GroupDao;
-import net.jami.datastore.dao.JwtDao;
 import net.jami.datastore.dao.PolicyDao;
 import net.jami.datastore.dao.SystemDao;
 import net.jami.datastore.dao.UserDao;
@@ -37,8 +36,6 @@ import net.jami.datastore.dao.UserProfileDao;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.dao.connectivity.ConnectionPool;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
@@ -61,7 +58,6 @@ public class DataStore implements AuthenticationSource {
     private DeviceDao deviceDao;
     private SystemDao systemDao;
     private ContactDao contactDao;
-    private JwtDao jwtDao;
     private UserProfileDao userProfileDao;
     private UserGroupMappingsDao userGroupMappingsDao;
     public static final Integer RESULTS_PER_PAGE = 24;
@@ -78,17 +74,8 @@ public class DataStore implements AuthenticationSource {
         deviceDao = new DeviceDao();
         systemDao = new SystemDao();
         contactDao = new ContactDao();
-        jwtDao = new JwtDao();
         userProfileDao = new UserProfileDao();
         userGroupMappingsDao = new UserGroupMappingsDao();
-    }
-
-    public boolean userExists(String username) {
-        StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("username", "=", username, "");
-        statementList.addStatement(statementElement);
-        List<User> userList = userDao.getObjects(statementList);
-        return (userList.size() == 1);
     }
 
     @Override
@@ -101,20 +88,17 @@ public class DataStore implements AuthenticationSource {
             String queryString, String field, Optional<Integer> page) {
         List<UserProfile> userList;
 
-        if (!queryString.equals("*")) {
-            StatementList statementList = new StatementList();
-            String startQueryString = queryString.concat("%");
+        if (queryString.equals("*")) {
+            userList = userProfileDao.getAllUserProfile();
+        } else {
             if (field.equals("LOGON_NAME")) {
-                statementList.addStatement(
-                        new StatementElement("username", "LIKE", startQueryString, ""));
+                userList = userProfileDao.searchUsername(queryString);
             } else if (field.equals("FULL_TEXT_NAME")) {
-                statementList.addStatement(
-                        new StatementElement("firstName", "LIKE", startQueryString, "OR"));
-                statementList.addStatement(
-                        new StatementElement("lastName", "LIKE", startQueryString, ""));
+                userList = userProfileDao.searchFullName(queryString);
+            } else {
+                throw new IllegalArgumentException("Invalid field");
             }
-            userList = userProfileDao.getObjects(statementList);
-        } else userList = userProfileDao.getObjects(null);
+        }
 
         if (userList == null) userList = new ArrayList<>();
 
@@ -137,11 +121,7 @@ public class DataStore implements AuthenticationSource {
 
     @Override
     public UserProfile getUserProfile(String username) {
-        StatementList statementList = new StatementList();
-        statementList.addStatement(new StatementElement("username", "=", username, ""));
-        List<UserProfile> userList = userProfileDao.getObjects(statementList);
-        if (userList.size() != 1) return null;
-        else return userList.get(0);
+        return userProfileDao.getByUsername(username).orElse(null);
     }
 
     @Override
@@ -150,26 +130,7 @@ public class DataStore implements AuthenticationSource {
     }
 
     public boolean updateUserProfile(UserProfile userProfile) {
-
-        StatementList update = new StatementList();
-        update.addStatement(new StatementElement("username", "=", userProfile.getUsername(), ""));
-        update.addStatement(new StatementElement("firstName", "=", userProfile.getFirstName(), ""));
-        update.addStatement(new StatementElement("lastName", "=", userProfile.getLastName(), ""));
-        update.addStatement(new StatementElement("email", "=", userProfile.getEmail(), ""));
-        update.addStatement(
-                new StatementElement("profilePicture", "=", userProfile.getProfilePicture(), ""));
-        update.addStatement(
-                new StatementElement("organization", "=", userProfile.getOrganization(), ""));
-        update.addStatement(
-                new StatementElement("phoneNumber", "=", userProfile.getPhoneNumber(), ""));
-        update.addStatement(
-                new StatementElement(
-                        "phoneNumberExtension", "=", userProfile.getPhoneNumberExtension(), ""));
-        update.addStatement(new StatementElement("faxNumber", "=", userProfile.getFaxNumber(), ""));
-        update.addStatement(
-                new StatementElement("mobileNumber", "=", userProfile.getMobileNumber(), ""));
-
-        return userProfileDao.updateObject(update, null);
+        return userProfileDao.updateUserProfile(userProfile);
     }
 
     public boolean updateUserCertificate(User user) {
@@ -179,12 +140,10 @@ public class DataStore implements AuthenticationSource {
 
     @Override
     public boolean authenticate(String username, String password) {
-        StatementList statementList = new StatementList();
-        StatementElement statementElement = new StatementElement("username", "=", username, "");
-        statementList.addStatement(statementElement);
-        List<User> userList = userDao.getObjects(statementList);
-        if (userList.size() != 1 || userList.get(0).getPassword() == null) return false;
-        return userList.get(0).getPassword().equals(password);
+        return userDao.getByUsername(username)
+                .map(user -> user.getPassword())
+                .orElse("")
+                .equals(password);
     }
 
     @Override

@@ -46,7 +46,7 @@ import net.jami.jams.server.startup.CryptoEngineLoader;
 import net.jami.jams.server.update.JAMSUpdater;
 import net.jami.jams.server.update.UpdateInterface;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;

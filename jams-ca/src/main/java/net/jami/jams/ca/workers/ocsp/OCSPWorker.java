@@ -96,7 +96,7 @@ public class OCSPWorker extends X509Worker<String> {
             if (validateRequest(ocspRequest) != null)
                 throw new OCSPException(
                         "Request is not valid"); // this means the request is invalid and we should
-                                                 // notify the client.
+            // notify the client.
             // If the request was valid, we move on to other things.
             BasicOCSPRespBuilder responseBuilder = new BasicOCSPRespBuilder(responderID);
             // Add appropriate extensions

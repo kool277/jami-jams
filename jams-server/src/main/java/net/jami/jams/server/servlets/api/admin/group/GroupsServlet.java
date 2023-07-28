@@ -30,7 +30,7 @@ public class GroupsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        List<Group> groups = dataStore.getGroupDao().getObjects(null);
+        List<Group> groups = dataStore.getGroupDao().getAll();
 
         if (!groups.isEmpty()) {
             resp.getOutputStream().write(JsonStream.serialize(groups).getBytes());

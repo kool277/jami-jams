@@ -26,12 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.utils.LibraryLoader;
 
-import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class CryptoEngineLoader {
@@ -42,22 +40,17 @@ public class CryptoEngineLoader {
             Class<?> cls = LibraryLoader.classLoader.loadClass("net.jami.jams.ca.JamsCA");
             CertificateAuthority certificateAuthority =
                     (CertificateAuthority) cls.getConstructor().newInstance();
-            StatementList statementList = new StatementList();
-            statementList.addStatement(new StatementElement("entity", "=", "CA", ""));
-            List<SystemAccount> accounts = dataStore.getSystemDao().getObjects(statementList);
-            if (accounts.size() == 0) {
+
+            Optional<SystemAccount> accounts = dataStore.getSystemDao().getCA();
+
+            if (accounts.isEmpty()) {
                 log.info(
                         "This is an fresh install, and it has no CA or any system accounts - if there is a config.json"
                                 + " file in your directory, this means the install is broken and you should delete and restart!");
             } else {
-                statementList = new StatementList();
-                statementList.addStatement(new StatementElement("entity", "=", "CA", ""));
-                SystemAccount caAccount = dataStore.getSystemDao().getObjects(statementList).get(0);
-                statementList = new StatementList();
-                statementList.addStatement(new StatementElement("entity", "=", "OCSP", ""));
-                SystemAccount ocspAccount =
-                        dataStore.getSystemDao().getObjects(statementList).get(0);
-                log.info("Injecting OCSP and CA acocunts...");
+                SystemAccount caAccount = accounts.orElseThrow();
+                SystemAccount ocspAccount = dataStore.getSystemDao().getOCSP().orElseThrow();
+                log.info("Injecting OCSP and CA accounts...");
                 certificateAuthority.init(config, caAccount, ocspAccount);
             }
             log.info(

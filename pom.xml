@@ -149,6 +149,12 @@
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
+                        <fileset>
+                            <directory>coverage/</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>

@@ -46,8 +46,6 @@ public class UsersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         resp.getOutputStream()
-                .write(
-                        JsonStream.serialize(dataStore.getUserDao().getObjects(null).get(0))
-                                .getBytes());
+                .write(JsonStream.serialize(dataStore.getUserDao().getAll().get(0)).getBytes());
     }
 }

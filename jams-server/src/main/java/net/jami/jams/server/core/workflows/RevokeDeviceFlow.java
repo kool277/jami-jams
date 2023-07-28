@@ -27,14 +27,13 @@ import static net.jami.jams.server.Server.dataStore;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.RevocationRequest;
 import net.jami.jams.common.objects.requests.RevocationType;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 @Slf4j
 public class RevokeDeviceFlow {
@@ -42,16 +41,14 @@ public class RevokeDeviceFlow {
     public static DeviceRevocationResponse revokeDevice(String username, String deviceId) {
         DeviceRevocationResponse response = new DeviceRevocationResponse();
         try {
-            StatementList statementList = new StatementList();
-            StatementElement st1 = new StatementElement("owner", "=", username, "AND");
-            StatementElement st2 = new StatementElement("deviceId", "=", deviceId, "");
-            statementList.addStatement(st1);
-            statementList.addStatement(st2);
-            Device device = dataStore.getDeviceDao().getObjects(statementList).get(0);
-            if (device == null) {
+            Optional<Device> result =
+                    dataStore.getDeviceDao().getByDeviceIdAndOwner(deviceId, username);
+            if (result.isEmpty()) {
                 log.error("Could not find device!");
                 return null;
             }
+
+            Device device = result.get();
 
             BigInteger serialNumber = device.getCertificate().getSerialNumber();
 

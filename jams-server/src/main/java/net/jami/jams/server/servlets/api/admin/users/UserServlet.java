@@ -39,8 +39,6 @@ import net.jami.jams.authmodule.PasswordUtil;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.dao.StatementElement;
-import net.jami.jams.common.dao.StatementList;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
@@ -49,11 +47,14 @@ import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.cert.X509CRLEntryHolder;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -64,48 +65,37 @@ public class UserServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        StatementList statementList = new StatementList();
-        StatementElement st1 =
-                new StatementElement("username", "=", req.getParameter("username"), "");
-        statementList.addStatement(st1);
-        if (!dataStore.getUserDao().getObjects(statementList).isEmpty()) {
-            User user = dataStore.getUserDao().getObjects(statementList).get(0);
-            if (certificateAuthority.getLatestCRL().get() != null)
-                user.setRevoked(
-                        certificateAuthority
-                                        .getLatestCRL()
-                                        .get()
-                                        .getRevokedCertificate(
-                                                user.getCertificate().getSerialNumber())
-                                != null);
-            else user.setRevoked(false);
-            if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
-                String pw =
-                        PasswordUtil.hashPassword(
-                                req.getParameter("password"), Base64.decodeBase64(user.getSalt()));
-                StatementList update = new StatementList();
-                StatementElement st0 = new StatementElement("password", "=", pw, "");
-                update.addStatement(st0);
-                StatementList constraint = new StatementList();
-                StatementElement st =
-                        new StatementElement("username", "=", req.getParameter("username"), "");
-                constraint.addStatement(st);
-                StatementElement st2 = new StatementElement("needsPasswordReset", "=", "true", "");
-                update.addStatement(st2);
-                // refresh variable
-                dataStore.getUserDao().updateObject(update, constraint);
-                user = dataStore.getUserDao().getObjects(statementList).get(0);
-            }
-            user.setPassword("");
-            user.setSalt("");
-            resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
-            resp.setStatus(200);
-        } else {
+        String username = req.getParameter("username");
+        Optional<User> result = dataStore.getUserDao().getByUsername(username);
+        if (result.isEmpty()) {
             resp.sendError(404, "Could not obtain user!");
         }
+
+        User user = result.get();
+        X509CRLHolder crl = certificateAuthority.getLatestCRL().get();
+        if (crl != null) {
+            X509CRLEntryHolder revoked =
+                    crl.getRevokedCertificate(user.getCertificate().getSerialNumber());
+            user.setRevoked(revoked != null);
+        } else {
+            user.setRevoked(false);
+        }
+
+        if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
+            String pw = req.getParameter("password");
+            String password = PasswordUtil.hashPassword(pw, Base64.decodeBase64(user.getSalt()));
+            dataStore.getUserDao().updateObject(password, username);
+
+            user = dataStore.getUserDao().getByUsername(username).get();
+        }
+        user.setPassword("");
+        user.setSalt("");
+        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+        resp.setStatus(200);
     }
-    // Create an internal user - this is always technically available, because internal users have
-    // the right to exist.
+
+    // Create an internal user - this is always technically available, because
+    // internal users have the right to exist.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
@@ -116,29 +106,39 @@ public class UserServlet extends HttpServlet {
                         req.getReader()
                                 .lines()
                                 .collect(Collectors.joining(System.lineSeparator())));
-        String pw = obj.getString("password");
-        if (!pw.isEmpty()) {
-            User user = new User();
-            user.setUsername(obj.getString("username"));
-            user.setNeedsPasswordReset(true);
-            byte[] salt = PasswordUtil.generateSalt();
-            pw = PasswordUtil.hashPassword(pw, salt);
-            user.setPassword(pw);
-            user.setSalt(Base64.encodeBase64String(salt));
-            user.setRealm("LOCAL");
-            user.setUserType(AuthenticationSourceType.LOCAL);
-            if (userAuthenticationModule.createUser(
-                    user.getUserType(), user.getRealm(), nameServer, user)) {
-                HashMap<String, String> statusInfo = new HashMap<>();
-                statusInfo.put("password", pw);
-                resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
-                resp.setStatus(200);
-                return;
-            }
+
+        String password = obj.getString("password");
+
+        if (password.isEmpty()) {
+            resp.sendError(400, "Password is empty!");
+            return;
+        }
+
+        byte[] salt = PasswordUtil.generateSalt();
+        String hashedPassword = PasswordUtil.hashPassword(password, salt);
+
+        String username = obj.getString("username");
+
+        User user = new User();
+        user.setUsername(username);
+        user.setNeedsPasswordReset(true);
+        user.setPassword(hashedPassword);
+        user.setSalt(Base64.encodeBase64String(salt));
+        user.setRealm("LOCAL");
+        user.setUserType(AuthenticationSourceType.LOCAL);
+
+        if (userAuthenticationModule.createUser(
+                user.getUserType(), user.getRealm(), nameServer, user)) {
+            HashMap<String, String> statusInfo = new HashMap<>();
+            statusInfo.put("password", hashedPassword);
+            resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
+            resp.setStatus(200);
+            return;
         }
 
         resp.sendError(500, "Could not create a user successfully!");
     }
+
     // Update user data.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -151,17 +151,17 @@ public class UserServlet extends HttpServlet {
         String pw = obj.getString("password");
         String username = obj.getString("username");
 
-        StatementList statementList = new StatementList();
-        StatementElement st0 = new StatementElement("username", "=", username, "");
-        statementList.addStatement(st0);
-        if (dataStore.getUserDao().getObjects(statementList).isEmpty()) {
+        Optional<User> result = dataStore.getUserDao().getByUsername(username);
+
+        if (result.isEmpty()) {
             resp.sendError(404, "User was not found!");
             return;
         }
 
-        User user = dataStore.getUserDao().getObjects(statementList).get(0);
+        User user = result.get();
 
-        // Check if he is AD/LDAP - then return a 403, because we can't set such password.
+        // Check if he is AD/LDAP - then return a 403, because we can't set such
+        // password.
         if (user.getUserType() != AuthenticationSourceType.LOCAL) {
             resp.sendError(
                     500, "The user is not a local user, therefore we cannot change his data!");
@@ -169,29 +169,22 @@ public class UserServlet extends HttpServlet {
         }
 
         byte[] salt = PasswordUtil.generateSalt();
-        StatementList update = new StatementList();
-        StatementElement st1 =
-                new StatementElement("password", "=", PasswordUtil.hashPassword(pw, salt), "");
-        update.addStatement(st1);
-        StatementElement st2 =
-                new StatementElement("salt", "=", Base64.encodeBase64String(salt), "");
-        update.addStatement(st2);
-        StatementList constraint = new StatementList();
-        StatementElement st3 = new StatementElement("username", "=", username, "");
-        constraint.addStatement(st3);
-        if (dataStore.getUserDao().updateObject(update, constraint)) resp.setStatus(200);
+        String password = PasswordUtil.hashPassword(pw, salt);
+        String encodedSalt = Base64.encodeBase64String(salt);
+        if (dataStore.getUserDao().updateObject(password, encodedSalt, username))
+            resp.setStatus(200);
         else resp.sendError(500, "could not update the users's data field!");
     }
+
     // Revoke a user.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String username = req.getParameter("username");
         AtomicReference<DeviceRevocationResponse> devResponse =
-                new AtomicReference<>(RevokeUserFlow.revokeUser(req.getParameter("username")));
-        StatementList statementList = new StatementList();
-        StatementElement st1 = new StatementElement("owner", "=", req.getParameter("username"), "");
-        statementList.addStatement(st1);
-        List<Device> devices = dataStore.getDeviceDao().getObjects(statementList);
+                new AtomicReference<>(RevokeUserFlow.revokeUser(username));
+        List<Device> devices = dataStore.getDeviceDao().getByOwner(username);
+
         if (certificateAuthority.getLatestCRL() != null) {
             devices.forEach(
                     device -> {
@@ -202,8 +195,7 @@ public class UserServlet extends HttpServlet {
                                                 device.getCertificate().getSerialNumber())
                                 == null)
                             devResponse.set(
-                                    RevokeDeviceFlow.revokeDevice(
-                                            req.getParameter("username"), device.getDeviceId()));
+                                    RevokeDeviceFlow.revokeDevice(username, device.getDeviceId()));
                     });
         }
         if (devResponse.get() != null && devResponse.get().isSuccess()) {

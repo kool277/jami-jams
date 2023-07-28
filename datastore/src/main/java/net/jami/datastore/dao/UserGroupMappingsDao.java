@@ -2,13 +2,11 @@ package net.jami.datastore.dao;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.datastore.main.DataStore;
-import net.jami.jams.common.dao.StatementList;
-import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class UserGroupMappingsDao extends AbstractDao<UserGroupMapping> {
@@ -18,60 +16,38 @@ public class UserGroupMappingsDao extends AbstractDao<UserGroupMapping> {
         this.setTClass(UserGroupMapping.class);
     }
 
-    @Override
-    public boolean storeObject(UserGroupMapping object) {
+    public List<UserGroupMapping> getByGroupId(String groupId) {
+        ResultSet rs = executeQuery("SELECT * FROM usergroupmappings WHERE groupId = ?", groupId);
+        return getObjectsFromResultSet(rs);
+    }
 
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            PreparedStatement ps =
-                    connection
-                            .getConnection()
-                            .prepareStatement(
-                                    "INSERT INTO usergroupmappings "
-                                            + "(username, groupId)"
-                                            + " VALUES "
-                                            + "(?,?)");
-            ps = object.getInsert(ps);
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to store a user profile: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
+    public List<UserGroupMapping> getByUsername(String username) {
+        ResultSet rs = executeQuery("SELECT * FROM usergroupmappings WHERE username = ?", username);
+        return getObjectsFromResultSet(rs);
+    }
+
+    public Optional<UserGroupMapping> getByGroupIdAndUsername(String groupId, String username) {
+        // TODO The primary key should be (groupId, username)
+        String query = "SELECT * FROM usergroupmappings WHERE groupId = ? AND username = ?";
+        List<String> params = List.of(groupId, username);
+        ResultSet rs = executeQuery(query, params);
+        return getFirstObjectFromResultSet(rs);
     }
 
     @Override
-    public boolean deleteObject(StatementList constraints) {
+    public boolean storeObject(UserGroupMapping object) {
+        String query =
+                "INSERT INTO usergroupmappings " + "(username, groupId)" + " VALUES " + "(?, ?)";
+        return executeInsert(query, object);
+    }
 
-        String username = constraints.getStatements().get(0).getValue();
-        String groupId = constraints.getStatements().get(1).getValue();
-        SQLConnection connection = DataStore.connectionPool.getConnection();
-
-        try {
-            if (username.equals("*")) {
-                PreparedStatement ps =
-                        connection
-                                .getConnection()
-                                .prepareStatement(
-                                        "DELETE FROM usergroupmappings WHERE groupId = ?");
-                ps.setString(1, groupId);
-                return ps.executeUpdate() != 0;
-            } else {
-                PreparedStatement ps =
-                        connection
-                                .getConnection()
-                                .prepareStatement(
-                                        "DELETE FROM usergroupmappings WHERE username = ? AND groupId = ?");
-                ps.setString(1, username);
-                ps.setString(2, groupId);
-                return ps.executeUpdate() != 0;
-            }
-        } catch (SQLException e) {
-            log.error("An error has occurred while trying to delete a group member: " + e);
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
+    public boolean deleteObject(String username, String groupId) {
+        if (username.equals("*")) {
+            String query = "DELETE FROM usergroupmappings WHERE groupId = ?";
+            return executeUpdate(query, List.of(groupId));
         }
+
+        String query = "DELETE FROM usergroupmappings WHERE username = ? AND groupId = ?";
+        return executeUpdate(query, List.of(username, groupId));
     }
 }
