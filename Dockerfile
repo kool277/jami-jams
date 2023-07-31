@@ -44,7 +44,7 @@ RUN mkdir -p ../jams-server/src/main/resources/webapp \
 WORKDIR /app
 RUN mvn package
 
-ENV JAMS_VERSION=3.4
+ENV JAMS_VERSION=3.5
 RUN python3 generate-versions.py net.jami.jams.ca.JamsCA $JAMS_VERSION libs/cryptoengine.jar
 RUN python3 generate-versions.py net.jami.jams.authmodule.UserAuthenticationModule $JAMS_VERSION libs/authentication-module.jar
 RUN python3 generate-versions.py net.jami.jams.server.Server $JAMS_VERSION jams-server.jar
