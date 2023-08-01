@@ -327,8 +327,10 @@ export default function Users(props) {
               "are_you_sure_you_want_to_remove",
               "Are you sure you want to remove"
             )}
-            <strong>{removedContactName}</strong> {i18next.t("from", "from")}{" "}
-            {props.username} {i18next.t("contacts", "contacts")} ?
+            <strong>{" " + removedContactName + " "}</strong>
+            {i18next.t("from", "from")}
+            {" " + props.username + " "}
+            {i18next.t("contacts", "contacts")}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -485,7 +487,7 @@ export default function Users(props) {
                   </CardBody>
                   <CardFooter>
                     <IconButton
-                      color="secondary"
+                      color="primary"
                       onClick={() => {
                         handleRemoveContact(contact.uri, contact.username);
                       }}

@@ -87,7 +87,7 @@ export default function UserProfile(props) {
             {...a11yProps(value, 1)}
           />
           <Tab
-            label={i18next.t("contacts", "Contacts")}
+            label={i18next.t("contacts", "contacts")}
             {...a11yProps(value, 2)}
           />
         </Tabs>

@@ -119,7 +119,7 @@ const DescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
             id="description"
             placeholder={i18next.t(
               "welcome_Description",
-              "Here is your Jami identifier, don’t hesitate to share it in order to be contacted more easily!"
+              "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!"
             )}
             value={uiCustomization.description}
             onChange={(e) => {
@@ -149,7 +149,7 @@ const HasTipsForm = ({ uiCustomization, handleUpdateUi }) => {
             name="hasTips"
           />
         }
-        label={i18next.t("welcome_has_Tips", "Tips")}
+        label={i18next.t("welcome_has_Tips", "Enable Tips display")}
       />
     </FormGroup>
   );
@@ -241,9 +241,7 @@ const CustomBackgroundForm = ({
 const TipBoxAndIdColorForm = ({ uiCustomization, handleUpdateUi }) => {
   return (
     <>
-      <span>
-        {i18next.t("tip_box_id_color", "Tip Box's and Jami ID color")}
-      </span>
+      <span>{i18next.t("tip_box_id_color", "Tip Box and Jami ID color")}</span>
       <ColorPickerPopup
         hasAlphaChannel
         color={uiCustomization.tipBoxAndIdColor}
@@ -272,7 +270,7 @@ const MainBoxColorForm = ({ uiCustomization, handleUpdateUi }) => {
           }
           label={i18next.t(
             "enable_main_box",
-            "Add a box behind the title, description and the Jami ID"
+            "Add a box behind the title, description and Jami ID"
           )}
         />
       </FormGroup>
@@ -476,7 +474,7 @@ const EditBlueprintUiForm = ({
               });
             }}
           >
-            {i18next.t("default_settings", "Default Settings").toUpperCase()}
+            {i18next.t("default_settings", "Default settings").toUpperCase()}
           </Button>
         </>
       )}

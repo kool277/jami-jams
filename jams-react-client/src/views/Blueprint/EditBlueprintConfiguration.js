@@ -257,7 +257,7 @@ export default function EditBlueprintConfiguration(props) {
                           control={<StyledRadio />}
                           label={i18next.t(
                             "use_jami_default_turn_configuration",
-                            "Use Jami default TURN configuration"
+                            "Use default TURN configuration"
                           )}
                         />
                         <FormControlLabel

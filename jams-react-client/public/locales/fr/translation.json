@@ -116,8 +116,6 @@
     "error_while_attempting_update_jams": "Une erreur s'est produite lors de la tentative de mise à jour du JAMS.",
     "permissions": "Permissions",
     "configuration": "Configuration",
-    "updated_blueprint_configuration_successfully": "Le gabarit a été mis à jour.",
-    "error_updating_blueprint_configuration": "Une erreur s'est produite lors de la tentative de mise à jour du gabarit.",
     "enable_upnp": "Activer UPnP",
     "use_jami_default_turn_configuration": "Utiliser la configuration TURN par défaut proposé par Jami.",
     "use_a_custom_turn_configuration": "Utiliser une configuration TURN personnalisée.",
@@ -265,12 +263,15 @@
     "welcome_has_BackgroundCustom": "Background",
     "instruction_background": "Choose a background color or a background image",
     "or": "or",
-    "upload_an_image": "UPLOAD AN IMAGE",
     "welcome_has_Logo": "Logotype",
     "instruction_logo": "Use Jami logotype or upload a logotype",
-    "upload_a_logotype": "UPLOAD A LOGOTYPE",
     "call_parameters": "Call parameters",
     "preview_tip1": "Add a picture and a nickname to complete your profile",
     "preview_tip2": "Why should I save my account?",
-    "preview_tip3": "How to set shortcuts?"
+    "preview_tip3": "How to set shortcuts?",
+    "tip_box_id_color": "Tip Box's and Jami ID color",
+    "enable_main_box": "Add a box behind the title, description and the Jami ID",
+    "main_box_color": "Box color",
+    "logo_size": "Size",
+    "default_settings": "Default Settings"
 }

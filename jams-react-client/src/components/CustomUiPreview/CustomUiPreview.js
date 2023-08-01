@@ -130,7 +130,7 @@ export default function CustomUiPreview({
   if (!description) {
     description = i18next.t(
       "welcome_Description",
-      "Here is your Jami identifier, don’t hesitate to share it in order to be contacted more easily!"
+      "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!"
     );
   }
   if (logoUrl) {
