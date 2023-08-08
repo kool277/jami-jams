@@ -4,27 +4,37 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.jams.common.authentication.AuthenticationSourceType;
-import net.jami.jams.common.objects.roots.X509Fields;
+import net.jami.jams.ca.JamsCA;
 import net.jami.jams.common.objects.user.User;
 
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.security.cert.X509Certificate;
 
 @Slf4j
 class UserBuilderTest {
 
+    @BeforeEach
+    void setUp() {
+        JamsCA jamsCA = SystemAccountBuilderTest.createMockJamsCA();
+    }
+
+    @AfterEach
+    void tearDown() {
+        File file = new File("jams.crl");
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     @Test
     void generateUserCertificate() {
-
-        User user = new User();
-        user.setUsername("TestUser");
-        user.setUserType(AuthenticationSourceType.LOCAL);
-        user.setX509Fields(new X509Fields());
-        user.getX509Fields().setCommonName("TestUser's Personal Certificate");
+        User user = SystemAccountBuilderTest.createMockUser();
         user = UserBuilder.generateUser(user);
 
         Assertions.assertNotNull(user.getCertificate(), "User Certificate was not generated!");
@@ -32,15 +42,8 @@ class UserBuilderTest {
 
     @Test
     void refreshUserCertificate() {
-
-        User user = new User();
-        user.setUsername("TestUser");
-        // user.setJamiId("");
-        user.setUserType(AuthenticationSourceType.LOCAL);
-        user.setX509Fields(new X509Fields());
-        user.getX509Fields().setCommonName("TestUser's Personal Certificate");
-        user = UserBuilder.generateUser(user);
-
+        User user = SystemAccountBuilderTest.createMockUser();
+        user.setUsername("test");
         Assertions.assertNotNull(user, "User was not generated!");
 
         X509Certificate cert = user.getCertificate();

@@ -105,3 +105,5 @@ jams-server/src/main/resources/webapp/
 .vscode/settings.json
 
 jams-server/doc/
+
+coverage/

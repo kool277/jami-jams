@@ -120,6 +120,18 @@ docker build -f Dockerfile -t jams:latest --target prod . \
     && java -jar jams-launcher.jar
 ```
 
+## Run tests
+```sh
+mvn clean test
+
+# to open the report files in the browser
+for f in */target/site/jacoco/index.html ; do xdg-open $f ; done
+
+# (optional) if the file doesn't open in your browser
+TYPE=$(xdg-mime query filetype datastore/target/site/jacoco/index.html)
+xdg-mime default firefox.desktop "$TYPE"
+```
+
 ## Visualize the derby database
 The IntelliJ Ultimate Edition Database view can help visualize the database schema.
 Don't forget to launch jams locally at least once before proceeding.

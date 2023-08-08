@@ -65,41 +65,11 @@ class SystemAccountBuilderTest {
 
     @Test
     void generateFullChain() {
-        SystemAccount caAccount = new SystemAccount();
-        caAccount.setSystemAccountType(SystemAccountType.CA);
-        caAccount.setX509Fields(new X509Fields());
-        caAccount.getX509Fields().setCommonName("Test CA");
-        caAccount.getX509Fields().setCountry("FR");
-        caAccount.getX509Fields().setLifetime(10000000L);
-        caAccount = SystemAccountBuilder.generateCA(caAccount);
-        Assertions.assertNotNull(caAccount.getCertificate(), "CA Certificate was not generated!");
+        JamsCA.CA = createMockCaAccount();
+        createMockOcsp();
+        User user = createMockUser();
+        Device device = createMockDevice(user);
 
-        JamsCA.CA = caAccount;
-
-        // Generate OCSP
-        SystemAccount ocspAccount = new SystemAccount();
-        ocspAccount.setSystemAccountType(SystemAccountType.OCSP);
-        ocspAccount.setX509Fields(new X509Fields());
-        ocspAccount.getX509Fields().setCommonName("OCSP Server");
-        ocspAccount.getX509Fields().setLifetime(10000000L);
-        ocspAccount = SystemAccountBuilder.generateOCSP(ocspAccount);
-        Assertions.assertNotNull(
-                ocspAccount.getCertificate(), "OCSP Certificate was not generated!");
-
-        // Generate User.
-        User user = new User();
-        user.setUserType(AuthenticationSourceType.LOCAL);
-        user.setX509Fields(new X509Fields());
-        user.getX509Fields().setCommonName("Felix's Personal Certificate");
-        user = UserBuilder.generateUser(user);
-        Assertions.assertNotNull(user.getCertificate(), "User Certificate was not generated!");
-
-        // Generate a device
-        Device device = new Device();
-        device.setOwner("00000");
-        device.setCertificationRequest(X509Utils.getCSRFromString(strPkcs10Request));
-        device = DeviceBuilder.generateDevice(user, device);
-        Assertions.assertNotNull(device.getCertificate(), "Device certificate was not generated!");
         // Check that we can decode the rdn.
         try {
             HashMap<String, String> data =
@@ -110,31 +80,46 @@ class SystemAccountBuilderTest {
         }
     }
 
+    private void createMockOcsp() {
+        SystemAccount ocspAccount = new SystemAccount();
+        ocspAccount.setSystemAccountType(SystemAccountType.OCSP);
+        ocspAccount.setX509Fields(new X509Fields());
+        ocspAccount.getX509Fields().setCommonName("OCSP Server");
+        ocspAccount.getX509Fields().setLifetime(10000000L);
+        ocspAccount = SystemAccountBuilder.generateOCSP(ocspAccount);
+        Assertions.assertNotNull(
+                ocspAccount.getCertificate(), "OCSP Certificate was not generated!");
+    }
+
+    private Device createMockDevice(User user) {
+        Device device = new Device();
+        device.setOwner("00000");
+        device.setCertificationRequest(X509Utils.getCSRFromString(strPkcs10Request));
+        device = DeviceBuilder.generateDevice(user, device);
+        Assertions.assertNotNull(device.getCertificate(), "Device certificate was not generated!");
+        return device;
+    }
+
+    public static User createMockUser() {
+        User user = new User();
+        user.setUserType(AuthenticationSourceType.LOCAL);
+        user.setX509Fields(new X509Fields());
+        user.getX509Fields().setCommonName("Felix's Personal Certificate");
+        user = UserBuilder.generateUser(user);
+        Assertions.assertNotNull(user.getCertificate(), "User Certificate was not generated!");
+        return user;
+    }
+
     @Test
     void testCRLGeneration() throws Exception {
-        SystemAccount caAccount = new SystemAccount();
-        caAccount.setSystemAccountType(SystemAccountType.CA);
-        caAccount.setX509Fields(new X509Fields());
-        caAccount.getX509Fields().setCommonName("Test CA");
-        caAccount.getX509Fields().setCountry("FR");
-        caAccount.getX509Fields().setLifetime(10000000L);
-        caAccount = SystemAccountBuilder.generateCA(caAccount);
-        Assertions.assertNotNull(caAccount.getCertificate(), "CA Certificate was not generated!");
-        CertificateAuthorityConfig config = new CertificateAuthorityConfig();
-        config.setUserLifetime(1000L);
-        config.setSigningAlgorithm("SHA512WITHRSA");
-        config.setServerDomain("http://localhost");
-        config.setCrlLifetime(1000000L);
-        config.setDeviceLifetime(1000L);
+        JamsCA jamsCA = createMockJamsCA();
 
-        JamsCA jamsCA = new JamsCA();
-        jamsCA.init(JsonStream.serialize(config), caAccount, caAccount);
         RevocationRequest revocationRequest = new RevocationRequest();
         revocationRequest.setIdentifier(new BigInteger("91828882"));
         revocationRequest.setRevocationType(RevocationType.USER);
         jamsCA.revokeCertificate(revocationRequest);
         synchronized (this) {
-            this.wait(2_000);
+            this.wait(500);
         }
         Assertions.assertNotNull(jamsCA.getLatestCRL());
         Assertions.assertEquals(
@@ -147,13 +132,42 @@ class SystemAccountBuilderTest {
         revocationRequest.setRevocationType(RevocationType.USER);
         jamsCA.revokeCertificate(revocationRequest);
         synchronized (this) {
-            this.wait(2_000);
+            this.wait(500);
         }
         Assertions.assertNotNull(jamsCA.getLatestCRL());
         Assertions.assertEquals(
                 2,
                 jamsCA.getLatestCRL().get().getRevokedCertificates().toArray().length,
                 "Expected only 2 certificates!");
+    }
+
+    public static JamsCA createMockJamsCA() {
+        SystemAccount caAccount = createMockCaAccount();
+
+        CertificateAuthorityConfig config = new CertificateAuthorityConfig();
+        config.setUserLifetime(1000L);
+        config.setSigningAlgorithm("SHA512WITHRSA");
+        config.setServerDomain("http://localhost");
+        config.setCrlLifetime(1000000L);
+        config.setDeviceLifetime(1000L);
+
+        JamsCA jamsCA = new JamsCA();
+        jamsCA.init(JsonStream.serialize(config), caAccount, caAccount);
+
+        return jamsCA;
+    }
+
+    private static SystemAccount createMockCaAccount() {
+        SystemAccount caAccount = new SystemAccount();
+        caAccount.setSystemAccountType(SystemAccountType.CA);
+        caAccount.setX509Fields(new X509Fields());
+        caAccount.getX509Fields().setCommonName("Test CA");
+        caAccount.getX509Fields().setCountry("FR");
+        caAccount.getX509Fields().setLifetime(10000000L);
+        caAccount = SystemAccountBuilder.generateCA(caAccount);
+        Assertions.assertNotNull(caAccount.getCertificate(), "CA Certificate was not generated!");
+
+        return caAccount;
     }
 
     @AfterAll

@@ -22,4 +22,52 @@
  */
 package net.jami.datastore.dao;
 
-class ContactDaoTest {}
+import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.dao.connectivity.SQLConnection;
+import net.jami.jams.common.objects.contacts.Contact;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
+class ContactDaoTest {
+    private ContactDao contactDao;
+
+    @BeforeEach
+    void setUp() {
+        DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        Assertions.assertNotNull(connection);
+
+        contactDao = new ContactDao();
+        Assertions.assertNotNull(contactDao);
+    }
+
+    @Test
+    void getByOwner() throws Exception {
+        Assertions.assertTrue(contactDao.getByOwner("test").isEmpty());
+    }
+
+    @Test
+    void storeObject() throws Exception {
+        Contact contact = new Contact();
+        Assertions.assertFalse(contactDao.storeObject(contact));
+    }
+
+    @Test
+    void storeContactList() throws Exception {
+        ArrayList<Contact> contactList = new ArrayList<>();
+        Assertions.assertFalse(contactDao.storeContactList(contactList));
+
+        Contact contact = new Contact();
+        contactList.add(contact);
+        Assertions.assertFalse(contactDao.storeContactList(contactList));
+    }
+
+    @Test
+    void deleteObject() throws Exception {
+        Assertions.assertFalse(contactDao.deleteObject("owner", "uri"));
+    }
+}

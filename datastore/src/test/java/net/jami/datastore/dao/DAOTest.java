@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
+import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
@@ -35,6 +36,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
@@ -52,9 +54,7 @@ class DAOTest {
     static String refreshedCertificate;
 
     @BeforeAll
-    static void setUp() throws Exception {
-        DataStore dataStore = new DataStore("jdbc:derby:testdb;create=true");
-        Assertions.assertNotNull(DataStore.connectionPool.getConnection());
+    static void beforeAll() throws Exception {
         InputStream path;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         path = classLoader.getResourceAsStream("cakey.txt");
@@ -69,19 +69,28 @@ class DAOTest {
         refreshedCertificate = new String(path.readAllBytes());
     }
 
+    @BeforeEach
+    void beforeEach() throws Exception {
+        DataStore dataStore = new DataStore("jdbc:derby:memory:daotestdb;create=true");
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        Assertions.assertNotNull(connection);
+    }
+
     @Test
     void storeUser() throws Exception {
-        User user = new User();
-        user.setUsername("fsidokhine");
-        user.setUserType(AuthenticationSourceType.LOCAL);
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
+
+        User user = new User();
+        user.setUsername("fsidokhine");
+        user.setUserType(AuthenticationSourceType.LOCAL);
         user.setSalt(Base64.encodeBase64String(salt));
         user.setPassword(hashPassword("abc123", salt));
         user.setAccessLevel(AccessLevel.ADMIN);
         user.setCertificate(X509Utils.getCertificateFromPEMString(strCertificate));
         user.setPrivateKey(X509Utils.getKeyFromPEMString(strPrivateKey));
+
         UserDao userDAO = new UserDao();
         userDAO.storeObject(user);
 
@@ -92,31 +101,35 @@ class DAOTest {
 
     @Test
     void refreshUserCertificate() throws Exception {
-        User user = new User();
-        user.setUsername("TestUser");
-        user.setUserType(AuthenticationSourceType.LOCAL);
+        User user = createMockUser();
+
+        UserDao userDAO = new UserDao();
+        userDAO.storeObject(user);
+
+        User user1 = userDAO.getByUsername("TestUser").orElseThrow();
+        Assertions.assertNotNull(user1);
+        Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.USER);
+
+        userDAO.updateUserCertificate("TestUser", refreshedCertificate);
+
+        User user2 = userDAO.getByUsername("TestUser").orElseThrow();
+        Assertions.assertNotEquals(user1.getCertificate(), user2.getCertificate());
+    }
+
+    private User createMockUser() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
+
+        User user = new User();
+        user.setUsername("TestUser");
+        user.setUserType(AuthenticationSourceType.LOCAL);
         user.setSalt(Base64.encodeBase64String(salt));
         user.setPassword(hashPassword("abc123", salt));
         user.setAccessLevel(AccessLevel.USER);
         user.setCertificate(X509Utils.getCertificateFromPEMString(generatedCertificate));
 
-        UserDao userDAO = new UserDao();
-        userDAO.storeObject(user);
-
-        User user1 = userDAO.getByUsername("TestUser").get();
-        Assertions.assertNotNull(user1);
-        Assertions.assertEquals(user1.getAccessLevel(), AccessLevel.USER);
-
-        userDAO.updateUserCertificate(
-                "TestUser",
-                X509Utils.getPEMStringFromCertificate(
-                        X509Utils.getCertificateFromPEMString(refreshedCertificate)));
-
-        User user2 = userDAO.getByUsername("TestUser").get();
-        Assertions.assertNotEquals(user1.getCertificate(), user2.getCertificate());
+        return user;
     }
 
     @Test

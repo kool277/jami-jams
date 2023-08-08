@@ -1,11 +1,5 @@
 /*
- * Copyright (C) 2020 by Savoir-faire Linux
- * Authors: William Enright <william.enright@savoirfairelinux.com>
- *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
- *          Johnny Flores <johnny.flores@savoirfairelinux.com>
- *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
- *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
- *
+ * Copyright (C) 2023 by Savoir-faire Linux
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,4 +16,40 @@
  */
 package net.jami.datastore.dao;
 
-class SystemDaoTest {}
+import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.dao.connectivity.SQLConnection;
+import net.jami.jams.common.objects.system.SystemAccount;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class SystemDaoTest {
+    private SystemDao systemDao;
+
+    @BeforeEach
+    void beforeEach() throws Exception {
+        DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        Assertions.assertNotNull(connection);
+
+        systemDao = new SystemDao();
+        Assertions.assertNotNull(systemDao);
+    }
+
+    @Test
+    void getCA() throws Exception {
+        Assertions.assertTrue(systemDao.getCA().isEmpty());
+    }
+
+    @Test
+    void getOCSP() throws Exception {
+        Assertions.assertTrue(systemDao.getOCSP().isEmpty());
+    }
+
+    @Test
+    void storeObject() throws Exception {
+        SystemAccount systemAccount = new SystemAccount();
+        Assertions.assertFalse(systemDao.storeObject(systemAccount));
+    }
+}

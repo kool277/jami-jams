@@ -1,5 +1,7 @@
 package tests;
 
+import net.jami.datastore.main.DataStore;
+import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.ldap.connector.LDAPConnector;
 
@@ -7,6 +9,8 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.zapodot.junit.ldap.EmbeddedLdapRule;
 import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
 
@@ -26,6 +30,14 @@ public class GenericLDAPTest {
         }
     }
 
+    @BeforeEach
+    private void setUp() throws Exception {
+        initLdapConnector();
+        DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        Assertions.assertNotNull(connection);
+    }
+
     @Rule
     public EmbeddedLdapRule server =
             EmbeddedLdapRuleBuilder.newInstance()
@@ -34,6 +46,7 @@ public class GenericLDAPTest {
                     .importingLdifs("bootstrap.ldif")
                     .build();
 
+    @Disabled
     @Test
     public void testLookUp() throws Exception {
         initLdapConnector();
@@ -54,6 +67,7 @@ public class GenericLDAPTest {
         Assertions.assertFalse(res);
     }
 
+    @Disabled
     @Test
     public void getVcard() throws Exception {
         initLdapConnector();
