@@ -38,7 +38,7 @@ import i18next from "i18next";
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle";
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react";
 
-import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
+import { BlueprintSnackbar } from "components/Snackbar/BlueprintSnackbar";
 import CustomPopupState from "components/CustomPopupState/CustomPopupState";
 
 import { PolicyDataContext } from "./PolicyDataContext";

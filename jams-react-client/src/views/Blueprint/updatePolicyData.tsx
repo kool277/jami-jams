@@ -4,9 +4,12 @@ import i18next from "i18next";
 import configApiCall from "api";
 import { api_path_blueprints } from "globalUrls";
 import { debounce } from "lodash";
-import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
+import { DEFAULT_UI_CUSTOMIZATION, PolicyData } from "./policyData.constants";
+import { Dispatch, SetStateAction } from "react";
+import { SnackbarProps } from "./PolicyDataContext";
+import { ServerUiCustomization } from "./ServerUiCustomization";
 
-const updatePerms = (data, field, value) => {
+const updatePerms = (data, field: string, value: any) => {
   data.defaultModerators = data.blueprintModerators
     .map((moderator) => moderator.id)
     .join("/");
@@ -51,7 +54,7 @@ const updateConfig = (data) => {
   return data;
 };
 
-const convertRgbaToArgb = (rgba) => {
+const convertRgbaToArgb = (rgba: string) => {
   if (rgba.length === 7) {
     return rgba;
   }
@@ -59,7 +62,7 @@ const convertRgbaToArgb = (rgba) => {
     throw new Error(`Invalid rgba value: "${rgba}}"`);
   }
 
-  return "#" + rgba.substr(7, 2) + rgba.substr(1, 6);
+  return "#" + rgba.substring(7, 9) + rgba.substring(1, 7);
 };
 
 const updateUiCustomization = (data) => {
@@ -135,7 +138,11 @@ const updateUiCustomization = (data) => {
   return data;
 };
 
-const sendPutRequest = (blueprintName, data, setSnackbar) => {
+const sendPutRequest = (
+  blueprintName: string,
+  data: ServerUiCustomization,
+  setSnackbar: (snackbar: SnackbarProps) => void
+) => {
   console.log("PUT", data);
 
   axios(
@@ -175,21 +182,23 @@ const debouncedSendPutRequest = debounce(sendPutRequest, 200, {
 });
 
 export const _updatePolicyData = (
-  blueprintName,
-  policyData,
-  setPolicyData,
-  field,
-  value,
-  setSnackbar
+  blueprintName: string,
+  policyData: PolicyData,
+  setPolicyData: Dispatch<SetStateAction<PolicyData>>,
+  field: string,
+  value: string,
+  setSnackbar: (snackbar: any) => void
 ) => {
   setPolicyData((state) => ({ ...state, [field]: value }));
 
-  let data = { ...policyData, [field]: value };
+  let data: any = { ...policyData, [field]: value };
   data = updatePerms(data, field, value);
   data = updateConfig(data);
   data = updateUiCustomization(data);
 
+  const ui: ServerUiCustomization = data;
+
   console.log("updatePolicyData", { field, value });
 
-  debouncedSendPutRequest(blueprintName, data, setSnackbar);
+  debouncedSendPutRequest(blueprintName, ui, setSnackbar);
 };

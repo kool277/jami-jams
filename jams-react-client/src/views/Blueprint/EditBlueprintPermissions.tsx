@@ -22,7 +22,7 @@ import TableCell from "@mui/material/TableCell";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 
-import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
+import { BlueprintSnackbar } from "components/Snackbar/BlueprintSnackbar";
 import Button from "components/CustomButtons/Button";
 import Card from "components/Card/Card";
 import CardBody from "components/Card/CardBody";

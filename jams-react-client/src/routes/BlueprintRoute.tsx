@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseLayout from "layouts/BaseLayout";
-import Blueprint from "views/Blueprint/Blueprint";
+import { Blueprint } from "views/Blueprint/Blueprint";
 
 export default function BlueprintRoute(props) {
   return (

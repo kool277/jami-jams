@@ -19,6 +19,8 @@ export const DEFAULT_UI_CUSTOMIZATION = {
   logoSize: 100,
 };
 
+export type UiCustomization = typeof DEFAULT_UI_CUSTOMIZATION;
+
 export const DEFAULT_POLICY_DATA = {
   videoEnabled: true,
   publicInCalls: false,
@@ -42,3 +44,5 @@ export const DEFAULT_POLICY_DATA = {
 
   uiCustomization: DEFAULT_UI_CUSTOMIZATION,
 };
+
+export type PolicyData = typeof DEFAULT_POLICY_DATA;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import { makeStyles } from "@mui/styles";
 
 import tipLightBulbImage from "assets/img/tip_light_bulb.svg";
@@ -30,7 +30,12 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function TipBox({ color, text }) {
+interface TipBoxProps {
+  color: string;
+  text: string;
+}
+
+export const TipBox: FC<TipBoxProps> = ({ color, text }) => {
   const fontColor = luma(color) ? "#ffffff" : "#000000";
 
   const classes = useStyles({ color, fontColor });
@@ -42,4 +47,4 @@ export default function TipBox({ color, text }) {
       <p className={classes.text}>{text}</p>
     </div>
   );
-}
+};

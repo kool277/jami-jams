@@ -1,11 +1,10 @@
-import React from "react";
+import React, { FC } from "react";
 
 import { makeStyles } from "@mui/styles";
 
 import jamiIdImage from "assets/img/jami_id.svg";
 import copySvg from "assets/img/BTN_Copy.svg";
 import shareSvg from "assets/img/BTN_Share.svg";
-import { infoColor } from "assets/jss/material-dashboard-react";
 import { luma } from "./luma";
 
 const styles = {
@@ -59,7 +58,15 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function JamiIdCard({ color, isCompactDisplay }) {
+interface JamiIdCardProps {
+  color: string;
+  isCompactDisplay: boolean;
+}
+
+export const JamiIdCard: FC<JamiIdCardProps> = ({
+  color,
+  isCompactDisplay,
+}) => {
   const classes = useStyles({ color, isCompactDisplay });
 
   return (
@@ -74,4 +81,4 @@ export default function JamiIdCard({ color, isCompactDisplay }) {
       </div>
     </div>
   );
-}
+};

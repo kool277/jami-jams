@@ -1,16 +1,16 @@
-import React from "react";
+import React, { FC } from "react";
 
 import { makeStyles } from "@mui/styles";
 
 import backgroundImage from "assets/img/BG-ID_Jami.png";
 import logoImage from "assets/img/favicon_jami.png";
 
-import TipBox from "./TipBox";
-import JamiIdCard from "./JamiIdCard";
+import { TipBox } from "./TipBox";
+import { JamiIdCard } from "./JamiIdCard";
 import i18next from "i18next";
-import { url_path } from "../../globalUrls";
-import { url_port } from "../../globalUrls";
+import { url_path, url_port } from "../../globalUrls";
 import { luma } from "./luma";
+import { UiCustomization } from "views/Blueprint/policyData.constants";
 
 const styles = {
   root: {
@@ -102,11 +102,17 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function CustomUiPreview({
+interface CustomUiPreviewProps {
+  isOldPreview: boolean;
+  opacity: number;
+  uiCustomization: UiCustomization;
+}
+
+export const CustomUiPreview: FC<CustomUiPreviewProps> = ({
   isOldPreview,
   opacity,
   uiCustomization,
-}) {
+}) => {
   let {
     hasTitle,
     title,
@@ -199,4 +205,4 @@ export default function CustomUiPreview({
       </div>
     </div>
   );
-}
+};

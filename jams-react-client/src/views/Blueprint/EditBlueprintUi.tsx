@@ -4,7 +4,7 @@ import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-import BlueprintSnackbar from "components/Snackbar/BlueprintSnackbar";
+import { BlueprintSnackbar } from "components/Snackbar/BlueprintSnackbar";
 import Card from "components/Card/Card";
 import CardHeader from "components/Card/CardHeader";
 import CardIcon from "components/Card/CardIcon";
@@ -25,7 +25,7 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 
 import i18next from "i18next";
 
-import CustomUiPreview from "components/CustomUiPreview/CustomUiPreview";
+import { CustomUiPreview } from "components/CustomUiPreview/CustomUiPreview";
 import EditBlueprintUiForm from "./EditBlueprintUiForm";
 import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
 import { PolicyDataContext } from "./PolicyDataContext";
@@ -109,7 +109,7 @@ export default function EditBlueprintUi({ blueprintName }) {
   const [oldUiCustomization, setOldUiCustomization] = useState(uiCustomization);
   const [opacity, setOpacity] = useState(0);
 
-  const handleUpdateUi = (field, value) => {
+  const handleUpdateUi = (field: string, value: any) => {
     let newUiCustomization;
 
     if (typeof field === "object") {
@@ -146,7 +146,7 @@ export default function EditBlueprintUi({ blueprintName }) {
     updatePolicyData("uiCustomization", newUiCustomization);
   };
 
-  const handleImgDrop = (acceptedFiles, imgType) => {
+  const handleImgDrop = (acceptedFiles: string[], imgType: string) => {
     const formData = new FormData();
     formData.append("file", acceptedFiles[0]);
 

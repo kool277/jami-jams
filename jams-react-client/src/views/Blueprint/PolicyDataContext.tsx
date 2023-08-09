@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, {
+  FC,
+  ReactNode,
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 
 import axios from "axios";
 
@@ -6,11 +12,32 @@ import configApiCall from "../../api";
 import { api_path_blueprints } from "../../globalUrls";
 import { parsePolicyData } from "./parsePolicyData";
 import { _updatePolicyData } from "./updatePolicyData";
-import { DEFAULT_POLICY_DATA } from "./policyData.constants";
+import { DEFAULT_POLICY_DATA, PolicyData } from "./policyData.constants";
 
-export const PolicyDataContext = createContext(null);
+export interface SnackbarProps {
+  open: boolean;
+  severity: "success" | "error";
+  message: string;
+}
 
-export const PolicyDataContextProvider = ({ blueprintName, children }) => {
+interface PolicyDataProp {
+  policyData: PolicyData;
+  updatePolicyData: (field: string, value: string) => void;
+  snackbar: SnackbarProps;
+  setSnackbar: (snackbar: SnackbarProps) => void;
+}
+
+export const PolicyDataContext = createContext<PolicyDataProp>(null);
+
+interface Props {
+  blueprintName: string;
+  children: ReactNode;
+}
+
+export const PolicyDataContextProvider: FC<Props> = ({
+  blueprintName,
+  children,
+}) => {
   const [policyData, setPolicyData] = useState(DEFAULT_POLICY_DATA);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -40,7 +67,7 @@ export const PolicyDataContextProvider = ({ blueprintName, children }) => {
       });
   }, [blueprintName]);
 
-  const updatePolicyData = (field, value) => {
+  const updatePolicyData = (field: string, value: string) => {
     _updatePolicyData(
       blueprintName,
       policyData,

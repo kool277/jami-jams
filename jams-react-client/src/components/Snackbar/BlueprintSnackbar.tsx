@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { Dispatch, FC, SetStateAction } from "react";
 
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import Slide from "@mui/material/Slide";
+import { SnackbarProps } from "views/Blueprint/PolicyDataContext";
 
 // https://stackoverflow.com/a/67961603
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -14,7 +14,15 @@ const SlideTransition = React.forwardRef(function SlideTransition(props, ref) {
   return <Slide ref={ref} {...props} direction="left" />;
 });
 
-export default function BlueprintSnackbar({ snackbar, setSnackbar }) {
+interface BlueprintSnackbarProps {
+  snackbar: SnackbarProps;
+  setSnackbar: Dispatch<SetStateAction<SnackbarProps>>;
+}
+
+export const BlueprintSnackbar: FC<BlueprintSnackbarProps> = ({
+  snackbar,
+  setSnackbar,
+}) => {
   const snackbarRef = React.createRef(null);
 
   const handleClose = () => {
@@ -36,9 +44,4 @@ export default function BlueprintSnackbar({ snackbar, setSnackbar }) {
       </Alert>
     </Snackbar>
   );
-}
-
-BlueprintSnackbar.propTypes = {
-  snackbar: PropTypes.object,
-  setSnackbar: PropTypes.func,
 };

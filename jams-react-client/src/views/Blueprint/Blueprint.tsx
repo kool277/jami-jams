@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 
-import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -14,9 +13,13 @@ import { PolicyDataContextProvider } from "./PolicyDataContext";
 
 import i18next from "i18next";
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
 
+const TabPanel: FC<TabPanelProps> = ({ children, value, index, ...other }) => {
   return (
     <div
       role="tabpanel"
@@ -32,15 +35,9 @@ function TabPanel(props) {
       )}
     </div>
   );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
 };
 
-const a11yProps = (value, index) => {
+const a11yProps = (value: number, index: number) => {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
@@ -48,10 +45,14 @@ const a11yProps = (value, index) => {
   };
 };
 
-export default function Blueprint({ blueprintName }) {
+interface BlueprintProps {
+  blueprintName: string;
+}
+
+export const Blueprint: FC<BlueprintProps> = ({ blueprintName }) => {
   const [openedTab, setOpenedTab] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event, newValue: number) => {
     setOpenedTab(newValue);
   };
 
@@ -93,4 +94,4 @@ export default function Blueprint({ blueprintName }) {
       </PolicyDataContextProvider>
     </div>
   );
-}
+};

@@ -5,9 +5,9 @@ import {
   api_path_get_ns_name_from_addr,
   api_path_get_user_profile,
 } from "../../globalUrls";
-import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
+import { DEFAULT_UI_CUSTOMIZATION, PolicyData } from "./policyData.constants";
 
-const getModerators = async (defaultModerators) => {
+const getModerators = async (defaultModerators: string) => {
   const moderators = [];
   const ids = defaultModerators.split("/").filter((id) => id !== "");
 
@@ -60,7 +60,7 @@ const setConfigurationSettings = (policyData) => {
   return policyData;
 };
 
-const convertArgbToRgba = (argb) => {
+const convertArgbToRgba = (argb: string) => {
   if (argb.length === 7) {
     return argb;
   }
@@ -114,7 +114,7 @@ const setCustomizationSettings = (policyData) => {
   return policyData;
 };
 
-export const parsePolicyData = async (data) => {
+export const parsePolicyData = async (data: string): Promise<PolicyData> => {
   let policyData = JSON.parse(data);
 
   policyData = await setPermissionsSettings(policyData);
