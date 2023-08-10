@@ -2,7 +2,7 @@ package net.jami.jams.server.servlets.api.admin.group;
 
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +16,7 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Group;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import org.json.JSONObject;
 
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @WebServlet("/api/admin/group/*")
 @Slf4j
 public class GroupServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -37,8 +39,7 @@ public class GroupServlet extends HttpServlet {
         Optional<Group> singleGroup = dataStore.getGroupDao().getById(id);
 
         if (singleGroup.isPresent()) {
-            resp.getOutputStream()
-                    .write(JsonStream.serialize(singleGroup.orElseThrow()).getBytes());
+            resp.getOutputStream().write(gson.toJson(singleGroup.orElseThrow()).getBytes());
             resp.setStatus(200);
         } else {
             log.info("No group with this id was found!");

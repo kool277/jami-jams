@@ -22,19 +22,21 @@
  */
 package net.jami.jams.server.update;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.any.Any;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.updater.AppUpdater;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.server.Server;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -58,18 +60,16 @@ public class JAMSUpdater implements AppUpdater {
     public static volatile X509Certificate certificate;
     public static volatile PrivateKey privateKey;
 
+    private final Gson gson = GsonFactory.createGson();
+
     public JAMSUpdater(AtomicBoolean doUpdate) {
 
         // read config json
-        try {
-            InputStream input =
-                    this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
-            Any any = JsonIterator.deserialize(input.readAllBytes());
-            UPDATE_SERVER_URI = any.get("UPDATE_URL").toString();
-            UPDATE_INTERVAL = any.get("UPDATE_INTERVAL").toLong();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
+        Reader reader = new InputStreamReader(input);
+        JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
+        UPDATE_SERVER_URI = jsonObject.get("UPDATE_URL").getAsString();
+        UPDATE_INTERVAL = jsonObject.get("UPDATE_INTERVAL").getAsLong();
 
         this.doUpdate = doUpdate;
         timer.schedule(updateCheckTask, 0, UPDATE_INTERVAL);

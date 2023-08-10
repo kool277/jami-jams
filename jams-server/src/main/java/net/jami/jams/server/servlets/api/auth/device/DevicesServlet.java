@@ -25,7 +25,7 @@ package net.jami.jams.server.servlets.api.auth.device;
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,12 +34,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.objects.devices.Device;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/api/auth/devices")
 public class DevicesServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -77,7 +79,7 @@ public class DevicesServlet extends HttpServlet {
         } else {
             devices.forEach(device -> device.setRevoked(false));
         }
-        resp.getOutputStream().write(JsonStream.serialize(devices).getBytes());
+        resp.getOutputStream().write(gson.toJson(devices).getBytes());
         resp.setStatus(200);
     }
 }

@@ -310,9 +310,7 @@ export default function DisplayUserProfile(props) {
       if (auth.hasAdminScope()) {
         axios(configApiCall(api_path_get_admin_user, "GET", userData, null))
           .then((response) => {
-            const result = JSON.parse(
-              response.data.replace(/\s+/g, " ").trim()
-            );
+            const result = response.data;
             setRevoked(result.revoked);
             axios(
               configApiCall(

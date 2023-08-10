@@ -22,10 +22,11 @@
  */
 package net.jami.jams.common.utils;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.updater.subscription.LicenseInformation;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -196,9 +197,9 @@ public class X509Utils {
             LdapName ln = new LdapName(certificate.getSubjectDN().toString());
             for (Rdn rdn : ln.getRdns()) {
                 try {
-                    return JsonIterator.deserialize(
-                            Base64.getDecoder().decode(rdn.getValue().toString().getBytes()),
-                            LicenseInformation.class);
+                    Gson gson = GsonFactory.createGson();
+                    byte[] bytes = Base64.getDecoder().decode(rdn.getValue().toString().getBytes());
+                    return gson.fromJson(new String(bytes, "US-ASCII"), LicenseInformation.class);
                 } catch (Exception e) {
                 }
             }

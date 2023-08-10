@@ -23,7 +23,7 @@
 
 package net.jami.jams.common.objects.contacts;
 
-import com.jsoniter.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,8 +41,9 @@ import java.sql.ResultSet;
 @EqualsAndHashCode
 public class Contact implements DatabaseObject {
 
-    @JsonIgnore // Ignore the owner because he is irrelevant.
+    @Expose(serialize = false)
     private String owner;
+
     private String uri;
     private String displayName;
     private Long timestamp;

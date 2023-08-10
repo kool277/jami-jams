@@ -24,7 +24,7 @@ package net.jami.jams.server.servlets.api.admin.users;
 
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,11 +34,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 
 @WebServlet("/api/admin/users")
 public class UsersServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     // Returns a list of users.
     @Override
@@ -46,6 +48,6 @@ public class UsersServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         resp.getOutputStream()
-                .write(JsonStream.serialize(dataStore.getUserDao().getAll().get(0)).getBytes());
+                .write(gson.toJson(dataStore.getUserDao().getAll().get(0)).getBytes());
     }
 }

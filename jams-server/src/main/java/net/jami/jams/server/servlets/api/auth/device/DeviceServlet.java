@@ -27,8 +27,6 @@ import static net.jami.jams.server.Server.dataStore;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -42,6 +40,7 @@ import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
 import net.jami.jams.common.objects.responses.DeviceRegistrationResponse;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.core.workflows.RegisterDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
@@ -50,6 +49,7 @@ import java.io.IOException;
 
 @WebServlet("/api/auth/device/*")
 public class DeviceServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -88,7 +88,7 @@ public class DeviceServlet extends HttpServlet {
                             != null);
         else device.setRevoked(false);
 
-        resp.getOutputStream().write(JsonStream.serialize(device).getBytes());
+        resp.getOutputStream().write(gson.toJson(device).getBytes());
     }
 
     /**
@@ -119,12 +119,11 @@ public class DeviceServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.USER})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Gson gson = new Gson();
+        Gson gson = GsonFactory.createGson();
         String username = req.getAttribute("username").toString();
 
         DeviceRegistrationRequest request =
-                JsonIterator.deserialize(
-                        req.getInputStream().readAllBytes(), DeviceRegistrationRequest.class);
+                gson.fromJson(req.getReader(), DeviceRegistrationRequest.class);
         DeviceRegistrationResponse devResponse =
                 RegisterDeviceFlow.registerDevice(username, request);
 
@@ -241,8 +240,7 @@ public class DeviceServlet extends HttpServlet {
         }
 
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(owner, deviceId);
-        if (devResponse != null)
-            resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        if (devResponse != null) resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
         else
             TomcatCustomErrorHandler.sendCustomError(
                     resp, 500, "could not revoke device due to server-side error");

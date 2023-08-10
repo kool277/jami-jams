@@ -26,7 +26,7 @@ import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -45,6 +45,7 @@ import net.jami.jams.common.objects.user.Policy;
 import net.jami.jams.common.objects.user.PolicyData;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import org.json.JSONObject;
 
@@ -60,6 +61,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @WebServlet("/api/auth/directory/search")
 public class SearchDirectoryServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
+
     // The search directory function does not automatically create users, this would
     // be costly at this point
     // right now, we will implement it when Jami supports lists of users. this is a
@@ -83,8 +86,7 @@ public class SearchDirectoryServlet extends HttpServlet {
 
         try {
             Policy policy = dataStore.getPolicyDao().getByUsername(username).orElseThrow();
-            PolicyData policyData =
-                    JsonIterator.deserialize(policy.getPolicyData(), PolicyData.class);
+            PolicyData policyData = gson.fromJson(policy.getPolicyData(), PolicyData.class);
 
             if (!policyData.getAllowLookup()) {
                 resp.sendError(403, "Operation not allowed!");

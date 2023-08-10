@@ -24,8 +24,7 @@ package net.jami.jams.server.servlets.api.install;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -39,12 +38,14 @@ import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.requests.CreateAuthSourceRequest;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 
 @WebServlet("/api/install/auth")
 @Slf4j
 public class CreateAuthSourceServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -58,8 +59,7 @@ public class CreateAuthSourceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         CreateAuthSourceRequest authSourceRequest =
-                JsonIterator.deserialize(
-                        req.getInputStream().readAllBytes(), CreateAuthSourceRequest.class);
+                gson.fromJson(req.getReader(), CreateAuthSourceRequest.class);
         CachedObjects.localAuthSettings = null;
         CachedObjects.activeDirectorySettings = null;
         CachedObjects.ldapSettings = null;
@@ -71,14 +71,14 @@ public class CreateAuthSourceServlet extends HttpServlet {
             case LDAP:
                 if (userAuthenticationModule.testModuleConfiguration(
                         AuthenticationSourceType.LDAP,
-                        JsonStream.serialize(authSourceRequest.getLdapSettings()))) {
+                        gson.toJson(authSourceRequest.getLdapSettings()))) {
                     CachedObjects.ldapSettings = authSourceRequest.getLdapSettings();
                 } else error = true;
                 break;
             case AD:
                 if (userAuthenticationModule.testModuleConfiguration(
                         AuthenticationSourceType.AD,
-                        JsonStream.serialize(authSourceRequest.getActiveDirectorySettings()))) {
+                        gson.toJson(authSourceRequest.getActiveDirectorySettings()))) {
                     CachedObjects.activeDirectorySettings =
                             authSourceRequest.getActiveDirectorySettings();
                 } else error = true;

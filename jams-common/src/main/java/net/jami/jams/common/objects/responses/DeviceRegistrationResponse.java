@@ -22,12 +22,13 @@
  */
 package net.jami.jams.common.objects.responses;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import net.jami.jams.common.objects.user.PolicyData;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.utils.X509Utils;
 
 import java.security.cert.X509Certificate;
@@ -74,7 +75,8 @@ public class DeviceRegistrationResponse {
     }
 
     public void setPolicyData(String policyData) {
-        PolicyData policy = JsonIterator.deserialize(policyData, PolicyData.class);
+        Gson gson = GsonFactory.createGson();
+        PolicyData policy = gson.fromJson(policyData, PolicyData.class);
         this.publicInCalls = policy.getPublicInCalls();
         this.proxyEnabled = policy.getProxyEnabled();
         this.dhtProxyListUrl = policy.getDhtProxyListUrl();

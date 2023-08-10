@@ -25,8 +25,7 @@ package net.jami.jams.server.servlets.api.install;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -43,6 +42,7 @@ import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.requests.CredentialsRequest;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -54,6 +54,7 @@ This is not scoped because it is called once.
 @Slf4j
 @WebServlet("/api/install/start")
 public class StartInstallServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     @Override
     @JsonContent
@@ -72,8 +73,7 @@ public class StartInstallServlet extends HttpServlet {
     @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         CredentialsRequest credentialsRequest =
-                JsonIterator.deserialize(
-                        req.getInputStream().readAllBytes(), CredentialsRequest.class);
+                gson.fromJson(req.getReader(), CredentialsRequest.class);
         AuthTokenResponse res = null;
         if (credentialsRequest.getUsername() != null && credentialsRequest.getPassword() != null) {
             res =
@@ -82,7 +82,7 @@ public class StartInstallServlet extends HttpServlet {
         }
         resp.setHeader("endpoint", CachedObjects.endpoint);
         if (res == null) resp.sendError(403, "Could not authenticate!");
-        else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
+        else resp.getOutputStream().write(gson.toJson(res).getBytes());
     }
 
     // This is the ONLY case where we write directly to the DB
@@ -97,8 +97,7 @@ public class StartInstallServlet extends HttpServlet {
             return;
         }
         CredentialsRequest credentialsRequest =
-                JsonIterator.deserialize(
-                        req.getInputStream().readAllBytes(), CredentialsRequest.class);
+                gson.fromJson(req.getReader(), CredentialsRequest.class);
         // The admin user has no X509 properties.
         byte[] salt = PasswordUtil.generateSalt();
         String pw = PasswordUtil.hashPassword(credentialsRequest.getPassword(), salt);
@@ -114,6 +113,6 @@ public class StartInstallServlet extends HttpServlet {
         AuthTokenResponse res =
                 processUsernamePasswordAuth(user.getUsername(), credentialsRequest.getPassword());
         CachedObjects.endpoint = "/api/install/ca";
-        resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
+        resp.getOutputStream().write(gson.toJson(res).getBytes());
     }
 }

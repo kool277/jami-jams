@@ -22,7 +22,7 @@
  */
 package net.jami.jams.server;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import javassist.ClassPool;
 
@@ -35,6 +35,7 @@ import net.jami.jams.common.authentication.local.LocalAuthSettings;
 import net.jami.jams.common.authmodule.AuthenticationModule;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
 import net.jami.jams.common.jami.NameServer;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.server.ServerSettings;
 import net.jami.jams.common.utils.LibraryLoader;
 import net.jami.jams.nameserver.LocalNameServer;
@@ -48,8 +49,8 @@ import net.jami.jams.server.update.UpdateInterface;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.FileReader;
+import java.io.Reader;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -70,6 +71,7 @@ public class Server {
     public static LicenseService licenseService = new LicenseService();
     public static final UpdateInterface updateInterface = new UpdateInterface();
     public static JAMSUpdater appUpdater = new JAMSUpdater(new AtomicBoolean(false));
+    private static final Gson gson = GsonFactory.createGson();
 
     public static void main(String[] args) {
         // This is a fix to drop old cached stuff from the tomcat classloader.
@@ -119,14 +121,13 @@ public class Server {
         ServerSettings serverSettings = null;
         if (isInstalled.get()) {
             try {
-                InputStream path =
-                        new FileInputStream(
+                Reader reader =
+                        new FileReader(
                                 new File(
                                         System.getProperty("user.dir")
                                                 + File.separator
                                                 + "config.json"));
-                serverSettings =
-                        JsonIterator.deserialize(path.readAllBytes(), ServerSettings.class);
+                serverSettings = gson.fromJson(reader, ServerSettings.class);
                 certificateAuthority =
                         CryptoEngineLoader.loadCertificateAuthority(
                                 serverSettings.getCaConfiguration(), dataStore);
@@ -142,7 +143,7 @@ public class Server {
                 }
                 if (serverSettings.getLocalDirectoryConfiguration() != null) {
                     LocalAuthSettings settings =
-                            JsonIterator.deserialize(
+                            gson.fromJson(
                                     serverSettings.getLocalDirectoryConfiguration(),
                                     LocalAuthSettings.class);
                     if (settings.getPublicNames())

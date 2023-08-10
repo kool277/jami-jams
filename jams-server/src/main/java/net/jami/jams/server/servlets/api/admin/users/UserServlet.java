@@ -27,7 +27,7 @@ import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -43,6 +43,7 @@ import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
@@ -52,7 +53,6 @@ import org.bouncycastle.cert.X509CRLHolder;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -60,6 +60,8 @@ import java.util.stream.Collectors;
 
 @WebServlet("/api/admin/user")
 public class UserServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
+
     // Get the user
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -90,7 +92,7 @@ public class UserServlet extends HttpServlet {
         }
         user.setPassword("");
         user.setSalt("");
-        resp.getOutputStream().write(JsonStream.serialize(user).getBytes());
+        resp.getOutputStream().write(gson.toJson(user).getBytes());
         resp.setStatus(200);
     }
 
@@ -129,10 +131,7 @@ public class UserServlet extends HttpServlet {
 
         if (userAuthenticationModule.createUser(
                 user.getUserType(), user.getRealm(), nameServer, user)) {
-            HashMap<String, String> statusInfo = new HashMap<>();
-            statusInfo.put("password", hashedPassword);
-            resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
-            resp.setStatus(200);
+            resp.setStatus(201);
             return;
         }
 
@@ -199,7 +198,7 @@ public class UserServlet extends HttpServlet {
                     });
         }
         if (devResponse.get() != null && devResponse.get().isSuccess()) {
-            resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+            resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
         } else resp.sendError(500, "An exception has occurred while trying to revoke a user!");
     }
 }

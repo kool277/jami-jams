@@ -22,7 +22,7 @@
  */
 package net.jami.jams.server.servlets.api.install;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,12 +33,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthorityConfig;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.server.core.workflows.InstallationFinalizer;
 
 import java.io.IOException;
 
 @WebServlet("/api/install/settings")
 public class CreateServerSettingsServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     InstallationFinalizer finalizer = new InstallationFinalizer();
 
@@ -53,8 +55,7 @@ public class CreateServerSettingsServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         CertificateAuthorityConfig config =
-                JsonIterator.deserialize(
-                        req.getInputStream().readAllBytes(), CertificateAuthorityConfig.class);
+                gson.fromJson(req.getReader(), CertificateAuthorityConfig.class);
         CachedObjects.certificateAuthorityConfig = config;
         if (!finalizer.finalizeInstallation()) {
             resp.sendError(

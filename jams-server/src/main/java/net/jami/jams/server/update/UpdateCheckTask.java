@@ -22,13 +22,14 @@
  */
 package net.jami.jams.server.update;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.any.Any;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.VersioningUtils;
 import net.jami.jams.common.utils.X509Utils;
@@ -40,6 +41,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
@@ -57,6 +60,8 @@ public class UpdateCheckTask extends TimerTask {
     private SSLContext sslContext;
     private volatile KeyStore trustStore;
     protected static volatile String UPDATE_SERVER_URI;
+
+    private final Gson gson = GsonFactory.createGson();
 
     protected UpdateCheckTask() {
         try {
@@ -78,8 +83,9 @@ public class UpdateCheckTask extends TimerTask {
             // read config json
             InputStream input =
                     this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
-            Any any = JsonIterator.deserialize(input.readAllBytes());
-            UPDATE_SERVER_URI = any.get("UPDATE_URL").toString();
+            Reader reader = new InputStreamReader(input);
+            JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
+            UPDATE_SERVER_URI = jsonObject.get("UPDATE_URL").getAsString();
         } catch (Exception e) {
             log.error("Could not initialize the trust store with error {}", e.getMessage());
         }
@@ -112,18 +118,23 @@ public class UpdateCheckTask extends TimerTask {
             HttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
             HttpResponse response =
                     httpClient.execute(new HttpGet(UPDATE_SERVER_URI + "/versions.json"));
+
             // Step 2: Load the file into the hashmaps
-            Any any = JsonIterator.deserialize(response.getEntity().getContent().readAllBytes());
-            any.asMap()
+            byte[] bytes = response.getEntity().getContent().readAllBytes();
+            JsonObject jsonObject = gson.fromJson(new String(bytes), JsonObject.class);
+
+            jsonObject
+                    .entrySet()
                     .forEach(
-                            (k, v) ->
-                                    remoteData.put(
-                                            v.get("filename").toString(),
-                                            new FileDescription(
-                                                    v.get("filename").toString(),
-                                                    v.get("version").toString(),
-                                                    v.get("md5").toString(),
-                                                    k)));
+                            (entry) -> {
+                                String key = entry.getKey();
+                                JsonObject value = entry.getValue().getAsJsonObject();
+                                String version = value.get("version").getAsString();
+                                String filename = value.get("filename").getAsString();
+                                String md5 = value.get("md5").getAsString();
+                                remoteData.put(
+                                        key, new FileDescription(filename, version, md5, key));
+                            });
         } catch (Exception e) {
             log.warn("Could not establish connection to JAMS Update Center with error: " + e);
         }

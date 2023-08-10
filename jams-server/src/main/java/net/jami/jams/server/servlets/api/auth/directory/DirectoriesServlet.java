@@ -24,7 +24,7 @@ package net.jami.jams.server.servlets.api.auth.directory;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,11 +33,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.JsonContent;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 
 @WebServlet("/api/auth/directories")
 public class DirectoriesServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -68,8 +70,6 @@ public class DirectoriesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         resp.getOutputStream()
-                .write(
-                        JsonStream.serialize(userAuthenticationModule.getAuthSources().keySet())
-                                .getBytes());
+                .write(gson.toJson(userAuthenticationModule.getAuthSources().keySet()).getBytes());
     }
 }

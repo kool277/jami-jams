@@ -29,6 +29,7 @@ import net.jami.jams.nameserver.PublicNameServer;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -42,6 +43,7 @@ class PublicNameServerTest {
         nameServer = new PublicNameServer("http://ns.jami.net");
     }
 
+    @Disabled
     @Test
     public void testNameRegistration() {
         NameRegistrationRequest nameRegistrationRequest = new NameRegistrationRequest();

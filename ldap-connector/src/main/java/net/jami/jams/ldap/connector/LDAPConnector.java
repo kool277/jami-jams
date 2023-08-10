@@ -22,7 +22,7 @@
  */
 package net.jami.jams.ldap.connector;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authentication.ldap.LDAPSettings;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
-import net.jami.jams.common.serialization.JsoniterRegistry;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.ldap.connector.service.AuthenticationService;
 import net.jami.jams.ldap.connector.service.UserProfileService;
 
@@ -52,8 +52,8 @@ public class LDAPConnector implements AuthenticationSource {
     public static LDAPSettings settings;
 
     public LDAPConnector(String strSettings) {
-        JsoniterRegistry.initCodecs();
-        LDAPConnector.settings = JsonIterator.deserialize(strSettings, LDAPSettings.class);
+        Gson gson = GsonFactory.createGson();
+        LDAPConnector.settings = gson.fromJson(strSettings, LDAPSettings.class);
         BindConnectionInitializer bindConnectionInitializer = new BindConnectionInitializer();
         bindConnectionInitializer.setBindDn(settings.getUsername());
         bindConnectionInitializer.setBindCredential(new Credential(settings.getPassword()));

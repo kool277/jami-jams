@@ -26,8 +26,7 @@ package net.jami.jams.server.servlets.api.admin.directory;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -44,6 +43,7 @@ import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import org.json.JSONObject;
 
@@ -54,6 +54,7 @@ import java.util.Scanner;
 @Slf4j
 @WebServlet("/api/admin/directory/entry")
 public class DirectoryEntryServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -85,7 +86,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         resp.setStatus(200);
         HashMap<String, String> profileName = new HashMap<>();
         profileName.put("username", userProfile.getUsername());
-        resp.getOutputStream().write(JsonStream.serialize(profileName).getBytes());
+        resp.getOutputStream().write(gson.toJson(profileName).getBytes());
     }
 
     @Override
@@ -93,8 +94,7 @@ public class DirectoryEntryServlet extends HttpServlet {
             throws IOException, SecurityException {
         // Update a user's profile.
         // Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
-        UserProfile userProfile =
-                JsonIterator.deserialize(req.getInputStream().readAllBytes(), UserProfile.class);
+        UserProfile userProfile = gson.fromJson(req.getReader(), UserProfile.class);
 
         String username = req.getAttribute("username").toString();
 

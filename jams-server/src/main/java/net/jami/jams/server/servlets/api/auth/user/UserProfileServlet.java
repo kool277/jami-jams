@@ -24,7 +24,7 @@ package net.jami.jams.server.servlets.api.auth.user;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,12 +34,14 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 
 @WebServlet("/api/auth/userprofile/*")
 @JsonContent
 public class UserProfileServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     // Get the user profile
     @Override
@@ -58,7 +60,7 @@ public class UserProfileServlet extends HttpServlet {
                         });
 
         if (profile[0] != null) {
-            resp.getOutputStream().write(JsonStream.serialize(profile[0]).getBytes());
+            resp.getOutputStream().write(gson.toJson(profile[0]).getBytes());
             resp.setStatus(200);
         } else {
             resp.sendError(500, "User profile was not found!");

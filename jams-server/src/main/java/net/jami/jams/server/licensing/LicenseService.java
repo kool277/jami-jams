@@ -52,16 +52,13 @@ public class LicenseService {
     // Load the license.
     public void loadLicense() {
         try {
+            Path path = Path.of(System.getProperty("user.dir") + File.separator + "license.dat");
             Vector<Object> v =
-                    X509Utils.loadLicenseFromDatFile(
-                            new String(
-                                    Files.readAllBytes(
-                                            Path.of(
-                                                    System.getProperty("user.dir")
-                                                            + File.separator
-                                                            + "license.dat"))));
+                    X509Utils.loadLicenseFromDatFile(new String(Files.readAllBytes(path)));
+
             certificate = (X509Certificate) v.get(0);
             privateKey = (PrivateKey) v.get(1);
+
             caCertificate =
                     X509Utils.getCertificateFromPEMString(
                             new String(
@@ -69,6 +66,7 @@ public class LicenseService {
                                             .getClassLoader()
                                             .getResourceAsStream("oem/ca.crt")
                                             .readAllBytes()));
+
             // Check the license for validity.
             try {
                 certificate.checkValidity();

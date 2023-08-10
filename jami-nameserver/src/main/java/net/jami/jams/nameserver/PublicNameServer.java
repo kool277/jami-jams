@@ -22,14 +22,14 @@
  */
 package net.jami.jams.nameserver;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.jami.NameLookupResponse;
 import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 
@@ -40,6 +40,7 @@ import java.net.URL;
 public class PublicNameServer implements NameServer {
 
     private final String nameserverURI;
+    private final Gson gson = GsonFactory.createGson();
 
     public PublicNameServer(String nameserverURI) {
         this.nameserverURI = nameserverURI;
@@ -52,7 +53,7 @@ public class PublicNameServer implements NameServer {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setDoOutput(true);
-            con.getOutputStream().write(JsonStream.serialize(nameRegistrationRequest).getBytes());
+            con.getOutputStream().write(gson.toJson(nameRegistrationRequest).getBytes());
             return con.getResponseCode();
         } catch (Exception e) {
             return 500;
@@ -74,7 +75,7 @@ public class PublicNameServer implements NameServer {
                     currentSize++;
                 }
                 log.info("Response received from public nameserver {} ", responseData);
-                return JsonIterator.deserialize(responseData.toString(), NameLookupResponse.class);
+                return gson.fromJson(responseData.toString(), NameLookupResponse.class);
             }
             return null;
         } catch (Exception e) {

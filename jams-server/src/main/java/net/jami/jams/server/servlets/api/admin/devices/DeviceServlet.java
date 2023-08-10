@@ -24,7 +24,7 @@ package net.jami.jams.server.servlets.api.admin.devices;
 
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,12 +36,14 @@ import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.server.core.workflows.RevokeDeviceFlow;
 
 import java.io.IOException;
 
 @WebServlet("/api/admin/device")
 public class DeviceServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     // Get a detailed device info.
     @Override
@@ -52,7 +54,7 @@ public class DeviceServlet extends HttpServlet {
         String deviceId = req.getParameter("deviceId");
         Device device =
                 dataStore.getDeviceDao().getByDeviceIdAndOwner(deviceId, username).orElseThrow();
-        resp.getOutputStream().write(JsonStream.serialize(device).getBytes());
+        resp.getOutputStream().write(gson.toJson(device).getBytes());
     }
 
     // Update device data.
@@ -77,8 +79,7 @@ public class DeviceServlet extends HttpServlet {
         String username = req.getParameter("username");
         String deviceId = req.getParameter("deviceId");
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(username, deviceId);
-        if (devResponse != null)
-            resp.getOutputStream().write(JsonStream.serialize(devResponse).getBytes());
+        if (devResponse != null) resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
         else resp.sendError(500, "An exception has occurred while trying to revoke a device!");
     }
 }

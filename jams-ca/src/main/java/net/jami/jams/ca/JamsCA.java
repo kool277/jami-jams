@@ -22,7 +22,7 @@
  */
 package net.jami.jams.ca;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,7 +35,7 @@ import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.RevocationRequest;
 import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.user.User;
-import net.jami.jams.common.serialization.JsoniterRegistry;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.ocsp.OCSPException;
@@ -69,14 +69,14 @@ public class JamsCA implements CertificateAuthority {
     public static SystemAccount OCSP;
 
     static {
-        JsoniterRegistry.initCodecs();
         Security.addProvider(new BouncyCastleProvider());
     }
 
     @Override
     public void init(String settings, SystemAccount ca, SystemAccount ocsp) {
+        Gson gson = GsonFactory.createGson();
         CertificateAuthorityConfig config =
-                JsonIterator.deserialize(settings, CertificateAuthorityConfig.class);
+                gson.fromJson(settings, CertificateAuthorityConfig.class);
         CA = ca;
         OCSP = ca;
         serverDomain = config.getServerDomain();

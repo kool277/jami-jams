@@ -22,7 +22,7 @@
  */
 package net.jami.jams.server.servlets.general;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.JsonContent;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.server.Server;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 
 @WebServlet("/api/info")
 public class ServerStatusServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     @Override
     @JsonContent
@@ -44,6 +46,6 @@ public class ServerStatusServlet extends HttpServlet {
         HashMap<String, String> statusInfo = new HashMap<>();
         statusInfo.put("installed", String.valueOf(Server.isInstalled.get()));
         resp.setContentType("application/json;charset=UTF-8");
-        resp.getOutputStream().write(JsonStream.serialize(statusInfo).getBytes());
+        resp.getOutputStream().write(gson.toJson(statusInfo).getBytes());
     }
 }

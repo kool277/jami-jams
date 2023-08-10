@@ -23,8 +23,8 @@
 
 package net.jami.jams.ad.connector;
 
+import com.google.gson.Gson;
 import com.imperva.ddc.core.query.Endpoint;
-import com.jsoniter.JsonIterator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +36,7 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authentication.activedirectory.ActiveDirectorySettings;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
-import net.jami.jams.common.serialization.JsoniterRegistry;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,8 +51,8 @@ public class ADConnector implements AuthenticationSource {
     private final UserProfileService userProfileService;
 
     public ADConnector(String settings) {
-        JsoniterRegistry.initCodecs();
-        ADConnector.settings = JsonIterator.deserialize(settings, ActiveDirectorySettings.class);
+        Gson gson = GsonFactory.createGson();
+        ADConnector.settings = gson.fromJson(settings, ActiveDirectorySettings.class);
         for (int i = 0; i < 10; i++) {
             Endpoint endpoint = new Endpoint();
             endpoint.setSecuredConnection(ADConnector.settings.getIsSSL());

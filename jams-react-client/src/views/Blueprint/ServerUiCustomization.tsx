@@ -20,6 +20,7 @@ export interface ServerUiCustomization {
    */
   mainBoxColor?: string;
 
+  /** the route for the logo, usually starts with "/api/image/filehandler/" */
   logoUrl?: string;
   /** The logo size from 0 to 100. 100% if left undefined */
   logoSize?: number;

@@ -24,8 +24,7 @@ package net.jami.jams.server.servlets.api.admin.contacts;
 
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,6 +36,7 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.common.utils.ContactMerger;
 
@@ -50,6 +50,7 @@ import java.util.Scanner;
 
 @WebServlet("/api/admin/contacts")
 public class ContactServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -69,7 +70,7 @@ public class ContactServlet extends HttpServlet {
             throws ServletException, IOException {
         List<Contact> contactList =
                 dataStore.getContactDao().getByOwner(req.getParameter("username"));
-        resp.getOutputStream().write(JsonStream.serialize(contactList).getBytes());
+        resp.getOutputStream().write(gson.toJson(contactList).getBytes());
     }
 
     /**
@@ -156,16 +157,13 @@ public class ContactServlet extends HttpServlet {
             throws ServletException, IOException {
         List<Contact> localList =
                 dataStore.getContactDao().getByOwner(req.getParameter("username"));
-        List<Contact> remoteList =
-                Arrays.asList(
-                        JsonIterator.deserialize(
-                                req.getInputStream().readAllBytes(), Contact[].class));
+        List<Contact> remoteList = Arrays.asList(gson.fromJson(req.getReader(), Contact[].class));
 
         remoteList.forEach(contact -> contact.setOwner(req.getParameter("username")));
         List<Contact> result = ContactMerger.mergeContacts(localList, remoteList);
 
         if (!dataStore.getContactDao().storeContactList(result))
             TomcatCustomErrorHandler.sendCustomError(resp, 500, "Could not store contacts!");
-        else resp.getOutputStream().write(JsonStream.serialize(result).getBytes());
+        else resp.getOutputStream().write(gson.toJson(result).getBytes());
     }
 }

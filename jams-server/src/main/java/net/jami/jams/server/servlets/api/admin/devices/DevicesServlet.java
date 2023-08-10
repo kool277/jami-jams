@@ -25,7 +25,7 @@ package net.jami.jams.server.servlets.api.admin.devices;
 import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,12 +37,14 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/api/admin/devices")
 public class DevicesServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     // Get a list of devices for a user.
     @Override
@@ -65,6 +67,6 @@ public class DevicesServlet extends HttpServlet {
                     });
         } else devices.forEach(device -> device.setRevoked(false));
 
-        resp.getOutputStream().write(JsonStream.serialize(devices).getBytes());
+        resp.getOutputStream().write(gson.toJson(devices).getBytes());
     }
 }

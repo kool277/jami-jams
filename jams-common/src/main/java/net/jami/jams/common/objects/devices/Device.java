@@ -22,7 +22,7 @@
  */
 package net.jami.jams.common.objects.devices;
 
-import com.jsoniter.annotation.JsonIgnore;
+import com.google.gson.annotations.Expose;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,7 +43,10 @@ import java.sql.ResultSet;
 public class Device extends X509Entity implements DatabaseObject {
 
     private String deviceId;
-    @JsonIgnore private String owner;
+
+    @Expose(serialize = false)
+    private String owner;
+
     private String displayName;
 
     public Device(ResultSet rs) throws Exception {

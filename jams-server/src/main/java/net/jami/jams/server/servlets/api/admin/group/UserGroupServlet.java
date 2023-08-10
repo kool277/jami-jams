@@ -2,7 +2,7 @@ package net.jami.jams.server.servlets.api.admin.group;
 
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +15,7 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.UserGroupMapping;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import org.json.JSONObject;
 
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 @WebServlet("/api/admin/group/members/*")
 @Slf4j
 public class UserGroupServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
+
     /**
      * @apiVersion 1.0.0
      * @api {get} /api/admin/group/[groupId]/members/ Get JAMS groups members
@@ -50,7 +53,7 @@ public class UserGroupServlet extends HttpServlet {
 
         if (result.isEmpty()) resp.sendError(404, "No users found for this group!");
         else {
-            resp.getOutputStream().write(JsonStream.serialize(result).getBytes());
+            resp.getOutputStream().write(gson.toJson(result).getBytes());
             resp.setStatus(200);
         }
     }

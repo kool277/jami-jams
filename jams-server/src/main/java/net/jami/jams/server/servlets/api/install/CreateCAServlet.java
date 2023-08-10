@@ -22,7 +22,7 @@
  */
 package net.jami.jams.server.servlets.api.install;
 
-import com.jsoniter.JsonIterator;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,12 +33,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.requests.CreateCARequest;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.utils.Validator;
 
 import java.io.IOException;
 
 @WebServlet("/api/install/ca")
 public class CreateCAServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -51,9 +53,7 @@ public class CreateCAServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        CreateCARequest caRequest =
-                JsonIterator.deserialize(
-                        req.getInputStream().readAllBytes(), CreateCARequest.class);
+        CreateCARequest caRequest = gson.fromJson(req.getReader(), CreateCARequest.class);
         if (!Validator.validateCARequests(caRequest)) {
             resp.sendError(
                     500,

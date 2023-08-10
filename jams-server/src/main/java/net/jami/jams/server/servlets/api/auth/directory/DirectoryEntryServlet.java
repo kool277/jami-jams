@@ -25,7 +25,7 @@ package net.jami.jams.server.servlets.api.auth.directory;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -39,6 +39,7 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import java.util.Optional;
 @Slf4j
 @WebServlet("/api/auth/directory/entry")
 public class DirectoryEntryServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -217,8 +219,7 @@ public class DirectoryEntryServlet extends HttpServlet {
                             });
             if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
                 resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
-            } else
-                resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
+            } else resp.getOutputStream().write(gson.toJson(userProfiles.get(0)).getBytes());
             return;
         }
         if (req.getParameter("directory") != null && req.getParameter("directoryType") != null) {
@@ -234,7 +235,7 @@ public class DirectoryEntryServlet extends HttpServlet {
                                     req.getParameter("username"), "LOGON_NAME", Optional.empty());
             if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
                 resp.getOutputStream().write(profiles.get(0).getAsVCard().getBytes());
-            } else resp.getOutputStream().write(JsonStream.serialize(profiles.get(0)).getBytes());
+            } else resp.getOutputStream().write(gson.toJson(profiles.get(0)).getBytes());
             return;
         }
         List<UserProfile> userProfiles = new ArrayList<>();
@@ -250,7 +251,7 @@ public class DirectoryEntryServlet extends HttpServlet {
                         });
         if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
             resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
-        } else resp.getOutputStream().write(JsonStream.serialize(userProfiles.get(0)).getBytes());
+        } else resp.getOutputStream().write(gson.toJson(userProfiles.get(0)).getBytes());
     }
 
     @Override

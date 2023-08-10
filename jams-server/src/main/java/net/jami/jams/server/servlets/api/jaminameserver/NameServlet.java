@@ -24,7 +24,7 @@ package net.jami.jams.server.servlets.api.jaminameserver;
 
 import static net.jami.jams.server.Server.nameServer;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,12 +33,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.jami.NameLookupResponse;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
 import java.io.IOException;
 
 @WebServlet("/api/nameserver/name/*")
 public class NameServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -65,6 +67,6 @@ public class NameServlet extends HttpServlet {
         resp.setContentType("application/json;charset=UTF-8");
         if (nameLookupResponse == null)
             TomcatCustomErrorHandler.sendCustomError(resp, 404, "name not found");
-        else resp.getOutputStream().write(JsonStream.serialize(nameLookupResponse).getBytes());
+        else resp.getOutputStream().write(gson.toJson(nameLookupResponse).getBytes());
     }
 }

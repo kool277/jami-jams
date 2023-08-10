@@ -27,8 +27,7 @@ import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processUsernamePasswordAuth;
 import static net.jami.jams.server.servlets.api.auth.login.AuthRequestProcessor.processX509Auth;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -38,6 +37,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
 
@@ -49,6 +49,7 @@ import java.util.Optional;
 // This method returns the token which is used for all the next calls to the
 // API.
 public class LoginServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -79,9 +80,7 @@ public class LoginServlet extends HttpServlet {
                                     req.getAttribute("jakarta.servlet.request.X509Certificate"));
         } else {
             // Case 3: form submitted username/password
-            LoginRequest object =
-                    JsonIterator.deserialize(
-                            req.getInputStream().readAllBytes(), LoginRequest.class);
+            LoginRequest object = gson.fromJson(req.getReader(), LoginRequest.class);
             if (object.getUsername() != null && object.getPassword() != null) {
                 res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());
                 Optional<User> user = dataStore.getUserDao().getByUsername(object.getUsername());
@@ -102,6 +101,6 @@ public class LoginServlet extends HttpServlet {
         resp.setContentType("application/json;charset=UTF-8");
         if (res == null)
             TomcatCustomErrorHandler.sendCustomError(resp, 401, "Invalid credentials provided!");
-        else resp.getOutputStream().write(JsonStream.serialize(res).getBytes());
+        else resp.getOutputStream().write(gson.toJson(res).getBytes());
     }
 }

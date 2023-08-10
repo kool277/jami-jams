@@ -24,7 +24,7 @@ package net.jami.jams.server.servlets.api.admin.update;
 
 import static net.jami.jams.server.Server.appUpdater;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -35,12 +35,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.updater.FullSystemStatusResponse;
 
 import java.io.IOException;
 
 @WebServlet("/api/admin/update")
 public class UpdateServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     // Return the current version number and the available version number.
     @Override
@@ -52,7 +54,7 @@ public class UpdateServlet extends HttpServlet {
         response.setLocalVersions(appUpdater.getLocalVersions());
         response.setRemoteVersions(appUpdater.getRemoteVersions());
         response.setUpdateAvailable(appUpdater.getUpdateAvailable());
-        resp.getOutputStream().write(JsonStream.serialize(response).getBytes());
+        resp.getOutputStream().write(gson.toJson(response).getBytes());
     }
 
     // This is the do-update button.

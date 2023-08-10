@@ -28,7 +28,7 @@ import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.tomcatLauncher;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +36,7 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.system.SystemAccountType;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.server.ServerSettings;
 import net.jami.jams.nameserver.LocalNameServer;
 import net.jami.jams.nameserver.PublicNameServer;
@@ -52,6 +53,7 @@ import java.security.KeyStore;
 public class InstallationFinalizer {
 
     private boolean useLocalNS = true;
+    private final Gson gson = GsonFactory.createGson();
 
     public boolean finalizeInstallation() {
         // Basically here we build the config and flush it.
@@ -59,24 +61,23 @@ public class InstallationFinalizer {
             log.info("Building configuration from submitted variables...");
             ServerSettings serverSettings = new ServerSettings();
             serverSettings.setCaConfiguration(
-                    JsonStream.serialize(CachedObjects.certificateAuthorityConfig));
+                    gson.toJson(CachedObjects.certificateAuthorityConfig));
             // TODO: This is a bit of hack, we should fix this someday.
             serverSettings.setServerPublicURI(
                     CachedObjects.certificateAuthorityConfig.getServerDomain());
             if (CachedObjects.activeDirectorySettings != null) {
                 serverSettings.setActiveDirectoryConfiguration(
-                        JsonStream.serialize(CachedObjects.activeDirectorySettings));
+                        gson.toJson(CachedObjects.activeDirectorySettings));
                 log.info(
                         "Server configured to use Active Directory as the authentication backend!");
             }
             if (CachedObjects.ldapSettings != null) {
-                serverSettings.setLdapConfiguration(
-                        JsonStream.serialize(CachedObjects.ldapSettings));
+                serverSettings.setLdapConfiguration(gson.toJson(CachedObjects.ldapSettings));
                 log.info("Server configured to use LDAP as the authentication backend!");
             }
             if (CachedObjects.localAuthSettings != null) {
                 serverSettings.setLocalDirectoryConfiguration(
-                        JsonStream.serialize(CachedObjects.localAuthSettings));
+                        gson.toJson(CachedObjects.localAuthSettings));
                 if (CachedObjects.localAuthSettings.getPublicNames()) {
                     useLocalNS = false;
                     nameServer =
@@ -90,7 +91,7 @@ public class InstallationFinalizer {
             }
             // Now flush the server settings.
             OutputStream os = new FileOutputStream(new File("config.json"));
-            os.write(JsonStream.serialize(serverSettings).getBytes());
+            os.write(gson.toJson(serverSettings).getBytes());
             os.flush();
             os.close();
             log.info("Settings succesfully saved to configuration file...");

@@ -22,7 +22,7 @@
  */
 package net.jami.jams.server.servlets.api.admin.update;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,6 +34,7 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.responses.SubscriptionStatusResponse;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.licensing.LicenseService;
 
@@ -44,6 +45,7 @@ import java.io.IOException;
 
 @WebServlet("/api/admin/subscription")
 public class SubscriptionServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     // Get the subscription status (see: SubscriptionStatusResponse.class)
     @Override
@@ -55,7 +57,7 @@ public class SubscriptionServlet extends HttpServlet {
         subscriptionStatusResponse.setLicenseInformation(
                 Server.licenseService.getLicenseInformation());
         subscriptionStatusResponse.setActivated(Server.activated.get());
-        resp.getOutputStream().write(JsonStream.serialize(subscriptionStatusResponse).getBytes());
+        resp.getOutputStream().write(gson.toJson(subscriptionStatusResponse).getBytes());
         resp.getOutputStream().close();
     }
 

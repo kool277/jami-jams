@@ -22,11 +22,12 @@
  */
 package net.jami.jams.server.update;
 
-import com.jsoniter.JsonIterator;
-import com.jsoniter.any.Any;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import lombok.extern.slf4j.Slf4j;
 
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.X509Utils;
 import net.jami.jams.server.licensing.LicenseService;
@@ -39,8 +40,9 @@ import org.apache.http.ssl.SSLContexts;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -57,6 +59,8 @@ public class UpdateDownloader {
     private static volatile String UPDATE_SERVER_URL;
 
     private final HashMap<String, FileDescription> remoteChecksums = new HashMap<>();
+
+    private final Gson gson = GsonFactory.createGson();
 
     public UpdateDownloader() {
 
@@ -78,16 +82,15 @@ public class UpdateDownloader {
                     e.getMessage());
         }
 
-        try {
-            InputStream input =
-                    this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
-            Any any = JsonIterator.deserialize(input.readAllBytes());
-            UPDATE_SERVER_URL = any.get("UPDATE_URL").toString();
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
 
-        } catch (IOException e) {
+        if (input == null) {
             log.warn("Missing OEM configuration! Please contact software developer");
             System.exit(-1);
         }
+        Reader reader = new InputStreamReader(input);
+        JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
+        UPDATE_SERVER_URL = jsonObject.get("UPDATE_URL").getAsString();
     }
 
     public boolean downloadFiles(HashMap<String, FileDescription> files) {

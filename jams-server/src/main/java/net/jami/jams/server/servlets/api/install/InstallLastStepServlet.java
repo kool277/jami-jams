@@ -22,7 +22,7 @@
  */
 package net.jami.jams.server.servlets.api.install;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,12 +32,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 @WebServlet("/api/install/lastStep")
 public class InstallLastStepServlet extends HttpServlet {
+    private final Gson gson = GsonFactory.createGson();
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -46,6 +48,6 @@ public class InstallLastStepServlet extends HttpServlet {
         HashMap<String, String> payload = new HashMap<>();
         payload.put("uri", CachedObjects.endpoint);
         resp.setStatus(200);
-        resp.getOutputStream().write(JsonStream.serialize(payload).getBytes());
+        resp.getOutputStream().write(gson.toJson(payload).getBytes());
     }
 }

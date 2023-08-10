@@ -24,7 +24,7 @@ package net.jami.jams.ca.workers.csr.builders;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import net.jami.jams.ca.JamsCA;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -36,6 +36,7 @@ import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.system.SystemAccountType;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.utils.X509Utils;
 
 import org.junit.jupiter.api.AfterAll;
@@ -151,8 +152,9 @@ class SystemAccountBuilderTest {
         config.setCrlLifetime(1000000L);
         config.setDeviceLifetime(1000L);
 
+        Gson gson = GsonFactory.createGson();
         JamsCA jamsCA = new JamsCA();
-        jamsCA.init(JsonStream.serialize(config), caAccount, caAccount);
+        jamsCA.init(gson.toJson(config), caAccount, caAccount);
 
         return jamsCA;
     }

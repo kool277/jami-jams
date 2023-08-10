@@ -22,8 +22,6 @@
  */
 package net.jami.jams.common.objects.user;
 
-import com.jsoniter.annotation.JsonIgnore;
-
 import ezvcard.Ezvcard;
 import ezvcard.VCard;
 import ezvcard.VCardVersion;
@@ -90,8 +88,6 @@ public class UserProfile implements DatabaseObject {
         this.mobileNumber = rs.getString("mobileNumber");
     }
 
-    @JsonIgnore
-    // Ignore this if we pass through JSON iterator.
     public String getAsVCard() {
         VCard vCard = new VCard();
 

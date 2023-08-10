@@ -2,7 +2,7 @@ package net.jami.jams.server.servlets.api.admin.group;
 
 import static net.jami.jams.server.Server.dataStore;
 
-import com.jsoniter.output.JsonStream;
+import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +16,7 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Policy;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Optional;
 @WebServlet("/api/admin/policy/*")
 @Slf4j
 public class PolicyProfileServlet extends HttpServlet {
+    private static final Gson gson = GsonFactory.createGson();
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -38,14 +40,14 @@ public class PolicyProfileServlet extends HttpServlet {
             throws IOException {
         if (name.equals("*")) {
             List<Policy> policies = dataStore.getPolicyDao().getAll();
-            resp.getOutputStream().write(JsonStream.serialize(policies).getBytes());
+            resp.getOutputStream().write(gson.toJson(policies).getBytes());
             resp.setStatus(200);
             return;
         }
 
         Optional<Policy> policy = dataStore.getPolicyDao().getByName(name);
         if (policy.isPresent()) {
-            byte[] bytes = JsonStream.serialize(policy.orElseThrow()).getBytes();
+            byte[] bytes = gson.toJson(policy.orElseThrow()).getBytes();
             resp.getOutputStream().write(bytes);
             resp.setStatus(200);
         } else {
