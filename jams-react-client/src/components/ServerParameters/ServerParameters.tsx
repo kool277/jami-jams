@@ -62,13 +62,11 @@ export default function ServerParameters(props) {
     { value: 7889238000, label: i18next.t("3_months", "3 months") },
     { value: 15778476000, label: i18next.t("6_months", "6 months") },
     { value: 31556952000, label: i18next.t("1_year", "1 year") },
-    { value: 157784760000, label: i18next.t("5_years", "5 years") },
   ];
 
   const userAccountLifetimeTypes = [
     { value: 31556952000, label: i18next.t("1_year", "1 year") },
     { value: 157784760000, label: i18next.t("5_years", "5 years") },
-    { value: 315569520000, label: i18next.t("10_years", "10 years") },
   ];
 
   const certificateRevocationTypesItems = tool.buildSelectMenuItems(

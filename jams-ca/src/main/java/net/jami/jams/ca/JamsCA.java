@@ -78,12 +78,27 @@ public class JamsCA implements CertificateAuthority {
         CertificateAuthorityConfig config =
                 gson.fromJson(settings, CertificateAuthorityConfig.class);
         CA = ca;
-        OCSP = ca;
+        OCSP = ocsp;
         serverDomain = config.getServerDomain();
         signingAlgorithm = config.getSigningAlgorithm();
+
         crlLifetime = config.getCrlLifetime();
         userLifetime = config.getUserLifetime();
         deviceLifetime = config.getDeviceLifetime();
+
+        if (deviceLifetime > userLifetime) {
+            log.warn(
+                    "Device lifetime is greater than user lifetime, this is not recommended, please change this in the config file.");
+        }
+
+        X509Certificate cert = ca.getCertificate();
+        long caLifetime = cert.getNotAfter().getTime() - cert.getNotBefore().getTime();
+
+        if (userLifetime > caLifetime) {
+            log.warn(
+                    "User lifetime is greater than CA lifetime, this is not recommended, please change this in the config file.");
+        }
+
         if (ca != null && ocsp != null) {
             crlWorker = new CRLWorker(CA.getPrivateKey(), CA.getCertificate());
             try {
