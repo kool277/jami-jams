@@ -19,9 +19,7 @@ export const DEFAULT_UI_CUSTOMIZATION = {
   logoSize: 100,
 };
 
-export type UiCustomization = typeof DEFAULT_UI_CUSTOMIZATION;
-
-export const DEFAULT_POLICY_DATA = {
+const DEFAULT_POLICY_DATA_PERMISSIONS = {
   videoEnabled: true,
   publicInCalls: false,
   autoAnswer: false,
@@ -30,7 +28,9 @@ export const DEFAULT_POLICY_DATA = {
 
   rendezVous: false,
   blueprintModerators: [],
+};
 
+const DEFAULT_POLICY_DATA_CONFIGURATION = {
   upnpEnabled: true,
 
   selectedTurnOption: "defaultTurn",
@@ -41,8 +41,17 @@ export const DEFAULT_POLICY_DATA = {
   selectedDHTProxyOption: "defaultDHTProxy",
   proxyServer: "dhtproxy.jami.net",
   dhtProxyListUrl: "",
+};
 
+export const DEFAULT_POLICY_DATA = {
+  ...DEFAULT_POLICY_DATA_PERMISSIONS,
+  ...DEFAULT_POLICY_DATA_CONFIGURATION,
   uiCustomization: DEFAULT_UI_CUSTOMIZATION,
 };
 
-export type PolicyData = typeof DEFAULT_POLICY_DATA;
+export type UiCustomization = typeof DEFAULT_UI_CUSTOMIZATION;
+export type PolicyDataPermissions = typeof DEFAULT_POLICY_DATA_PERMISSIONS;
+export type PolicyDataNetwork = typeof DEFAULT_POLICY_DATA_CONFIGURATION;
+export interface PolicyData extends PolicyDataPermissions, PolicyDataNetwork {
+  uiCustomization: UiCustomization;
+}

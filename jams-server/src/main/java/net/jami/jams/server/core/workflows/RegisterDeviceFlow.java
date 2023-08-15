@@ -102,9 +102,8 @@ public class RegisterDeviceFlow {
                     });
             return response;
         } catch (Exception e) {
-            log.error(
-                    "An exception has occurred while trying to enroll a device with error {}",
-                    e.getMessage());
+            log.error("An exception has occurred while trying to enroll a device");
+            e.printStackTrace();
             return null;
         }
     }

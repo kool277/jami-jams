@@ -66,6 +66,8 @@ public class X509Utils {
     private static final String PPK_TAIL = "\n-----END PUBLIC KEY-----";
 
     public static PrivateKey getKeyFromPEMString(String keyString) {
+        if (keyString.isEmpty()) return null;
+
         try {
             PEMParser parser = new PEMParser(new StringReader(keyString));
             Object parsedObject = parser.readObject();

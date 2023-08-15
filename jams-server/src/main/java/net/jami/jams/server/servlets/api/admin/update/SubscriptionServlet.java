@@ -23,6 +23,7 @@
 package net.jami.jams.server.servlets.api.admin.update;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,8 +38,6 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.server.Server;
 import net.jami.jams.server.licensing.LicenseService;
-
-import org.json.JSONObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -68,22 +67,18 @@ public class SubscriptionServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String license = new String(req.getInputStream().readAllBytes());
-        final JSONObject obj = new JSONObject(license);
-        license = obj.getString("base64License");
+        JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
+        String license = jsonObject.get("base64License").getAsString();
 
-        if (license != null || !license.isBlank()) {
-            // create .dat file to be used later
-            FileWriter fw = new FileWriter("license.dat");
-            fw.write(license);
-            fw.close();
-            LicenseService licenseService = new LicenseService();
-            licenseService.loadLicense();
-            if (Server.activated.get()) {
-                resp.setStatus(200);
-                return;
-            }
+        // create .dat file to be used later
+        FileWriter fw = new FileWriter("license.dat");
+        fw.write(license);
+        fw.close();
+
+        LicenseService licenseService = new LicenseService();
+        licenseService.loadLicense();
+        if (Server.activated.get()) {
+            resp.setStatus(200);
         }
-        resp.setStatus(500);
     }
 }

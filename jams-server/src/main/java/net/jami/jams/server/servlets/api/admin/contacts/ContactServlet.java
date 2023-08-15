@@ -38,15 +38,9 @@ import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
-import net.jami.jams.common.utils.ContactMerger;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 @WebServlet("/api/admin/contacts")
 public class ContactServlet extends HttpServlet {
@@ -68,8 +62,8 @@ public class ContactServlet extends HttpServlet {
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        List<Contact> contactList =
-                dataStore.getContactDao().getByOwner(req.getParameter("username"));
+        String username = req.getParameter("username");
+        List<Contact> contactList = dataStore.getContactDao().getByOwner(username);
         resp.getOutputStream().write(gson.toJson(contactList).getBytes());
     }
 
@@ -90,28 +84,9 @@ public class ContactServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
-        String res = s.hasNext() ? s.next() : "";
-        final JSONObject obj = new JSONObject(res);
-
-        Contact contact = new Contact();
-        // TODO: Replace with mergetool.
-        contact.setDisplayName(obj.get("displayName").toString());
-        contact.setTimestamp(System.currentTimeMillis() / 1000);
-        contact.setStatus('A');
-        contact.setOwner(req.getParameter("username"));
-        contact.setUri(obj.get("uri").toString());
-
-        List<Contact> localList =
-                dataStore.getContactDao().getByOwner(req.getParameter("username"));
-        List<Contact> remoteList = new ArrayList<>();
-        remoteList.add(contact);
-        List<Contact> result = ContactMerger.mergeContacts(localList, remoteList);
-
-        if (dataStore.getContactDao().storeContactList(result)) resp.setStatus(200);
-        else
-            TomcatCustomErrorHandler.sendCustomError(
-                    resp, 500, "could not store a contact due to server-side error");
+        String username = req.getParameter("username");
+        net.jami.jams.server.servlets.api.auth.contacts.ContactServlet.addContact(
+                req, resp, username);
     }
 
     /**
@@ -155,15 +130,8 @@ public class ContactServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        List<Contact> localList =
-                dataStore.getContactDao().getByOwner(req.getParameter("username"));
-        List<Contact> remoteList = Arrays.asList(gson.fromJson(req.getReader(), Contact[].class));
-
-        remoteList.forEach(contact -> contact.setOwner(req.getParameter("username")));
-        List<Contact> result = ContactMerger.mergeContacts(localList, remoteList);
-
-        if (!dataStore.getContactDao().storeContactList(result))
-            TomcatCustomErrorHandler.sendCustomError(resp, 500, "Could not store contacts!");
-        else resp.getOutputStream().write(gson.toJson(result).getBytes());
+        String username = req.getParameter("username");
+        net.jami.jams.server.servlets.api.auth.contacts.ContactServlet.addContacts(
+                req, resp, username);
     }
 }

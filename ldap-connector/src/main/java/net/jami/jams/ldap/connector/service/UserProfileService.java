@@ -38,7 +38,11 @@ import org.ldaptive.SearchRequest;
 import org.ldaptive.SearchResponse;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,51 +62,51 @@ public class UserProfileService {
                             queryString.getBytes(StandardCharsets.UTF_8),
                             StandardCharsets.ISO_8859_1);
             connection = connectionFactory.getConnection();
-            try {
-                connection.open();
-                SearchOperation search = new SearchOperation(connectionFactory);
-                SearchResponse res = search.execute(buildRequest(queryString, field, exactMatch));
+            connection.open();
+            SearchOperation search = new SearchOperation(connectionFactory);
+            SearchResponse res = search.execute(buildRequest(queryString, field, exactMatch));
 
-                DataStore.NUM_PAGES =
-                        (Integer) res.getEntries().size() / DataStore.RESULTS_PER_PAGE;
-                if (res.getEntries().size() % DataStore.RESULTS_PER_PAGE != 0)
-                    DataStore.NUM_PAGES++;
+            Collection<LdapEntry> entries = getEntriesPage(res, page);
 
-                if (page.isPresent() && !res.getEntries().isEmpty()) {
-                    if (res.getEntries().size() < DataStore.RESULTS_PER_PAGE)
-                        res = res.subResult(0, res.getEntries().size());
-                    else if (page.get() * DataStore.RESULTS_PER_PAGE > res.getEntries().size())
-                        res =
-                                res.subResult(
-                                        (page.get() - 1) * DataStore.RESULTS_PER_PAGE,
-                                        res.getEntries().size());
-                    else
-                        res =
-                                res.subResult(
-                                        (page.get() - 1) * DataStore.RESULTS_PER_PAGE,
-                                        (page.get() * DataStore.RESULTS_PER_PAGE));
-                }
+            if (entries.isEmpty()) return new ArrayList<>();
 
-                if (res.getEntries().size() == 0) return new ArrayList<>();
-                List<UserProfile> profilesFromResponse =
-                        res.getEntries().stream()
-                                .map(UserProfileService::profileFromResponse)
-                                .collect(Collectors.toList());
-                for (UserProfile p : profilesFromResponse) {
-                    dataStore.getUserProfileDao().insertIfNotExists(p);
-                }
-
-                return profilesFromResponse;
-            } catch (Exception e) {
-                log.error("Could not search LDAP directory with error " + e);
-                return null;
+            List<UserProfile> profilesFromResponse =
+                    entries.stream()
+                            .map(UserProfileService::profileFromResponse)
+                            .collect(Collectors.toList());
+            for (UserProfile p : profilesFromResponse) {
+                dataStore.getUserProfileDao().insertIfNotExists(p);
             }
+
+            return profilesFromResponse;
         } catch (Exception e) {
             log.info("Failed to search LDAP directory with error " + e);
             return null;
         } finally {
             connection.close();
         }
+    }
+
+    private Collection<LdapEntry> getEntriesPage(SearchResponse res, Optional<Integer> page) {
+        int size = res.getEntries().size();
+
+        DataStore.NUM_PAGES = (Integer) size / DataStore.RESULTS_PER_PAGE;
+        if (size % DataStore.RESULTS_PER_PAGE != 0) DataStore.NUM_PAGES++;
+
+        if (page.isEmpty() || size == 0) {
+            return res.getEntries();
+        }
+
+        if (size < DataStore.RESULTS_PER_PAGE) res = res.subResult(0, size);
+        else if (page.get() * DataStore.RESULTS_PER_PAGE > size)
+            res = res.subResult((page.get() - 1) * DataStore.RESULTS_PER_PAGE, size);
+        else
+            res =
+                    res.subResult(
+                            (page.get() - 1) * DataStore.RESULTS_PER_PAGE,
+                            (page.get() * DataStore.RESULTS_PER_PAGE));
+
+        return res.getEntries();
     }
 
     public static SearchRequest buildRequest(String queryString, String field, boolean exactMatch) {

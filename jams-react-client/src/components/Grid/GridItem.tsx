@@ -1,9 +1,7 @@
-import React from "react";
-// nodejs library to set properties for components
-import PropTypes from "prop-types";
-// @mui/material components
+import React, { FC } from "react";
 import { makeStyles } from "@mui/styles";
-import Grid from "@mui/material/Grid";
+import { Grid, GridTypeMap } from "@mui/material";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 
 const styles = {
   grid: {
@@ -13,16 +11,17 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function GridItem(props) {
+interface GridItemProps extends OverridableComponent<GridTypeMap> {
+  children: React.ReactNode;
+}
+
+const GridItem: FC<GridItemProps> = ({ children, ...rest }) => {
   const classes = useStyles();
-  const { children, ...rest } = props;
   return (
     <Grid item {...rest} className={classes.grid}>
       {children}
     </Grid>
   );
-}
-
-GridItem.propTypes = {
-  children: PropTypes.node,
 };
+
+export default GridItem;

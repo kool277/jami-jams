@@ -1,5 +1,7 @@
 package net.jami.jams.server.servlets.api.image;
 
+import com.google.gson.Gson;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
 import lombok.extern.slf4j.Slf4j;
+
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.File;
@@ -19,8 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.google.gson.Gson;
 
 @MultipartConfig
 @Slf4j
@@ -87,7 +88,8 @@ public class FileHandlerServlet extends HttpServlet {
             }
 
             Map<String, String> map = new HashMap<>();
-            String url = "/api/image/filehandler/" + blueprintName + "/" + imageType + "/" + fileName;
+            String url =
+                    "/api/image/filehandler/" + blueprintName + "/" + imageType + "/" + fileName;
             map.put("url", url);
 
             Gson gson = GsonFactory.createGson();

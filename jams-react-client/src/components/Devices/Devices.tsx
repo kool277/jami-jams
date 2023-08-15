@@ -40,7 +40,7 @@ import i18next from "i18next";
 
 const useStyles = makeStyles(styles);
 
-export default function Devices(props) {
+export default function Devices({ username }) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -49,9 +49,7 @@ export default function Devices(props) {
   const [displayName, setDisplayName] = useState("");
   const [openEdit, setOpenEdit] = useState(false);
   const [openRevoke, setOpenRevoke] = useState(false);
-  const userData = {
-    username: props.username,
-  };
+  const userData = { username };
 
   useEffect(() => {
     auth.checkDirectoryType(() => {
@@ -94,7 +92,7 @@ export default function Devices(props) {
           });
       }
     });
-  }, [history, selectedDevice, userData]);
+  }, []);
 
   function getDeviceStatus(device) {
     if (!device.revoked) {
@@ -134,7 +132,7 @@ export default function Devices(props) {
   const handleUpdate = () => {
     if (auth.hasAdminScope()) {
       const data = {
-        username: props.username,
+        username,
         deviceId: selectedDevice.deviceId,
         deviceName: displayName,
       };
@@ -188,7 +186,7 @@ export default function Devices(props) {
   const handleDeviceRevoke = () => {
     if (auth.hasAdminScope()) {
       const data = {
-        username: props.username,
+        username,
         deviceId: selectedDevice.deviceId,
       };
       axios(

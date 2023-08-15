@@ -39,7 +39,7 @@ export const PolicyDataContextProvider: FC<Props> = ({
   children,
 }) => {
   const [policyData, setPolicyData] = useState(DEFAULT_POLICY_DATA);
-  const [snackbar, setSnackbar] = useState({
+  const [snackbar, setSnackbar] = useState<SnackbarProps>({
     open: false,
     severity: "success",
     message: "",

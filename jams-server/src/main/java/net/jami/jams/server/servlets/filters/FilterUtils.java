@@ -95,9 +95,7 @@ public class FilterUtils {
             }
 
             String username = token.getJWTClaimsSet().getSubject();
-            log.info("Getting user from database");
             User user = dataStore.getUserDao().getByUsername(username).orElseThrow();
-            log.info("User retrieved from database: {}", user);
 
             if (!user.getAccessLevelName().equals("ADMIN")
                     && certificateAuthority.getLatestCRL().get() != null) {

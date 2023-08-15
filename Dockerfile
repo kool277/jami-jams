@@ -22,9 +22,9 @@ COPY jams-server/pom.xml jams-server/pom.xml
 # RUN mvn dependency:resolve --fail-never
 # RUN mvn dependency:go-offline --fail-never -am
 RUN mvn install -pl ad-connector,authentication-module,datastore,jami-dht,jami-nameserver,jams-ca,jams-common,jams-launcher,ldap-connector,jams-server -am -DskipTests
-COPY . .
 
 FROM build as dev
+COPY . .
 WORKDIR /app
 RUN mkdir -p /app/jams-server/src/main/resources/webapp \
     && echo '<h1>Dev build, this is a placeholder index.html. Please connect to <a href="http://localhost:3000">localhost:3000</a> instead</h1>' \
@@ -38,18 +38,16 @@ CMD java -jar jams-server.jar 8080 \
 
 FROM build as prod
 WORKDIR /app/jams-react-client
+COPY jams-react-client .
 RUN npm run build
-RUN mkdir -p ../jams-server/src/main/resources/webapp \
-    && mv build/* ../jams-server/src/main/resources/webapp
 WORKDIR /app
+COPY . .
+RUN mkdir -p jams-server/src/main/resources/webapp \
+    && mv jams-react-client/build/* jams-server/src/main/resources/webapp
 RUN mvn package
 
 ENV JAMS_VERSION=3.5
-RUN python3 generate-versions.py net.jami.jams.ca.JamsCA $JAMS_VERSION libs/cryptoengine.jar
-RUN python3 generate-versions.py net.jami.jams.authmodule.UserAuthenticationModule $JAMS_VERSION libs/authentication-module.jar
-RUN python3 generate-versions.py net.jami.jams.server.Server $JAMS_VERSION jams-server.jar
-RUN python3 generate-versions.py net.jami.jams.ad.connector.ADConnector $JAMS_VERSION libs/ad-connector.jar
-RUN python3 generate-versions.py net.jami.jams.ldap.connector.LDAPConnector $JAMS_VERSION libs/ldap-connector.jar
+RUN python3 generate-versions.py $JAMS_VERSION
 
 RUN ./build-doc.sh
 WORKDIR /app/jams

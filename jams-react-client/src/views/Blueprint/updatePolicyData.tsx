@@ -186,8 +186,8 @@ export const _updatePolicyData = (
   policyData: PolicyData,
   setPolicyData: Dispatch<SetStateAction<PolicyData>>,
   field: string,
-  value: string,
-  setSnackbar: (snackbar: any) => void
+  value: any,
+  setSnackbar: (snackbar: SnackbarProps) => void
 ) => {
   setPolicyData((state) => ({ ...state, [field]: value }));
 

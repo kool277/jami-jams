@@ -1,5 +1,7 @@
 .git
 .gitignore
+.gitmodules
+.gitreview
 
 Dockerfile
 .dockerignore
@@ -7,4 +9,13 @@ Dockerfile
 **/node_modules
 **/target
 
+.gradle
+.idea
+.vscode
+
+README.md
+derby.log
+
+extras
 jams
+jams-server/src/main/resources/webapp

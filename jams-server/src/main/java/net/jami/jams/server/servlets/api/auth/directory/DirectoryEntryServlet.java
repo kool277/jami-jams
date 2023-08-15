@@ -37,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.authmodule.AuthModuleKey;
-import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 
@@ -203,55 +202,49 @@ public class DirectoryEntryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+        String directory = req.getParameter("directory");
+        String directoryType = req.getParameter("directoryType");
+
+        String format = req.getParameter("format");
+        boolean isInVCardFormat = format != null && format.equals("vcard");
+
         String jamiId = req.getParameter("jamiId");
-        if (jamiId != null) {
-            User user = dataStore.getUserDao().getByJamiId(jamiId).get(0);
-            List<UserProfile> userProfiles = new ArrayList<>();
-            userAuthenticationModule
-                    .getAuthSources()
-                    .forEach(
-                            (k, v) -> {
-                                userProfiles.addAll(
-                                        v.searchUserProfiles(
-                                                user.getUsername(),
-                                                "LOGON_NAME",
-                                                Optional.empty()));
-                            });
-            if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
-                resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
-            } else resp.getOutputStream().write(gson.toJson(userProfiles.get(0)).getBytes());
-            return;
-        }
-        if (req.getParameter("directory") != null && req.getParameter("directoryType") != null) {
-            List<UserProfile> profiles =
+
+        String username =
+                jamiId != null
+                        ? dataStore.getUserDao().getByJamiId(jamiId).get(0).getUsername()
+                        : req.getParameter("username");
+
+        if (directory != null && directoryType != null) {
+            AuthModuleKey authModuleKey =
+                    new AuthModuleKey(
+                            directory, AuthenticationSourceType.fromString(directoryType));
+
+            List<UserProfile> userProfiles =
                     userAuthenticationModule
                             .getAuthSources()
-                            .get(
-                                    new AuthModuleKey(
-                                            req.getParameter("directory"),
-                                            AuthenticationSourceType.fromString(
-                                                    req.getParameter("directoryType"))))
-                            .searchUserProfiles(
-                                    req.getParameter("username"), "LOGON_NAME", Optional.empty());
-            if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
-                resp.getOutputStream().write(profiles.get(0).getAsVCard().getBytes());
-            } else resp.getOutputStream().write(gson.toJson(profiles.get(0)).getBytes());
+                            .get(authModuleKey)
+                            .searchUserProfiles(username, "LOGON_NAME", Optional.empty());
+
+            UserProfile userProfile = userProfiles.get(0);
+            String result = isInVCardFormat ? userProfile.getAsVCard() : gson.toJson(userProfile);
+            resp.getOutputStream().write(result.getBytes());
             return;
         }
+
         List<UserProfile> userProfiles = new ArrayList<>();
         userAuthenticationModule
                 .getAuthSources()
+                .values()
                 .forEach(
-                        (k, v) -> {
+                        v -> {
                             userProfiles.addAll(
-                                    v.searchUserProfiles(
-                                            req.getParameter("username"),
-                                            "LOGON_NAME",
-                                            Optional.empty()));
+                                    v.searchUserProfiles(username, "LOGON_NAME", Optional.empty()));
                         });
-        if (req.getParameter("format") != null && req.getParameter("format").equals("vcard")) {
-            resp.getOutputStream().write(userProfiles.get(0).getAsVCard().getBytes());
-        } else resp.getOutputStream().write(gson.toJson(userProfiles.get(0)).getBytes());
+
+        UserProfile userProfile = userProfiles.get(0);
+        String result = isInVCardFormat ? userProfile.getAsVCard() : gson.toJson(userProfile);
+        resp.getOutputStream().write(result.getBytes());
     }
 
     @Override

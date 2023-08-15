@@ -25,7 +25,6 @@ public class ContactAdapter implements JsonSerializer<Contact>, JsonDeserializer
         contact.setUri(input.get("uri").getAsString());
         contact.setConversationId(input.get("conversationId").getAsString());
 
-
         long timeAdded = 0L;
         if (input.has("added")) {
             timeAdded = input.get("added").getAsLong();
