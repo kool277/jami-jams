@@ -14,12 +14,7 @@ import GridContainer from "components/Grid/GridContainer";
 
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react";
 
-import {
-  api_path_get_image,
-  api_path_post_image,
-  url_path,
-  url_port,
-} from "../../globalUrls";
+import { api_path_post_image, url_path, url_port } from "../../globalUrls";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle";
 
@@ -146,7 +141,7 @@ export default function EditBlueprintUi({ blueprintName }) {
     updatePolicyData("uiCustomization", newUiCustomization);
   };
 
-  const handleImgDrop = (acceptedFiles: string[], imgType: string) => {
+  const handleImgDrop = (acceptedFiles: any[], imgType: string) => {
     const formData = new FormData();
     formData.append("file", acceptedFiles[0]);
 
@@ -156,8 +151,9 @@ export default function EditBlueprintUi({ blueprintName }) {
       method: "POST",
       body: formData,
     })
-      .then(() => {
-        const newUrl = `${api_path_get_image}/${blueprintName}/${imgType}/${acceptedFiles[0].name}`;
+      .then((res) => res.json())
+      .then((res) => {
+        const newUrl = res.url;
 
         if (imgType === "background") {
           handleUpdateUi({

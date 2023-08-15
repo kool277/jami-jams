@@ -1,6 +1,6 @@
-import React from "react";
+import React, { FC, MouseEventHandler } from "react";
 import { makeStyles } from "@mui/styles";
-import Dropzone from "react-dropzone";
+import Dropzone, { Accept } from "react-dropzone";
 import UploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -32,12 +32,27 @@ const useStyles = makeStyles({
   },
 });
 
-function CustomImgDropZone(props) {
-  const { onDrop, accept, maxFiles, label, file, handleDelete, ...rest } =
-    props;
+interface CustomImgDropZoneProps {
+  onDrop: (acceptedFiles: File[]) => void;
+  accept?: Accept;
+  maxFiles?: number;
+  label: string;
+  file: string;
+  handleDelete: MouseEventHandler<HTMLButtonElement>;
+}
+
+const CustomImgDropZone: FC<CustomImgDropZoneProps> = ({
+  onDrop,
+  accept,
+  maxFiles,
+  label,
+  file,
+  handleDelete,
+  ...rest
+}) => {
   const classes = useStyles();
 
-  const handleDrop = (acceptedFiles) => {
+  const handleDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       onDrop(acceptedFiles);
     }
@@ -63,7 +78,7 @@ function CustomImgDropZone(props) {
       )}
     </Dropzone>
   );
-}
+};
 
 CustomImgDropZone.defaultProps = {
   accept: { "image/*": [".png", ".jpeg", ".jpg", ".svg"] },

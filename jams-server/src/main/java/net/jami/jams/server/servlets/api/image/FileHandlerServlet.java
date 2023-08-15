@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
 import lombok.extern.slf4j.Slf4j;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.Gson;
 
 @MultipartConfig
 @Slf4j
@@ -23,18 +28,7 @@ import java.nio.file.Paths;
 public class FileHandlerServlet extends HttpServlet {
 
     private static final String IMAGES_DIR = "images";
-    private static final String SAVE_DIR =
-            ".."
-                    + File.separator
-                    + ".."
-                    + File.separator
-                    + ".."
-                    + File.separator
-                    + ".."
-                    + File.separator
-                    + ".."
-                    + File.separator
-                    + IMAGES_DIR;
+    private static final String SAVE_DIR = "../../../../../" + IMAGES_DIR;
 
     /**
      * @apiVersion 1.0.0
@@ -76,44 +70,29 @@ public class FileHandlerServlet extends HttpServlet {
 
             File imagesFolder = new File(IMAGES_DIR + File.separator + blueprintName);
             if (!imagesFolder.exists()) {
-
                 imagesFolder.mkdirs();
-
-                File imagesFolderLogo =
-                        new File(
-                                IMAGES_DIR
-                                        + File.separator
-                                        + blueprintName
-                                        + File.separator
-                                        + "logo");
-                File imagesFolderBackground =
-                        new File(
-                                IMAGES_DIR
-                                        + File.separator
-                                        + blueprintName
-                                        + File.separator
-                                        + "background");
-
-                imagesFolderLogo.mkdirs();
-                imagesFolderBackground.mkdirs();
+                Paths.get(IMAGES_DIR, blueprintName, "logo").toFile().mkdirs();
+                Paths.get(IMAGES_DIR, blueprintName, "background").toFile().mkdirs();
             }
 
             Part filePart = request.getPart("file"); // Retrieves <input type="file" name="file">
             String fileName = filePart.getSubmittedFileName();
+            String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 
             for (Part part : request.getParts()) {
-                part.write(
-                        SAVE_DIR
-                                + File.separator
-                                + blueprintName
-                                + File.separator
-                                + imageType
-                                + File.separator
-                                + fileName);
+                long now = System.currentTimeMillis();
+                fileName = now + "." + ext;
+                Path path = Paths.get(SAVE_DIR, blueprintName, imageType, fileName);
+                part.write(path.toString());
             }
 
+            Map<String, String> map = new HashMap<>();
+            String url = "/api/image/filehandler/" + blueprintName + "/" + imageType + "/" + fileName;
+            map.put("url", url);
+
+            Gson gson = GsonFactory.createGson();
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().write("File upload was successful.");
+            response.getWriter().write(gson.toJson(map));
         } catch (Exception e) {
             log.error("Error during file upload: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -174,6 +153,7 @@ public class FileHandlerServlet extends HttpServlet {
             }
 
             response.setContentType(mimeType);
+            response.setHeader("Cache-Control", "public, max-age=31536000");
 
             try (OutputStream out = response.getOutputStream()) {
                 out.write(imageData);

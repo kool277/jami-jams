@@ -182,10 +182,6 @@ const CustomBackgroundForm = ({
   handleImgDrop,
   bgFile,
 }) => {
-  const setBgFile = (value) => {
-    handleUpdateUi("bgFile", value);
-  };
-
   return (
     <>
       <span>
@@ -225,7 +221,6 @@ const CustomBackgroundForm = ({
               .t("upload_an_image", "Upload an image")
               .toUpperCase()}
             file={bgFile}
-            setFile={setBgFile}
             handleDelete={(e) => {
               handleUpdateUi("backgroundUrl", "");
               e.preventDefault();
@@ -316,10 +311,6 @@ const LogoForm = ({
   handleUpdateUi,
   logoFile,
 }) => {
-  const setLogoFile = (value) => {
-    handleUpdateUi("logoFile", value);
-  };
-
   return (
     <>
       <span>
@@ -336,7 +327,6 @@ const LogoForm = ({
             .t("upload_a_logotype", "Upload a logotype")
             .toUpperCase()}
           file={logoFile}
-          setFile={setLogoFile}
           handleDelete={(e) => {
             handleDeleteLogo(e);
             handleUpdateUi("logoUrl", null);
