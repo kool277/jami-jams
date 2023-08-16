@@ -62,7 +62,7 @@ const api_path_get_admin_user_groups = "/api/admin/user/groups/";
 const api_path_get_image = "/api/image/filehandler";
 const api_path_post_image = "/api/image/filehandler";
 
-module.exports = {
+export {
   uri,
   current_uri,
   backend_address,

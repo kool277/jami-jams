@@ -12,6 +12,16 @@ import {
 } from "globalUrls";
 
 class Auth {
+  authenticated: boolean;
+  admin: boolean;
+  installed: boolean;
+  uri: string;
+  username: string;
+  localVersion: string;
+  remoteVersion: string;
+  activated: boolean;
+  updateAvailable: boolean;
+
   constructor() {
     this.authenticated = false;
     this.admin = false;
@@ -24,26 +34,26 @@ class Auth {
     this.updateAvailable = false;
   }
 
-  setJWT(access_token) {
+  setJWT(accessToken: string) {
     window.localStorage.removeItem("access_token");
-    window.localStorage.setItem("access_token", access_token);
+    window.localStorage.setItem("access_token", accessToken);
   }
 
-  setScope(scope) {
+  setScope(scope: boolean) {
     window.localStorage.removeItem("scope");
-    window.localStorage.setItem("scope", scope);
+    window.localStorage.setItem("scope", scope.toString());
   }
 
-  setLocalDirectory(localDirectory) {
+  setLocalDirectory(localDirectory: boolean) {
     window.localStorage.removeItem("localDirectory");
-    window.localStorage.setItem("localDirectory", localDirectory);
+    window.localStorage.setItem("localDirectory", localDirectory.toString());
   }
 
   deleteJWT() {
     window.localStorage.removeItem("access_token");
   }
 
-  setUsername(username) {
+  setUsername(username: string) {
     window.localStorage.removeItem("username");
     window.localStorage.setItem("username", username);
   }
@@ -52,27 +62,27 @@ class Auth {
     window.localStorage.removeItem("username");
   }
 
-  login(jsonData, cb) {
+  login(jsonData: { username: string; password: string }, cb: () => void) {
     this.deleteJWT();
     axios(configApiCall(api_path_post_auth_login, "POST", jsonData, null))
       .then((response) => {
         if (response.status === 200) {
           this.setJWT(response.data["access_token"]);
-          this.setScope(response.data["scope"] === "ADMIN" ? true : false);
+          this.setScope(response.data["scope"] === "ADMIN");
           this.setUsername(jsonData.username);
           this.authenticated = true;
         }
         cb();
       })
-      .catch((error) => {
+      .catch(() => {
         this.setJWT("");
         this.setUsername("");
         this.authenticated = false;
-        cb(error);
+        cb();
       });
   }
 
-  logout(cb) {
+  logout(cb: () => void) {
     this.deleteJWT();
     this.authenticated = false;
     this.deleteUserhame();
@@ -84,12 +94,10 @@ class Auth {
   }
 
   isLocalDirectory() {
-    return window.localStorage.getItem("localDirectory") === "true"
-      ? true
-      : false;
+    return window.localStorage.getItem("localDirectory") === "true";
   }
 
-  checkDirectoryType(cb) {
+  checkDirectoryType(cb: () => void) {
     axios(configApiCall(api_path_get_directories, "GET", null, null))
       .then((response) => {
         if (response.data.length === 1) {
@@ -110,7 +118,7 @@ class Auth {
       });
   }
 
-  checkAdminAccountStatus(cb) {
+  checkAdminAccountStatus(cb: () => void) {
     axios(configApiCall(api_path_post_install_admin, "GET", null, null))
       .then((response) => {
         if (response["headers"]["showlogin"] === "true") {
@@ -130,7 +138,7 @@ class Auth {
       });
   }
 
-  checkServerInstalled(cb) {
+  checkServerInstalled(cb: () => void) {
     axios(configApiCall(api_path_get_server_status, "GET", null, null))
       .then((response) => {
         if (response.data["installed"] === "true") {
@@ -149,7 +157,7 @@ class Auth {
       });
   }
 
-  checkLastKnownStep(cb) {
+  checkLastKnownStep(cb: () => void) {
     if (this.installed) {
       this.authenticated = true;
       cb();
@@ -171,7 +179,7 @@ class Auth {
     }
   }
 
-  checkForUpdates(cb) {
+  checkForUpdates(cb: () => void) {
     if (this.installed && this.authenticated) {
       axios(configApiCall(api_path_get_subscription_status, "GET", null, null))
         .then((response) => {
@@ -199,7 +207,7 @@ class Auth {
     }
   }
 
-  getUpdates(cb) {
+  getUpdates(cb: () => void) {
     if (this.installed && this.authenticated) {
       axios(configApiCall(api_path_get_needs_update, "GET", null, null)).then(
         (response) => {
@@ -252,7 +260,7 @@ class Auth {
   }
 
   hasAdminScope() {
-    return window.localStorage.getItem("scope") === "true" ? true : false;
+    return window.localStorage.getItem("scope") === "true";
   }
 
   getUsername() {

@@ -59,10 +59,7 @@ export default function Devices({ username }) {
             if (response.data.length === 0) {
               setDevices([]);
             } else {
-              var resultSet = JSON.parse(
-                response.data.replace(/\s+/g, " ").trim()
-              );
-              setDevices(resultSet);
+              setDevices(response.data);
             }
           })
           .catch((error) => {
