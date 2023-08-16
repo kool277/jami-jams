@@ -112,7 +112,7 @@ const updateUiCustomization = (data) => {
     ui.backgroundColorOrUrl = backgroundUrl;
   } else if (backgroundColor !== "") {
     ui.backgroundType = "color";
-    ui.backgroundColorOrUrl = backgroundColor;
+    ui.backgroundColorOrUrl = backgroundColor || "#ffffff";
   } else {
     ui.backgroundType = "default";
   }
