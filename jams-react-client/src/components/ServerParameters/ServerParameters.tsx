@@ -14,7 +14,10 @@ import * as tool from "../../tools";
 
 import axios from "axios";
 import configApiCall from "../../api";
-import { api_path_post_install_server } from "../../globalUrls";
+import {
+  api_path_post_install_server,
+  backend_address,
+} from "../../globalUrls";
 import auth from "auth";
 import * as Yup from "yup";
 
@@ -40,14 +43,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ServerParameters(props) {
+export default function ServerParameters({ setError, setErrorMessage }) {
   // Formik validation fields
-  const initialValues = { domain: window.location.origin };
+  const initialValues = { domain: backend_address.origin };
   const validationSchema = Yup.object().shape({
     domain: Yup.string().required(
       i18next.t("domain_is_required", "Domain is required.")
     ),
   });
+
+  type Settings = Yup.InferType<typeof validationSchema>;
 
   const certificateRevocationTypes = [
     { value: 300000, label: i18next.t("5_minutes", "5 minutes") },
@@ -108,7 +113,7 @@ export default function ServerParameters(props) {
     });
   }
 
-  function handleSubmit(values) {
+  function handleSubmit(values: Settings) {
     let jsonData = {};
     let re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
     let nohttpre = new RegExp(/^\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
@@ -133,8 +138,8 @@ export default function ServerParameters(props) {
           console.log("Error installing server parameters: " + error);
         });
     } else {
-      props.setError(true);
-      props.setErrorMessage(
+      setError(true);
+      setErrorMessage(
         i18next.t(
           "please_enter_valid_cors_domain_url",
           "Please enter a valid CORS domain URL."
@@ -173,15 +178,14 @@ export default function ServerParameters(props) {
         handleSubmit(values);
       }}
     >
-      {(props) => {
-        const {
-          values,
-          touched,
-          errors,
-          handleSubmit,
-          handleChange,
-          handleBlur,
-        } = props;
+      {({
+        values,
+        touched,
+        errors,
+        handleSubmit,
+        handleChange,
+        handleBlur,
+      }) => {
         return (
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <Typography variant="h5" gutterBottom color="primary">

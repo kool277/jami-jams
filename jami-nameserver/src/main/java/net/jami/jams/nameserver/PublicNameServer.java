@@ -23,6 +23,7 @@
 package net.jami.jams.nameserver;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,8 +31,6 @@ import net.jami.jams.common.jami.NameLookupResponse;
 import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -90,20 +89,15 @@ public class PublicNameServer implements NameServer {
             URL url = new URL(nameserverURI + "/addr/" + address);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            if (con.getResponseCode() == 200) {
-                StringBuilder responseData = new StringBuilder();
-                int respSize = Integer.parseInt(con.getHeaderField("Content-Length"));
-                int currentSize = 0;
-                while (currentSize < respSize) {
-                    responseData.append((char) con.getInputStream().read());
-                    currentSize++;
-                }
-                log.info("Response received from public nameserver {} ", responseData);
-                JSONParser parser = new JSONParser();
-                JSONObject json = (JSONObject) parser.parse(responseData.toString());
-                return json.getAsString("name");
+            if (con.getResponseCode() != 200) {
+                return null;
             }
-            return null;
+
+            String responseData = new String(con.getInputStream().readAllBytes());
+
+            log.info("Response received from public nameserver {} ", responseData);
+            JsonObject json = gson.fromJson(responseData.toString(), JsonObject.class);
+            return json.get("name").getAsString();
         } catch (Exception e) {
             log.info("An error occurred while querying the public nameserver {} ", e.toString());
             return null;

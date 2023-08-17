@@ -24,6 +24,8 @@ package net.jami.jams.server.servlets.api.jaminameserver;
 
 import static net.jami.jams.server.Server.nameServer;
 
+import com.google.gson.Gson;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,11 +33,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import net.jami.jams.common.annotations.JsonContent;
+import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/api/nameserver/addr/*")
 public class AddressServlet extends HttpServlet {
@@ -62,12 +65,14 @@ public class AddressServlet extends HttpServlet {
         String[] path = req.getPathInfo().split("/");
         String username = nameServer.getNameFromAddress(path[path.length - 1]);
 
-        JSONObject obj = new JSONObject();
-        obj.put("name", username);
-
-        resp.setContentType("application/json;charset=UTF-8");
-        if (username == null)
+        if (username == null) {
             TomcatCustomErrorHandler.sendCustomError(resp, 404, "Address not found!");
-        else resp.getWriter().write(obj.toString());
+            return;
+        }
+
+        Gson gson = GsonFactory.createGson();
+        Map<String, String> response = new HashMap<>();
+        response.put("name", username);
+        resp.getWriter().write(gson.toJson(response));
     }
 }

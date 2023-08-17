@@ -104,68 +104,22 @@ public class Server {
         dataStore = new DataStore("jdbc:derby:jams;create=true");
 
         // Create image folder if it doesn't exist.
-        File imagesFolder = new File("." + File.separator + "images");
-        if (!imagesFolder.exists()) {
-            boolean created = imagesFolder.mkdirs();
-            if (created) {
-                log.info("Created images folder");
-            } else {
-                log.error("Failed to create images folder");
-                System.exit(-1);
-            }
-        }
+        createImageFolder();
 
-        isInstalled.set(
-                new File(System.getProperty("user.dir") + File.separator + "config.json").exists());
+        File configJsonFile =
+                new File(System.getProperty("user.dir") + File.separator + "config.json");
+        isInstalled.set(configJsonFile.exists());
         log.info("Server is already installed: " + isInstalled.get());
-        ServerSettings serverSettings = null;
+
         if (isInstalled.get()) {
             try {
-                Reader reader =
-                        new FileReader(
-                                new File(
-                                        System.getProperty("user.dir")
-                                                + File.separator
-                                                + "config.json"));
-                serverSettings = gson.fromJson(reader, ServerSettings.class);
-                certificateAuthority =
-                        CryptoEngineLoader.loadCertificateAuthority(
-                                serverSettings.getCaConfiguration(), dataStore);
-                userAuthenticationModule =
-                        AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
-                if (serverSettings.getLdapConfiguration() != null)
-                    userAuthenticationModule.attachAuthSource(
-                            AuthenticationSourceType.LDAP, serverSettings.getLdapConfiguration());
-                if (serverSettings.getActiveDirectoryConfiguration() != null) {
-                    userAuthenticationModule.attachAuthSource(
-                            AuthenticationSourceType.AD,
-                            serverSettings.getActiveDirectoryConfiguration());
-                }
-                if (serverSettings.getLocalDirectoryConfiguration() != null) {
-                    LocalAuthSettings settings =
-                            gson.fromJson(
-                                    serverSettings.getLocalDirectoryConfiguration(),
-                                    LocalAuthSettings.class);
-                    if (settings.getPublicNames())
-                        nameServer = new PublicNameServer(settings.getPublicNameServer());
-                    else
-                        nameServer =
-                                new LocalNameServer(
-                                        dataStore,
-                                        userAuthenticationModule,
-                                        serverSettings.getServerPublicURI());
-                } else
-                    nameServer =
-                            new LocalNameServer(
-                                    dataStore,
-                                    userAuthenticationModule,
-                                    serverSettings.getServerPublicURI());
-
-                licenseService.loadLicense();
+                Reader reader = new FileReader(configJsonFile);
+                loadConfig(reader);
                 log.info("All services are UP and ready for use...");
             } catch (Exception e) {
                 log.error(
                         "Could not load configuration file or initialize some components - this is critical");
+                System.exit(1);
             }
         } else {
             certificateAuthority = CryptoEngineLoader.loadCertificateAuthority(null, dataStore);
@@ -183,6 +137,60 @@ public class Server {
         }
     }
 
+    private static void createImageFolder() {
+        File imagesFolder = new File("." + File.separator + "images");
+        if (!imagesFolder.exists()) {
+            boolean created = imagesFolder.mkdirs();
+            if (created) {
+                log.info("Created images folder");
+            } else {
+                log.error("Failed to create images folder");
+                System.exit(-1);
+            }
+        }
+    }
+
+    private static void loadConfig(Reader reader) {
+        ServerSettings serverSettings = gson.fromJson(reader, ServerSettings.class);
+
+        certificateAuthority =
+                CryptoEngineLoader.loadCertificateAuthority(
+                        serverSettings.getCaConfiguration(), dataStore);
+        userAuthenticationModule =
+                AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
+
+        if (serverSettings.getLdapConfiguration() != null)
+            userAuthenticationModule.attachAuthSource(
+                    AuthenticationSourceType.LDAP, serverSettings.getLdapConfiguration());
+
+        if (serverSettings.getActiveDirectoryConfiguration() != null) {
+            userAuthenticationModule.attachAuthSource(
+                    AuthenticationSourceType.AD, serverSettings.getActiveDirectoryConfiguration());
+        }
+
+        if (serverSettings.getLocalDirectoryConfiguration() != null) {
+            LocalAuthSettings settings =
+                    gson.fromJson(
+                            serverSettings.getLocalDirectoryConfiguration(),
+                            LocalAuthSettings.class);
+            if (settings.getPublicNames())
+                nameServer = new PublicNameServer(settings.getPublicNameServer());
+            else
+                nameServer =
+                        new LocalNameServer(
+                                dataStore,
+                                userAuthenticationModule,
+                                serverSettings.getServerPublicURI());
+        } else
+            nameServer =
+                    new LocalNameServer(
+                            dataStore,
+                            userAuthenticationModule,
+                            serverSettings.getServerPublicURI());
+
+        licenseService.loadLicense();
+    }
+
     public static void startGUI() throws Exception {
         boolean ready = false;
         while (!ready) {
@@ -190,6 +198,7 @@ public class Server {
             if (userAuthenticationModule.getAuthModulePubKey() != null) {
                 ready = true;
             }
+            Thread.sleep(10);
         }
         log.info("Authentication module is ready!");
         if (Desktop.isDesktopSupported()
