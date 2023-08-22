@@ -78,7 +78,7 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
     }
 
     public List<UserProfile> searchFullName(String name) {
-        String query = "SELECT * FROM local_directory WHERE firstName LIKE ? OR lastName ?";
+        String query = "SELECT * FROM local_directory WHERE firstName LIKE ? OR lastName LIKE ?";
         name = name + "%";
         ResultSet rs = executeQuery(query, List.of(name, name));
         return getObjectsFromResultSet(rs);

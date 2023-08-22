@@ -56,6 +56,11 @@ public class ContactDao extends AbstractDao<Contact> {
     }
 
     public boolean storeContactList(List<Contact> contactList) {
+        if (contactList.isEmpty()) {
+            log.error("Cannot store empty contact list");
+            return false;
+        }
+
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
             String delete = "DELETE FROM contacts WHERE owner = ?";

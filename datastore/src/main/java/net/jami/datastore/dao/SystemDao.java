@@ -50,8 +50,7 @@ public class SystemDao extends AbstractDao<SystemAccount> {
 
     @Override
     public boolean storeObject(SystemAccount object) {
-        String query =
-                "INSERT INTO system " + "(entity,certificate,privatekey)" + "VALUES " + "(?, ?, ?)";
+        String query = "INSERT INTO system (entity,certificate,privatekey) VALUES (?, ?, ?)";
         return executeInsert(query, object);
     }
 }
