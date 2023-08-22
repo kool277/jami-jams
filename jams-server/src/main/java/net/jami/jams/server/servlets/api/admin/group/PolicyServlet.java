@@ -2,6 +2,9 @@ package net.jami.jams.server.servlets.api.admin.group;
 
 import static net.jami.jams.server.Server.dataStore;
 
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,8 +17,6 @@ import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.annotations.ScopedServletMethod;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Policy;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -39,9 +40,14 @@ public class PolicyServlet extends HttpServlet {
         String name = req.getParameter("name");
 
         Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
-        String result = s.hasNext() ? s.next() : "";
-        final JSONObject obj = new JSONObject(result);
-        final String policyData = obj.toString();
+        String policyData = s.hasNext() ? s.next() : "";
+
+        try {
+            JsonParser.parseString(policyData);
+        } catch (JsonSyntaxException e) {
+            resp.sendError(400, "Invalid JSON!");
+            return;
+        }
 
         if (dataStore.getPolicyDao().updateObject(name, policyData)) resp.setStatus(200);
         else resp.sendError(500, "could not update the group's name!");
@@ -53,14 +59,18 @@ public class PolicyServlet extends HttpServlet {
         String name = req.getParameter("name");
 
         Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
-        String result = s.hasNext() ? s.next() : "";
+        String policyData = s.hasNext() ? s.next() : "";
 
-        final JSONObject obj = new JSONObject(result);
-        final String jsonString = obj.toString();
+        try {
+            JsonParser.parseString(policyData);
+        } catch (JsonSyntaxException e) {
+            resp.sendError(400, "Invalid JSON!");
+            return;
+        }
 
         Policy policy = new Policy();
         policy.setName(name);
-        policy.setPolicyData(jsonString);
+        policy.setPolicyData(policyData);
         if (dataStore.getPolicyDao().storeObject(policy)) resp.setStatus(200);
         else resp.sendError(500, "Could not create a group successfully!");
     }

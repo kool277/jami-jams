@@ -27,6 +27,7 @@ import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -45,11 +46,8 @@ import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Scanner;
 
 @Slf4j
 @WebServlet("/api/admin/directory/entry")
@@ -62,22 +60,7 @@ public class DirectoryEntryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // Create a user profile.
         String realm = "LOCAL";
-        Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
-        String result = s.hasNext() ? s.next() : "";
-        final JSONObject obj = new JSONObject(result);
-
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUsername(obj.get("username").toString());
-        userProfile.setFirstName(obj.get("firstName").toString());
-        userProfile.setLastName(obj.get("lastName").toString());
-        userProfile.setEmail(obj.get("email").toString());
-        userProfile.setProfilePicture(obj.get("profilePicture").toString());
-        userProfile.setOrganization(obj.get("organization").toString());
-        userProfile.setPhoneNumber(obj.get("phoneNumber").toString());
-        userProfile.setPhoneNumberExtension(obj.get("phoneNumberExtension").toString());
-        userProfile.setFaxNumber(obj.get("faxNumber").toString());
-        userProfile.setMobileNumber(obj.get("mobileNumber").toString());
-        userProfile.setId(obj.get("jamiId").toString());
+        UserProfile userProfile = gson.fromJson(req.getReader(), UserProfile.class);
 
         userAuthenticationModule
                 .getAuthSources()

@@ -28,6 +28,7 @@ import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -50,13 +51,11 @@ import net.jami.jams.server.core.workflows.RevokeUserFlow;
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.cert.X509CRLEntryHolder;
 import org.bouncycastle.cert.X509CRLHolder;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @WebServlet("/api/admin/user")
 public class UserServlet extends HttpServlet {
@@ -107,13 +106,9 @@ public class UserServlet extends HttpServlet {
     @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        final JSONObject obj =
-                new JSONObject(
-                        req.getReader()
-                                .lines()
-                                .collect(Collectors.joining(System.lineSeparator())));
-
-        String password = obj.getString("password");
+        JsonObject obj = gson.fromJson(req.getReader(), JsonObject.class);
+        String username = obj.get("username").getAsString();
+        String password = obj.get("password").getAsString();
 
         if (password.isEmpty()) {
             resp.sendError(400, "Password is empty!");
@@ -122,8 +117,6 @@ public class UserServlet extends HttpServlet {
 
         byte[] salt = PasswordUtil.generateSalt();
         String hashedPassword = PasswordUtil.hashPassword(password, salt);
-
-        String username = obj.getString("username");
 
         User user = new User();
         user.setUsername(username);
@@ -146,13 +139,9 @@ public class UserServlet extends HttpServlet {
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        final JSONObject obj =
-                new JSONObject(
-                        req.getReader()
-                                .lines()
-                                .collect(Collectors.joining(System.lineSeparator())));
-        String pw = obj.getString("password");
-        String username = obj.getString("username");
+        JsonObject obj = gson.fromJson(req.getReader(), JsonObject.class);
+        String username = obj.get("username").getAsString();
+        String pw = obj.get("password").getAsString();
 
         Optional<User> result = dataStore.getUserDao().getByUsername(username);
 

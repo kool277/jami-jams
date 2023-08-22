@@ -3,6 +3,7 @@ package net.jami.jams.server.servlets.api.admin.group;
 import static net.jami.jams.server.Server.dataStore;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,11 +19,8 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.Group;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @WebServlet("/api/admin/group/*")
 @Slf4j
@@ -53,14 +51,10 @@ public class GroupServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String id = req.getPathInfo().replace("/", "");
 
-        final JSONObject obj =
-                new JSONObject(
-                        req.getReader()
-                                .lines()
-                                .collect(Collectors.joining(System.lineSeparator())));
+        JsonObject obj = gson.fromJson(req.getReader(), JsonObject.class);
 
-        String name = obj.getString("name");
-        String blueprint = obj.getString("blueprint");
+        String name = obj.get("name").getAsString();
+        String blueprint = obj.get("blueprint").getAsString();
 
         if (dataStore.getGroupDao().updateObject(id, name, blueprint)) resp.setStatus(200);
         else resp.sendError(500, "Could not update group!");

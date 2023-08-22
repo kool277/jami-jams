@@ -27,6 +27,8 @@ import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -46,8 +48,6 @@ import net.jami.jams.common.objects.user.PolicyData;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -156,10 +156,13 @@ public class SearchDirectoryServlet extends HttpServlet {
                                     });
                 });
 
-        JSONObject obj = new JSONObject();
-        obj.put("profiles", userProfiles);
-        obj.put("numPages", DataStore.NUM_PAGES);
-        resp.getOutputStream().write((obj.toString()).getBytes());
+        JsonObject obj = new JsonObject();
+        JsonArray profilesArray = gson.toJsonTree(userProfiles).getAsJsonArray();
+
+        obj.add("profiles", profilesArray);
+        obj.addProperty("numPages", DataStore.NUM_PAGES);
+
+        resp.getOutputStream().write(gson.toJson(obj).getBytes());
         resp.setStatus(200);
     }
 }

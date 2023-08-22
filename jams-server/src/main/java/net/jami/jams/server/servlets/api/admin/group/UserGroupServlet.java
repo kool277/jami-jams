@@ -3,6 +3,7 @@ package net.jami.jams.server.servlets.api.admin.group;
 import static net.jami.jams.server.Server.dataStore;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,12 +18,9 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @WebServlet("/api/admin/group/members/*")
 @Slf4j
@@ -65,13 +63,8 @@ public class UserGroupServlet extends HttpServlet {
 
         String groupId = req.getPathInfo().replace("/", "");
 
-        final JSONObject obj =
-                new JSONObject(
-                        req.getReader()
-                                .lines()
-                                .collect(Collectors.joining(System.lineSeparator())));
-
-        String username = obj.getString("username");
+        JsonObject obj = gson.fromJson(req.getReader(), JsonObject.class);
+        String username = obj.get("username").getAsString();
 
         Optional<UserGroupMapping> existingMapping =
                 dataStore.getUserGroupMappingsDao().getByGroupIdAndUsername(groupId, username);
@@ -97,13 +90,8 @@ public class UserGroupServlet extends HttpServlet {
 
         String groupId = req.getPathInfo().replace("/", "");
 
-        final JSONObject obj =
-                new JSONObject(
-                        req.getReader()
-                                .lines()
-                                .collect(Collectors.joining(System.lineSeparator())));
-
-        String username = obj.getString("username");
+        JsonObject obj = gson.fromJson(req.getReader(), JsonObject.class);
+        String username = obj.get("username").getAsString();
 
         if (dataStore.getUserGroupMappingsDao().deleteObject(username, groupId)) {
             resp.setStatus(200);
