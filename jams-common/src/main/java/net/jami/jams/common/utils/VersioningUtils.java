@@ -76,7 +76,7 @@ public class VersioningUtils {
                                 log.info("Found version {} of {}", version, fileName);
                             } catch (Exception e1) {
                                 log.error(
-                                        "Could detect version for file with error {}",
+                                        "Could not detect version for file with error {}",
                                         e1.getMessage());
                             }
                         }

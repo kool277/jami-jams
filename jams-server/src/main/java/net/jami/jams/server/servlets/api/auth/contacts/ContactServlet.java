@@ -25,6 +25,7 @@ package net.jami.jams.server.servlets.api.auth.contacts;
 import static net.jami.jams.server.Server.dataStore;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,16 +38,13 @@ import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.common.utils.ContactMerger;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 @WebServlet("/api/auth/contacts")
 public class ContactServlet extends HttpServlet {
-    private final Gson gson = GsonFactory.createGson();
+    private static final Gson gson = GsonFactory.createGson();
 
     /**
      * @apiVersion 1.0.0
@@ -83,19 +81,22 @@ public class ContactServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        Scanner s = new Scanner(req.getInputStream()).useDelimiter("\\A");
-        String res = s.hasNext() ? s.next() : "";
-        final JSONObject obj = new JSONObject(res);
+        String owner = req.getAttribute("username").toString();
+        addContact(req, resp, owner);
+    }
+
+    public static void addContact(HttpServletRequest req, HttpServletResponse resp, String owner)
+            throws IOException {
+        JsonObject obj = gson.fromJson(req.getReader(), JsonObject.class);
 
         // TODO: Replace with mergetool.
         Contact contact = new Contact();
         contact.setDisplayName(obj.get("displayName").toString());
         contact.setTimestamp(System.currentTimeMillis() / 1000);
         contact.setStatus('A');
-        contact.setOwner(req.getAttribute("username").toString());
+        contact.setOwner(owner);
         contact.setUri(obj.get("uri").toString());
 
-        String owner = req.getAttribute("username").toString();
         List<Contact> localList = dataStore.getContactDao().getByOwner(owner);
 
         List<Contact> remoteList = List.of(contact);
@@ -148,6 +149,11 @@ public class ContactServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String owner = req.getAttribute("username").toString();
+        addContacts(req, resp, owner);
+    }
+
+    public static void addContacts(HttpServletRequest req, HttpServletResponse resp, String owner)
+            throws IOException {
         List<Contact> localList = dataStore.getContactDao().getByOwner(owner);
         List<Contact> remoteList = Arrays.asList(gson.fromJson(req.getReader(), Contact[].class));
 

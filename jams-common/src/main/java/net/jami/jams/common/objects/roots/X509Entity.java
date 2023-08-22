@@ -27,6 +27,8 @@ import lombok.Setter;
 
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
+import com.google.gson.annotations.Expose;
+
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
@@ -34,6 +36,7 @@ import java.security.cert.X509Certificate;
 @Setter
 public class X509Entity {
     private X509Certificate certificate;
+    @Expose(serialize = false)
     private PrivateKey privateKey;
     // These can be null because they are only used if this is a request.
     private X509Fields x509Fields;

@@ -85,13 +85,17 @@ public class UserServlet extends HttpServlet {
 
         if (!user.getNeedsPasswordReset() && req.getParameter("needPW") != null) {
             String pw = req.getParameter("password");
+
+            if (pw == null || pw.isEmpty()) {
+                resp.sendError(400, "Password is empty!");
+                return;
+            }
+
             String password = PasswordUtil.hashPassword(pw, Base64.decodeBase64(user.getSalt()));
             dataStore.getUserDao().updateObject(password, username);
 
-            user = dataStore.getUserDao().getByUsername(username).get();
+            user = dataStore.getUserDao().getByUsername(username).orElseThrow();
         }
-        user.setPassword("");
-        user.setSalt("");
         resp.getOutputStream().write(gson.toJson(user).getBytes());
         resp.setStatus(200);
     }
