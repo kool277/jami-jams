@@ -36,8 +36,6 @@ import net.jami.jams.common.utils.X509Utils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import com.google.gson.annotations.Expose;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -45,18 +43,15 @@ import com.google.gson.annotations.Expose;
 public class User extends X509Entity implements BlockchainEntity, DatabaseObject {
 
     private String username;
-    @Expose(serialize = false)
-    private String password;
+    private transient String password;
     private AuthenticationSourceType userType;
     private String realm; // sort of the domain.
     private AccessLevel accessLevel = AccessLevel.USER;
     private Boolean needsPasswordReset = false;
-    @Expose(serialize = false)
-    private String salt;
+    private transient String salt;
 
     private String ethAddress;
-    @Expose(serialize = false)
-    private String ethKey;
+    private transient String ethKey;
     private String jamiId;
 
     public User(ResultSet rs) throws Exception {

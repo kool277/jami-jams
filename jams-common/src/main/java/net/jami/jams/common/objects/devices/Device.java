@@ -22,7 +22,6 @@
  */
 package net.jami.jams.common.objects.devices;
 
-import com.google.gson.annotations.Expose;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,8 +43,7 @@ public class Device extends X509Entity implements DatabaseObject {
 
     private String deviceId;
 
-    @Expose(serialize = false)
-    private String owner;
+    private transient String owner;
 
     private String displayName;
 

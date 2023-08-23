@@ -23,7 +23,6 @@
 
 package net.jami.jams.common.objects.contacts;
 
-import com.google.gson.annotations.Expose;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,8 +40,7 @@ import java.sql.ResultSet;
 @EqualsAndHashCode
 public class Contact implements DatabaseObject {
 
-    @Expose(serialize = false)
-    private String owner;
+    private transient String owner;
 
     private String uri;
     private String displayName;
