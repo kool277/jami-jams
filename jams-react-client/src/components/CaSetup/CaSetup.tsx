@@ -246,7 +246,7 @@ export default function CaSetup(props) {
                 }
               />
 
-              <CountrySelect defaultValue={values.country} {...props} />
+              <CountrySelect {...props} />
               {touched.country && errors.country ? (
                 <span className="spanError">{errors.country}</span>
               ) : null}

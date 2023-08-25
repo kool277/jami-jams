@@ -16,7 +16,7 @@ export interface SnackbarProps {
 
 interface PolicyDataProp {
   policyData: PolicyData;
-  updatePolicyData: (field: string, value: string) => void;
+  updatePolicyData: (field: string, value: any) => void;
   snackbar: SnackbarProps;
   setSnackbar: (snackbar: SnackbarProps) => void;
 }
@@ -61,7 +61,7 @@ export const PolicyDataContextProvider: FC<Props> = ({
       });
   }, [blueprintName]);
 
-  const updatePolicyData = (field: string, value: string) => {
+  const updatePolicyData = (field: string, value: any) => {
     _updatePolicyData(
       blueprintName,
       policyData,

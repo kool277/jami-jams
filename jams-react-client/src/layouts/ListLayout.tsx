@@ -41,6 +41,7 @@ import DialogContentText from "@mui/material/DialogContentText/DialogContentText
 import Button from "@mui/material/Button";
 
 import i18next from "i18next";
+import { Route } from "./BaseLayout";
 
 let ps;
 
@@ -50,11 +51,11 @@ export default function Admin(props) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
-  const mainPanel = createRef();
+  const mainPanel = createRef<HTMLDivElement>();
   // states and functions
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState(false);
+  const [message, setMessage] = useState("");
   const [openUpdate, setOpenUpdate] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [messageYes, setMessageYes] = useState("");
@@ -63,7 +64,7 @@ export default function Admin(props) {
   const [query, setQuery] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const Routes = [
+  const Routes: Route[] = [
     {
       path: `/user/${auth.getUsername()}`,
       name: i18next.t("myprofile", "My profile") as string,
@@ -239,7 +240,6 @@ export default function Admin(props) {
       </Dialog>
       <Sidebar
         routes={Routes}
-        logoText={"Jams"}
         logo={logo}
         image={bgImage}
         handleDrawerToggle={handleDrawerToggle}
@@ -249,6 +249,7 @@ export default function Admin(props) {
         updating={updating}
         snackbarMessage={snackbarMessage}
         setOpenUpdate={setOpenUpdate}
+        rtlActive={false}
       />
 
       <div className={classes.mainPanel} ref={mainPanel}>

@@ -10,12 +10,17 @@ import i18next from "i18next";
 
 import { useTranslation } from "react-i18next";
 
+interface Language {
+  code: string;
+  name: string;
+}
+
 export default function LanguagePicker(props) {
   const history = useHistory();
-  const [language, setLanguage] = useState(
+  const [language, setLanguage] = useState<string>(
     i18next.language || window.localStorage.i18nextLng || "en"
   );
-  const [languages, setLanguages] = useState([]);
+  const [languages, setLanguages] = useState<Language[]>([]);
 
   const { i18n } = useTranslation();
 
@@ -30,8 +35,10 @@ export default function LanguagePicker(props) {
     fetch("/available_languages.json")
       .then((res) => res.json())
       .then((result) => {
-        const response = result.data.map(({ attributes }) => attributes);
-        let translates_languages = [
+        const response: Language[] = result.data.map(
+          ({ attributes }: { attributes: Language }) => attributes
+        );
+        const translates_languages: Language[] = [
           { code: "en", name: "English" },
           ...response,
         ];

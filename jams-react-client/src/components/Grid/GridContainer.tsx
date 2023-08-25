@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
-import Grid from "@mui/material/Grid";
+import Grid, { GridProps } from "@mui/material/Grid";
+import { FC, ReactNode } from "react";
 
 const styles = {
   grid: {
@@ -12,7 +13,11 @@ const styles = {
 
 const useStyles = makeStyles(styles as any);
 
-export default function GridContainer(props) {
+interface GridContainerProps extends GridProps {
+  children: ReactNode;
+}
+
+const GridContainer: FC<GridContainerProps> = (props) => {
   const classes = useStyles();
   const { children, ...rest } = props;
   return (
@@ -20,8 +25,6 @@ export default function GridContainer(props) {
       {children}
     </Grid>
   );
-}
-
-GridContainer.propTypes = {
-  children: PropTypes.node,
 };
+
+export default GridContainer;

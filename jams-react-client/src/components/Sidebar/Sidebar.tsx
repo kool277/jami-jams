@@ -1,4 +1,4 @@
-import { createRef, useEffect, useState } from "react";
+import { FC, createRef, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
@@ -21,10 +21,25 @@ import styles from "assets/jss/material-dashboard-react/components/sidebarStyle"
 import auth from "auth";
 
 import i18next from "i18next";
+import { Route } from "layouts/BaseLayout";
 
 const useStyles = makeStyles(styles as any);
 
-export default function Sidebar(props) {
+interface SidebarProps {
+  updating: boolean;
+  snackbarMessage: string;
+  rtlActive: boolean;
+  handleQuery: () => void;
+  setOpenUpdate: (open: boolean) => void;
+  open: boolean;
+  handleDrawerToggle: () => void;
+  color: string;
+  logo: string;
+  image: string;
+  routes: Route[];
+}
+
+const Sidebar: FC<SidebarProps> = (props) => {
   const classes = useStyles();
   const mainPanel = createRef();
   const [open, setOpen] = useState(false);
@@ -99,7 +114,7 @@ export default function Sidebar(props) {
                   />
                 )}
                 <ListItemText
-                  primary={props.rtlActive ? prop.rtlName : prop.name}
+                  primary={prop.name}
                   className={classNames(classes.itemText, whiteFontClasses, {
                     [classes.itemTextRTL]: props.rtlActive,
                   })}
@@ -216,15 +231,6 @@ export default function Sidebar(props) {
       </Hidden>
     </div>
   );
-}
-
-Sidebar.propTypes = {
-  rtlActive: PropTypes.bool,
-  handleDrawerToggle: PropTypes.func,
-  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
-  logo: PropTypes.string,
-  image: PropTypes.string,
-  logoText: PropTypes.string,
-  routes: PropTypes.arrayOf(PropTypes.object),
-  open: PropTypes.bool,
 };
+
+export default Sidebar;

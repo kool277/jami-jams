@@ -184,6 +184,7 @@ export interface UserProfile {
   phoneNumberExtension: string;
   faxNumber: string;
   mobileNumber: string;
+  jamiId?: string;
 }
 
 export interface GroupMembership {
@@ -197,7 +198,7 @@ export interface Group {
   blueprint: string;
 }
 
-interface UserGroup {
+interface UserGroupMapping {
   groupId: string;
   username: string;
 }
@@ -208,7 +209,18 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
-  const [user, setUser] = useState<UserProfile>({});
+  const [user, setUser] = useState<UserProfile>({
+    username: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    profilePicture: "",
+    organization: "",
+    phoneNumber: "",
+    phoneNumberExtension: "",
+    faxNumber: "",
+    mobileNumber: "",
+  });
   const [groupMemberships, setGroupMemberships] = useState<GroupMembership[]>(
     []
   );
@@ -257,6 +269,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
   }, [history, username]);
 
   const getAdminUserGroups = () => {
+    // TODO do this in a single sql query on the server, with a JOIN
     axios(
       configApiCall(
         api_path_get_admin_user_groups + username,
@@ -265,15 +278,22 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         null
       )
     ).then((userGroups) => {
-      const userGroupsData: UserGroup[] = userGroups.data;
-      userGroupsData.forEach((group) => {
+      const userGroupsData: UserGroupMapping[] = userGroups.data;
+      const promises = userGroupsData.map((group) =>
         axios(
           configApiCall(api_path_get_group + group.groupId, "GET", null, null)
         ).then((groupInfo) => {
-          group["name"] = groupInfo.data.name;
-        });
+          const g: GroupMembership = {
+            groupId: group.groupId,
+            name: groupInfo.data.name,
+          };
+          return g;
+        })
+      );
+
+      Promise.all(promises).then((groupMemberships) => {
+        setGroupMemberships(groupMemberships);
       });
-      setGroupMemberships(userGroupsData);
     });
   };
 

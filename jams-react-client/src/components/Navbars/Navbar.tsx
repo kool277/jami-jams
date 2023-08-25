@@ -25,11 +25,7 @@ export default function Header(props) {
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
         <div className={classes.flex}>
-          <Button
-            color="transparent"
-            href="#"
-            className={classes.title}
-          ></Button>
+          <Button color="info" className={classes.title}></Button>
         </div>
         <Hidden mdUp implementation="css">
           <IconButton

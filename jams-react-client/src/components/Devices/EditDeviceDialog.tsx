@@ -9,6 +9,7 @@ import {
 import { Formik, Field } from "formik";
 import i18next from "i18next";
 import { Dispatch, FC, SetStateAction } from "react";
+import * as Yup from "yup";
 import { Device } from "./Devices";
 
 interface EditDeviceDialogProps {
@@ -26,16 +27,9 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
   setDisplayName,
   handleUpdate,
 }) => {
-  /**
-   * Formik Validation
-   */
-  const validateDisplayName = (displaynamevalue) => {
-    let error;
-    if (!displaynamevalue) {
-      error = "Required";
-    }
-    return error;
-  };
+  const validationSchema = Yup.object({
+    displayName: Yup.string().required("Required"),
+  });
 
   return (
     <Dialog
@@ -55,11 +49,13 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
         initialValues={{
           displayName: selectedDevice.displayName,
         }}
+        onSubmit={handleUpdate}
+        validationSchema={validationSchema}
       >
-        {({ errors, touched, validateField }) => (
+        {({ errors, touched }) => (
           <form>
             <DialogContent>
-              <Field name="displayName" validate={validateDisplayName}>
+              <Field name="displayName">
                 {({ field }) => (
                   <div>
                     <TextField
@@ -87,12 +83,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
               <Button onClick={handleClose} color="primary">
                 {i18next.t("cancel", "Cancel") as string}
               </Button>
-              <Button
-                onClick={() =>
-                  validateField("displayName").then(() => handleUpdate())
-                }
-                color="primary"
-              >
+              <Button type="submit" color="primary">
                 {i18next.t("update", "Update") as string}
               </Button>
             </DialogActions>

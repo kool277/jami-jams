@@ -64,9 +64,10 @@ import auth from "auth";
 import { debounce } from "lodash";
 
 import { getBlueprintsOptions } from "./getBlueprintsOptions";
+import { ClassNameMap } from "@mui/material";
 
 const useStyles = makeStyles(() => ({
-  ...devicesStyle,
+  ...(devicesStyle as any),
   ...dashboardStyle,
   root: {
     flexGrow: 1,
@@ -112,7 +113,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function EditGroup(props) {
-  const classes = useStyles();
+  const classes: ClassNameMap<any> = useStyles();
   const history = useHistory();
 
   const [name, setName] = useState("");
@@ -209,7 +210,7 @@ export default function EditGroup(props) {
     getBlueprintsOptions(blueprints)
   );
 
-  const updateGroup = (blueprintValue) => {
+  const updateGroup = (blueprintValue?: string) => {
     const data = {
       name: newName,
       blueprint: blueprintValue ? blueprintValue : selectedBlueprint.label,
@@ -231,7 +232,7 @@ export default function EditGroup(props) {
       });
   };
 
-  const searchUsers = (value) => {
+  const searchUsers = (value?: string) => {
     axios(
       configApiCall(
         api_path_get_user_directory_search,

@@ -14,7 +14,7 @@ export default function Footer() {
         <p className={classes.right}>
           <span>
             JAMS Version {pjson.version.slice(0, 3)} - &copy;
-            {1900 + new Date().getYear()}{" "}
+            {new Date().getFullYear()}{" "}
             <a
               href="https://savoirfairelinux.com"
               target="_blank"

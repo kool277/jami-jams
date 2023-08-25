@@ -120,7 +120,7 @@ export default function EditBlueprintPermissions(props) {
     allowLookup,
   } = policyData;
 
-  const searchUsers = (value) => {
+  const searchUsers = (value?: string) => {
     axios(
       configApiCall(
         api_path_get_user_directory_search,

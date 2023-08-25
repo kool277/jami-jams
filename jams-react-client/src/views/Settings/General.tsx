@@ -207,7 +207,7 @@ export default function General(props) {
                         onKeyUpErrorMessage=""
                       />
                       {touched.password && errors.password ? (
-                        <span>{errors.password}</span>
+                        <span>{errors.password.toString()}</span>
                       ) : null}
 
                       <FormikField
@@ -245,7 +245,7 @@ export default function General(props) {
                         onKeyUpErrorMessage=""
                       />
                       {touched.confirmPassword && errors.confirmPassword ? (
-                        <span>{errors.confirmPassword}</span>
+                        <span>{errors.confirmPassword.toString()}</span>
                       ) : null}
 
                       <Button
@@ -311,7 +311,6 @@ export default function General(props) {
                         color="primary"
                         fullWidth
                         disabled={!isValid || !dirty}
-                        className={classes.submit}
                       >
                         {
                           i18next.t(

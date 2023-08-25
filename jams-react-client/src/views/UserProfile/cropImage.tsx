@@ -1,4 +1,4 @@
-const createImage = (url) =>
+const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
     const image = new Image();
     image.addEventListener("load", () => resolve(image));
@@ -7,7 +7,7 @@ const createImage = (url) =>
     image.src = url;
   });
 
-function getRadianAngle(degreeValue) {
+function getRadianAngle(degreeValue: number) {
   return (degreeValue * Math.PI) / 180;
 }
 

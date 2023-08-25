@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import classnames from "classnames";
@@ -49,7 +49,11 @@ const Devices: FC<DevicesProps> = ({ username }) => {
   const history = useHistory();
 
   const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<Device>({});
+  const [selectedDevice, setSelectedDevice] = useState<Device>({
+    deviceId: "",
+    displayName: "",
+    revoked: false,
+  });
   const [displayName, setDisplayName] = useState("");
 
   const [openEdit, setOpenEdit] = useState(false);
@@ -83,13 +87,19 @@ const Devices: FC<DevicesProps> = ({ username }) => {
     return device.revoked ? "Revoked" : "Active";
   };
 
-  const handleClickEdit = (e: MouseEvent, device: Device) => {
+  const handleClickEdit = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    device: Device
+  ) => {
     e.preventDefault();
     setOpenEdit(true);
     setSelectedDevice(device);
   };
 
-  const handleClickRevoke = (e: MouseEvent, device: Device) => {
+  const handleClickRevoke = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    device: Device
+  ) => {
     e.preventDefault();
     setOpenRevoke(true);
     setSelectedDevice(device);
@@ -98,7 +108,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
   const handleClose = () => {
     setOpenEdit(false);
     setOpenRevoke(false);
-    setSelectedDevice({});
+    setSelectedDevice(undefined);
   };
 
   const handleUpdate = () => {
@@ -131,7 +141,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
 
     axios(requestConfig)
       .then(() => {
-        setSelectedDevice({});
+        setSelectedDevice(undefined);
         setOpenEdit(false);
       })
       .catch((error) => {
@@ -160,7 +170,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
 
     axios(requestConfig)
       .then(() => {
-        setSelectedDevice({});
+        setSelectedDevice(undefined);
         setOpenRevoke(false);
       })
       .catch((error) => {

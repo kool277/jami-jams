@@ -1,16 +1,29 @@
-import { forwardRef, createRef, Dispatch, FC, SetStateAction } from "react";
+import {
+  forwardRef,
+  createRef,
+  Dispatch,
+  FC,
+  SetStateAction,
+  ForwardedRef,
+} from "react";
 
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-import Slide from "@mui/material/Slide";
+import Slide, { SlideProps } from "@mui/material/Slide";
 import { SnackbarProps } from "views/Blueprint/PolicyDataContext";
 
 // https://stackoverflow.com/a/67961603
-const Alert = forwardRef(function Alert(props, ref) {
+const Alert = forwardRef(function Alert(
+  props: any,
+  ref: ForwardedRef<HTMLDivElement>
+) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const SlideTransition = forwardRef(function SlideTransition(props, ref) {
+const SlideTransition = forwardRef(function SlideTransition(
+  props: SlideProps,
+  ref
+) {
   return <Slide ref={ref} {...props} direction="left" />;
 });
 
@@ -23,7 +36,7 @@ export const BlueprintSnackbar: FC<BlueprintSnackbarProps> = ({
   snackbar,
   setSnackbar,
 }) => {
-  const snackbarRef = createRef(null);
+  const snackbarRef = createRef();
 
   const handleClose = () => {
     setSnackbar((state) => ({ ...state, open: false }));

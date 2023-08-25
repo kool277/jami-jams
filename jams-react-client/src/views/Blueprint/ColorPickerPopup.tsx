@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { HexAlphaColorPicker, HexColorPicker } from "react-colorful";
 
@@ -33,7 +33,17 @@ const styles = {
 
 const useStyles = makeStyles(styles as any);
 
-export default function ColorPickerPopup({ hasAlphaChannel, color, onChange }) {
+interface ColorPickerPopupProps {
+  hasAlphaChannel?: boolean;
+  color: string;
+  onChange: (color: string) => void;
+}
+
+const ColorPickerPopup: FC<ColorPickerPopupProps> = ({
+  hasAlphaChannel,
+  color,
+  onChange,
+}) => {
   const classes = useStyles();
 
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
@@ -69,4 +79,6 @@ export default function ColorPickerPopup({ hasAlphaChannel, color, onChange }) {
       )}
     </div>
   );
-}
+};
+
+export default ColorPickerPopup;

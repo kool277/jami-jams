@@ -144,7 +144,7 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
             })}
             role="presentation"
           >
-            <div className={classes.searchWrapper}>
+            <div>
               <CustomInput
                 formControlProps={{
                   className: classes.margin + " " + classes.search,

@@ -9,9 +9,6 @@ i18next
   .use(Backend)
   .init({
     fallbackLng: "en",
-    lookupCookie: "i18next",
-    lookupLocalStorage: "i18nextLng",
-    lookupSessionStorage: "i18nextLng",
     debug: false,
     detection: {
       order: ["cookie", "localStorage", "sessionStorage", "navigator"],

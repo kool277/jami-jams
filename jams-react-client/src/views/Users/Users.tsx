@@ -120,7 +120,7 @@ export default function Users() {
     };
   }, [history]);
 
-  const searchUsers = (value, page = "1") => {
+  const searchUsers = (value, page = 1) => {
     setSelectedPage(page);
     setLoading(true);
     setNoMatchFound(false);

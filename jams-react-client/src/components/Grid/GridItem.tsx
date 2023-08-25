@@ -1,8 +1,7 @@
 import { FC } from "react";
 import * as React from "react";
 import { makeStyles } from "@mui/styles";
-import { Grid, GridTypeMap } from "@mui/material";
-import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { Grid, GridProps } from "@mui/material";
 
 const styles = {
   grid: {
@@ -12,7 +11,7 @@ const styles = {
 
 const useStyles = makeStyles(styles as any);
 
-interface GridItemProps extends OverridableComponent<GridTypeMap> {
+interface GridItemProps extends GridProps {
   children: React.ReactNode;
 }
 

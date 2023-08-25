@@ -103,7 +103,7 @@ const styles = {
 const useStyles = makeStyles(styles as any);
 
 interface CustomUiPreviewProps {
-  isOldPreview: boolean;
+  isOldPreview?: boolean;
   opacity: number;
   uiCustomization: UiCustomization;
 }

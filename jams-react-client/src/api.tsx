@@ -18,6 +18,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { AxiosRequestConfig } from "axios";
 import {
   url_path,
   url_port,
@@ -31,18 +32,16 @@ import {
   api_path_blueprints,
 } from "./globalUrls";
 
-export default function configApiCall(
-  api_path,
-  request_type,
-  data,
-  credentials
-) {
+const configApiCall = (
+  api_path: string,
+  request_type: string,
+  data: any,
+  credentials: null
+): AxiosRequestConfig => {
   // build config call
-  const config = {
+  const config: AxiosRequestConfig = {
     url: url_path + ":" + url_port + api_path,
     method: request_type,
-    crossDomain: true,
-    dataType: "json",
     headers: {},
   };
 
@@ -51,15 +50,15 @@ export default function configApiCall(
     const base64 = btoa(
       credentials["username"] + ":" + credentials["password"]
     );
-    config["headers"]["Authorization"] = "Basic " + base64;
+    config.headers!["Authorization"] = "Basic " + base64;
   }
 
   const jwt = localStorage.getItem("access_token");
   if (jwt) {
-    config["headers"]["Authorization"] = "Bearer " + jwt;
+    config.headers!["Authorization"] = "Bearer " + jwt;
   }
 
-  config["headers"]["Content-type"] = "application/json;charset=UTF-8";
+  config.headers!["Content-type"] = "application/json;charset=UTF-8";
 
   // pass data in the header
   if (data) {
@@ -84,4 +83,6 @@ export default function configApiCall(
   }
 
   return config;
-}
+};
+
+export default configApiCall;

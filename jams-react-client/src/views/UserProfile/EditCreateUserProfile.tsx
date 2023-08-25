@@ -74,6 +74,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import i18next from "i18next";
 
 import generator from "generate-password-browser";
+import { UserProfile } from "./DisplayUserProfile";
 
 const styles = (theme) => ({
   ...dashboardStyle,
@@ -218,6 +219,11 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles(styles as any);
 
+interface UserProfileForm extends UserProfile {
+  password?: string;
+  confirmPassword?: string;
+}
+
 const toBase64 = (file: File): Promise<string | undefined> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -258,7 +264,7 @@ export default function EditCreateUserProfile(props) {
 
   const intialyGeneratedPassword = passwordGenerator();
 
-  const [initialValues, setInitialValues] = useState({
+  const [initialValues, setInitialValues] = useState<UserProfileForm>({
     username: "",
     password: intialyGeneratedPassword,
     confirmPassword: intialyGeneratedPassword,
@@ -520,7 +526,9 @@ export default function EditCreateUserProfile(props) {
       2,
       i18next.t("last_name_is_too_short", "Last Name is too short!") as string
     ),
-    email: Yup.string().email(i18next.t("invalid_email", "Invalid email!")),
+    email: Yup.string().email(
+      i18next.t("invalid_email", "Invalid email!") as string
+    ),
     profilePicture: Yup.string(),
     organization: Yup.string().min(
       2,
@@ -586,7 +594,7 @@ export default function EditCreateUserProfile(props) {
                 step={0.1}
                 aria-labelledby="Zoom"
                 className={classes.slider}
-                onChange={(e, zoom) => setZoom(zoom)}
+                onChange={(e, zoom: any) => setZoom(zoom)}
               />
             </div>
             <div className={classes.sliderContainer}>
@@ -603,7 +611,7 @@ export default function EditCreateUserProfile(props) {
                 step={1}
                 aria-labelledby="Rotation"
                 className={classes.slider}
-                onChange={(e, rotation) => setRotation(rotation)}
+                onChange={(e, rotation: any) => setRotation(rotation)}
               />
             </div>
           </div>
@@ -823,16 +831,10 @@ export default function EditCreateUserProfile(props) {
                             </Grid>
                           )}
                           {props.createUser && (
-                            <Grid
-                              item
-                              align="left"
-                              xs={12}
-                              sm={12}
-                              md={6}
-                            ></Grid>
+                            <Grid item xs={12} sm={12} md={6}></Grid>
                           )}
                           {props.createUser && (
-                            <Grid item align="left" xs={12} sm={12} md={6}>
+                            <Grid item xs={12} sm={12} md={6}>
                               <Button
                                 variant="contained"
                                 color="primary"
@@ -897,7 +899,13 @@ export default function EditCreateUserProfile(props) {
                               ) : null}
                             </Grid>
                           )}
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid
+                            item
+                            alignContent="center"
+                            xs={12}
+                            sm={12}
+                            md={6}
+                          >
                             <FormikField
                               name="firstName"
                               label={
@@ -917,7 +925,13 @@ export default function EditCreateUserProfile(props) {
                               onKeyUpErrorMessage=""
                             />
                           </Grid>
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid
+                            item
+                            alignContent="center"
+                            xs={12}
+                            sm={12}
+                            md={6}
+                          >
                             <FormikField
                               name="lastName"
                               label={
@@ -936,7 +950,7 @@ export default function EditCreateUserProfile(props) {
                               onKeyUpErrorMessage=""
                             />
                           </Grid>
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid item alignSelf="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="email"
                               label={i18next.t("email", "Email") as string}
@@ -953,7 +967,7 @@ export default function EditCreateUserProfile(props) {
                               onKeyUpErrorMessage=""
                             />
                           </Grid>
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid item alignSelf="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="organization"
                               label={
@@ -976,7 +990,7 @@ export default function EditCreateUserProfile(props) {
                               onKeyUpErrorMessage=""
                             />
                           </Grid>
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid item alignSelf="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="faxNumber"
                               label={
@@ -996,7 +1010,7 @@ export default function EditCreateUserProfile(props) {
                               onKeyUpErrorMessage=""
                             />
                           </Grid>
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid item alignSelf="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="phoneNumber"
                               label={
@@ -1019,7 +1033,7 @@ export default function EditCreateUserProfile(props) {
                               onKeyUpErrorMessage=""
                             />
                           </Grid>
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid item alignSelf="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="phoneNumberExtension"
                               label={
@@ -1038,7 +1052,7 @@ export default function EditCreateUserProfile(props) {
                               onKeyUpErrorMessage=""
                             />
                           </Grid>
-                          <Grid item align="center" xs={12} sm={12} md={6}>
+                          <Grid item alignSelf="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="mobileNumber"
                               label={i18next.t("mobile", "Mobile") as string}

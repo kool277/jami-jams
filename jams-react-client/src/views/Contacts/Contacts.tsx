@@ -92,12 +92,12 @@ export default function Users(props) {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [removedContact, setRemovedContact] = useState();
+  const [removedContact, setRemovedContact] = useState("");
   const [removedContactName, setRemovedContactName] = useState();
   const [open, setOpen] = useState(false);
   const [allowedToAdd, setAllowedToAdd] = useState(true);
 
-  const searchContacts = (value) => {
+  const searchContacts = (value?: string) => {
     axios(
       configApiCall(
         api_path_get_user_directory_search,
@@ -161,6 +161,7 @@ export default function Users(props) {
           axios(
             configApiCall(
               api_path_get_ns_name_from_addr + contact.uri,
+              "GET",
               null,
               null
             )
@@ -503,7 +504,7 @@ export default function Users(props) {
               )}
             </GridItem>
           ))}
-        {contacts === [] &&
+        {contacts.length === 0 &&
           ((props.username +
             i18next.t("has_no_contacts", " has no contacts")) as string)}
       </GridContainer>

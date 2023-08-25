@@ -22,7 +22,10 @@ import i18next from "i18next";
 
 import { CustomUiPreview } from "components/CustomUiPreview/CustomUiPreview";
 import EditBlueprintUiForm from "./EditBlueprintUiForm";
-import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
+import {
+  DEFAULT_UI_CUSTOMIZATION,
+  UiCustomization,
+} from "./policyData.constants";
 import { PolicyDataContext } from "./PolicyDataContext";
 
 const styles = {
@@ -104,7 +107,7 @@ export default function EditBlueprintUi({ blueprintName }) {
   const [oldUiCustomization, setOldUiCustomization] = useState(uiCustomization);
   const [opacity, setOpacity] = useState(0);
 
-  const handleUpdateUi = (field: string, value: any) => {
+  const handleUpdateUi = (field: string | UiCustomization, value?: any) => {
     let newUiCustomization;
 
     if (typeof field === "object") {
@@ -206,7 +209,7 @@ export default function EditBlueprintUi({ blueprintName }) {
                         />
                         <CustomUiPreview
                           isOldPreview
-                          opacity="1"
+                          opacity={1}
                           uiCustomization={oldUiCustomization}
                         />
                       </Grid>

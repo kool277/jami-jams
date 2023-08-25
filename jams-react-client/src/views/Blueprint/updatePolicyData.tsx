@@ -89,7 +89,7 @@ const updateUiCustomization = (data) => {
     logoUrl,
     logoSize,
   } = data.uiCustomization;
-  const ui = {};
+  const ui: Partial<ServerUiCustomization> = {};
 
   if (hasTitle === false) {
     ui.title = "";

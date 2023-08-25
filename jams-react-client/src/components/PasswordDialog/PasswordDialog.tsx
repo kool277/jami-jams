@@ -271,7 +271,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
                     </Button>
                     <Button
                       type="submit"
-                      disable={!isValid && !dirty}
+                      disabled={!isValid && !dirty}
                       color="info"
                       className={classes.whiteButtonText}
                       autoFocus

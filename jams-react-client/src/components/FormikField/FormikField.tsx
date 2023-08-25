@@ -6,45 +6,34 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Input from "@mui/material/Input";
 
-class FormikField extends Component {
-  render() {
-    return (
-      <div className="FormikField">
-        <FormControl
-          size="medium"
-          error={
-            this.props.onKeyUpError ||
-            <ErrorMessage name={this.props.name} /> === ""
-          }
+const FormikField = (props) => {
+  return (
+    <div className="FormikField">
+      <FormControl size="medium" error={props.onKeyUpError} fullWidth>
+        <InputLabel htmlFor={props.name}>
+          {props.onKeyUpError ? (
+            props.onKeyUpErrorMessage
+          ) : (
+            <ErrorMessage name={props.name} />
+          )}
+        </InputLabel>
+        <Field
+          placeholder={props.placeholder}
+          required={props.required}
+          name={props.name}
+          as={Input}
+          startAdornment={props.startAdornment}
+          endAdornment={props.endAdornment}
+          label={props.label}
           fullWidth
-        >
-          <InputLabel htmlFor={this.props.name}>
-            {this.props.onKeyUpError ? (
-              this.props.onKeyUpErrorMessage
-            ) : "" || <ErrorMessage name={this.props.name} /> === "" ? (
-              this.props.label
-            ) : (
-              <ErrorMessage name={this.props.name} />
-            )}
-          </InputLabel>
-          <Field
-            placeholder={this.props.placeholder}
-            required={this.props.required}
-            name={this.props.name}
-            as={Input}
-            startAdornment={this.props.startAdornment}
-            endAdornment={this.props.endAdornment}
-            label={this.props.label}
-            fullWidth
-            type={this.props.type}
-            autoComplete={this.props.autoComplete}
-            onKeyUp={(e) => this.props.handleChange(e.target.value)}
-          />
-        </FormControl>
-      </div>
-    );
-  }
-}
+          type={props.type}
+          autoComplete={props.autoComplete}
+          onKeyUp={(e) => props.handleChange(e.target.value)}
+        />
+      </FormControl>
+    </div>
+  );
+};
 
 FormikField.propTypes = {
   startAdornment: PropTypes.element,

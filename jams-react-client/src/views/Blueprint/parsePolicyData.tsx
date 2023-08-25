@@ -5,7 +5,11 @@ import {
   api_path_get_ns_name_from_addr,
   api_path_get_user_profile,
 } from "../../globalUrls";
-import { DEFAULT_UI_CUSTOMIZATION, PolicyData } from "./policyData.constants";
+import {
+  DEFAULT_UI_CUSTOMIZATION,
+  PolicyData,
+  UiCustomization,
+} from "./policyData.constants";
 
 const getModerators = async (defaultModerators: string) => {
   const moderators = [];
@@ -78,7 +82,7 @@ const setCustomizationSettings = (policyData) => {
   }
 
   const result = JSON.parse(policyData.uiCustomization);
-  const ui = { isCustomizationEnabled: true };
+  const ui: Partial<UiCustomization> = { isCustomizationEnabled: true };
 
   ui.hasTitle = result.title !== "";
   ui.title = result.title;

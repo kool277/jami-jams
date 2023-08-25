@@ -90,7 +90,7 @@ export default function SignIn() {
       password: values.password,
     };
     auth.login(jsonData, () => {
-      if (auth.authenticated && auth.access_token !== "") {
+      if (auth.authenticated) {
         auth.checkLastKnownStep(() => {
           auth.checkDirectoryType(() => {
             if (auth.isServerInstalled()) {
