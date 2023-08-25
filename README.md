@@ -146,3 +146,11 @@ Don't forget to launch jams locally at least once before proceeding.
 The files in the `filters` folder are prefixed "A", "B", "C" and "D" so that the
 order of execution of the filters are right (jakarta registers filters in
 alphabetical order).
+
+## Notes about jams-server
+- /api/admin is the route for all admins actions, it gives read and write permissions to all users' data
+- /api/auth is the route for **authenticated** users, it lets you read all
+users' data and edit your own profile. This route has nothing to do with authentication
+- /api/login is the route to authenticate users
+- /api/install is the routes used to setup jams initially, once the initial setup
+is done its endpoints tells the client that the server is already installed

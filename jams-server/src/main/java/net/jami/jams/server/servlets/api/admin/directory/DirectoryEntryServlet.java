@@ -27,7 +27,6 @@ import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -44,23 +44,16 @@ public class UserGroupServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
         String groupId = req.getPathInfo().replace("/", "");
-
         List<UserGroupMapping> result = dataStore.getUserGroupMappingsDao().getByGroupId(groupId);
-
-        if (result.isEmpty()) resp.sendError(404, "No users found for this group!");
-        else {
-            resp.getOutputStream().write(gson.toJson(result).getBytes());
-            resp.setStatus(200);
-        }
+        resp.getOutputStream().write(gson.toJson(result).getBytes());
+        resp.setStatus(200);
     }
 
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
         String groupId = req.getPathInfo().replace("/", "");
 
         JsonObject obj = gson.fromJson(req.getReader(), JsonObject.class);
@@ -70,7 +63,7 @@ public class UserGroupServlet extends HttpServlet {
                 dataStore.getUserGroupMappingsDao().getByGroupIdAndUsername(groupId, username);
 
         if (existingMapping.isPresent()) {
-            resp.sendError(409, "The user already part of the group!");
+            resp.sendError(HttpServletResponse.SC_CONFLICT, "The user already part of the group!");
             return;
         }
 

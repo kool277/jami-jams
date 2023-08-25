@@ -23,7 +23,6 @@
 
 package net.jami.jams.common.objects.contacts;
 
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

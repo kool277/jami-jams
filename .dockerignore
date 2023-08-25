@@ -19,3 +19,5 @@ derby.log
 extras
 jams
 jams-server/src/main/resources/webapp
+
+package-lock.json

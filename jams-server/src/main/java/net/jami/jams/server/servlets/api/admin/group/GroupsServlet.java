@@ -31,14 +31,8 @@ public class GroupsServlet extends HttpServlet {
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
         List<Group> groups = dataStore.getGroupDao().getAll();
-
-        if (!groups.isEmpty()) {
-            resp.getOutputStream().write(gson.toJson(groups).getBytes());
-            resp.setStatus(200);
-        } else {
-            resp.setStatus(404);
-        }
+        resp.getOutputStream().write(gson.toJson(groups).getBytes());
+        resp.setStatus(200);
     }
 }

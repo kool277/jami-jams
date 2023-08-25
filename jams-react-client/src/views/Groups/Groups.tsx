@@ -158,9 +158,6 @@ export default function Groups() {
                 auth.authenticated = false;
                 history.push("/");
               }
-              if (error.response.status === 404) {
-                group["groupMembersLength"] = 0;
-              }
             });
         });
         setGroups(allGroups);

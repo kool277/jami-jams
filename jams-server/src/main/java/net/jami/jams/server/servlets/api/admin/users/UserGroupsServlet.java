@@ -42,15 +42,9 @@ public class UserGroupsServlet extends HttpServlet {
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     @JsonContent
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
         String username = req.getPathInfo().replace("/", "");
-
         List<UserGroupMapping> result = dataStore.getUserGroupMappingsDao().getByUsername(username);
-
-        if (result.isEmpty()) resp.sendError(404, "No groups found for this user!");
-        else {
-            resp.getOutputStream().write(gson.toJson(result).getBytes());
-            resp.setStatus(200);
-        }
+        resp.getOutputStream().write(gson.toJson(result).getBytes());
+        resp.setStatus(200);
     }
 }

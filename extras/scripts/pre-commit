@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 cd jams-react-client
 npm run format
+cd ..
 
-google-java-format -i -a **/*.java
+google-java-format -i -a --skip-reflowing-long-strings --skip-javadoc-formatting **/*.java
