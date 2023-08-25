@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { makeStyles } from "@mui/styles";
 
 import tipLightBulbImage from "assets/img/tip_light_bulb.svg";

@@ -1,5 +1,3 @@
-import React from "react";
-
 import ListLayout from "layouts/ListLayout";
 import EditGroup from "views/Groups/EditGroup";
 

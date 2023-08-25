@@ -1,10 +1,4 @@
-import React, {
-  FC,
-  ReactNode,
-  createContext,
-  useEffect,
-  useState,
-} from "react";
+import { FC, ReactNode, createContext, useEffect, useState } from "react";
 
 import axios from "axios";
 

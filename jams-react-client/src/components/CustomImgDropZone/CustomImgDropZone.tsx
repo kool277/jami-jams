@@ -1,4 +1,4 @@
-import React, { FC, MouseEventHandler } from "react";
+import { FC, MouseEventHandler } from "react";
 import { makeStyles } from "@mui/styles";
 import Dropzone, { Accept } from "react-dropzone";
 import UploadIcon from "@mui/icons-material/CloudUpload";

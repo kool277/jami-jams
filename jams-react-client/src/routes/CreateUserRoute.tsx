@@ -1,5 +1,3 @@
-import React from "react";
-
 import EditCreateUserProfile from "views/UserProfile/EditCreateUserProfile";
 
 import ListLayout from "layouts/ListLayout";

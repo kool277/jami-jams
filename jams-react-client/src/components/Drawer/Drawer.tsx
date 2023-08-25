@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from "react";
+import { Fragment, FC, useCallback } from "react";
 import clsx from "clsx";
 import { debounce } from "lodash";
 import { makeStyles } from "@mui/styles";
@@ -129,7 +129,7 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
 
   return (
     <div>
-      <React.Fragment key={direction}>
+      <Fragment key={direction}>
         <Drawer
           anchor="right"
           open={openDrawer}
@@ -161,7 +161,7 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
             {listUsers()}
           </div>
         </Drawer>
-      </React.Fragment>
+      </Fragment>
     </div>
   );
 };

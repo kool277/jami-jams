@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -50,7 +50,7 @@ export default function Admin(props) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
-  const mainPanel = React.createRef();
+  const mainPanel = createRef();
   // states and functions
   const [mobileOpen, setMobileOpen] = useState(false);
   const [open, setOpen] = useState(false);

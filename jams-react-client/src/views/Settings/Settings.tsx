@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 // core components
 import General from "./General";
 import Subscription from "./Subscription";

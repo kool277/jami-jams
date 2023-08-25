@@ -1,5 +1,3 @@
-import React from "react";
-
 import Checkbox from "@mui/material/Checkbox";
 import Switch from "@mui/material/Switch";
 import FormGroup from "@mui/material/FormGroup";

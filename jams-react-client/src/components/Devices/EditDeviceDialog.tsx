@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import { Formik, Field } from "formik";
 import i18next from "i18next";
-import React from "react";
 import { Dispatch, FC, SetStateAction } from "react";
 import { Device } from "./Devices";
 

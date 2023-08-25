@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik } from "formik";
 import FormikField from "components/FormikField/FormikField";
 import * as Yup from "yup";

@@ -1,4 +1,3 @@
-import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import Popover from "@mui/material/Popover";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";

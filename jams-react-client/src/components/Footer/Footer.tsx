@@ -1,5 +1,3 @@
-import React from "react";
-// @mui/material components
 import { makeStyles } from "@mui/styles";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/footerStyle";

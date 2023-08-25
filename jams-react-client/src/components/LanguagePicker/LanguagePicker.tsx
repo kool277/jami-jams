@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import Button from "@mui/material/Button";
@@ -52,7 +52,7 @@ export default function LanguagePicker(props) {
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">
       {(popupState) => (
-        <React.Fragment>
+        <Fragment>
           <Button
             variant="contained"
             color="inherit"
@@ -77,7 +77,7 @@ export default function LanguagePicker(props) {
               </MenuItem>
             ))}
           </Menu>
-        </React.Fragment>
+        </Fragment>
       )}
     </PopupState>
   );

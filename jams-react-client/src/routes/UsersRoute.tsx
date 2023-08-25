@@ -1,5 +1,3 @@
-import React from "react";
-
 import Users from "views/Users/Users";
 
 import ListLayout from "layouts/ListLayout";

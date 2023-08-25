@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import PropTypes from "prop-types";
@@ -26,7 +26,7 @@ const useStyles = makeStyles(styles);
 
 export default function Sidebar(props) {
   const classes = useStyles();
-  const mainPanel = React.createRef();
+  const mainPanel = createRef();
   const [open, setOpen] = useState(false);
   const history = useHistory();
 

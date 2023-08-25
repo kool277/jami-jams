@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import PropTypes from "prop-types";
 import { ErrorMessage, Field } from "formik";
 
@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Input from "@mui/material/Input";
 
-class FormikField extends React.Component {
+class FormikField extends Component {
   render() {
     return (
       <div className="FormikField">

@@ -1,5 +1,3 @@
-import React from "react";
-
 import Blueprints from "views/Blueprints/Blueprints";
 
 import ListLayout from "layouts/ListLayout";

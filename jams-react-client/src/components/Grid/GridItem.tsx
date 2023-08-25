@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+import { FC } from "react";
+import * as React from "react";
 import { makeStyles } from "@mui/styles";
 import { Grid, GridTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";

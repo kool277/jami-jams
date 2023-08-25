@@ -1,5 +1,5 @@
 module.exports = {
-  parser: "babel-eslint",
+  parser: "@typescript-eslint/parser",
   env: {
     es6: true,
     node: true,
@@ -17,9 +17,15 @@ module.exports = {
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
+    "plugin:react/jsx-runtime",
   ],
   rules: {
     "react/prop-types": "off",
     "no-unused-vars": "warn",
+  },
+  settings: {
+    react: {
+      version: "detect",
+    },
   },
 };
