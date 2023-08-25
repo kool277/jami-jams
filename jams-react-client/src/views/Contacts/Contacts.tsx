@@ -107,7 +107,7 @@ export default function Users(props) {
       )
     )
       .then((response) => {
-        let profiles = [];
+        const profiles = [];
         const profilesResults = response.data.profiles;
         profilesResults.forEach((profile) => {
           if (profile.username !== props.username) {

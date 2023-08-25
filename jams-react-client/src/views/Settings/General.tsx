@@ -30,9 +30,8 @@ import i18next from "i18next";
 
 import LanguagePicker from "../../components/LanguagePicker/LanguagePicker";
 
-const pjson = require("../../../package.json");
-
-let generator = require("generate-password");
+import pjson from "../../../package.json";
+import generator from "generate-password";
 
 const useStyles = makeStyles((theme) => ({
   paper: {

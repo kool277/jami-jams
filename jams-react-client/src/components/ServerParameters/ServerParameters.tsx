@@ -115,8 +115,8 @@ export default function ServerParameters({ setError, setErrorMessage }) {
 
   function handleSubmit(values: Settings) {
     let jsonData = {};
-    let re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
-    let nohttpre = new RegExp(/^\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
+    const re = new RegExp(/^http[s]?:\/\/\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
+    const nohttpre = new RegExp(/^\w+(\.\w+)*(:[0-9]+)?\/?(\/[.\w]*)*$/);
 
     if (values.domain.match(nohttpre))
       values.domain = window.location.protocol + "//" + values.domain;

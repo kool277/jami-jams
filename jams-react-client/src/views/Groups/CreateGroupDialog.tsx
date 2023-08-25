@@ -66,7 +66,7 @@ export default function CreateGroupDialog({
       )
     )
       .then((response) => {
-        let allGroups = response.data;
+        const allGroups = response.data;
         setDisableCreate(false);
         setGroupNameExits(false);
         allGroups.forEach((group) => {

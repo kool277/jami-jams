@@ -75,7 +75,7 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
   );
 
   const handleCreateBlueprint = () => {
-    let defaultPolicyData = {
+    const defaultPolicyData = {
       videoEnabled: true,
       publicInCalls: false,
       allowCertFromContact: true,

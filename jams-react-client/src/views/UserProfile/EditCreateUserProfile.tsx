@@ -73,8 +73,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import i18next from "i18next";
 
-let generator = require("generate-password");
-
+import generator from "generate-password";
 const fileUpload = require("fuctbase64");
 
 const styles = (theme) => ({
@@ -637,7 +636,7 @@ export default function EditCreateUserProfile(props) {
                           alt="..."
                           className={classes.editProfilePicture}
                           onClick={() => {
-                            let pictureChange = document.getElementById(
+                            const pictureChange = document.getElementById(
                               "change-profile-picture"
                             );
                             pictureChange.click();

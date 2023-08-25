@@ -100,7 +100,7 @@ export default function Blueprints() {
     }, 500);
     axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
       .then((response) => {
-        let allBluePrints = response.data;
+        const allBluePrints = response.data;
         if (allBluePrints.length === 0) setZeroBlueprint(true);
         else setZeroBlueprint(false);
         setBlueprints(allBluePrints);

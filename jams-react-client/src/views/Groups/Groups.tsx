@@ -139,7 +139,7 @@ export default function Groups() {
 
     axios(configApiCall(api_path_get_list_group, "GET", null, null))
       .then((response) => {
-        let allGroups = response.data;
+        const allGroups = response.data;
 
         allGroups.forEach((group) => {
           axios(

@@ -46,13 +46,13 @@ export default function Sidebar(props) {
   }
   const { color, logo, image, routes } = props;
 
-  var brand = (
+  const brand = (
     <Link to={"/"}>
       <img src={logo} alt="logo" className={classes.img} />
     </Link>
   );
 
-  var links = (
+  const links = (
     <List className={classes.list}>
       <ListItem className={classes.itemLink}>{brand}</ListItem>
       <div className={classes.itemLinkSeparator}>
@@ -113,7 +113,7 @@ export default function Sidebar(props) {
     </List>
   );
 
-  var bottomLinks = (
+  const bottomLinks = (
     <List className={classes.bottomlist}>
       {open && (
         <ListItem

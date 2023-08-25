@@ -91,7 +91,7 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
       )
     )
       .then(() => {
-        let newGroupMemberships = groupMemberships;
+        const newGroupMemberships = groupMemberships;
         newGroupMemberships.push({
           groupId: group.id,
           name: group.name,

@@ -11,11 +11,11 @@ export function buildSelectMenuItems(elements) {
 
 // read file content
 export function readSingleFile(evt, fieldContents) {
-  var f = evt.target.files[0];
+  const f = evt.target.files[0];
   if (f) {
-    var r = new FileReader();
+    const r = new FileReader();
     r.onload = function (e) {
-      var contents = e.target.result;
+      const contents = e.target.result;
       fieldContents = contents;
     };
     console.log(fieldContents);

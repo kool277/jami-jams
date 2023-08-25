@@ -230,7 +230,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
       )
     )
       .then(() => {
-        let newGroupMemberships = groupMemberships;
+        const newGroupMemberships = groupMemberships;
         newGroupMemberships.splice(newGroupMemberships.indexOf(group), 1);
         setGroupMemberships(newGroupMemberships);
       })
@@ -265,7 +265,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         null
       )
     ).then((userGroups) => {
-      let userGroupsData: UserGroup[] = userGroups.data;
+      const userGroupsData: UserGroup[] = userGroups.data;
       userGroupsData.forEach((group) => {
         axios(
           configApiCall(api_path_get_group + group.groupId, "GET", null, null)

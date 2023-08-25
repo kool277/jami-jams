@@ -4,7 +4,7 @@ import { makeStyles } from "@mui/styles";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/footerStyle";
 
-const pjson = require("../../../package.json");
+import pjson from "../../../package.json";
 
 const useStyles = makeStyles(styles);
 

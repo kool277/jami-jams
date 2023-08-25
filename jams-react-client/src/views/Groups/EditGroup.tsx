@@ -143,7 +143,7 @@ export default function EditGroup(props) {
   const getGroup = () => {
     axios(configApiCall(api_path_get_group + props.groupid, "GET", null, null))
       .then((response) => {
-        let group = response.data;
+        const group = response.data;
 
         axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
           .then((response) => {
@@ -172,10 +172,10 @@ export default function EditGroup(props) {
           )
         )
           .then((response) => {
-            let members = response.data;
+            const members = response.data;
             members.forEach((member) => {
               getUserInfo(member.username).then((userInfo) => {
-                let newGroupMembers = groupMembers;
+                const newGroupMembers = groupMembers;
                 newGroupMembers.push(userInfo);
                 setGroupMembers(newGroupMembers);
 
@@ -210,7 +210,7 @@ export default function EditGroup(props) {
   );
 
   const updateGroup = (blueprintValue) => {
-    let data = {
+    const data = {
       name: newName,
       blueprint: blueprintValue ? blueprintValue : selectedBlueprint.label,
     };
@@ -241,7 +241,7 @@ export default function EditGroup(props) {
       )
     )
       .then((response) => {
-        let profiles = [];
+        const profiles = [];
         const profilesResults = response.data.profiles;
         profilesResults.forEach((profile) => {
           let existingUser = false;
@@ -262,7 +262,7 @@ export default function EditGroup(props) {
   };
 
   const addUserInGroup = (user) => {
-    let data = {
+    const data = {
       username: user.username,
     };
     axios(
@@ -274,7 +274,7 @@ export default function EditGroup(props) {
       )
     )
       .then(() => {
-        let newGroupMembers = groupMembers;
+        const newGroupMembers = groupMembers;
         newGroupMembers.push(user);
         setGroupMembers(newGroupMembers);
 
@@ -290,7 +290,7 @@ export default function EditGroup(props) {
   };
 
   const deleteUserFromGroup = (user) => {
-    let data = {
+    const data = {
       username: user.username,
     };
     axios(
@@ -302,7 +302,7 @@ export default function EditGroup(props) {
       )
     )
       .then(() => {
-        let newGroupMembers = groupMembers;
+        const newGroupMembers = groupMembers;
         newGroupMembers.splice(newGroupMembers.indexOf(user), 1);
         setGroupMembers(newGroupMembers);
 

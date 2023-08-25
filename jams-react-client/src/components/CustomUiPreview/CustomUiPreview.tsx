@@ -113,21 +113,23 @@ export const CustomUiPreview: FC<CustomUiPreviewProps> = ({
   opacity,
   uiCustomization,
 }) => {
-  let {
+  const {
     hasTitle,
-    title,
     hasDescription,
-    description,
     hasTips,
     hasBackground,
-    backgroundColor,
-    backgroundUrl,
     tipBoxAndIdColor,
     hasMainBoxColor,
-    mainBoxColor,
     hasLogo,
-    logoUrl,
     logoSize,
+  } = uiCustomization;
+  let {
+    title,
+    description,
+    backgroundColor,
+    backgroundUrl,
+    mainBoxColor,
+    logoUrl,
   } = uiCustomization;
 
   if (!title) {
