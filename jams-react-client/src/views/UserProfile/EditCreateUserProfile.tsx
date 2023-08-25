@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // @mui/material components
@@ -74,7 +74,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import i18next from "i18next";
 
 import generator from "generate-password";
-const fileUpload = require("fuctbase64");
 
 const styles = (theme) => ({
   ...dashboardStyle,
@@ -219,6 +218,14 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles(styles);
 
+const toBase64 = (file: File): Promise<string | undefined> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result?.toString());
+    reader.onerror = reject;
+  });
+
 export default function EditCreateUserProfile(props) {
   const classes = useStyles();
   const history = useHistory();
@@ -323,7 +330,7 @@ export default function EditCreateUserProfile(props) {
     }
   }, [props.createUser, props.username]);
 
-  const resizeFile = (file, outputFormat) =>
+  const resizeFile = (file: Blob, outputFormat: string): Promise<string> =>
     new Promise((resolve) => {
       Resizer.imageFileResizer(
         file,
@@ -333,16 +340,28 @@ export default function EditCreateUserProfile(props) {
         100,
         0,
         (uri) => {
-          resolve(uri);
+          resolve(uri.toString());
         },
         outputFormat
       );
     });
 
-  const handleProfilePictureChange = (event) => {
-    fileUpload(event)
+  const handleProfilePictureChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files === null || files[0] === undefined) {
+      console.error("No file attached!");
+      return;
+    }
+
+    toBase64(files[0])
       .then(async (data) => {
-        const imageBase64 = await resizeFile(data, "base64");
+        if (data === undefined) {
+          console.error("Error converting file to base64");
+          return;
+        }
+
+        const blob = await fetch(data).then((r) => r.blob());
+        const imageBase64 = await resizeFile(blob, "base64");
         setProfilePicture(imageBase64);
         setProfilePicturePreview("data:image/png;base64, " + imageBase64);
         setOriginalUploadedImage(imageBase64);
