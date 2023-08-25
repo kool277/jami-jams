@@ -1,53 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import classnames from "classnames";
+import React, { FC, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
+import i18next from "i18next";
 
-// @mui/material components
 import { makeStyles } from "@mui/styles";
-// core components
-import GridContainer from "components/Grid/GridContainer";
-import Button from "components/CustomButtons/Button";
-import Card from "components/Card/Card";
-import CardBody from "components/Card/CardBody";
-import CardFooter from "components/Card/CardFooter";
-import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Chip,
+  LinearProgress,
+} from "@mui/material";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-
-import Grid from "@mui/material/Grid";
-import GridItem from "components/Grid/GridItem";
-import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlined";
-import AlternateEmailOutlinedIcon from "@mui/icons-material/AlternateEmailOutlined";
-import PhoneInTalkOutlinedIcon from "@mui/icons-material/PhoneInTalkOutlined";
-import SmartphoneOutlinedIcon from "@mui/icons-material/SmartphoneOutlined";
-import LocalPrintshopOutlinedIcon from "@mui/icons-material/LocalPrintshopOutlined";
-import PhoneForwardedOutlinedIcon from "@mui/icons-material/PhoneForwardedOutlined";
-
-import Avatar from "@mui/material/Avatar";
-import Chip from "@mui/material/Chip";
-import CardAvatar from "components/Card/CardAvatar";
-import PersonIcon from "../../../node_modules/@mui/icons-material/Person";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
-
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
-
-import LinearProgress from "@mui/material/LinearProgress";
 
 import auth from "auth";
 import configApiCall from "api";
@@ -56,23 +28,24 @@ import {
   api_path_get_auth_user,
   api_path_get_user_profile,
   api_path_delete_admin_user_revoke,
-  api_path_get_list_group,
   api_path_get_group,
-  api_path_post_group_member,
   api_path_get_admin_user_groups,
   api_path_delete_group_member,
 } from "globalUrls";
 
-import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle";
-
-import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react";
-import axios from "axios";
-
+import GridContainer from "components/Grid/GridContainer";
+import Button from "components/CustomButtons/Button";
+import Card from "components/Card/Card";
+import CardAvatar from "components/Card/CardAvatar";
+import CardBody from "components/Card/CardBody";
+import CardFooter from "components/Card/CardFooter";
 import PasswordDialog from "components/PasswordDialog/PasswordDialog";
 
-import TemporaryDrawer from "components/Drawer/Drawer";
-
-import i18next from "i18next";
+import noProfilePicture from "assets/img/faces/no-profile-picture.png";
+import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle";
+import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react";
+import UserProfileFieldsList from "./UserProfileFieldsList";
+import AdminAddUserToGroup from "./AdminAddUserToGroup";
 
 const styles = (theme) => ({
   ...dashboardStyle,
@@ -195,96 +168,70 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles(styles);
 
-export default function DisplayUserProfile(props) {
+interface DisplayUserProfileProps {
+  setDisplayUser: (displayUser: boolean) => void;
+  username: string;
+}
+
+export interface UserProfile {
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profilePicture: string;
+  organization: string;
+  phoneNumber: string;
+  phoneNumberExtension: string;
+  faxNumber: string;
+  mobileNumber: string;
+}
+
+export interface GroupMembership {
+  groupId: string;
+  name: string;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  blueprint: string;
+}
+
+interface UserGroup {
+  groupId: string;
+  username: string;
+}
+
+const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
+  setDisplayUser,
+  username,
+}) => {
   const classes = useStyles();
   const history = useHistory();
-  const [user, setUser] = useState({});
-  const [groupMemberships, setGroupMemberships] = useState([]);
+  const [user, setUser] = useState<UserProfile>({});
+  const [groupMemberships, setGroupMemberships] = useState<GroupMembership[]>(
+    []
+  );
   const [revoked, setRevoked] = useState(false);
   const [open, setOpen] = useState(false);
   const [revokedUser, setRevokedUser] = useState("");
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [groups, setGroups] = useState([]);
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const searchGroups = (value) => {
-    if (value === "") value = "*";
-    axios(
-      configApiCall(
-        api_path_get_list_group + "?groupName=" + value,
-        "GET",
-        null,
-        null
-      )
-    )
-      .then((response) => {
-        let availableGroups = [];
-        const groupResults = response.data;
-        groupResults.forEach((possibleGroup) => {
-          let existingGroup = false;
-          groups.forEach((actualGroup) => {
-            if (actualGroup === possibleGroup.name) {
-              existingGroup = true;
-              return;
-            }
-          });
-          if (!existingGroup) availableGroups.push(possibleGroup);
-        });
-        setGroups(availableGroups);
-      })
-      .catch((error) => {
-        if (error.response) {
-          if (error.response.status === 401) {
-            auth.authenticated = false;
-            history.push("/");
-          } else {
-            setGroups([]);
-          }
-        } else {
-          setGroups([]);
-        }
-      });
-  };
-
-  const removeUserFromGroup = (group) => {
-    let data = {
-      username: props.username,
-    };
-
+  const removeUserFromGroup = (group: GroupMembership) => {
     axios(
       configApiCall(
         api_path_delete_group_member + group.groupId,
         "DELETE",
-        data,
+        { username },
         null
       )
     )
       .then(() => {
         let newGroupMemberships = groupMemberships;
         newGroupMemberships.splice(newGroupMemberships.indexOf(group), 1);
-        setGroupMemberships(newGroupMemberships);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const addUserToGroup = (group) => {
-    let data = {
-      username: props.username,
-    };
-
-    axios(
-      configApiCall(api_path_post_group_member + group.id, "POST", data, null)
-    )
-      .then(() => {
-        let newGroupMemberships = groupMemberships;
-        newGroupMemberships.push({
-          groupId: group.id,
-          name: group.name,
-        });
         setGroupMemberships(newGroupMemberships);
       })
       .catch((error) => {
@@ -303,183 +250,93 @@ export default function DisplayUserProfile(props) {
         return Math.min(oldProgress + diff, 100);
       });
     }, 500);
-    const userData = {
-      username: props.username,
-    };
-    auth.checkDirectoryType(() => {
-      if (auth.hasAdminScope()) {
-        axios(configApiCall(api_path_get_admin_user, "GET", userData, null))
-          .then((response) => {
-            const result = response.data;
-            setRevoked(result.revoked);
-            axios(
-              configApiCall(
-                api_path_get_user_profile + props.username,
-                "GET",
-                null,
-                null
-              )
-            )
-              .then((response) => {
-                setUser(response.data);
-                axios(
-                  configApiCall(
-                    api_path_get_admin_user_groups + props.username,
-                    "GET",
-                    null,
-                    null
-                  )
-                )
-                  .then((userGroups) => {
-                    let userGroupsData = userGroups.data;
-                    userGroupsData.forEach((group) => {
-                      axios(
-                        configApiCall(
-                          api_path_get_group + group.groupId,
-                          "GET",
-                          null,
-                          null
-                        )
-                      ).then((groupInfo) => {
-                        group["name"] = groupInfo.data.name;
-                      });
-                    });
-                    setGroupMemberships(userGroupsData);
-                  })
-                  .catch((error) => {
-                    if (error.response.status === 401) {
-                      auth.authenticated = false;
-                      history.push("/signin");
-                    }
-                    if (error.response.status === 404) {
-                      setGroupMemberships([]);
-                    }
-                  });
-                searchGroups("*");
-                setLoading(false);
-              })
-              .catch((error) => {
-                if (error.response.status === 401) {
-                  auth.authenticated = false;
-                  history.push("/signin");
-                }
-              });
-          })
-          .catch((error) => {
-            if (error.response.status === 401) {
-              auth.authenticated = false;
-              history.push("/signin");
-            }
-          });
-      } else {
-        axios(
-          configApiCall(
-            api_path_get_auth_user + "?username=" + props.username,
-            "GET",
-            null,
-            null
-          )
-        )
-          .then((response) => {
-            const result = JSON.parse(
-              response.data.replace(/\s+/g, " ").trim()
-            );
-            setRevoked(result.revoked);
-            axios(
-              configApiCall(
-                api_path_get_user_profile + props.username,
-                "GET",
-                null,
-                null
-              )
-            )
-              .then((response) => {
-                setUser(response.data);
-                axios(
-                  configApiCall(
-                    api_path_get_admin_user_groups + props.username,
-                    "GET",
-                    null,
-                    null
-                  )
-                )
-                  .then((userGroups) => {
-                    let userGroupsData = userGroups.data;
-                    userGroupsData.forEach((group) => {
-                      axios(
-                        configApiCall(
-                          api_path_get_group + group.groupId,
-                          "GET",
-                          null,
-                          null
-                        )
-                      ).then((groupInfo) => {
-                        group["name"] = groupInfo.data.name;
-                      });
-                    });
-                    setGroupMemberships(userGroupsData);
-                  })
-                  .catch((error) => {
-                    if (error.response.status === 401) {
-                      auth.authenticated = false;
-                      history.push("/signin");
-                    }
-                    if (error.response.status === 404) {
-                      setGroupMemberships([]);
-                    }
-                  });
-                setLoading(false);
-              })
-              .catch((error) => {
-                if (error.response.status === 401) {
-                  auth.authenticated = false;
-                  history.push("/signin");
-                }
-              });
-          })
-          .catch((error) => {
-            if (error.response.status === 401) {
-              auth.authenticated = false;
-              history.push("/signin");
-            }
-          });
-      }
-    });
+
     return () => {
       clearInterval(timer);
     };
-  }, [history, props.username]);
+  }, [history, username]);
+
+  const getAdminUserGroups = () => {
+    axios(
+      configApiCall(
+        api_path_get_admin_user_groups + username,
+        "GET",
+        null,
+        null
+      )
+    ).then((userGroups) => {
+      let userGroupsData: UserGroup[] = userGroups.data;
+      userGroupsData.forEach((group) => {
+        axios(
+          configApiCall(api_path_get_group + group.groupId, "GET", null, null)
+        ).then((groupInfo) => {
+          group["name"] = groupInfo.data.name;
+        });
+      });
+      setGroupMemberships(userGroupsData);
+    });
+  };
+
+  useEffect(() => {
+    auth.checkDirectoryType(() => {
+      const requestConfig = auth.hasAdminScope()
+        ? configApiCall(api_path_get_admin_user, "GET", { username }, null)
+        : configApiCall(
+            api_path_get_auth_user + "?username=" + username,
+            "GET",
+            null,
+            null
+          );
+
+      axios(requestConfig)
+        .then((response) => {
+          const result = response.data;
+          setRevoked(result.revoked);
+          axios(
+            configApiCall(
+              api_path_get_user_profile + username,
+              "GET",
+              null,
+              null
+            )
+          ).then((response) => {
+            setUser(response.data);
+            getAdminUserGroups();
+            setLoading(false);
+          });
+        })
+        .catch((error) => {
+          if (error.response.status === 401) {
+            auth.authenticated = false;
+            history.push("/signin");
+          }
+        });
+    });
+  }, [history, username]);
 
   const getUserStatus = () => {
-    if (revoked === false) {
-      return (
-        <Chip
-          style={{ flex: 1 }}
-          label={i18next.t("active", "Active")}
-          variant="outlined"
-          clickable={false}
-        />
-      );
-    } else {
-      return (
-        <Chip
-          style={{ flex: 1 }}
-          label={i18next.t("revoked", "Revoked")}
-          variant="outlined"
-          clickable={false}
-          disabled
-        />
-      );
-    }
+    const label = revoked
+      ? i18next.t("revoked", "Revoked")
+      : i18next.t("active", "Active");
+    return (
+      <Chip
+        style={{ flex: 1 }}
+        label={label}
+        variant="outlined"
+        clickable={false}
+        disabled={revoked}
+      />
+    );
   };
 
   const revokeUser = () => {
-    const data = {
-      username: revokedUser,
-    };
-
     axios(
-      configApiCall(api_path_delete_admin_user_revoke, "DELETE", data, null)
+      configApiCall(
+        api_path_delete_admin_user_revoke,
+        "DELETE",
+        { username: revokedUser },
+        null
+      )
     )
       .then(() => {
         setRevoked(true);
@@ -492,7 +349,7 @@ export default function DisplayUserProfile(props) {
     setOpen(false);
   };
 
-  const handleClickOpen = (username) => {
+  const handleClickOpen = (username: string) => {
     setRevokedUser(username);
     setOpen(true);
   };
@@ -501,19 +358,14 @@ export default function DisplayUserProfile(props) {
     setOpen(false);
   };
 
-  const handleClosechangePassword = () => {
-    setChangePasswordOpen(false);
-  };
-
-  const tableCellClasses = classnames(classes.tableCell);
-
   const canEdit = () => {
-    if (auth.isLocalDirectory()) {
-      if (!auth.hasAdminScope() && auth.getUsername() !== user.username) {
-        return false;
-      }
-      return true;
-    } else return false;
+    if (!auth.isLocalDirectory()) {
+      return false;
+    }
+    if (!auth.hasAdminScope() && auth.getUsername() !== user.username) {
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -551,26 +403,13 @@ export default function DisplayUserProfile(props) {
         </DialogActions>
       </Dialog>
       <PasswordDialog
-        username={props.username}
-        changePasswordOpen={changePasswordOpen}
-        setChangePasswordOpen={setChangePasswordOpen}
-        handleClosechangePassword={handleClosechangePassword}
+        username={username}
+        open={changePasswordOpen}
+        onClose={() => setChangePasswordOpen(false)}
       />
       <div className={classes.loading}>
         {loading && <LinearProgress variant="determinate" value={progress} />}
       </div>
-      <TemporaryDrawer
-        openDrawer={openDrawer}
-        setOpenDrawer={setOpenDrawer}
-        direction="right"
-        placeholder={i18next.t("add_user_to_group", "Add user to group ...")}
-        searchTargets={searchGroups}
-        targets={groups}
-        existingTargets={groupMemberships}
-        addElementToTarget={addUserToGroup}
-        targetName={props.username}
-        type="group"
-      />
       {!loading && (
         <GridContainer>
           <Grid item xs={12} sm={12} md={6}>
@@ -602,85 +441,7 @@ export default function DisplayUserProfile(props) {
                         </div>
                       </div>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={6}>
-                      <List dense={false}>
-                        {(user.firstName || user.lastName) && (
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <PersonIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                              primary={`${user.firstName} ${user.lastName}`}
-                            />
-                          </ListItem>
-                        )}
-                        {user.phoneNumber && (
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <PhoneInTalkOutlinedIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={user.phoneNumber} />
-                          </ListItem>
-                        )}
-                        {user.organization && (
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <BusinessCenterOutlinedIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={user.organization} />
-                          </ListItem>
-                        )}
-                      </List>
-
-                      <List dense={false}>
-                        {user.email && (
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <AlternateEmailOutlinedIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={user.email} />
-                          </ListItem>
-                        )}
-                        {user.phoneNumberExtension && (
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <PhoneForwardedOutlinedIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={user.phoneNumberExtension} />
-                          </ListItem>
-                        )}
-                        {user.mobileNumber && (
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <SmartphoneOutlinedIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={user.mobileNumber} />
-                          </ListItem>
-                        )}
-                        {user.faxNumber && (
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <LocalPrintshopOutlinedIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={user.faxNumber} />
-                          </ListItem>
-                        )}
-                      </List>
-                    </Grid>
+                    <UserProfileFieldsList user={user} />
                   </Grid>
                 </div>
               </CardBody>
@@ -691,7 +452,7 @@ export default function DisplayUserProfile(props) {
                       <Button
                         color="info"
                         className={classes.whiteButtonText}
-                        onClick={() => props.setDisplayUser(false)}
+                        onClick={() => setDisplayUser(false)}
                       >
                         <EditIcon /> {i18next.t("edit_profile", "Edit profile")}
                       </Button>
@@ -730,59 +491,19 @@ export default function DisplayUserProfile(props) {
               </CardFooter>
             </Card>
           </Grid>
-          {auth.hasAdminScope() && (
-            <GridItem xs={12} sm={12} md={12}>
-              <Button
-                color="primary"
-                onClick={() => {
-                  setOpenDrawer(true);
-                }}
-              >
-                <AddCircleOutlineIcon />{" "}
-                {i18next.t("add_user_to_a_group", "Add user to a group")}
-              </Button>
-              <Table className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left">
-                      {i18next.t("group_name", "Group name")}
-                    </TableCell>
-                    <TableCell align="right">
-                      {i18next.t("action", "Action")}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {groupMemberships !== [] &&
-                    groupMemberships.map((group) => (
-                      <TableRow key={group} className={classes.tableRow}>
-                        <TableCell className={tableCellClasses}>
-                          <Link to={`/group/${group.groupId}`}>
-                            {group.name}
-                          </Link>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          className={classes.tableActions}
-                        >
-                          <Button
-                            color="primary"
-                            onClick={() => removeUserFromGroup(group)}
-                          >
-                            {i18next.t(
-                              "remove_from_group",
-                              "Remove from group"
-                            )}
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </GridItem>
-          )}
+          <AdminAddUserToGroup
+            username={username}
+            openDrawer={openDrawer}
+            setOpenDrawer={setOpenDrawer}
+            classes={classes}
+            groupMemberships={groupMemberships}
+            setGroupMemberships={setGroupMemberships}
+            removeUserFromGroup={removeUserFromGroup}
+          />
         </GridContainer>
       )}
     </div>
   );
-}
+};
+
+export default DisplayUserProfile;

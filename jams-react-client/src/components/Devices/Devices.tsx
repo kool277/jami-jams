@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import classnames from "classnames";
-import { Formik, Field } from "formik";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import Button from "components/CustomButtons/Button";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
 
 // @mui/icons-material
 import Edit from "@mui/icons-material/Edit";
@@ -37,79 +29,67 @@ import {
 import axios from "axios";
 
 import i18next from "i18next";
+import EditDeviceDialog from "./EditDeviceDialog";
+import RevokeDeviceDialog from "./RevokeDeviceDialog";
 
 const useStyles = makeStyles(styles);
 
-export default function Devices({ username }) {
+interface DevicesProps {
+  username: string;
+}
+
+export interface Device {
+  deviceId: string;
+  displayName: string;
+  revoked: boolean;
+}
+
+const Devices: FC<DevicesProps> = ({ username }) => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [devices, setDevices] = useState([]);
-  const [selectedDevice, setSelectedDevice] = useState({});
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<Device>({});
   const [displayName, setDisplayName] = useState("");
+
   const [openEdit, setOpenEdit] = useState(false);
   const [openRevoke, setOpenRevoke] = useState(false);
-  const userData = { username };
 
   useEffect(() => {
     auth.checkDirectoryType(() => {
-      if (auth.hasAdminScope()) {
-        axios(configApiCall(api_path_get_admin_devices, "GET", userData, null))
-          .then((response) => {
-            if (response.data.length === 0) {
-              setDevices([]);
-            } else {
-              setDevices(response.data);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            if (error.response.status === 401) {
-              auth.authenticated = false;
-              history.push("/signin");
-            }
-          });
-      } else {
-        axios(configApiCall(api_path_get_auth_devices, "GET", null, null))
-          .then((response) => {
-            if (response.data.length === 0) {
-              setDevices([]);
-            } else {
-              var resultSet = JSON.parse(
-                response.data.replace(/\s+/g, " ").trim()
-              );
-              setDevices(resultSet);
-            }
-          })
-          .catch((error) => {
-            if (error.response.status === 401) {
-              auth.authenticated = false;
-              history.push("/signin");
-            }
-          });
-      }
+      const requestConfig = auth.hasAdminScope()
+        ? configApiCall(api_path_get_admin_devices, "GET", { username }, null)
+        : configApiCall(api_path_get_auth_devices, "GET", null, null);
+
+      axios(requestConfig)
+        .then((response) => {
+          if (response.data.length === 0) {
+            setDevices([]);
+          } else {
+            setDevices(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.status === 401) {
+            auth.authenticated = false;
+            history.push("/signin");
+          }
+        });
     });
   }, []);
 
-  function getDeviceStatus(device) {
-    if (!device.revoked) {
-      return "Active";
-    } else {
-      return "Revoked";
-    }
-  }
+  const getDeviceStatus = (device: Device) => {
+    return device.revoked ? "Revoked" : "Active";
+  };
 
-  function getDeviceId(device) {
-    return device.deviceId;
-  }
-
-  const handleClickEdit = (e, device) => {
+  const handleClickEdit = (e: MouseEvent, device: Device) => {
     e.preventDefault();
     setOpenEdit(true);
     setSelectedDevice(device);
   };
 
-  const handleClickRevoke = (e, device) => {
+  const handleClickRevoke = (e: MouseEvent, device: Device) => {
     e.preventDefault();
     setOpenRevoke(true);
     setSelectedDevice(device);
@@ -120,119 +100,72 @@ export default function Devices({ username }) {
     setOpenRevoke(false);
     setSelectedDevice({});
   };
-  const handleCancel = () => {
-    setOpenEdit(false);
-    setOpenRevoke(false);
-    setSelectedDevice({});
-  };
 
   const handleUpdate = () => {
+    let requestConfig;
     if (auth.hasAdminScope()) {
-      const data = {
-        username,
-        deviceId: selectedDevice.deviceId,
-        deviceName: displayName,
-      };
-      axios(
-        configApiCall(
-          api_path_delete_admin_device_revoke +
-            "?username=" +
-            data.username +
-            "&deviceId=" +
-            data.deviceId +
-            "&deviceName=" +
-            data.deviceName,
-          "PUT",
-          null,
-          null
-        )
-      )
-        .then(() => {
-          setSelectedDevice({});
-          setOpenEdit(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      requestConfig = configApiCall(
+        api_path_delete_admin_device_revoke +
+          "?username=" +
+          username +
+          "&deviceId=" +
+          selectedDevice.deviceId +
+          "&deviceName=" +
+          displayName,
+        "PUT",
+        null,
+        null
+      );
     } else {
-      const data = {
-        deviceName: displayName,
-      };
-      axios(
-        configApiCall(
-          api_path_rename_device +
-            "/" +
-            selectedDevice.deviceId +
-            "?deviceName=" +
-            data.deviceName,
-          "PUT",
-          null,
-          null
-        )
-      )
-        .then(() => {
-          setSelectedDevice({});
-          setOpenEdit(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      requestConfig = configApiCall(
+        api_path_rename_device +
+          "/" +
+          selectedDevice.deviceId +
+          "?deviceName=" +
+          displayName,
+        "PUT",
+        null,
+        null
+      );
     }
+
+    axios(requestConfig)
+      .then(() => {
+        setSelectedDevice({});
+        setOpenEdit(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleDeviceRevoke = () => {
+    let requestConfig;
     if (auth.hasAdminScope()) {
-      const data = {
-        username,
-        deviceId: selectedDevice.deviceId,
-      };
-      axios(
-        configApiCall(
-          api_path_delete_admin_device_revoke +
-            "?username=" +
-            data.username +
-            "&deviceId=" +
-            data.deviceId,
-          "DELETE",
-          null,
-          null
-        )
-      )
-        .then(() => {
-          setSelectedDevice({});
-          setOpenRevoke(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const url =
+        api_path_delete_admin_device_revoke +
+        "?username=" +
+        username +
+        "&deviceId=" +
+        selectedDevice.deviceId;
+      requestConfig = configApiCall(url, "DELETE", null, null);
     } else {
-      axios(
-        configApiCall(
-          api_path_delete_auth_device_revoke + "/" + selectedDevice.deviceId,
-          "DELETE",
-          null,
-          null
-        )
-      )
-        .then(() => {
-          setSelectedDevice({});
-          setOpenRevoke(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      requestConfig = configApiCall(
+        api_path_delete_auth_device_revoke + "/" + selectedDevice.deviceId,
+        "DELETE",
+        null,
+        null
+      );
     }
-  };
 
-  /**
-   * Formik Validation
-   */
-  const validateDisplayName = (displaynamevalue) => {
-    let error;
-    if (!displaynamevalue) {
-      error = "Required";
-    }
-    return error;
+    axios(requestConfig)
+      .then(() => {
+        setSelectedDevice({});
+        setOpenRevoke(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const tableCellClasses = classnames(classes.tableCell);
@@ -257,7 +190,7 @@ export default function Devices({ username }) {
                   {device.displayName}
                 </TableCell>
                 <TableCell className={tableCellClasses}>
-                  {getDeviceId(device)}
+                  {device.deviceId}
                 </TableCell>
                 <TableCell align="right" className={tableCellClasses}>
                   {getDeviceStatus(device)}
@@ -309,88 +242,20 @@ export default function Devices({ username }) {
           </TableBody>
         )}
       </Table>
-      <Dialog
-        open={openEdit}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-edit-dialog-title">
-          {i18next.t("update_device_information", "Update Device Information")}
-        </DialogTitle>
-        <Formik
-          initialValues={{
-            displayName: selectedDevice.displayName,
-          }}
-        >
-          {({ errors, touched, validateField }) => (
-            <form>
-              <DialogContent>
-                <Field name="displayName" validate={validateDisplayName}>
-                  {({ field }) => (
-                    <div>
-                      <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label={i18next.t(
-                          "device_display_name",
-                          "Device Display Name"
-                        )}
-                        fullWidth
-                        onChange={setDisplayName(field.value)}
-                        helperText={
-                          errors.displayName &&
-                          touched.displayName &&
-                          errors.displayName
-                        }
-                        {...field}
-                      />
-                    </div>
-                  )}
-                </Field>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleCancel} color="primary">
-                  {i18next.t("cancel", "Cancel")}
-                </Button>
-                <Button
-                  onClick={() =>
-                    validateField("displayName").then(() => handleUpdate())
-                  }
-                  color="primary"
-                >
-                  {i18next.t("update", "Update")}
-                </Button>
-              </DialogActions>
-            </form>
-          )}
-        </Formik>
-      </Dialog>
-      <Dialog
-        open={openRevoke}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-revoke-dialog-title">
-          {i18next.t("revoke_device", "Revoke Device")}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {i18next.t(
-              "are_you_sure_you_want_to_revoke_this_device",
-              "Are you sure you want to revoke this device?"
-            )}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="primary">
-            {i18next.t("cancel", "Cancel")}
-          </Button>
-          <Button onClick={handleDeviceRevoke} color="primary">
-            {i18next.t("confirm_revoke", "Confirm Revoke")}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <EditDeviceDialog
+        openEdit={openEdit}
+        handleClose={handleClose}
+        selectedDevice={selectedDevice}
+        setDisplayName={setDisplayName}
+        handleUpdate={handleUpdate}
+      />
+      <RevokeDeviceDialog
+        openRevoke={openRevoke}
+        handleClose={handleClose}
+        handleDeviceRevoke={handleDeviceRevoke}
+      />
     </div>
   );
-}
+};
+
+export default Devices;
