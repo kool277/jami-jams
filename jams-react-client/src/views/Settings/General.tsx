@@ -31,7 +31,7 @@ import i18next from "i18next";
 import LanguagePicker from "../../components/LanguagePicker/LanguagePicker";
 
 import pjson from "../../../package.json";
-import generator from "generate-password";
+import generator from "generate-password-browser";
 
 const useStyles = makeStyles((theme) => ({
   paper: {

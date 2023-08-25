@@ -73,7 +73,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import i18next from "i18next";
 
-import generator from "generate-password";
+import generator from "generate-password-browser";
 
 const styles = (theme) => ({
   ...dashboardStyle,

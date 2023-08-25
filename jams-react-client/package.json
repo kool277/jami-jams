@@ -17,7 +17,7 @@
     "axios": "^1.4.0",
     "classnames": "2.3.2",
     "formik": "^2.1.5",
-    "generate-password": "^1.5.1",
+    "generate-password-browser": "^1.1.0",
     "history": "4.10.1",
     "i18next": "^19.8.2",
     "i18next-browser-languagedetector": "^6.0.1",

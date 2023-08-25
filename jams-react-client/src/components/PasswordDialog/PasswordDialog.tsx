@@ -31,7 +31,7 @@ import IconButton from "@mui/material/IconButton";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-import generator from "generate-password";
+import generator from "generate-password-browser";
 
 const styles = (theme) => ({
   root: {
