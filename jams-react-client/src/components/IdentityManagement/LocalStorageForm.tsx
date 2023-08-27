@@ -11,7 +11,7 @@ export default function LocalStorageForm(props) {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
-          {i18next.t("advanced_settings", "Advanced settings")}
+          {i18next.t("advanced_settings", "Advanced settings") as string}
         </Typography>
       </Grid>
       <Grid item xs={12}>
@@ -24,7 +24,12 @@ export default function LocalStorageForm(props) {
               color="primary"
             />
           }
-          label={i18next.t("use_public_nameserver", "Use public nameserver")}
+          label={
+            i18next.t(
+              "use_public_nameserver",
+              "Use public nameserver"
+            ) as string
+          }
         />
         <CustomPopupState
           message={i18next.t(

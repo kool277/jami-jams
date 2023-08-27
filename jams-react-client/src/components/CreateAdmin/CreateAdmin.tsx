@@ -57,7 +57,9 @@ export default function CreateAdmin(props) {
             "Must be 60 characters or less"
           )
         )
-        .required(i18next.t("username_is_required", "Username is required!")),
+        .required(
+          i18next.t("username_is_required", "Username is required!") as string
+        ),
       password: Yup.string()
         .max(
           50,
@@ -70,7 +72,7 @@ export default function CreateAdmin(props) {
       confirmPassword: Yup.string()
         .oneOf(
           [Yup.ref("password"), null],
-          i18next.t("password_must_match", "Passwords must match")
+          i18next.t("password_must_match", "Passwords must match") as string
         )
         .max(
           50,
@@ -119,7 +121,12 @@ export default function CreateAdmin(props) {
   return (
     <form className={classes.form} noValidate onSubmit={formik.handleSubmit}>
       <Typography variant="h5" gutterBottom color="primary">
-        {i18next.t("create_administrator", "Create administrator account")}
+        {
+          i18next.t(
+            "create_administrator",
+            "Create administrator account"
+          ) as string
+        }
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -129,7 +136,7 @@ export default function CreateAdmin(props) {
             required
             fullWidth
             id="username"
-            label={i18next.t("username", "Username")}
+            label={i18next.t("username", "Username") as string}
             name="username"
             autoComplete="email"
             autoFocus
@@ -146,7 +153,7 @@ export default function CreateAdmin(props) {
             required
             fullWidth
             name="password"
-            label={i18next.t("password", "Password")}
+            label={i18next.t("password", "Password") as string}
             type="password"
             id="password"
             autoComplete="current-password"
@@ -164,7 +171,7 @@ export default function CreateAdmin(props) {
             required
             fullWidth
             name="confirmPassword"
-            label={i18next.t("confirm_password", "Confirm password")}
+            label={i18next.t("confirm_password", "Confirm password") as string}
             type="password"
             id="confirmPassword"
             autoComplete="current-password"
@@ -183,7 +190,7 @@ export default function CreateAdmin(props) {
         color="primary"
         className={classes.submit}
       >
-        {i18next.t("continue", "Continue")}
+        {i18next.t("continue", "Continue") as string}
       </Button>
     </form>
   );

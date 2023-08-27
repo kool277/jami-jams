@@ -139,10 +139,16 @@ const useStyles = makeStyles((theme) => ({
 
 function getSteps() {
   return [
-    i18next.t("create_administrator_user", "Create Administrator User"),
-    i18next.t("certificate_authority_setup", "Certificate Authority Setup"),
-    i18next.t("identity_management", "Identity Management"),
-    i18next.t("server_parameters", "Server Parameters"),
+    i18next.t(
+      "create_administrator_user",
+      "Create Administrator User"
+    ) as string,
+    i18next.t(
+      "certificate_authority_setup",
+      "Certificate Authority Setup"
+    ) as string,
+    i18next.t("identity_management", "Identity Management") as string,
+    i18next.t("server_parameters", "Server Parameters") as string,
   ];
 }
 

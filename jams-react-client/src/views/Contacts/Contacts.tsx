@@ -304,7 +304,7 @@ export default function Users(props) {
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
         direction="right"
-        placeholder={i18next.t("add_contact", "Add contact…")}
+        placeholder={i18next.t("add_contact", "Add contact…") as string}
         searchTargets={searchContacts}
         targets={users}
         existingTargets={contacts}
@@ -318,26 +318,28 @@ export default function Users(props) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {i18next.t("remove_contact", "Remove contact")}
+          {i18next.t("remove_contact", "Remove contact") as string}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {i18next.t(
-              "are_you_sure_you_want_to_remove",
-              "Are you sure you want to remove"
-            )}
+            {
+              i18next.t(
+                "are_you_sure_you_want_to_remove",
+                "Are you sure you want to remove"
+              ) as string
+            }
             <strong>{" " + removedContactName + " "}</strong>
-            {i18next.t("from", "from")}
+            {i18next.t("from", "from") as string}
             {" " + props.username + " "}
-            {i18next.t("contacts", "contacts")}?
+            {i18next.t("contacts", "contacts") as string}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-            {i18next.t("cancel", "Cancel")}
+            {i18next.t("cancel", "Cancel") as string}
           </Button>
           <Button onClick={removeContact} color="info" autoFocus>
-            {i18next.t("remove", "Remove")}
+            {i18next.t("remove", "Remove") as string}
           </Button>
         </DialogActions>
       </Dialog>
@@ -354,7 +356,7 @@ export default function Users(props) {
                 }}
               >
                 <AddCircleOutlineIcon />{" "}
-                {i18next.t("add_a_contact", "Add contact")}
+                {i18next.t("add_a_contact", "Add contact") as string}
               </Button>
             )}
           </div>
@@ -369,7 +371,10 @@ export default function Users(props) {
                   "Search contact fields (URI, firstname, lastname)"
                 ),
                 inputProps: {
-                  "aria-label": i18next.t("search_contacts", "Search contacts"),
+                  "aria-label": i18next.t(
+                    "search_contacts",
+                    "Search contacts"
+                  ) as string,
                 },
                 onKeyUp: (e) => setSearchValue(e.target.value),
               }}
@@ -499,7 +504,8 @@ export default function Users(props) {
             </GridItem>
           ))}
         {contacts === [] &&
-          props.username + i18next.t("has_no_contacts", " has no contacts")}
+          ((props.username +
+            i18next.t("has_no_contacts", " has no contacts")) as string)}
       </GridContainer>
     </div>
   );

@@ -181,10 +181,12 @@ export default function Groups() {
     return (
       <div>
         <h4>
-          {i18next.t(
-            "you_are_not_allowed_to_access_this_section",
-            "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
-          )}
+          {
+            i18next.t(
+              "you_are_not_allowed_to_access_this_section",
+              "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
+            ) as string
+          }
         </h4>
       </div>
     );
@@ -203,23 +205,25 @@ export default function Groups() {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {i18next.t("remove_group", "Remove group")}
+            {i18next.t("remove_group", "Remove group") as string}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {i18next.t(
-                "are_you_sure_you_want_to_delete",
-                "Are you sure you want to delete"
-              )}{" "}
+              {
+                i18next.t(
+                  "are_you_sure_you_want_to_delete",
+                  "Are you sure you want to delete"
+                ) as string
+              }{" "}
               <strong>{removedGroup.name}</strong> ?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
-              {i18next.t("cancel", "Cancel")}
+              {i18next.t("cancel", "Cancel") as string}
             </Button>
             <Button onClick={removeGroup} color="info" autoFocus>
-              {i18next.t("remove", "Remove")}
+              {i18next.t("remove", "Remove") as string}
             </Button>
           </DialogActions>
         </Dialog>
@@ -233,7 +237,7 @@ export default function Groups() {
                 onClick={() => setOpenCreate(true)}
               >
                 <AddCircleOutlineIcon />{" "}
-                {i18next.t("create_group", "Create group")}
+                {i18next.t("create_group", "Create group") as string}
               </Button>
             }
             <div className={classes.searchWrapper}>
@@ -248,7 +252,10 @@ export default function Groups() {
                       "Search groups…"
                     ),
                     inputProps: {
-                      "aria-label": i18next.t("search_groups", "Search groups"),
+                      "aria-label": i18next.t(
+                        "search_groups",
+                        "Search groups"
+                      ) as string,
                     },
                     onKeyUp: (e) => setSearchValue(e.target.value),
                   }}
@@ -266,7 +273,7 @@ export default function Groups() {
             <div className={classes.groupsNotFound}>
               <InfoIcon />{" "}
               <p style={{ marginLeft: "10px" }}>
-                {i18next.t("no_groups_found", "No groups Found")}
+                {i18next.t("no_groups_found", "No groups Found") as string}
               </p>
             </div>
           ) : (
@@ -295,7 +302,7 @@ export default function Groups() {
                             <strong style={{ marginRight: "5px" }}>
                               {group.groupMembersLength}
                             </strong>
-                            {i18next.t("users", "Users")}
+                            {i18next.t("users", "Users") as string}
                           </li>
                           <li>
                             <MailOutlineIcon
@@ -303,7 +310,7 @@ export default function Groups() {
                               style={{ marginRight: "10px" }}
                             />
                             <strong style={{ marginRight: "5px" }}>
-                              {i18next.t("blueprint", "Blueprint")}
+                              {i18next.t("blueprint", "Blueprint") as string}
                             </strong>
                             {group.blueprint}
                           </li>

@@ -142,10 +142,12 @@ export default function Subscription(props) {
                 <Grid container spacing={3}>
                   <Grid item lg={6}>
                     <Typography component="p" gutterBottom color="primary">
-                      {i18next.t(
-                        "paste_your_jams_enterprise_subscription_code_received_from_jami",
-                        "Paste your JAMS Enterprise subscription code received from the Jami store."
-                      )}
+                      {
+                        i18next.t(
+                          "paste_your_jams_enterprise_subscription_code_received_from_jami",
+                          "Paste your JAMS Enterprise subscription code received from the Jami store."
+                        ) as string
+                      }
                     </Typography>
                   </Grid>
                   <Grid item lg={6}>
@@ -155,10 +157,12 @@ export default function Subscription(props) {
                       required
                       fullWidth
                       id="subscriptionCode"
-                      label={i18next.t(
-                        "subscription_code",
-                        "Subscription Code"
-                      )}
+                      label={
+                        i18next.t(
+                          "subscription_code",
+                          "Subscription Code"
+                        ) as string
+                      }
                       name="subscriptionCode"
                       autoComplete="subscriptionCode"
                       autoFocus
@@ -175,7 +179,7 @@ export default function Subscription(props) {
                       color="primary"
                       className={classes.submit}
                     >
-                      {i18next.t("register", "Register")}
+                      {i18next.t("register", "Register") as string}
                     </Button>
                   </Grid>
                 </Grid>
@@ -189,10 +193,12 @@ export default function Subscription(props) {
     return (
       <div>
         <p>
-          {i18next.t(
-            "your_license_is_already_activated",
-            "Your subscription is already activated!"
-          )}
+          {
+            i18next.t(
+              "your_license_is_already_activated",
+              "Your subscription is already activated!"
+            ) as string
+          }
         </p>
       </div>
     );

@@ -68,15 +68,15 @@ export const Blueprint: FC<BlueprintProps> = ({ blueprintName }) => {
           indicatorColor="secondary"
         >
           <Tab
-            label={i18next.t("permissions", "Permissions")}
+            label={i18next.t("permissions", "Permissions") as string}
             {...a11yProps(openedTab, 0)}
           />
           <Tab
-            label={i18next.t("configuration", "Configuration")}
+            label={i18next.t("configuration", "Configuration") as string}
             {...a11yProps(openedTab, 1)}
           />
           <Tab
-            label={i18next.t("customization", "Customization")}
+            label={i18next.t("customization", "Customization") as string}
             {...a11yProps(openedTab, 2)}
           />
         </Tabs>

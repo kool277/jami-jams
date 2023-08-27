@@ -67,10 +67,12 @@ export default function Settings() {
     return (
       <div>
         <h4>
-          {i18next.t(
-            "you_are_not_allowed_to_access_this_section",
-            "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
-          )}
+          {
+            i18next.t(
+              "you_are_not_allowed_to_access_this_section",
+              "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
+            ) as string
+          }
         </h4>
       </div>
     );
@@ -86,11 +88,11 @@ export default function Settings() {
             indicatorColor="secondary"
           >
             <Tab
-              label={i18next.t("general", "General")}
+              label={i18next.t("general", "General") as string}
               {...a11yProps(value, 0)}
             />
             <Tab
-              label={i18next.t("subscription", "Subscription")}
+              label={i18next.t("subscription", "Subscription") as string}
               {...a11yProps(value, 1)}
             />
           </Tabs>

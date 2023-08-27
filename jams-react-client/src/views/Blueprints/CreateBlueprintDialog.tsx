@@ -26,7 +26,10 @@ const getHelperText = (disableCreate, blueprintName) => {
     );
   }
   if (disableCreate && blueprintName.length === 0) {
-    return i18next.t("blueprint_name_is_empty", "Blueprint name is empty");
+    return i18next.t(
+      "blueprint_name_is_empty",
+      "Blueprint name is empty"
+    ) as string;
   }
 
   return "";
@@ -119,7 +122,7 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        {i18next.t("create_blueprint", "Create blueprint")}
+        {i18next.t("create_blueprint", "Create blueprint") as string}
       </DialogTitle>
       <DialogContent>
         <TextField
@@ -127,7 +130,7 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
           error={blueprintNameExists}
           margin="dense"
           id="blueprintName"
-          label={i18next.t("blueprint_name", "Blueprint name")}
+          label={i18next.t("blueprint_name", "Blueprint name") as string}
           helperText={helperText}
           type="text"
           variant="standard"
@@ -146,14 +149,14 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
-          {i18next.t("cancel", "Cancel")}
+          {i18next.t("cancel", "Cancel") as string}
         </Button>
         <Button
           onClick={handleCreateBlueprint}
           color="info"
           disabled={disableCreate}
         >
-          {i18next.t("create_blueprint", "Create blueprint")}
+          {i18next.t("create_blueprint", "Create blueprint") as string}
         </Button>
       </DialogActions>
     </Dialog>

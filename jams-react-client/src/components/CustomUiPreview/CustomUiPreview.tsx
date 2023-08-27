@@ -133,7 +133,7 @@ export const CustomUiPreview: FC<CustomUiPreviewProps> = ({
   } = uiCustomization;
 
   if (!title) {
-    title = i18next.t("welcome_title", "Welcome to Jami");
+    title = i18next.t("welcome_title", "Welcome to Jami") as string;
   }
   if (!description) {
     description = i18next.t(
@@ -173,8 +173,11 @@ export const CustomUiPreview: FC<CustomUiPreviewProps> = ({
     "preview_tip1",
     "Add a picture and a nickname to complete your profile"
   );
-  const tip2 = i18next.t("preview_tip2", "Why should I save my account?");
-  const tip3 = i18next.t("preview_tip3", "How to set shortcuts?");
+  const tip2 = i18next.t(
+    "preview_tip2",
+    "Why should I save my account?"
+  ) as string;
+  const tip3 = i18next.t("preview_tip3", "How to set shortcuts?") as string;
 
   return (
     <div className={classes.root}>

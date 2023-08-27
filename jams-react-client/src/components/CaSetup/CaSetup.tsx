@@ -59,16 +59,19 @@ export default function CaSetup(props) {
 
   const validationSchemaform1 = Yup.object().shape({
     commonname: Yup.string().required(
-      i18next.t("common_name_is_required", "Common name is required.")
+      i18next.t("common_name_is_required", "Common name is required.") as string
     ),
     state: Yup.string().required(
-      i18next.t("state_is_required", "State is required.")
+      i18next.t("state_is_required", "State is required.") as string
     ),
     city: Yup.string().required(
-      i18next.t("city_is_required", "City is required.")
+      i18next.t("city_is_required", "City is required.") as string
     ),
     organization: Yup.string().required(
-      i18next.t("organization_is_required", "Organization is required.")
+      i18next.t(
+        "organization_is_required",
+        "Organization is required."
+      ) as string
     ),
     organizationunit: Yup.string().required(
       i18next.t(
@@ -77,16 +80,22 @@ export default function CaSetup(props) {
       )
     ),
     country: Yup.string().required(
-      i18next.t("country_is_required", "Country is required.")
+      i18next.t("country_is_required", "Country is required.") as string
     ),
   });
 
   const validationSchemaform2 = Yup.object().shape({
     certificatefile: Yup.mixed().required(
-      i18next.t("certificate_file_is_required", "Certificate file is required.")
+      i18next.t(
+        "certificate_file_is_required",
+        "Certificate file is required."
+      ) as string
     ),
     privkeyfile: Yup.mixed().required(
-      i18next.t("private_key_file_is_required", "Private key file is required.")
+      i18next.t(
+        "private_key_file_is_required",
+        "Private key file is required."
+      ) as string
     ),
   });
 
@@ -108,8 +117,8 @@ export default function CaSetup(props) {
   ];
 
   const validityPeriods = [
-    { value: 157784630000, label: i18next.t("5_years", "5 years") },
-    { value: 315569260000, label: i18next.t("10_years", "10 years") },
+    { value: 157784630000, label: i18next.t("5_years", "5 years") as string },
+    { value: 315569260000, label: i18next.t("10_years", "10 years") as string },
   ];
 
   const certificateOptionsItems = tool.buildSelectMenuItems(
@@ -201,10 +210,12 @@ export default function CaSetup(props) {
           return (
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
               <h4>
-                {i18next.t(
-                  "ca_setup_header",
-                  "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance."
-                )}
+                {
+                  i18next.t(
+                    "ca_setup_header",
+                    "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance."
+                  ) as string
+                }
               </h4>
               <Select
                 labelId="certificate-option-select-label"
@@ -222,7 +233,7 @@ export default function CaSetup(props) {
                 required
                 fullWidth
                 id="commonname"
-                label={i18next.t("common_name", "Common Name")}
+                label={i18next.t("common_name", "Common Name") as string}
                 name="commonname"
                 autoComplete="commonname"
                 autoFocus
@@ -245,7 +256,7 @@ export default function CaSetup(props) {
                 required
                 fullWidth
                 name="state"
-                label={i18next.t("state", "State")}
+                label={i18next.t("state", "State") as string}
                 id="state"
                 autoComplete="state"
                 value={values.state}
@@ -260,7 +271,7 @@ export default function CaSetup(props) {
                 required
                 fullWidth
                 name="city"
-                label={i18next.t("cistatety", "City")}
+                label={i18next.t("cistatety", "City") as string}
                 id="city"
                 autoComplete="city"
                 value={values.city}
@@ -275,7 +286,7 @@ export default function CaSetup(props) {
                 required
                 fullWidth
                 name="organization"
-                label={i18next.t("organization", "Organization")}
+                label={i18next.t("organization", "Organization") as string}
                 id="organization"
                 autoComplete="organization"
                 value={values.organization}
@@ -294,7 +305,9 @@ export default function CaSetup(props) {
                 required
                 fullWidth
                 name="organizationunit"
-                label={i18next.t("organization_unit", "Organization Unit")}
+                label={
+                  i18next.t("organization_unit", "Organization Unit") as string
+                }
                 id="organizationunit"
                 autoComplete="organizationunit"
                 value={values.organizationunit}
@@ -324,10 +337,12 @@ export default function CaSetup(props) {
                 color="primary"
                 className={classes.submit}
               >
-                {i18next.t(
-                  "generate_self_signed_certificate_authority",
-                  "Generate Self-Signed Certificate Authority"
-                )}
+                {
+                  i18next.t(
+                    "generate_self_signed_certificate_authority",
+                    "Generate Self-Signed Certificate Authority"
+                  ) as string
+                }
               </Button>
             </form>
           );
@@ -348,10 +363,12 @@ export default function CaSetup(props) {
           return (
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
               <h4>
-                {i18next.t(
-                  "select_option_setting_up_certificate_authority",
-                  "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance."
-                )}
+                {
+                  i18next.t(
+                    "select_option_setting_up_certificate_authority",
+                    "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance."
+                  ) as string
+                }
               </h4>
 
               <Select
@@ -405,10 +422,12 @@ export default function CaSetup(props) {
                 color="primary"
                 className={classes.submit}
               >
-                {i18next.t(
-                  "import_certificate_authority",
-                  "Import Certificate Authority"
-                )}
+                {
+                  i18next.t(
+                    "import_certificate_authority",
+                    "Import Certificate Authority"
+                  ) as string
+                }
               </Button>
             </form>
           );

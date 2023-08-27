@@ -28,7 +28,12 @@ const IsCustomizationEnabledForm = ({
             name="isCustomizationEnabled"
           />
         }
-        label={i18next.t("is_customization_enabled", "Enable customization")}
+        label={
+          i18next.t(
+            "is_customization_enabled",
+            "Enable customization"
+          ) as string
+        }
       />
     </FormGroup>
   );
@@ -48,7 +53,7 @@ const HasTitleForm = ({ uiCustomization, handleUpdateUi }) => {
             name="hasTitle"
           />
         }
-        label={i18next.t("welcome_has_title", "Title")}
+        label={i18next.t("welcome_has_title", "Title") as string}
       />
     </FormGroup>
   );
@@ -62,14 +67,16 @@ const TitleForm = ({ uiCustomization, handleUpdateUi }) => {
   return (
     <FormGroup row>
       <span>
-        {i18next.t(
-          "instruction_title",
-          "Use Jami title or personalize it (max 40 characters)"
-        )}
+        {
+          i18next.t(
+            "instruction_title",
+            "Use Jami title or personalize it (max 40 characters)"
+          ) as string
+        }
       </span>
       <TextField
         id="title"
-        placeholder={i18next.t("welcome_title", "Welcome to Jami")}
+        placeholder={i18next.t("welcome_title", "Welcome to Jami") as string}
         value={uiCustomization.title}
         onChange={(e) => {
           handleUpdateUi("title", e.target.value);
@@ -96,7 +103,7 @@ const HasDescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
             }}
           />
         }
-        label={i18next.t("welcome_has_description", "Description")}
+        label={i18next.t("welcome_has_description", "Description") as string}
       />
     </FormGroup>
   );
@@ -108,17 +115,21 @@ const DescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
       {uiCustomization.hasDescription && (
         <>
           <span>
-            {i18next.t(
-              "instruction_description",
-              "Use Jami description or personalize it (max 100 characters)"
-            )}
+            {
+              i18next.t(
+                "instruction_description",
+                "Use Jami description or personalize it (max 100 characters)"
+              ) as string
+            }
           </span>
           <TextField
             id="description"
-            placeholder={i18next.t(
-              "welcome_Description",
-              "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!"
-            )}
+            placeholder={
+              i18next.t(
+                "welcome_Description",
+                "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!"
+              ) as string
+            }
             value={uiCustomization.description}
             onChange={(e) => {
               handleUpdateUi("description", e.target.value);
@@ -147,7 +158,7 @@ const HasTipsForm = ({ uiCustomization, handleUpdateUi }) => {
             name="hasTips"
           />
         }
-        label={i18next.t("welcome_has_Tips", "Enable Tips display")}
+        label={i18next.t("welcome_has_Tips", "Enable Tips display") as string}
       />
     </FormGroup>
   );
@@ -167,7 +178,9 @@ const HasBackgroundCustomForm = ({ uiCustomization, handleUpdateUi }) => {
             name="hasBackground"
           />
         }
-        label={i18next.t("welcome_has_BackgroundCustom", "Background")}
+        label={
+          i18next.t("welcome_has_BackgroundCustom", "Background") as string
+        }
       />
     </FormGroup>
   );
@@ -183,10 +196,12 @@ const CustomBackgroundForm = ({
   return (
     <>
       <span>
-        {i18next.t(
-          "instruction_background",
-          "Choose a background color or a background image"
-        )}
+        {
+          i18next.t(
+            "instruction_background",
+            "Choose a background color or a background image"
+          ) as string
+        }
       </span>
       <FormGroup
         row
@@ -207,7 +222,7 @@ const CustomBackgroundForm = ({
         />
 
         <div style={{ padding: "0 20px" }}>
-          <Typography>{i18next.t("or", "or")}</Typography>
+          <Typography>{i18next.t("or", "or") as string}</Typography>
         </div>
 
         <div style={{ padding: "0 20px" }}>
@@ -234,7 +249,9 @@ const CustomBackgroundForm = ({
 const TipBoxAndIdColorForm = ({ uiCustomization, handleUpdateUi }) => {
   return (
     <>
-      <span>{i18next.t("tip_box_id_color", "Tip Box and Jami ID color")}</span>
+      <span>
+        {i18next.t("tip_box_id_color", "Tip Box and Jami ID color") as string}
+      </span>
       <ColorPickerPopup
         hasAlphaChannel
         color={uiCustomization.tipBoxAndIdColor}
@@ -261,15 +278,17 @@ const MainBoxColorForm = ({ uiCustomization, handleUpdateUi }) => {
               name="hasMainBoxColor"
             />
           }
-          label={i18next.t(
-            "enable_main_box",
-            "Add a box behind the title, description and Jami ID"
-          )}
+          label={
+            i18next.t(
+              "enable_main_box",
+              "Add a box behind the title, description and Jami ID"
+            ) as string
+          }
         />
       </FormGroup>
       {uiCustomization.hasMainBoxColor && (
         <>
-          <span>{i18next.t("main_box_color", "Box color")}</span>
+          <span>{i18next.t("main_box_color", "Box color") as string}</span>
           <ColorPickerPopup
             hasAlphaChannel
             color={uiCustomization.mainBoxColor}
@@ -297,7 +316,7 @@ const HasLogoForm = ({ uiCustomization, handleUpdateUi }) => {
             name="hasLogo"
           />
         }
-        label={i18next.t("welcome_has_Logo", "Logotype")}
+        label={i18next.t("welcome_has_Logo", "Logotype") as string}
       />
     </FormGroup>
   );
@@ -312,10 +331,12 @@ const LogoForm = ({
   return (
     <>
       <span>
-        {i18next.t(
-          "instruction_logo",
-          "Use Jami logotype or upload a logotype"
-        )}
+        {
+          i18next.t(
+            "instruction_logo",
+            "Use Jami logotype or upload a logotype"
+          ) as string
+        }
       </span>
 
       <FormGroup row style={{ padding: "10px 0" }}>
@@ -338,7 +359,7 @@ const LogoForm = ({
 const LogoSizeForm = ({ uiCustomization, handleUpdateUi }) => {
   return (
     <Box sx={{ width: "200px" }}>
-      <span>{i18next.t("logo_size", "Size")}</span>
+      <span>{i18next.t("logo_size", "Size") as string}</span>
       <Slider
         size="small"
         min={10}

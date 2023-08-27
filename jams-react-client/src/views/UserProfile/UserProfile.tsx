@@ -79,15 +79,15 @@ export default function UserProfile(props) {
           indicatorColor="secondary"
         >
           <Tab
-            label={i18next.t("profile", "Profile")}
+            label={i18next.t("profile", "Profile") as string}
             {...a11yProps(value, 0)}
           />
           <Tab
-            label={i18next.t("devices", "Devices")}
+            label={i18next.t("devices", "Devices") as string}
             {...a11yProps(value, 1)}
           />
           <Tab
-            label={i18next.t("contacts", "contacts")}
+            label={i18next.t("contacts", "contacts") as string}
             {...a11yProps(value, 2)}
           />
         </Tabs>

@@ -107,7 +107,10 @@ export default function SignIn() {
       } else {
         setError(true);
         setErrorMessage(
-          i18next.t("login_failed", "Login failed. Check your credentials.")
+          i18next.t(
+            "login_failed",
+            "Login failed. Check your credentials."
+          ) as string
         );
       }
     });
@@ -123,7 +126,7 @@ export default function SignIn() {
           alt="logo"
         />
         <Typography component="h1" variant="h5">
-          {i18next.t("sign_in", "Sign In")}
+          {i18next.t("sign_in", "Sign In") as string}
         </Typography>
         {error && <Alert severity="error">{errorMessage}</Alert>}
         <Formik
@@ -150,7 +153,7 @@ export default function SignIn() {
                   required
                   fullWidth
                   id="username"
-                  label={i18next.t("username", "Username")}
+                  label={i18next.t("username", "Username") as string}
                   name="username"
                   autoComplete="username"
                   autoFocus
@@ -167,7 +170,7 @@ export default function SignIn() {
                   required
                   fullWidth
                   name="password"
-                  label={i18next.t("password", "Password")}
+                  label={i18next.t("password", "Password") as string}
                   type="password"
                   id="password"
                   autoComplete="current-password"
@@ -185,7 +188,7 @@ export default function SignIn() {
                   color="primary"
                   className={classes.submit}
                 >
-                  {i18next.t("sign_in", "Sign In")}
+                  {i18next.t("sign_in", "Sign In") as string}
                 </Button>
               </form>
             );

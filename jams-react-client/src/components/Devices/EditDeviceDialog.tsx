@@ -44,7 +44,12 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-edit-dialog-title">
-        {i18next.t("update_device_information", "Update Device Information")}
+        {
+          i18next.t(
+            "update_device_information",
+            "Update Device Information"
+          ) as string
+        }
       </DialogTitle>
       <Formik
         initialValues={{
@@ -80,7 +85,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} color="primary">
-                {i18next.t("cancel", "Cancel")}
+                {i18next.t("cancel", "Cancel") as string}
               </Button>
               <Button
                 onClick={() =>
@@ -88,7 +93,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
                 }
                 color="primary"
               >
-                {i18next.t("update", "Update")}
+                {i18next.t("update", "Update") as string}
               </Button>
             </DialogActions>
           </form>

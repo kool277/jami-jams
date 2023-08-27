@@ -154,7 +154,7 @@ export default function Sidebar(props) {
           <ExitToAppIcon />
         </Icon>
         <ListItemText
-          primary={i18next.t("Logout", "Logout")}
+          primary={i18next.t("Logout", "Logout") as string}
           className={classNames(classes.itemText, {
             [classes.itemTextRTL]: false,
           })}

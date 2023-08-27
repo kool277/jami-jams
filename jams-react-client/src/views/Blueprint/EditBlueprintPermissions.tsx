@@ -187,7 +187,7 @@ export default function EditBlueprintPermissions(props) {
                 <PriorityHighOutlinedIcon />
               </CardIcon>
               <p className={classes.cardCategory}>
-                {i18next.t("permissions", "Permissions")}
+                {i18next.t("permissions", "Permissions") as string}
               </p>
               <h3 className={classes.cardTitle}>{props.blueprintName}</h3>
             </CardHeader>
@@ -198,7 +198,12 @@ export default function EditBlueprintPermissions(props) {
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={12} md={12}>
                         <FormLabel component="legend">
-                          {i18next.t("call_parameters", "Call parameters")}
+                          {
+                            i18next.t(
+                              "call_parameters",
+                              "Call parameters"
+                            ) as string
+                          }
                         </FormLabel>
                         <FormGroup row>
                           <FormControlLabel
@@ -215,10 +220,12 @@ export default function EditBlueprintPermissions(props) {
                                 name="videoEnabled"
                               />
                             }
-                            label={i18next.t(
-                              "allow_video_calls",
-                              "Allow video calls"
-                            )}
+                            label={
+                              i18next.t(
+                                "allow_video_calls",
+                                "Allow video calls"
+                              ) as string
+                            }
                           />
                           <CustomPopupState
                             message={i18next.t(
@@ -242,10 +249,12 @@ export default function EditBlueprintPermissions(props) {
                                 name="publicInCalls"
                               />
                             }
-                            label={i18next.t(
-                              "allow_incoming_calls_from_unknown_contacts",
-                              "Allow incoming calls from unknown contacts"
-                            )}
+                            label={
+                              i18next.t(
+                                "allow_incoming_calls_from_unknown_contacts",
+                                "Allow incoming calls from unknown contacts"
+                              ) as string
+                            }
                           />
                           <CustomPopupState
                             message={i18next.t(
@@ -269,10 +278,12 @@ export default function EditBlueprintPermissions(props) {
                                 name="autoAnswer"
                               />
                             }
-                            label={i18next.t(
-                              "auto_answer_calss",
-                              "Auto answer calls"
-                            )}
+                            label={
+                              i18next.t(
+                                "auto_answer_calss",
+                                "Auto answer calls"
+                              ) as string
+                            }
                           />
                           <CustomPopupState
                             message={i18next.t(
@@ -284,7 +295,7 @@ export default function EditBlueprintPermissions(props) {
                       </Grid>
                       <Grid item xs={12} sm={12} md={12}>
                         <FormLabel component="legend">
-                          {i18next.t("local_lan", "Local LAN")}
+                          {i18next.t("local_lan", "Local LAN") as string}
                         </FormLabel>
                         <FormGroup row>
                           <FormControlLabel
@@ -301,10 +312,12 @@ export default function EditBlueprintPermissions(props) {
                                 name="peerDiscovery"
                               />
                             }
-                            label={i18next.t(
-                              "allow_use_of_jami_in_local_lan",
-                              "Allow discovery of other peers on a local network"
-                            )}
+                            label={
+                              i18next.t(
+                                "allow_use_of_jami_in_local_lan",
+                                "Allow discovery of other peers on a local network"
+                              ) as string
+                            }
                           />
                           <CustomPopupState
                             message={i18next.t(
@@ -316,10 +329,12 @@ export default function EditBlueprintPermissions(props) {
                       </Grid>
                       <Grid item xs={12} sm={12} md={12}>
                         <FormLabel component="legend">
-                          {i18next.t(
-                            "contact_management",
-                            "Contact management"
-                          )}
+                          {
+                            i18next.t(
+                              "contact_management",
+                              "Contact management"
+                            ) as string
+                          }
                         </FormLabel>
                         <FormGroup row>
                           <FormControlLabel
@@ -336,10 +351,12 @@ export default function EditBlueprintPermissions(props) {
                                 name="allowLookup"
                               />
                             }
-                            label={i18next.t(
-                              "allow_jami_user_to_search_for_other_contacts",
-                              "Allow user to add new contacts"
-                            )}
+                            label={
+                              i18next.t(
+                                "allow_jami_user_to_search_for_other_contacts",
+                                "Allow user to add new contacts"
+                              ) as string
+                            }
                           />
                           <CustomPopupState
                             message={i18next.t(
@@ -373,10 +390,12 @@ export default function EditBlueprintPermissions(props) {
                   inputProps={{ "aria-label": "secondary checkbox" }}
                 />
               }
-              label={i18next.t(
-                "convert_your_account_into_a_rendezvous_point",
-                "Set the account as a Rendezvous point"
-              )}
+              label={
+                i18next.t(
+                  "convert_your_account_into_a_rendezvous_point",
+                  "Set the account as a Rendezvous point"
+                ) as string
+              }
             />
             <CustomPopupState
               message={i18next.t(
@@ -392,7 +411,7 @@ export default function EditBlueprintPermissions(props) {
               }}
             >
               <AddCircleOutlineIcon />{" "}
-              {i18next.t("add_moderator_to", "Add moderator to")}{" "}
+              {i18next.t("add_moderator_to", "Add moderator to") as string}{" "}
               {props.blueprintName}
             </Button>
             <CustomPopupState
@@ -407,16 +426,16 @@ export default function EditBlueprintPermissions(props) {
               <TableRow>
                 <TableCell align="left"></TableCell>
                 <TableCell align="left">
-                  {i18next.t("username", "Username")}
+                  {i18next.t("username", "Username") as string}
                 </TableCell>
                 <TableCell align="left">
-                  {i18next.t("first_name", "First name")}
+                  {i18next.t("first_name", "First name") as string}
                 </TableCell>
                 <TableCell align="left">
-                  {i18next.t("last_name", "Last name")}
+                  {i18next.t("last_name", "Last name") as string}
                 </TableCell>
                 <TableCell align="right">
-                  {i18next.t("action", "Action")}
+                  {i18next.t("action", "Action") as string}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -451,7 +470,12 @@ export default function EditBlueprintPermissions(props) {
                       color="primary"
                       onClick={() => removeModeratorFromBlueprint(user)}
                     >
-                      {i18next.t("remove_moderator", "Remove moderator")}
+                      {
+                        i18next.t(
+                          "remove_moderator",
+                          "Remove moderator"
+                        ) as string
+                      }
                     </Button>
                   </TableCell>
                 </TableRow>

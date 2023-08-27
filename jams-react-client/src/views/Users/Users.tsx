@@ -168,7 +168,7 @@ export default function Users() {
             <Link to={"/createuser"}>
               <Button variant="contained" color="primary">
                 <AddCircleOutlineIcon />{" "}
-                {i18next.t("create_user", "Create user")}
+                {i18next.t("create_user", "Create user") as string}
               </Button>
             </Link>
           )}
@@ -198,7 +198,10 @@ export default function Users() {
                       "Search users using (username, first name, last name)"
                     ),
                     inputProps: {
-                      "aria-label": i18next.t("search_users", "Search users"),
+                      "aria-label": i18next.t(
+                        "search_users",
+                        "Search users"
+                      ) as string,
                     },
                     onKeyUp: handleSearchUsers,
                   }}
@@ -228,7 +231,7 @@ export default function Users() {
               <InfoIcon />
 
               <p style={{ marginLeft: "10px" }}>
-                {i18next.t("no_users_found", "No users found")}
+                {i18next.t("no_users_found", "No users found") as string}
               </p>
             </div>
           )}
@@ -307,10 +310,12 @@ export default function Users() {
             <InfoIcon />
 
             <p style={{ marginLeft: "10px" }}>
-              {i18next.t(
-                "no_users_found_matching",
-                "No users found matching search value!"
-              )}
+              {
+                i18next.t(
+                  "no_users_found_matching",
+                  "No users found matching search value!"
+                ) as string
+              }
             </p>
           </div>
         )}

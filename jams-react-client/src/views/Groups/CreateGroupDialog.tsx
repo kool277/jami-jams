@@ -27,10 +27,13 @@ import Button from "components/CustomButtons/Button";
 
 const getHelperText = (disableCreate, groupName) => {
   if (disableCreate && groupName.length > 0) {
-    return i18next.t("group_name_already_exists", "Group name already exists!");
+    return i18next.t(
+      "group_name_already_exists",
+      "Group name already exists!"
+    ) as string;
   }
   if (disableCreate && groupName.length === 0) {
-    return i18next.t("group_name_is_empty", "Group name is empty");
+    return i18next.t("group_name_is_empty", "Group name is empty") as string;
   }
 
   return "";
@@ -156,7 +159,7 @@ export default function CreateGroupDialog({
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        {i18next.t("create_group", "Create group")}
+        {i18next.t("create_group", "Create group") as string}
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
@@ -165,7 +168,7 @@ export default function CreateGroupDialog({
               autoFocus
               error={groupNameExits}
               id="groupName"
-              label={i18next.t("group_name", "Group name")}
+              label={i18next.t("group_name", "Group name") as string}
               helperText={helperText}
               type="text"
               fullWidth
@@ -187,7 +190,9 @@ export default function CreateGroupDialog({
             <TextField
               select
               fullWidth
-              label={i18next.t("select_blueprint", "Select a blueprint")}
+              label={
+                i18next.t("select_blueprint", "Select a blueprint") as string
+              }
               value={selectedBlueprint.value}
               onChange={handleBlueprintsChange}
               disabled={blueprints.length === 0}

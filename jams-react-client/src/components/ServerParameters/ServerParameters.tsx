@@ -48,30 +48,30 @@ export default function ServerParameters({ setError, setErrorMessage }) {
   const initialValues = { domain: backend_address.origin };
   const validationSchema = Yup.object().shape({
     domain: Yup.string().required(
-      i18next.t("domain_is_required", "Domain is required.")
+      i18next.t("domain_is_required", "Domain is required.") as string
     ),
   });
 
   type Settings = Yup.InferType<typeof validationSchema>;
 
   const certificateRevocationTypes = [
-    { value: 300000, label: i18next.t("5_minutes", "5 minutes") },
-    { value: 600000, label: i18next.t("10_minutes", "10 minutes") },
-    { value: 900000, label: i18next.t("15_minutes", "15 minutes") },
-    { value: 1800000, label: i18next.t("30_minutes", "30 minutes") },
-    { value: 3600000, label: i18next.t("60_minutes", "60 minutes") },
+    { value: 300000, label: i18next.t("5_minutes", "5 minutes") as string },
+    { value: 600000, label: i18next.t("10_minutes", "10 minutes") as string },
+    { value: 900000, label: i18next.t("15_minutes", "15 minutes") as string },
+    { value: 1800000, label: i18next.t("30_minutes", "30 minutes") as string },
+    { value: 3600000, label: i18next.t("60_minutes", "60 minutes") as string },
   ];
 
   const deviceLifetimeTypes = [
-    { value: 2629746000, label: i18next.t("1_month", "1 month") },
-    { value: 7889238000, label: i18next.t("3_months", "3 months") },
-    { value: 15778476000, label: i18next.t("6_months", "6 months") },
-    { value: 31556952000, label: i18next.t("1_year", "1 year") },
+    { value: 2629746000, label: i18next.t("1_month", "1 month") as string },
+    { value: 7889238000, label: i18next.t("3_months", "3 months") as string },
+    { value: 15778476000, label: i18next.t("6_months", "6 months") as string },
+    { value: 31556952000, label: i18next.t("1_year", "1 year") as string },
   ];
 
   const userAccountLifetimeTypes = [
-    { value: 31556952000, label: i18next.t("1_year", "1 year") },
-    { value: 157784760000, label: i18next.t("5_years", "5 years") },
+    { value: 31556952000, label: i18next.t("1_year", "1 year") as string },
+    { value: 157784760000, label: i18next.t("5_years", "5 years") as string },
   ];
 
   const certificateRevocationTypesItems = tool.buildSelectMenuItems(
@@ -189,16 +189,18 @@ export default function ServerParameters({ setError, setErrorMessage }) {
         return (
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <Typography variant="h5" gutterBottom color="primary">
-              {i18next.t("server_parameters", "Server Parameters")}
+              {i18next.t("server_parameters", "Server Parameters") as string}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {i18next.t(
-                "global_parameters_cover_general_configuration_of_servers_engine",
-                "The global parameters cover the general configuration of the server's engine."
-              )}
+              {
+                i18next.t(
+                  "global_parameters_cover_general_configuration_of_servers_engine",
+                  "The global parameters cover the general configuration of the server's engine."
+                ) as string
+              }
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
-              {i18next.t("cors_domain_name", "CORS domain name")}
+              {i18next.t("cors_domain_name", "CORS domain name") as string}
               <CustomPopupState
                 message={i18next.t(
                   "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps",
@@ -207,10 +209,12 @@ export default function ServerParameters({ setError, setErrorMessage }) {
               />
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {i18next.t(
-                "domain_name_of_web_client_server",
-                "The domain name of your web client server."
-              )}
+              {
+                i18next.t(
+                  "domain_name_of_web_client_server",
+                  "The domain name of your web client server."
+                ) as string
+              }
             </Typography>
             <TextField
               variant="outlined"
@@ -218,7 +222,7 @@ export default function ServerParameters({ setError, setErrorMessage }) {
               required
               fullWidth
               id="domain"
-              label={i18next.t("domain", "Domain")}
+              label={i18next.t("domain", "Domain") as string}
               name="domain"
               autoComplete="domain"
               autoFocus
@@ -228,10 +232,12 @@ export default function ServerParameters({ setError, setErrorMessage }) {
               helperText={errors.domain && touched.domain && errors.domain}
             />
             <Typography variant="subtitle1" gutterBottom>
-              {i18next.t(
-                "certificate_revocation_list_lifetime",
-                "Certificate Revocation List Lifetime"
-              )}
+              {
+                i18next.t(
+                  "certificate_revocation_list_lifetime",
+                  "Certificate Revocation List Lifetime"
+                ) as string
+              }
               <CustomPopupState
                 message={i18next.t(
                   "set_liftetime_crl_list_certificates_revoked",
@@ -249,7 +255,7 @@ export default function ServerParameters({ setError, setErrorMessage }) {
               {certificateRevocationTypesItems}
             </Select>
             <Typography variant="subtitle1" gutterBottom>
-              {i18next.t("device_lifetime", "Device lifetime")}
+              {i18next.t("device_lifetime", "Device lifetime") as string}
             </Typography>
             <Select
               labelId="device-lifetime-select-label"
@@ -261,7 +267,12 @@ export default function ServerParameters({ setError, setErrorMessage }) {
               {deviceLifetimeTypesItems}
             </Select>
             <Typography variant="subtitle1" gutterBottom>
-              {i18next.t("user_account_lifetime", "User account lifetime")}
+              {
+                i18next.t(
+                  "user_account_lifetime",
+                  "User account lifetime"
+                ) as string
+              }
             </Typography>
             <Select
               labelId="user-account-lifetime-select-label"
@@ -274,17 +285,21 @@ export default function ServerParameters({ setError, setErrorMessage }) {
             </Select>
             {userlifeDisabled ? (
               <span className="spanError">
-                {i18next.t(
-                  "account_lifetime_should_be_bigger_to_device_lifetime",
-                  "The account lifetime should be longer than the Device lifetime."
-                )}
+                {
+                  i18next.t(
+                    "account_lifetime_should_be_bigger_to_device_lifetime",
+                    "The account lifetime should be longer than the Device lifetime."
+                  ) as string
+                }
               </span>
             ) : null}
             <Typography variant="subtitle1" gutterBottom>
-              {i18next.t(
-                "sip_configuration_template",
-                "SIP Configuration Template"
-              )}
+              {
+                i18next.t(
+                  "sip_configuration_template",
+                  "SIP Configuration Template"
+                ) as string
+              }
             </Typography>
             <Input
               fullWidth
@@ -299,7 +314,12 @@ export default function ServerParameters({ setError, setErrorMessage }) {
               color="primary"
               className={classes.submit}
             >
-              {i18next.t("set_server_parameters", "Set Server Parameters")}
+              {
+                i18next.t(
+                  "set_server_parameters",
+                  "Set Server Parameters"
+                ) as string
+              }
             </Button>
           </form>
         );

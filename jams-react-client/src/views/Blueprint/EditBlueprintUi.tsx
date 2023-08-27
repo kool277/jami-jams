@@ -184,7 +184,7 @@ export default function EditBlueprintUi({ blueprintName }) {
                 <SettingsIcon />
               </CardIcon>
               <p className={classes.cardCategory}>
-                {i18next.t("customization", "Customization")}
+                {i18next.t("customization", "Customization") as string}
               </p>
               <h3 className={classes.cardTitle}>{blueprintName}</h3>
             </CardHeader>

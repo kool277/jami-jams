@@ -153,23 +153,25 @@ export default function Blueprints() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {i18next.t("remove_blueprint", "Remove blueprint")}
+          {i18next.t("remove_blueprint", "Remove blueprint") as string}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {i18next.t(
-              "are_you_sure_you_want_to_delete",
-              "Are you sure you want to delete"
-            )}{" "}
+            {
+              i18next.t(
+                "are_you_sure_you_want_to_delete",
+                "Are you sure you want to delete"
+              ) as string
+            }
             <strong>{removedBlueprint}</strong> ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenRemoveDialog(false)} color="primary">
-            {i18next.t("cancel", "Cancel")}
+            {i18next.t("cancel", "Cancel") as string}
           </Button>
           <Button onClick={removeBlueprint} color="info" autoFocus>
-            {i18next.t("remove", "Remove")}
+            {i18next.t("remove", "Remove") as string}
           </Button>
         </DialogActions>
       </Dialog>
@@ -182,7 +184,7 @@ export default function Blueprints() {
             onClick={() => setOpen(true)}
           >
             <AddCircleOutlineIcon />{" "}
-            {i18next.t("create_blueprint", "Create blueprint")}
+            {i18next.t("create_blueprint", "Create blueprint") as string}
           </Button>
           <div className={classes.searchWrapper}>
             {!zeroBlueprint && (
@@ -216,7 +218,12 @@ export default function Blueprints() {
           <div className={classes.blueprintsNotFound}>
             <InfoIcon />
             <p style={{ marginLeft: "10px" }}>
-              {i18next.t("no_blueprints_found", "No blueprints found")}
+              {
+                i18next.t(
+                  "no_blueprints_found",
+                  "No blueprints found"
+                ) as string
+              }
             </p>
           </div>
         ) : (
@@ -228,7 +235,10 @@ export default function Blueprints() {
                     <h3 className={classes.cardTitle}>
                       {blueprint.name
                         ? blueprint.name
-                        : i18next.t("no_blueprint_name", "No blueprint name")}
+                        : (i18next.t(
+                            "no_blueprint_name",
+                            "No blueprint name"
+                          ) as string)}
                     </h3>
                     <ul>
                       <li>
@@ -239,7 +249,7 @@ export default function Blueprints() {
                               fontSize="small"
                               style={{ marginRight: "10px" }}
                             />
-                            {i18next.t("rendezvous", "Rendezvous")}
+                            {i18next.t("rendezvous", "Rendezvous") as string}
                           </p>
                         ) : (
                           <p>
@@ -247,7 +257,7 @@ export default function Blueprints() {
                               fontSize="small"
                               style={{ marginRight: "10px" }}
                             />
-                            {i18next.t("standalone", "Standalone")}
+                            {i18next.t("standalone", "Standalone") as string}
                           </p>
                         )}
                       </li>

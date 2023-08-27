@@ -15,7 +15,12 @@ export default function LdapStorageForm(props) {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
-          {i18next.t("ldap_server_information", "LDAP Server informations")}
+          {
+            i18next.t(
+              "ldap_server_information",
+              "LDAP Server informations"
+            ) as string
+          }
         </Typography>
       </Grid>
       <Grid item xs={12}>
@@ -25,7 +30,7 @@ export default function LdapStorageForm(props) {
           required
           fullWidth
           id="servername"
-          label={i18next.t("server_address", "Server address")}
+          label={i18next.t("server_address", "Server address") as string}
           name="servername"
           autoComplete="servername"
           value={props.values.servername}
@@ -46,7 +51,12 @@ export default function LdapStorageForm(props) {
           required
           fullWidth
           id="adminusername"
-          label={i18next.t("administrator_username", "Administrator username")}
+          label={
+            i18next.t(
+              "administrator_username",
+              "Administrator username"
+            ) as string
+          }
           name="ldapadminusername"
           autoComplete="adminusername"
           value={props.values.ldapadminusername}
@@ -66,7 +76,7 @@ export default function LdapStorageForm(props) {
           required
           fullWidth
           id="password"
-          label={i18next.t("password", "Password")}
+          label={i18next.t("password", "Password") as string}
           name="ldappassword"
           autoComplete="password"
           type="password"
@@ -84,10 +94,12 @@ export default function LdapStorageForm(props) {
         <TextField
           variant="outlined"
           id="basedn"
-          label={i18next.t(
-            "base_dn_please_use_ldap_convention",
-            "Base DN (Please use LDAP convention)"
-          )}
+          label={
+            i18next.t(
+              "base_dn_please_use_ldap_convention",
+              "Base DN (Please use LDAP convention)"
+            ) as string
+          }
           name="basedn"
           autoComplete="basedn"
           required
@@ -114,12 +126,12 @@ export default function LdapStorageForm(props) {
           <FormControlLabel
             value="true"
             control={<Radio color="primary" />}
-            label={i18next.t("yes", "Yes")}
+            label={i18next.t("yes", "Yes") as string}
           />
           <FormControlLabel
             value="false"
             control={<Radio color="default" />}
-            label={i18next.t("no", "No")}
+            label={i18next.t("no", "No") as string}
           />
         </RadioGroup>
       </Grid>

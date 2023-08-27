@@ -365,7 +365,9 @@ export default function EditGroup(props) {
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
         direction="right"
-        placeholder={i18next.t("add_user_to_group", "Add user to group ...")}
+        placeholder={
+          i18next.t("add_user_to_group", "Add user to group ...") as string
+        }
         searchTargets={searchUsers}
         targets={users}
         existingTargets={groupMembers}
@@ -380,7 +382,7 @@ export default function EditGroup(props) {
                 <EditIcon />
               </CardIcon>
               <p className={classes.cardCategory}>
-                {i18next.t("edit_group", "Edit group")}
+                {i18next.t("edit_group", "Edit group") as string}
               </p>
               <h3 className={classes.cardTitle}>{name}</h3>
             </CardHeader>
@@ -427,7 +429,12 @@ export default function EditGroup(props) {
                       className={classes.inputBottomMargin}
                       htmlFor="blueprint"
                     >
-                      {i18next.t("select_blueprint", "Select a blueprint")}
+                      {
+                        i18next.t(
+                          "select_blueprint",
+                          "Select a blueprint"
+                        ) as string
+                      }
                     </InputLabel>
                     <FormControl className={classes.margin} fullWidth>
                       <Select
@@ -454,24 +461,24 @@ export default function EditGroup(props) {
               setOpenDrawer(true);
             }}
           >
-            <AddCircleOutlineIcon /> {i18next.t("add_user_to", "Add user to")}{" "}
-            {name}
+            <AddCircleOutlineIcon />{" "}
+            {i18next.t("add_user_to", "Add user to") as string} {name}
           </Button>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
                 <TableCell align="left"></TableCell>
                 <TableCell align="left">
-                  {i18next.t("username", "Username")}
+                  {i18next.t("username", "Username") as string}
                 </TableCell>
                 <TableCell align="left">
-                  {i18next.t("first_name", "First name")}
+                  {i18next.t("first_name", "First name") as string}
                 </TableCell>
                 <TableCell align="left">
-                  {i18next.t("last_name", "Last name")}
+                  {i18next.t("last_name", "Last name") as string}
                 </TableCell>
                 <TableCell align="right">
-                  {i18next.t("action", "Action")}
+                  {i18next.t("action", "Action") as string}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -505,7 +512,7 @@ export default function EditGroup(props) {
                       color="primary"
                       onClick={() => deleteUserFromGroup(user)}
                     >
-                      {i18next.t("remove_user", "Remove user")}
+                      {i18next.t("remove_user", "Remove user") as string}
                     </Button>
                   </TableCell>
                 </TableRow>

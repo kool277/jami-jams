@@ -109,7 +109,9 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
         direction="right"
-        placeholder={i18next.t("add_user_to_group", "Add user to group ...")}
+        placeholder={
+          i18next.t("add_user_to_group", "Add user to group ...") as string
+        }
         searchTargets={setSearchValue}
         targets={groups.filter((group) => group.name.includes(searchValue))}
         existingTargets={groupMemberships}
@@ -125,16 +127,16 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
           }}
         >
           <AddCircleOutlineIcon />{" "}
-          {i18next.t("add_user_to_a_group", "Add user to a group")}
+          {i18next.t("add_user_to_a_group", "Add user to a group") as string}
         </Button>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <TableCell align="left">
-                {i18next.t("group_name", "Group name")}
+                {i18next.t("group_name", "Group name") as string}
               </TableCell>
               <TableCell align="right">
-                {i18next.t("action", "Action")}
+                {i18next.t("action", "Action") as string}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -152,7 +154,12 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
                     color="primary"
                     onClick={() => removeUserFromGroup(group)}
                   >
-                    {i18next.t("remove_from_group", "Remove from group")}
+                    {
+                      i18next.t(
+                        "remove_from_group",
+                        "Remove from group"
+                      ) as string
+                    }
                   </Button>
                 </TableCell>
               </TableRow>

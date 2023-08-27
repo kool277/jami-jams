@@ -43,7 +43,7 @@ export default function CountrySelect({ setFieldValue, handleBlur }) {
       renderInput={(params) => (
         <TextField
           {...params}
-          label={i18next.t("choose_a_country", "Choose a country")}
+          label={i18next.t("choose_a_country", "Choose a country") as string}
           name="country"
           variant="outlined"
           onBlur={handleBlur}

@@ -174,11 +174,17 @@ const Devices: FC<DevicesProps> = ({ username }) => {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>{i18next.t("device_name", "Device Name")}</TableCell>
-            <TableCell>{i18next.t("device_id", "Device Id")}</TableCell>
-            <TableCell align="right">{i18next.t("status", "Status")}</TableCell>
+            <TableCell>
+              {i18next.t("device_name", "Device Name") as string}
+            </TableCell>
+            <TableCell>
+              {i18next.t("device_id", "Device Id") as string}
+            </TableCell>
             <TableCell align="right">
-              {i18next.t("actions", "Actions")}
+              {i18next.t("status", "Status") as string}
+            </TableCell>
+            <TableCell align="right">
+              {i18next.t("actions", "Actions") as string}
             </TableCell>
           </TableRow>
         </TableHead>
@@ -218,7 +224,9 @@ const Devices: FC<DevicesProps> = ({ username }) => {
                     </Tooltip>
                     <Tooltip
                       id="tooltip-top-start"
-                      title={i18next.t("revoke_device", "Revoke Device")}
+                      title={
+                        i18next.t("revoke_device", "Revoke Device") as string
+                      }
                       placement="top"
                       classes={{ tooltip: classes.tooltip }}
                     >

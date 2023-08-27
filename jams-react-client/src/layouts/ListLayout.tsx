@@ -66,7 +66,7 @@ export default function Admin(props) {
   const Routes = [
     {
       path: `/user/${auth.getUsername()}`,
-      name: i18next.t("myprofile", "My profile"),
+      name: i18next.t("myprofile", "My profile") as string,
       icon: AccountCircleIcon,
       component: Users,
       layout: "/admin",
@@ -74,7 +74,7 @@ export default function Admin(props) {
     },
     {
       path: "/users",
-      name: i18next.t("users", "Users"),
+      name: i18next.t("users", "Users") as string,
       icon: Person,
       component: Users,
       layout: "/admin",
@@ -82,7 +82,7 @@ export default function Admin(props) {
     },
     {
       path: "/groups",
-      name: i18next.t("groups", "Groups"),
+      name: i18next.t("groups", "Groups") as string,
       icon: Group,
       component: Groups,
       layout: "/admin",
@@ -90,7 +90,7 @@ export default function Admin(props) {
     },
     {
       path: "/blueprints",
-      name: i18next.t("blueprints", "Blueprints"),
+      name: i18next.t("blueprints", "Blueprints") as string,
       icon: AllInbox,
       component: Blueprints,
       layout: "/admin",
@@ -98,7 +98,7 @@ export default function Admin(props) {
     },
     {
       path: "/settings",
-      name: i18next.t("settings", "Settings"),
+      name: i18next.t("settings", "Settings") as string,
       icon: SettingsIcon,
       component: Settings,
       layout: "/admin",

@@ -13,10 +13,12 @@ export default function AdStorageForm(props) {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
-          {i18next.t(
-            "active_directory_server_informations",
-            "Active Directory server information"
-          )}
+          {
+            i18next.t(
+              "active_directory_server_informations",
+              "Active Directory server information"
+            ) as string
+          }
         </Typography>
       </Grid>
       <Grid item xs={6}>
@@ -26,7 +28,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="port"
-          label={i18next.t("port", "Port")}
+          label={i18next.t("port", "Port") as string}
           name="port"
           autoComplete="port"
           value={props.values.port}
@@ -44,7 +46,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="host"
-          label={i18next.t("host", "Host")}
+          label={i18next.t("host", "Host") as string}
           name="host"
           autoComplete="host"
           value={props.values.host}
@@ -62,7 +64,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="adminusername"
-          label={i18next.t("admin_username", "Admin username")}
+          label={i18next.t("admin_username", "Admin username") as string}
           name="adadminusername"
           autoComplete="adminusername"
           value={props.values.adadminusername}
@@ -82,7 +84,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="password"
-          label={i18next.t("password", "Password")}
+          label={i18next.t("password", "Password") as string}
           name="adpassword"
           autoComplete="password"
           type="password"
@@ -103,7 +105,7 @@ export default function AdStorageForm(props) {
           required
           fullWidth
           id="domainname"
-          label={i18next.t("domain_name", "Domain Name")}
+          label={i18next.t("domain_name", "Domain Name") as string}
           name="domainname"
           autoComplete="domainname"
           value={props.values.domainname}
@@ -130,12 +132,12 @@ export default function AdStorageForm(props) {
           <FormControlLabel
             value="true"
             control={<Radio color="primary" />}
-            label={i18next.t("yes", "Yes")}
+            label={i18next.t("yes", "Yes") as string}
           />
           <FormControlLabel
             value="false"
             control={<Radio color="default" />}
-            label={i18next.t("no", "No")}
+            label={i18next.t("no", "No") as string}
           />
         </RadioGroup>
       </Grid>

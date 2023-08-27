@@ -81,10 +81,12 @@ export default function General(props) {
       .catch((error) => {
         props.setSeverity("error");
         props.setErrorMessage(
-          i18next.t("updating_user", "Updating user ") +
+          (((i18next.t("updating_user", "Updating user ") as string) +
             props.username +
-            i18next.t("password_failed", " password failed with error: ") +
-            error
+            i18next.t(
+              "password_failed",
+              " password failed with error: "
+            )) as string) + error
         );
         props.setError(true);
       });
@@ -105,14 +107,16 @@ export default function General(props) {
 
   const passwordSchema = Yup.object().shape({
     password: Yup.string().required(
-      i18next.t("password_is_required", "Password is required!")
+      i18next.t("password_is_required", "Password is required!") as string
     ),
     confirmPassword: Yup.string()
       .oneOf(
         [Yup.ref("password")],
-        i18next.t("password_must_match", "Passwords must match")
+        i18next.t("password_must_match", "Passwords must match") as string
       )
-      .required(i18next.t("password_is_required", "Password is required!")),
+      .required(
+        i18next.t("password_is_required", "Password is required!") as string
+      ),
   });
 
   const handleMouseDownPassword = () => {
@@ -149,7 +153,12 @@ export default function General(props) {
                   <Grid container spacing={2}>
                     <Grid item lg={6} style={{ display: "flex" }}>
                       <Typography component="p" gutterBottom color="primary">
-                        {i18next.t("change_language", "Change language")}
+                        {
+                          i18next.t(
+                            "change_language",
+                            "Change language"
+                          ) as string
+                        }
                       </Typography>
                     </Grid>
                     <Grid item lg={6}>
@@ -157,17 +166,21 @@ export default function General(props) {
                     </Grid>
                     <Grid item lg={6}>
                       <Typography component="p" gutterBottom color="primary">
-                        {i18next.t(
-                          "enter_the_following_information_below_to_change_your_admin_password",
-                          "Enter the following information to change your admin password."
-                        )}
+                        {
+                          i18next.t(
+                            "enter_the_following_information_below_to_change_your_admin_password",
+                            "Enter the following information to change your admin password."
+                          ) as string
+                        }
                       </Typography>
                     </Grid>
                     <Grid item lg={6}>
                       <FormikField
                         name="password"
-                        label={i18next.t("password", "Password")}
-                        placeholder={i18next.t("password", "Password")}
+                        label={i18next.t("password", "Password") as string}
+                        placeholder={
+                          i18next.t("password", "Password") as string
+                        }
                         type={passwordVisible ? "text" : "password"}
                         startAdornment={
                           <InputAdornment position="start">
@@ -255,7 +268,7 @@ export default function General(props) {
                           setGenerated(true);
                         }}
                       >
-                        {i18next.t("generate", "Generate")}
+                        {i18next.t("generate", "Generate") as string}
                       </Button>
                       <CopyToClipboard
                         text={values.password}
@@ -270,17 +283,22 @@ export default function General(props) {
                           className={classes.button}
                           startIcon={<FileCopyIcon />}
                         >
-                          {i18next.t("copy_to_clipboard", "Copy to clipboard")}
+                          {
+                            i18next.t(
+                              "copy_to_clipboard",
+                              "Copy to clipboard"
+                            ) as string
+                          }
                         </Button>
                       </CopyToClipboard>
                       {copied ? (
                         <span style={{ marginLeft: "10px" }}>
-                          {i18next.t("copied", "Copied")}
+                          {i18next.t("copied", "Copied") as string}
                         </span>
                       ) : null}
                       {generated ? (
                         <span style={{ marginLeft: "10px" }}>
-                          {i18next.t("generated", "Generated")}
+                          {i18next.t("generated", "Generated") as string}
                         </span>
                       ) : null}
                     </Grid>
@@ -294,10 +312,12 @@ export default function General(props) {
                         disabled={!isValid || !dirty}
                         className={classes.submit}
                       >
-                        {i18next.t(
-                          "change_admin_password",
-                          "Change administrator password"
-                        )}
+                        {
+                          i18next.t(
+                            "change_admin_password",
+                            "Change administrator password"
+                          ) as string
+                        }
                       </Button>
                     </Grid>
                     <Grid item lg={6}>

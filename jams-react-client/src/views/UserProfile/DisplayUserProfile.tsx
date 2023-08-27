@@ -316,8 +316,8 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
 
   const getUserStatus = () => {
     const label = revoked
-      ? i18next.t("revoked", "Revoked")
-      : i18next.t("active", "Active");
+      ? (i18next.t("revoked", "Revoked") as string)
+      : (i18next.t("active", "Active") as string);
     return (
       <Chip
         style={{ flex: 1 }}
@@ -377,20 +377,22 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {i18next.t("revoke_user_account", "Revoke user account")}
+          {i18next.t("revoke_user_account", "Revoke user account") as string}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {i18next.t(
-              "are_you_sure_want_revoke",
-              "Are you sure you want to revoke"
-            )}{" "}
+            {
+              i18next.t(
+                "are_you_sure_want_revoke",
+                "Are you sure you want to revoke"
+              ) as string
+            }{" "}
             <strong>{revokedUser}</strong> ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            {i18next.t("cancel", "Cancel")}
+            {i18next.t("cancel", "Cancel") as string}
           </Button>
           <Button
             onClick={revokeUser}
@@ -398,7 +400,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
             className={classes.whiteButtonText}
             autoFocus
           >
-            {i18next.t("revoke", "Revoke")}
+            {i18next.t("revoke", "Revoke") as string}
           </Button>
         </DialogActions>
       </Dialog>
@@ -454,7 +456,8 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                         className={classes.whiteButtonText}
                         onClick={() => setDisplayUser(false)}
                       >
-                        <EditIcon /> {i18next.t("edit_profile", "Edit profile")}
+                        <EditIcon />{" "}
+                        {i18next.t("edit_profile", "Edit profile") as string}
                       </Button>
                     )}
                   </Grid>
@@ -468,7 +471,12 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                         }}
                       >
                         <VpnKeyIcon />{" "}
-                        {i18next.t("change_password", "Change password")}
+                        {
+                          i18next.t(
+                            "change_password",
+                            "Change password"
+                          ) as string
+                        }
                       </Button>
                     )}
                   </Grid>
@@ -483,7 +491,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                         onClick={() => handleClickOpen(user.username)}
                       >
                         <DeleteIcon fontSize="small" />{" "}
-                        {i18next.t("revoke_user", "Revoke user")}
+                        {i18next.t("revoke_user", "Revoke user") as string}
                       </Button>
                     )}
                   </Grid>

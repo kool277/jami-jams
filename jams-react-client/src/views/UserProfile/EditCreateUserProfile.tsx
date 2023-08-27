@@ -483,9 +483,17 @@ export default function EditCreateUserProfile(props) {
 
   const EditCreateSchema = Yup.object().shape({
     username: Yup.string()
-      .min(3, i18next.t("minimum_3_characters", "Minimum 3 characters!"))
-      .max(32, i18next.t("maximum_32_characters", "Maximum 32 characters!"))
-      .required(i18next.t("username_is_required", "Username is required!"))
+      .min(
+        3,
+        i18next.t("minimum_3_characters", "Minimum 3 characters!") as string
+      )
+      .max(
+        32,
+        i18next.t("maximum_32_characters", "Maximum 32 characters!") as string
+      )
+      .required(
+        i18next.t("username_is_required", "Username is required!") as string
+      )
       .matches(
         /^[A-Za-z_][A-Za-z0-9_]*$/,
         i18next.t(
@@ -495,22 +503,22 @@ export default function EditCreateUserProfile(props) {
       ),
     password: props.createUser
       ? Yup.string().required(
-          i18next.t("password_is_required", "Password is required!")
+          i18next.t("password_is_required", "Password is required!") as string
         )
       : null,
     confirmPassword: props.createUser
       ? Yup.string().oneOf(
           [Yup.ref("password"), null],
-          i18next.t("password_must_match", "Passwords must match")
+          i18next.t("password_must_match", "Passwords must match") as string
         )
       : null,
     firstName: Yup.string().min(
       2,
-      i18next.t("first_name_is_too_short", "First name is too short!")
+      i18next.t("first_name_is_too_short", "First name is too short!") as string
     ),
     lastName: Yup.string().min(
       2,
-      i18next.t("last_name_is_too_short", "Last Name is too short!")
+      i18next.t("last_name_is_too_short", "Last Name is too short!") as string
     ),
     email: Yup.string().email(i18next.t("invalid_email", "Invalid email!")),
     profilePicture: Yup.string(),
@@ -523,16 +531,16 @@ export default function EditCreateUserProfile(props) {
     ),
     faxNumber: Yup.string().matches(
       /^(\+\d{1,2}\s?)?1?-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-      i18next.t("fax_not_valid", "Fax number not valid!")
+      i18next.t("fax_not_valid", "Fax number not valid!") as string
     ),
     phoneNumber: Yup.string().matches(
       /^(\+\d{1,2}\s?)?1?-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-      i18next.t("phone_not_valid", "Phone number not valid!")
+      i18next.t("phone_not_valid", "Phone number not valid!") as string
     ),
     phoneNumberExtension: Yup.number().positive().integer(),
     mobileNumber: Yup.string().matches(
       /^(\+\d{1,2}\s?)?1?-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
-      i18next.t("mobile_not_valid", "Mobile number not valid!")
+      i18next.t("mobile_not_valid", "Mobile number not valid!") as string
     ),
   });
 
@@ -546,7 +554,7 @@ export default function EditCreateUserProfile(props) {
         classes={{ paper: classes.dialogPaper }}
       >
         <DialogTitle id="alert-dialog-title">
-          {i18next.t("crop_image", "Crop image")}
+          {i18next.t("crop_image", "Crop image") as string}
         </DialogTitle>
         <DialogContent>
           <div className={classes.cropContainer}>
@@ -569,7 +577,7 @@ export default function EditCreateUserProfile(props) {
                 variant="overline"
                 classes={{ root: classes.sliderLabel }}
               >
-                {i18next.t("zoom", "Zoom")}
+                {i18next.t("zoom", "Zoom") as string}
               </Typography>
               <Slider
                 value={zoom}
@@ -586,7 +594,7 @@ export default function EditCreateUserProfile(props) {
                 variant="overline"
                 classes={{ root: classes.sliderLabel }}
               >
-                {i18next.t("rotation", "Rotation")}
+                {i18next.t("rotation", "Rotation") as string}
               </Typography>
               <Slider
                 value={rotation}
@@ -607,7 +615,7 @@ export default function EditCreateUserProfile(props) {
             className={classes.whiteButtonText}
             autoFocus
           >
-            {i18next.t("validate", "Validate")}
+            {i18next.t("validate", "Validate") as string}
           </Button>
         </DialogActions>
       </Dialog>
@@ -633,11 +641,14 @@ export default function EditCreateUserProfile(props) {
                     >
                       <p className={classes.cardCategory}>
                         {props.createUser
-                          ? i18next.t(
+                          ? (i18next.t(
                               "create_new_profile",
                               "Create new profile"
-                            )
-                          : i18next.t("edit_profile", "Edit profile")}
+                            ) as string)
+                          : (i18next.t(
+                              "edit_profile",
+                              "Edit profile"
+                            ) as string)}
                       </p>
                       {props.createUser ? (
                         ""
@@ -687,18 +698,24 @@ export default function EditCreateUserProfile(props) {
                               >
                                 <PhotoCamera />
                               </IconButton>{" "}
-                              {i18next.t(
-                                "change_profile_image",
-                                "Change profile image"
-                              )}
+                              {
+                                i18next.t(
+                                  "change_profile_image",
+                                  "Change profile image"
+                                ) as string
+                              }
                             </label>
                           </Grid>
                           {props.createUser && (
                             <Grid item xs={12} sm={12} md={6}>
                               <FormikField
                                 name="username"
-                                label={i18next.t("username", "Username")}
-                                placeholder={i18next.t("username", "Username")}
+                                label={
+                                  i18next.t("username", "Username") as string
+                                }
+                                placeholder={
+                                  i18next.t("username", "Username") as string
+                                }
                                 startAdornment={
                                   <InputAdornment position="start">
                                     <AccountCircleIcon />
@@ -732,8 +749,12 @@ export default function EditCreateUserProfile(props) {
                               <FormikField
                                 type={passwordVisible ? "text" : "password"}
                                 name="password"
-                                label={i18next.t("password", "Password")}
-                                placeholder={i18next.t("password", "Password")}
+                                label={
+                                  i18next.t("password", "Password") as string
+                                }
+                                placeholder={
+                                  i18next.t("password", "Password") as string
+                                }
                                 startAdornment={
                                   <InputAdornment position="start">
                                     <VpnKeyIcon />
@@ -835,7 +856,7 @@ export default function EditCreateUserProfile(props) {
                                   setGenerated(true);
                                 }}
                               >
-                                {i18next.t("generate", "Generate")}
+                                {i18next.t("generate", "Generate") as string}
                               </Button>
                               <CopyToClipboard
                                 text={values.password}
@@ -851,20 +872,27 @@ export default function EditCreateUserProfile(props) {
                                   className={classes.button}
                                   startIcon={<FileCopyIcon />}
                                 >
-                                  {i18next.t(
-                                    "copy_to_clipboard",
-                                    "Copy to clipboard"
-                                  )}
+                                  {
+                                    i18next.t(
+                                      "copy_to_clipboard",
+                                      "Copy to clipboard"
+                                    ) as string
+                                  }
                                 </Button>
                               </CopyToClipboard>
                               {copied ? (
                                 <span style={{ marginLeft: "10px" }}>
-                                  {i18next.t("copied", "Copied")}
+                                  {i18next.t("copied", "Copied") as string}
                                 </span>
                               ) : null}
                               {generated ? (
                                 <span style={{ marginLeft: "10px" }}>
-                                  {i18next.t("generated", "Generated")}
+                                  {
+                                    i18next.t(
+                                      "generated",
+                                      "Generated"
+                                    ) as string
+                                  }
                                 </span>
                               ) : null}
                             </Grid>
@@ -872,7 +900,9 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="firstName"
-                              label={i18next.t("first_name", "First name")}
+                              label={
+                                i18next.t("first_name", "First name") as string
+                              }
                               placeholder={i18next.t(
                                 "first_name",
                                 "First name"
@@ -890,8 +920,12 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="lastName"
-                              label={i18next.t("last_name", "Last name")}
-                              placeholder={i18next.t("last_name", "Last name")}
+                              label={
+                                i18next.t("last_name", "Last name") as string
+                              }
+                              placeholder={
+                                i18next.t("last_name", "Last name") as string
+                              }
                               startAdornment={
                                 <InputAdornment position="start">
                                   <PersonOutlinedIcon />
@@ -905,8 +939,10 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="email"
-                              label={i18next.t("email", "Email")}
-                              placeholder={i18next.t("email", "Email")}
+                              label={i18next.t("email", "Email") as string}
+                              placeholder={
+                                i18next.t("email", "Email") as string
+                              }
                               startAdornment={
                                 <InputAdornment position="start">
                                   <AlternateEmailOutlinedIcon />
@@ -920,7 +956,12 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="organization"
-                              label={i18next.t("organization", "Organization")}
+                              label={
+                                i18next.t(
+                                  "organization",
+                                  "Organization"
+                                ) as string
+                              }
                               placeholder={i18next.t(
                                 "organization",
                                 "Organization"
@@ -938,7 +979,9 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="faxNumber"
-                              label={i18next.t("fax_number", "Fax number")}
+                              label={
+                                i18next.t("fax_number", "Fax number") as string
+                              }
                               placeholder={i18next.t(
                                 "fax_number",
                                 "Fax number"
@@ -956,7 +999,12 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="phoneNumber"
-                              label={i18next.t("phone_number", "Phone number")}
+                              label={
+                                i18next.t(
+                                  "phone_number",
+                                  "Phone number"
+                                ) as string
+                              }
                               placeholder={i18next.t(
                                 "phone_number",
                                 "Phone number"
@@ -974,8 +1022,12 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="phoneNumberExtension"
-                              label={i18next.t("extension", "Extension")}
-                              placeholder={i18next.t("extension", "Extension")}
+                              label={
+                                i18next.t("extension", "Extension") as string
+                              }
+                              placeholder={
+                                i18next.t("extension", "Extension") as string
+                              }
                               startAdornment={
                                 <InputAdornment position="start">
                                   <PhoneForwardedOutlinedIcon />
@@ -989,8 +1041,10 @@ export default function EditCreateUserProfile(props) {
                           <Grid item align="center" xs={12} sm={12} md={6}>
                             <FormikField
                               name="mobileNumber"
-                              label={i18next.t("mobile", "Mobile")}
-                              placeholder={i18next.t("mobile", "Mobile")}
+                              label={i18next.t("mobile", "Mobile") as string}
+                              placeholder={
+                                i18next.t("mobile", "Mobile") as string
+                              }
                               startAdornment={
                                 <InputAdornment position="start">
                                   <SmartphoneOutlinedIcon />
@@ -1011,7 +1065,7 @@ export default function EditCreateUserProfile(props) {
                           className={classes.whiteButtonText}
                           onClick={handleCancelUpdate}
                         >
-                          {i18next.t("cancel", "Cancel")}
+                          {i18next.t("cancel", "Cancel") as string}
                         </Button>
                       )}
                       {props.createUser ? (
@@ -1021,7 +1075,12 @@ export default function EditCreateUserProfile(props) {
                           color="info"
                           className={classes.whiteButtonText}
                         >
-                          {i18next.t("create_profile", "Create Profile")}
+                          {
+                            i18next.t(
+                              "create_profile",
+                              "Create Profile"
+                            ) as string
+                          }
                         </Button>
                       ) : (
                         <Button
@@ -1030,7 +1089,7 @@ export default function EditCreateUserProfile(props) {
                           color="info"
                           className={classes.whiteButtonText}
                         >
-                          {i18next.t("save_profile", "Save Profile")}
+                          {i18next.t("save_profile", "Save Profile") as string}
                         </Button>
                       )}
                     </CardFooter>

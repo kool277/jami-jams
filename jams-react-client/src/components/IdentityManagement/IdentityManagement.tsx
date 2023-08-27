@@ -64,45 +64,63 @@ export default function IdentityManagement(props) {
 
   const validationSchemaLDAPform = Yup.object().shape({
     servername: Yup.string().required(
-      i18next.t("servername_is_required", "Server name is required.")
+      i18next.t("servername_is_required", "Server name is required.") as string
     ),
     ldapadminusername: Yup.string().required(
-      i18next.t("username_is_required", "Username is required!")
+      i18next.t("username_is_required", "Username is required!") as string
     ),
     ldappassword: Yup.string().required(
-      i18next.t("password_is_required", "Password is required!")
+      i18next.t("password_is_required", "Password is required!") as string
     ),
     basedn: Yup.string().required(
-      i18next.t("domain_name_is_required", "Domain name is required.")
+      i18next.t("domain_name_is_required", "Domain name is required.") as string
     ),
   });
 
   const validationSchemaADform = Yup.object().shape({
     port: Yup.number()
-      .typeError(i18next.t("port_must_be_a_number", "Port must be a number."))
-      .positive(i18next.t("port_must_be_positive", "Port must be positive."))
-      .integer(i18next.t("port_must_be_an_integer", "Port must be an integer."))
+      .typeError(
+        i18next.t("port_must_be_a_number", "Port must be a number.") as string
+      )
+      .positive(
+        i18next.t("port_must_be_positive", "Port must be positive.") as string
+      )
+      .integer(
+        i18next.t(
+          "port_must_be_an_integer",
+          "Port must be an integer."
+        ) as string
+      )
       .required(
-        i18next.t("port_number_is_required", "Port number is required.")
+        i18next.t(
+          "port_number_is_required",
+          "Port number is required."
+        ) as string
       ),
     host: Yup.string().required(
-      i18next.t("host_is_required", "Host is required.")
+      i18next.t("host_is_required", "Host is required.") as string
     ),
     adadminusername: Yup.string().required(
-      i18next.t("username_is_required", "Username is required!")
+      i18next.t("username_is_required", "Username is required!") as string
     ),
     domainname: Yup.string().required(
-      i18next.t("domain_name_is_required", "Domain name is required.")
+      i18next.t("domain_name_is_required", "Domain name is required.") as string
     ),
     adpassword: Yup.string().required(
-      i18next.t("password_is_required", "Password is required!")
+      i18next.t("password_is_required", "Password is required!") as string
     ),
   });
 
   const directoryTypes = [
-    { value: 0, label: i18next.t("local_database", "Local Database") },
-    { value: 1, label: i18next.t("ldap_server", "LDAP Server") },
-    { value: 2, label: i18next.t("active_directory", "Active Directory") },
+    {
+      value: 0,
+      label: i18next.t("local_database", "Local Database") as string,
+    },
+    { value: 1, label: i18next.t("ldap_server", "LDAP Server") as string },
+    {
+      value: 2,
+      label: i18next.t("active_directory", "Active Directory") as string,
+    },
   ];
 
   const directoryTypesItems = buildSelectMenuItems(directoryTypes);
@@ -307,15 +325,17 @@ export default function IdentityManagement(props) {
     return (
       <form className={classes.form} noValidate onSubmit={handleLocalSubmit}>
         <Typography variant="h5" gutterBottom color="primary">
-          {i18next.t("identity_management", "Identity Management")}
+          {i18next.t("identity_management", "Identity Management") as string}
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Typography variant="body1" gutterBottom>
-              {i18next.t(
-                "select_type_of_user_directory",
-                "Select the type of user directory to be integrated with JAMS"
-              )}
+              {
+                i18next.t(
+                  "select_type_of_user_directory",
+                  "Select the type of user directory to be integrated with JAMS"
+                ) as string
+              }
             </Typography>
             <Select
               labelId="demo-simple-select-label"
@@ -339,7 +359,12 @@ export default function IdentityManagement(props) {
           color="primary"
           className={classes.submit}
         >
-          {i18next.t("set_identity_parameters", "Set identity parameters")}
+          {
+            i18next.t(
+              "set_identity_parameters",
+              "Set identity parameters"
+            ) as string
+          }
         </Button>
       </form>
     );
@@ -364,15 +389,22 @@ export default function IdentityManagement(props) {
           return (
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
               <Typography variant="h5" gutterBottom color="primary">
-                {i18next.t("identity_management", "Identity Management")}
+                {
+                  i18next.t(
+                    "identity_management",
+                    "Identity Management"
+                  ) as string
+                }
               </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Typography variant="body1" gutterBottom>
-                    {i18next.t(
-                      "select_type_of_user_directory",
-                      "Select the type of user directory to be integrated with JAMS"
-                    )}
+                    {
+                      i18next.t(
+                        "select_type_of_user_directory",
+                        "Select the type of user directory to be integrated with JAMS"
+                      ) as string
+                    }
                   </Typography>
                   <Select
                     labelId="demo-simple-select-label"
@@ -393,10 +425,12 @@ export default function IdentityManagement(props) {
                 color="primary"
                 className={classes.submit}
               >
-                {i18next.t(
-                  "set_identity_parameters",
-                  "Set identity parameters"
-                )}
+                {
+                  i18next.t(
+                    "set_identity_parameters",
+                    "Set identity parameters"
+                  ) as string
+                }
               </Button>
             </form>
           );
@@ -424,15 +458,22 @@ export default function IdentityManagement(props) {
           return (
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
               <Typography variant="h5" gutterBottom color="primary">
-                {i18next.t("identity_management", "Identity Management")}
+                {
+                  i18next.t(
+                    "identity_management",
+                    "Identity Management"
+                  ) as string
+                }
               </Typography>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Typography variant="body1" gutterBottom>
-                    {i18next.t(
-                      "select_type_of_user_directory",
-                      "Select the type of user directory to be integrated with JAMS"
-                    )}
+                    {
+                      i18next.t(
+                        "select_type_of_user_directory",
+                        "Select the type of user directory to be integrated with JAMS"
+                      ) as string
+                    }
                   </Typography>
                   <Select
                     labelId="demo-simple-select-label"
@@ -453,10 +494,12 @@ export default function IdentityManagement(props) {
                 color="primary"
                 className={classes.submit}
               >
-                {i18next.t(
-                  "set_identity_parameters",
-                  "Set identity parameters"
-                )}
+                {
+                  i18next.t(
+                    "set_identity_parameters",
+                    "Set identity parameters"
+                  ) as string
+                }
               </Button>
             </form>
           );
