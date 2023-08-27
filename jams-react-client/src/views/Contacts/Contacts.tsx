@@ -309,7 +309,6 @@ export default function Users(props) {
         targets={users}
         existingTargets={contacts}
         addElementToTarget={addContactToUser}
-        targetName={props.username}
         type="user"
       />
       <Dialog

@@ -1,17 +1,19 @@
-import React, { useCallback } from "react";
+import React, { FC, useCallback } from "react";
 import clsx from "clsx";
-import { makeStyles } from "@mui/styles";
-import CustomInput from "components/CustomInput/CustomInput";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
-
-import noProfilePicture from "assets/img/faces/no-profile-picture.png";
-
 import { debounce } from "lodash";
+import { makeStyles } from "@mui/styles";
+
+import {
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
+  Avatar,
+} from "@mui/material";
+
+import CustomInput from "components/CustomInput/CustomInput";
+import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -35,27 +37,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TemporaryDrawer(props) {
+interface TemporaryDrawerProps {
+  openDrawer: boolean;
+  setOpenDrawer: (open: boolean) => void;
+  type: "user" | "group";
+  targets: any[];
+  existingTargets: any[];
+  addElementToTarget: (target: any) => void;
+  searchTargets: (searchValue: string) => void;
+  direction: "top" | "bottom" | "left" | "right";
+  placeholder: string;
+}
+
+const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
+  openDrawer,
+  setOpenDrawer,
+  type,
+  targets,
+  existingTargets,
+  addElementToTarget,
+  searchTargets,
+  direction,
+  placeholder,
+}) => {
   const classes = useStyles();
 
   const listUsers = () => (
     <List>
-      {props.type === "user"
-        ? props.targets &&
-          props.targets
+      {type === "user"
+        ? targets &&
+          targets
             .filter(
               (target) =>
-                !props.existingTargets.some(
-                  (t) => target.username === t.username
-                )
+                !existingTargets.some((t) => target.username === t.username)
             )
             .map((target) => (
               <ListItem
                 button
                 key={target.username}
                 onClick={() => {
-                  props.addElementToTarget(target);
-                  props.setOpenDrawer(false);
+                  addElementToTarget(target);
+                  setOpenDrawer(false);
                 }}
               >
                 <Avatar
@@ -78,19 +100,18 @@ export default function TemporaryDrawer(props) {
                 />
               </ListItem>
             ))
-        : props.targets &&
-          props.targets
+        : targets &&
+          targets
             .filter(
-              (target) =>
-                !props.existingTargets.some((t) => target.name === t.name)
+              (target) => !existingTargets.some((t) => target.name === t.name)
             )
             .map((target) => (
               <ListItem
                 button
                 key={target.name}
                 onClick={() => {
-                  props.addElementToTarget(target);
-                  props.setOpenDrawer(false);
+                  addElementToTarget(target);
+                  setOpenDrawer(false);
                 }}
               >
                 <ListItemText primary={target.name} />
@@ -99,10 +120,7 @@ export default function TemporaryDrawer(props) {
     </List>
   );
 
-  const initSearchTargets = useCallback(
-    debounce((searchValue) => props.searchTargets(searchValue), 500),
-    []
-  );
+  const initSearchTargets = useCallback(debounce(searchTargets, 500), []);
 
   const handleSearchTargets = (e) => {
     const searchValue = e.target.value;
@@ -111,18 +129,17 @@ export default function TemporaryDrawer(props) {
 
   return (
     <div>
-      <React.Fragment key={props.direction}>
+      <React.Fragment key={direction}>
         <Drawer
           anchor="right"
-          open={props.openDrawer}
+          open={openDrawer}
           onClose={() => {
-            props.setOpenDrawer(false);
+            setOpenDrawer(false);
           }}
         >
           <div
             className={clsx(classes.list, {
-              [classes.fullList]:
-                props.direction === "top" || props.direction === "bottom",
+              [classes.fullList]: direction === "top" || direction === "bottom",
             })}
             role="presentation"
           >
@@ -132,9 +149,9 @@ export default function TemporaryDrawer(props) {
                   className: classes.margin + " " + classes.search,
                 }}
                 inputProps={{
-                  placeholder: props.placeholder,
+                  placeholder: placeholder,
                   inputProps: {
-                    "aria-label": props.placeholder,
+                    "aria-label": placeholder,
                   },
                   onKeyUp: handleSearchTargets,
                 }}
@@ -147,4 +164,6 @@ export default function TemporaryDrawer(props) {
       </React.Fragment>
     </div>
   );
-}
+};
+
+export default TemporaryDrawer;

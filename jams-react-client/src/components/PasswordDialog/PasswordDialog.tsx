@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 // core components
@@ -51,7 +51,17 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles(styles);
 
-export default function PasswordDialog(props) {
+interface PasswordDialogProps {
+  username: string;
+  open: boolean;
+  onClose: () => void;
+}
+
+const PasswordDialog: FC<PasswordDialogProps> = ({
+  username,
+  open,
+  onClose,
+}) => {
   const classes = useStyles();
 
   const [copied, setCopied] = useState(false);
@@ -69,23 +79,17 @@ export default function PasswordDialog(props) {
 
   const changePassword = (values) => {
     const data = {
-      username: props.username,
+      username: username,
       password: values.password,
     };
 
     axios(configApiCall(api_path_put_update_user, "PUT", data, null))
-      .then(() => {
-        props.setChangePasswordOpen(false);
-      })
+      .then(onClose)
       .catch((error) => {
         console.log(
-          "Updating user " +
-            props.username +
-            " password failed with error: " +
-            error
+          "Updating user " + username + " password failed with error: " + error
         );
       });
-    props.setChangePasswordOpen(false);
   };
 
   const passwordSchema = Yup.object().shape({
@@ -141,8 +145,8 @@ export default function PasswordDialog(props) {
   return (
     <div>
       <Dialog
-        open={props.changePasswordOpen}
-        onClose={props.handleClosechangePassword}
+        open={open}
+        onClose={onClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -158,7 +162,7 @@ export default function PasswordDialog(props) {
             <form onSubmit={handleSubmit}>
               <DialogContent>
                 <DialogContentText id="change-password-description">
-                  Change <strong>{props.username}&apos;s</strong> password
+                  Change <strong>{username}&apos;s</strong> password
                 </DialogContentText>
                 <FormikField
                   name="password"
@@ -262,10 +266,7 @@ export default function PasswordDialog(props) {
                     </CopyToClipboard>
                   </Grid>
                   <Grid item className={classes.actionButtons}>
-                    <Button
-                      onClick={props.handleClosechangePassword}
-                      color="primary"
-                    >
+                    <Button onClick={onClose} color="primary">
                       Cancel
                     </Button>
                     <Button
@@ -286,4 +287,6 @@ export default function PasswordDialog(props) {
       </Dialog>
     </div>
   );
-}
+};
+
+export default PasswordDialog;

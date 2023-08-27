@@ -370,7 +370,6 @@ export default function EditGroup(props) {
         targets={users}
         existingTargets={groupMembers}
         addElementToTarget={addUserInGroup}
-        targetName={name}
         type="user"
       />
       <GridContainer>
