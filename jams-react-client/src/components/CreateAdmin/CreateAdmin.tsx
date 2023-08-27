@@ -14,8 +14,9 @@ import { api_path_post_install_admin } from "../../globalUrls";
 import auth from "../../auth";
 
 import i18next from "i18next";
+import { Theme } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",

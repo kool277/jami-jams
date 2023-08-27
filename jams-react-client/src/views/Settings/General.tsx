@@ -32,8 +32,9 @@ import LanguagePicker from "../../components/LanguagePicker/LanguagePicker";
 
 import pjson from "../../../package.json";
 import generator from "generate-password-browser";
+import { Theme } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",

@@ -8,7 +8,7 @@ import { makeStyles } from "@mui/styles";
 
 import styles from "assets/jss/material-dashboard-react/components/cardAvatarStyle";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function CardAvatar(props) {
   const classes = useStyles();

@@ -18,8 +18,9 @@ import Input from "@mui/material/Input";
 import Typography from "@mui/material/Typography";
 
 import i18next from "i18next";
+import { Theme } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",

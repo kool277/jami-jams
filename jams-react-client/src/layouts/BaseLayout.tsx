@@ -44,7 +44,7 @@ import { AccountCircle as AccountCircleIcon } from "@mui/icons-material";
 
 let ps;
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function Admin(props) {
   // styles

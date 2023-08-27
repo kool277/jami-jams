@@ -139,7 +139,7 @@ const styles = () => ({
   },
 });
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 // Inspired by blueprintjs
 const StyledRadio = (props) => {

@@ -44,7 +44,7 @@ import i18next from "i18next";
 
 let ps;
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function Admin(props) {
   // styles

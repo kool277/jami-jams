@@ -98,7 +98,7 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function EditBlueprintPermissions(props) {
   const classes = useStyles();

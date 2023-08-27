@@ -81,7 +81,7 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function Users(props) {
   const classes = useStyles();

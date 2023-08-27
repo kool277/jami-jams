@@ -80,7 +80,7 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function Groups() {
   const classes = useStyles();

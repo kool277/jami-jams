@@ -10,12 +10,13 @@ import {
   ListItem,
   ListItemText,
   Avatar,
+  Theme,
 } from "@mui/material";
 
 import CustomInput from "components/CustomInput/CustomInput";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   list: {
     width: "100%",
     [theme.breakpoints.up("xl")]: {

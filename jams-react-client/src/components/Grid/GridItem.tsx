@@ -10,7 +10,7 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 interface GridItemProps extends OverridableComponent<GridTypeMap> {
   children: React.ReactNode;

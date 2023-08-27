@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 
 import styles from "assets/jss/material-dashboard-react/components/buttonStyle";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function RegularButton(props) {
   const classes = useStyles();

@@ -4,7 +4,7 @@ import styles from "assets/jss/material-dashboard-react/components/footerStyle";
 
 import pjson from "../../../package.json";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function Footer() {
   const classes = useStyles();

@@ -216,7 +216,7 @@ const styles = (theme) => ({
   },
 });
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 const toBase64 = (file: File): Promise<string | undefined> =>
   new Promise((resolve, reject) => {

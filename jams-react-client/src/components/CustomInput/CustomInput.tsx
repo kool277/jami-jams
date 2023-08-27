@@ -11,7 +11,7 @@ import Check from "@mui/icons-material/Check";
 // core components
 import styles from "assets/jss/material-dashboard-react/components/customInputStyle";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function CustomInput(props) {
   const classes = useStyles();

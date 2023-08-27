@@ -17,6 +17,7 @@ import IdentityManagement from "components/IdentityManagement/IdentityManagement
 import ServerParameters from "components/ServerParameters/ServerParameters";
 
 import LanguagePicker from "../components/LanguagePicker/LanguagePicker";
+import { Theme } from "@mui/material";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -34,7 +35,7 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,

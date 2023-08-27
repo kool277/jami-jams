@@ -18,6 +18,7 @@ import i18next from "i18next";
 
 import logo from "assets/img/jams_logo_no_gnu_package.svg";
 import * as Yup from "yup";
+import { Theme } from "@mui/material";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -35,7 +36,7 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",

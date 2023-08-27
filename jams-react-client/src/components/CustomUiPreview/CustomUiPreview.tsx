@@ -100,7 +100,7 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 interface CustomUiPreviewProps {
   isOldPreview: boolean;

@@ -13,7 +13,7 @@ import Button from "components/CustomButtons/Button";
 
 import styles from "assets/jss/material-dashboard-react/components/headerStyle";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function Header(props) {
   const classes = useStyles();

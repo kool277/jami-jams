@@ -32,7 +32,7 @@ import i18next from "i18next";
 import EditDeviceDialog from "./EditDeviceDialog";
 import RevokeDeviceDialog from "./RevokeDeviceDialog";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 interface DevicesProps {
   username: string;

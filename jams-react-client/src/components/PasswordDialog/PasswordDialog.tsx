@@ -49,7 +49,7 @@ const styles = (theme) => ({
   },
 });
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 interface PasswordDialogProps {
   username: string;

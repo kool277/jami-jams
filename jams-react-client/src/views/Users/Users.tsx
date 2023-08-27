@@ -68,7 +68,7 @@ const styles = {
     wordWrap: "break-word",
   },
 };
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 export default function Users() {
   const classes = useStyles();
   const history = useHistory();

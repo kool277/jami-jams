@@ -10,6 +10,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
 
 import i18next from "i18next";
+import { Theme } from "@mui/material";
 
 const useQontoStepIconStyles = makeStyles({
   root: {
@@ -124,7 +125,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     width: "100%",
   },

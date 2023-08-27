@@ -88,7 +88,7 @@ const styles = {
   },
 };
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function EditBlueprintUi({ blueprintName }) {
   const classes = useStyles();

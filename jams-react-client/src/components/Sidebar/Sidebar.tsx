@@ -22,7 +22,7 @@ import auth from "auth";
 
 import i18next from "i18next";
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles as any);
 
 export default function Sidebar(props) {
   const classes = useStyles();

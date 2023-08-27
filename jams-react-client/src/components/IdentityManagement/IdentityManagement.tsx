@@ -21,8 +21,9 @@ import auth from "../../auth";
 import * as Yup from "yup";
 
 import i18next from "i18next";
+import { Theme } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
