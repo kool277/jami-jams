@@ -3,7 +3,7 @@
     "password": "Fjalëkalim",
     "confirm_password": "Ripohoni fjalëkalimin",
     "continue": "Vazhdo",
-    "users": "Users",
+    "users": "Përdorues",
     "groups": "Grupe",
     "blueprints": "Modele",
     "settings": "Rregullime",
@@ -117,7 +117,7 @@
     "permissions": "Leje",
     "configuration": "Formësim",
     "enable_upnp": "Aktivizo UPnP",
-    "use_jami_default_turn_configuration": "Use default TURN configuration",
+    "use_jami_default_turn_configuration": "Përdor formësim TURN parazgjedhje",
     "use_a_custom_turn_configuration": "Përdorni një formësim TURN vetjak",
     "turn_server_address": "Adresë Shërbyesi TURN",
     "turn_server_username": "Emër përdoruesi për në shërbyesin TURN",
@@ -269,9 +269,9 @@
     "preview_tip1": "Që të plotësoni profilin tuaj, shtoni një foto dhe një nofkë",
     "preview_tip2": "Pse duhet ta ruaj llogarinë time?",
     "preview_tip3": "Si të ujdisen shkurtore tastiere?",
-    "tip_box_id_color": "Tip Box and Jami ID color",
-    "enable_main_box": "Add a box behind the title, description and Jami ID",
-    "main_box_color": "Box color",
-    "logo_size": "Size",
-    "default_settings": "Default settings"
+    "tip_box_id_color": "Ngjyrë Kutie Bakshishesh dhe ID Jami ",
+    "enable_main_box": "Shtoni një kuti pas titullit, përshkrimit dhe ID-së Jami",
+    "main_box_color": "Ngjyrë kutie",
+    "logo_size": "Madhësi",
+    "default_settings": "Rregullime parazgjedhje"
 }

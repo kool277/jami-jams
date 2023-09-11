@@ -3,7 +3,7 @@
     "password": "Password",
     "confirm_password": "Conferma password",
     "continue": "Continua",
-    "users": "Users",
+    "users": "Utenti",
     "groups": "Gruppi",
     "blueprints": "Progetti",
     "settings": "Impostazioni",
@@ -117,7 +117,7 @@
     "permissions": "Autorizzazioni",
     "configuration": "Configurazione",
     "enable_upnp": "Abilita UPnP",
-    "use_jami_default_turn_configuration": "Use default TURN configuration",
+    "use_jami_default_turn_configuration": "Utilizza la configurazione TURN predefinita",
     "use_a_custom_turn_configuration": "Utilizzare una configurazione TURN personalizzata",
     "turn_server_address": "Indirizzo del Server TURN",
     "turn_server_username": "nome utente server TURN",
@@ -269,9 +269,9 @@
     "preview_tip1": "Aggiungi una foto e un soprannome per completare il tuo profilo",
     "preview_tip2": "Perché dovrei salvare il mio account?",
     "preview_tip3": "Come impostare i tasti rapidi?",
-    "tip_box_id_color": "Tip Box and Jami ID color",
-    "enable_main_box": "Add a box behind the title, description and Jami ID",
-    "main_box_color": "Box color",
-    "logo_size": "Size",
-    "default_settings": "Default settings"
+    "tip_box_id_color": "Tipo di casella e colore dell'ID Jami",
+    "enable_main_box": "Aggiungi una casella dopo il titolo, la descrizione e l'ID Jami",
+    "main_box_color": "Colore casella",
+    "logo_size": "Dimensione",
+    "default_settings": "Impostazioni predefinite"
 }

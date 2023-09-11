@@ -3,7 +3,7 @@
     "password": "Parola",
     "confirm_password": "Confirmă parola",
     "continue": "Continuă",
-    "users": "Users",
+    "users": "Utilizatori",
     "groups": "Grupuri",
     "blueprints": "Modele",
     "settings": "Reglări",
@@ -117,7 +117,7 @@
     "permissions": "Permisiuni",
     "configuration": "Configurare",
     "enable_upnp": "Activează UPnP",
-    "use_jami_default_turn_configuration": "Use default TURN configuration",
+    "use_jami_default_turn_configuration": "Folosește configurarea TURN prestabilită",
     "use_a_custom_turn_configuration": "Folosește o configurare TURN personalizată",
     "turn_server_address": "Adresa serverului TURN",
     "turn_server_username": "Numele de utilizator al serverului TURN",
@@ -269,9 +269,9 @@
     "preview_tip1": "Adaugă o poză și un pseudonim pentru a-ți completa profilul",
     "preview_tip2": "De ce ar trebui să-mi salvez contul?",
     "preview_tip3": "Cum stabilesc tastele rapide?",
-    "tip_box_id_color": "Tip Box and Jami ID color",
-    "enable_main_box": "Add a box behind the title, description and Jami ID",
-    "main_box_color": "Box color",
-    "logo_size": "Size",
-    "default_settings": "Default settings"
+    "tip_box_id_color": "Loc de bifat și culoarea ID-ului Jami",
+    "enable_main_box": "Adaugă un loc de bifat după titlu, descriere și ID-ul Jami",
+    "main_box_color": "Culoarea locului",
+    "logo_size": "Mărime",
+    "default_settings": "Reglări prestabilite"
 }

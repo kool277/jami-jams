@@ -3,7 +3,7 @@
     "password": "Jelszó",
     "confirm_password": "Jelszó megerősítése",
     "continue": "Tovább",
-    "users": "Users",
+    "users": "Felhasználók",
     "groups": "Csoportok",
     "blueprints": "Tervrajzok",
     "settings": "Beállítások",
@@ -117,7 +117,7 @@
     "permissions": "Engedélyek",
     "configuration": "Konfigurálás",
     "enable_upnp": "UPnP engedélyezése",
-    "use_jami_default_turn_configuration": "Use default TURN configuration",
+    "use_jami_default_turn_configuration": "Alapértelmezett TURN-beállításai használata",
     "use_a_custom_turn_configuration": "Egyéni TURN-beállításai használata",
     "turn_server_address": "TURN-kiszolgáló címe",
     "turn_server_username": "TURN-kiszolgáló felhasználónév",
@@ -269,9 +269,9 @@
     "preview_tip1": "Adjon hozzá egy képet és egy becenevet a profil befejezéséhez",
     "preview_tip2": "Miért mentsem el a fiókomat?",
     "preview_tip3": "Hogyan lehet beállítani a billentyűparancsokat?",
-    "tip_box_id_color": "Tip Box and Jami ID color",
-    "enable_main_box": "Add a box behind the title, description and Jami ID",
-    "main_box_color": "Box color",
-    "logo_size": "Size",
-    "default_settings": "Default settings"
+    "tip_box_id_color": "Tippmező és Jami-azonosító színe",
+    "enable_main_box": "Cím, leírás és Jami-azonosító mögé mező hozzáadása",
+    "main_box_color": "Mező színe",
+    "logo_size": "Méret",
+    "default_settings": "Alapértelmezett beállítások"
 }
