@@ -34,7 +34,7 @@ public class GroupDao extends AbstractDao<Group> {
 
     public boolean updateObject(String id, String name, String blueprint) {
         String query = "UPDATE groups SET name = ?, blueprint = ? WHERE id = ?";
-        return executeUpdate(query, List.of(id, name, blueprint));
+        return executeUpdate(query, List.of(name, blueprint, id));
     }
 
     public boolean deleteObject(String id) {
