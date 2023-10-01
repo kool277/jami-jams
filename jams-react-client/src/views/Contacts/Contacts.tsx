@@ -155,7 +155,9 @@ export default function Users(props) {
           TODO: Include the username of the user of which we want to display contacts
           at the moment the admin sees his contacts in each user profile he visits
         */
-        const originalContacts = response.data;
+        const originalContacts = response.data.filter(
+          (contact) => contact.added >= 0
+        );
         for (const contact of originalContacts) {
           contact.display = "";
           axios(
