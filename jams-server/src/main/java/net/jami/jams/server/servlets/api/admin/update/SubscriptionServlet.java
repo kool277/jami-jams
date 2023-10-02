@@ -57,7 +57,7 @@ public class SubscriptionServlet extends HttpServlet {
                 Server.licenseService.getLicenseInformation());
         subscriptionStatusResponse.setActivated(Server.activated.get());
         resp.getOutputStream().write(gson.toJson(subscriptionStatusResponse).getBytes());
-        resp.getOutputStream().close();
+        resp.flushBuffer();
     }
 
     // Upload the license here, which is really just uploading a base64 representation of the

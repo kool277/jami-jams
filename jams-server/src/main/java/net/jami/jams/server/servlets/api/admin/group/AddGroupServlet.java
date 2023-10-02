@@ -40,6 +40,7 @@ public class AddGroupServlet extends HttpServlet {
             JsonObject data = new JsonObject();
             data.addProperty("id", uuid.toString());
             resp.getOutputStream().write(data.toString().getBytes());
+            resp.flushBuffer();
             resp.setStatus(200);
         } else resp.sendError(500, "Could not create a group successfully!");
     }

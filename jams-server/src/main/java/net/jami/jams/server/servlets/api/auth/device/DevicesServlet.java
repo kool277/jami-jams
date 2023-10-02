@@ -80,6 +80,7 @@ public class DevicesServlet extends HttpServlet {
             devices.forEach(device -> device.setRevoked(false));
         }
         resp.getOutputStream().write(gson.toJson(devices).getBytes());
+        resp.flushBuffer();
         resp.setStatus(200);
     }
 }

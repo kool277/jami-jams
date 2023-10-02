@@ -61,6 +61,7 @@ public class UserProfileServlet extends HttpServlet {
 
         if (profile[0] != null) {
             resp.getOutputStream().write(gson.toJson(profile[0]).getBytes());
+            resp.flushBuffer();
             resp.setStatus(200);
         } else {
             resp.sendError(500, "User profile was not found!");

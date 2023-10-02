@@ -80,6 +80,7 @@ public class PolicyDataServlet extends HttpServlet {
         DeviceServlet.renameKeys(obj);
 
         resp.getOutputStream().write(obj.toString().getBytes());
+        resp.flushBuffer();
         resp.setStatus(200);
     }
 }

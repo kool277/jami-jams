@@ -229,6 +229,7 @@ public class DirectoryEntryServlet extends HttpServlet {
             UserProfile userProfile = userProfiles.get(0);
             String result = isInVCardFormat ? userProfile.getAsVCard() : gson.toJson(userProfile);
             resp.getOutputStream().write(result.getBytes());
+            resp.flushBuffer();
             return;
         }
 
@@ -245,6 +246,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         UserProfile userProfile = userProfiles.get(0);
         String result = isInVCardFormat ? userProfile.getAsVCard() : gson.toJson(userProfile);
         resp.getOutputStream().write(result.getBytes());
+        resp.flushBuffer();
     }
 
     @Override

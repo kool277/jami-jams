@@ -69,6 +69,7 @@ public class DirectoryEntryServlet extends HttpServlet {
         HashMap<String, String> profileName = new HashMap<>();
         profileName.put("username", userProfile.getUsername());
         resp.getOutputStream().write(gson.toJson(profileName).getBytes());
+        resp.flushBuffer();
     }
 
     @Override

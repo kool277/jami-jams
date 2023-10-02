@@ -68,5 +68,6 @@ public class DevicesServlet extends HttpServlet {
         } else devices.forEach(device -> device.setRevoked(false));
 
         resp.getOutputStream().write(gson.toJson(devices).getBytes());
+        resp.flushBuffer();
     }
 }

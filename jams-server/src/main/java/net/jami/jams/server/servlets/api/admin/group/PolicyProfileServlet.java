@@ -41,6 +41,7 @@ public class PolicyProfileServlet extends HttpServlet {
         if (name.equals("*")) {
             List<Policy> policies = dataStore.getPolicyDao().getAll();
             resp.getOutputStream().write(gson.toJson(policies).getBytes());
+            resp.flushBuffer();
             resp.setStatus(200);
             return;
         }
@@ -49,6 +50,7 @@ public class PolicyProfileServlet extends HttpServlet {
         if (policy.isPresent()) {
             byte[] bytes = gson.toJson(policy.orElseThrow()).getBytes();
             resp.getOutputStream().write(bytes);
+            resp.flushBuffer();
             resp.setStatus(200);
         } else {
             resp.sendError(404, "{\"message\": \"No policy found.\"}");

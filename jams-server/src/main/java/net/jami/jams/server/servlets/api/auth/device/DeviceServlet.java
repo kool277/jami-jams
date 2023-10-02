@@ -89,6 +89,7 @@ public class DeviceServlet extends HttpServlet {
         else device.setRevoked(false);
 
         resp.getOutputStream().write(gson.toJson(device).getBytes());
+        resp.flushBuffer();
     }
 
     /**
@@ -139,6 +140,7 @@ public class DeviceServlet extends HttpServlet {
         renameKeys(obj);
 
         resp.getOutputStream().write((obj.toString()).getBytes());
+        resp.flushBuffer();
     }
 
     /**
@@ -240,7 +242,10 @@ public class DeviceServlet extends HttpServlet {
         }
 
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(owner, deviceId);
-        if (devResponse != null) resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
+        if (devResponse != null) {
+            resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
+            resp.flushBuffer();
+        }
         else
             TomcatCustomErrorHandler.sendCustomError(
                     resp, 500, "could not revoke device due to server-side error");

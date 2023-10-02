@@ -63,6 +63,7 @@ public class ContactServlet extends HttpServlet {
         String username = req.getAttribute("username").toString();
         List<Contact> contactList = dataStore.getContactDao().getByOwner(username);
         resp.getOutputStream().write(gson.toJson(contactList).getBytes());
+        resp.flushBuffer();
     }
 
     /**
@@ -162,6 +163,9 @@ public class ContactServlet extends HttpServlet {
 
         if (!dataStore.getContactDao().storeContactList(result))
             TomcatCustomErrorHandler.sendCustomError(resp, 500, "Could not store contacts!");
-        else resp.getOutputStream().write(gson.toJson(result).getBytes());
+        else {
+            resp.getOutputStream().write(gson.toJson(result).getBytes());
+            resp.flushBuffer();
+        }
     }
 }

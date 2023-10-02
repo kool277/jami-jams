@@ -78,6 +78,7 @@ public class OCSPServlet extends HttpServlet {
                 if (response != null) {
                     byte[] respBytes = response.getEncoded();
                     resp.getOutputStream().write(respBytes);
+                    resp.flushBuffer();
                 } else resp.setStatus(404);
 
                 return;
@@ -104,6 +105,7 @@ public class OCSPServlet extends HttpServlet {
             if (response != null) {
                 byte[] respBytes = response.getEncoded();
                 resp.getOutputStream().write(respBytes);
+                resp.flushBuffer();
             } else resp.setStatus(404);
 
         } catch (Exception e) {

@@ -43,5 +43,6 @@ public class CRLServlet extends HttpServlet {
             throws ServletException, IOException {
         String stringBuilder = CRL_HEAD + certificateAuthority.getLatestCRLPEMEncoded() + CRL_TAIL;
         resp.getOutputStream().write(stringBuilder.getBytes());
+        resp.flushBuffer();
     }
 }

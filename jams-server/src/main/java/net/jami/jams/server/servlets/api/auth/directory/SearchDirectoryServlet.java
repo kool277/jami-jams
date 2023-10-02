@@ -163,6 +163,7 @@ public class SearchDirectoryServlet extends HttpServlet {
         obj.addProperty("numPages", DataStore.NUM_PAGES);
 
         resp.getOutputStream().write(gson.toJson(obj).getBytes());
+        resp.flushBuffer();
         resp.setStatus(200);
     }
 }

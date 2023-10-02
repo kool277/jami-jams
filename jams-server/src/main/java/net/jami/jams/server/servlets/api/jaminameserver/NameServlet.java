@@ -67,6 +67,9 @@ public class NameServlet extends HttpServlet {
         resp.setContentType("application/json;charset=UTF-8");
         if (nameLookupResponse == null)
             TomcatCustomErrorHandler.sendCustomError(resp, 404, "name not found");
-        else resp.getOutputStream().write(gson.toJson(nameLookupResponse).getBytes());
+        else {
+            resp.getOutputStream().write(gson.toJson(nameLookupResponse).getBytes());
+            resp.flushBuffer();
+        }
     }
 }

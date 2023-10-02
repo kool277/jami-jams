@@ -49,5 +49,6 @@ public class InstallLastStepServlet extends HttpServlet {
         payload.put("uri", CachedObjects.endpoint);
         resp.setStatus(200);
         resp.getOutputStream().write(gson.toJson(payload).getBytes());
+        resp.flushBuffer();
     }
 }

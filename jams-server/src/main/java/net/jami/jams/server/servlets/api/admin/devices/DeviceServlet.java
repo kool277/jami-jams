@@ -55,6 +55,7 @@ public class DeviceServlet extends HttpServlet {
         Device device =
                 dataStore.getDeviceDao().getByDeviceIdAndOwner(deviceId, username).orElseThrow();
         resp.getOutputStream().write(gson.toJson(device).getBytes());
+        resp.flushBuffer();
     }
 
     // Update device data.
@@ -79,7 +80,9 @@ public class DeviceServlet extends HttpServlet {
         String username = req.getParameter("username");
         String deviceId = req.getParameter("deviceId");
         DeviceRevocationResponse devResponse = RevokeDeviceFlow.revokeDevice(username, deviceId);
-        if (devResponse != null) resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
-        else resp.sendError(500, "An exception has occurred while trying to revoke a device!");
+        if (devResponse != null) {
+            resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
+            resp.flushBuffer();
+        } else resp.sendError(500, "An exception has occurred while trying to revoke a device!");
     }
 }

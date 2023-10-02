@@ -96,6 +96,7 @@ public class UserServlet extends HttpServlet {
             user = dataStore.getUserDao().getByUsername(username).orElseThrow();
         }
         resp.getOutputStream().write(gson.toJson(user).getBytes());
+        resp.flushBuffer();
         resp.setStatus(200);
     }
 
@@ -192,6 +193,7 @@ public class UserServlet extends HttpServlet {
         }
         if (devResponse.get() != null && devResponse.get().isSuccess()) {
             resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
+            resp.flushBuffer();
         } else resp.sendError(500, "An exception has occurred while trying to revoke a user!");
     }
 }

@@ -33,6 +33,7 @@ public class TomcatCustomErrorHandler {
         try {
             resp.setStatus(errorCode);
             resp.getOutputStream().write(("{\"error\":\"" + text + "\"}").getBytes());
+            resp.flushBuffer();
         } catch (Exception e) {
             log.error("Could not generate an error!");
         }

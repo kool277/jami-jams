@@ -33,6 +33,7 @@ public class GroupsServlet extends HttpServlet {
             throws ServletException, IOException {
         List<Group> groups = dataStore.getGroupDao().getAll();
         resp.getOutputStream().write(gson.toJson(groups).getBytes());
+        resp.flushBuffer();
         resp.setStatus(200);
     }
 }

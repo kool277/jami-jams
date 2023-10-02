@@ -53,6 +53,7 @@ public class PublicNameServer implements NameServer {
             con.setRequestMethod("POST");
             con.setDoOutput(true);
             con.getOutputStream().write(gson.toJson(nameRegistrationRequest).getBytes());
+            con.getOutputStream().close();
             return con.getResponseCode();
         } catch (Exception e) {
             return 500;

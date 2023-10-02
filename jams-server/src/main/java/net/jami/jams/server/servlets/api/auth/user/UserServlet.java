@@ -93,6 +93,7 @@ public class UserServlet extends HttpServlet {
         } else user.setRevoked(false);
         resp.setStatus(200);
         resp.getOutputStream().write(gson.toJson(user).getBytes());
+        resp.flushBuffer();
     }
 
     // The user can update 3 fields: password,privatekey,publickey

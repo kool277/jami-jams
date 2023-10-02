@@ -55,6 +55,7 @@ public class UpdateServlet extends HttpServlet {
         response.setRemoteVersions(appUpdater.getRemoteVersions());
         response.setUpdateAvailable(appUpdater.getUpdateAvailable());
         resp.getOutputStream().write(gson.toJson(response).getBytes());
+        resp.flushBuffer();
     }
 
     // This is the do-update button.

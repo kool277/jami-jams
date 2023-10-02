@@ -47,5 +47,6 @@ public class ServerStatusServlet extends HttpServlet {
         statusInfo.put("installed", String.valueOf(Server.isInstalled.get()));
         resp.setContentType("application/json;charset=UTF-8");
         resp.getOutputStream().write(gson.toJson(statusInfo).getBytes());
+        resp.flushBuffer();
     }
 }

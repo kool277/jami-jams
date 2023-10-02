@@ -47,6 +47,7 @@ public class UserGroupServlet extends HttpServlet {
         String groupId = req.getPathInfo().replace("/", "");
         List<UserGroupMapping> result = dataStore.getUserGroupMappingsDao().getByGroupId(groupId);
         resp.getOutputStream().write(gson.toJson(result).getBytes());
+        resp.flushBuffer();
         resp.setStatus(200);
     }
 

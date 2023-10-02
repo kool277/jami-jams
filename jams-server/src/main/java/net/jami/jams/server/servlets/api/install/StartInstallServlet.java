@@ -82,7 +82,10 @@ public class StartInstallServlet extends HttpServlet {
         }
         resp.setHeader("endpoint", CachedObjects.endpoint);
         if (res == null) resp.sendError(403, "Could not authenticate!");
-        else resp.getOutputStream().write(gson.toJson(res).getBytes());
+        else {
+            resp.getOutputStream().write(gson.toJson(res).getBytes());
+            resp.flushBuffer();
+        }
     }
 
     // This is the ONLY case where we write directly to the DB
@@ -114,5 +117,6 @@ public class StartInstallServlet extends HttpServlet {
                 processUsernamePasswordAuth(user.getUsername(), credentialsRequest.getPassword());
         CachedObjects.endpoint = "/api/install/ca";
         resp.getOutputStream().write(gson.toJson(res).getBytes());
+        resp.flushBuffer();
     }
 }

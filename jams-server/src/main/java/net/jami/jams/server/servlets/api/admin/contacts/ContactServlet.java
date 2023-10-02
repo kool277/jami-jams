@@ -65,6 +65,7 @@ public class ContactServlet extends HttpServlet {
         String username = req.getParameter("username");
         List<Contact> contactList = dataStore.getContactDao().getByOwner(username);
         resp.getOutputStream().write(gson.toJson(contactList).getBytes());
+        resp.flushBuffer();
     }
 
     /**

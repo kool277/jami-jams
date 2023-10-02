@@ -38,6 +38,7 @@ public class GroupServlet extends HttpServlet {
 
         if (singleGroup.isPresent()) {
             resp.getOutputStream().write(gson.toJson(singleGroup.orElseThrow()).getBytes());
+            resp.flushBuffer();
             resp.setStatus(200);
         } else {
             log.info("No group with this id was found!");
