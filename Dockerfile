@@ -46,7 +46,7 @@ RUN mkdir -p jams-server/src/main/resources/webapp \
     && mv jams-react-client/build/* jams-server/src/main/resources/webapp
 RUN mvn package
 
-ENV JAMS_VERSION=3.6
+ENV JAMS_VERSION=3.7
 RUN python3 generate-versions.py $JAMS_VERSION
 
 RUN ./build-doc.sh
