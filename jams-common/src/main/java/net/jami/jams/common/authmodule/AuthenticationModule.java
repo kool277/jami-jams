@@ -54,6 +54,7 @@ public interface AuthenticationModule {
     RSAPublicKey getAuthModulePubKey();
 
     char[] getOTP(String username);
+
     // In both cases, the tokens are signed, we can
     boolean verifyToken(SignedJWT token);
 

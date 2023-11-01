@@ -59,7 +59,12 @@ QSslConfiguration::setDefaultConfiguration(sslConfig);
 
 The code was formatted using
 [google-java-format](https://github.com/google/google-java-format)
-using the following command:
+
+that can be installed with npm:
+
+`npm install --global google-java-format`
+
+And is used with the following command:
 
 `google-java-format -i -a --skip-reflowing-long-strings --skip-javadoc-formatting **/*.java `
 

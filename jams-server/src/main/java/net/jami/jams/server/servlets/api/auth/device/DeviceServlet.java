@@ -245,8 +245,7 @@ public class DeviceServlet extends HttpServlet {
         if (devResponse != null) {
             resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
             resp.flushBuffer();
-        }
-        else
+        } else
             TomcatCustomErrorHandler.sendCustomError(
                     resp, 500, "could not revoke device due to server-side error");
     }

@@ -30,6 +30,7 @@ public enum CertificateStatus {
     EXPIRED,
     /** The certificate is expired       **/
     UNKNOWN;
+
     /** The certificate is unknown       **/
     public static CertificateStatus fromString(String status) {
         switch (status) {
