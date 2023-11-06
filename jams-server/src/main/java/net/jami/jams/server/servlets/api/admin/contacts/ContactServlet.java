@@ -107,7 +107,7 @@ public class ContactServlet extends HttpServlet {
             throws ServletException, IOException {
         String owner = req.getParameter("username");
         String uri = req.getParameter("uri");
-        if (dataStore.getContactDao().deleteObject(owner, uri)) resp.setStatus(200);
+        if (dataStore.getContactDao().removeContact(owner, uri)) resp.setStatus(200);
         else
             TomcatCustomErrorHandler.sendCustomError(
                     resp, 500, "could not delete a contact due to server-side error");
@@ -115,7 +115,7 @@ public class ContactServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {post} /api/auth/contacts Add contact
+     * @api {post} /api/auth/contacts Sync contact list
      * @apiName putContact
      * @apiGroup Contacts
      *

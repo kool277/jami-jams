@@ -43,8 +43,8 @@ public class Contact implements DatabaseObject {
 
     private String uri;
     private String displayName;
-    private Long timestamp;
-    private Character status; // A = added, D = deleted.
+    private Long added;
+    private Long removed;
     private Boolean banned = false;
     private Boolean confirmed = false;
     private String conversationId;
@@ -53,11 +53,15 @@ public class Contact implements DatabaseObject {
         this.owner = rs.getString("owner");
         this.uri = rs.getString("uri");
         this.displayName = rs.getString("displayName");
-        this.timestamp = rs.getLong("timestamp");
-        this.status = (char) rs.getInt("status");
+        this.added = rs.getLong("added");
+        this.removed = rs.getLong("removed");
         this.banned = rs.getBoolean("banned");
         this.confirmed = rs.getBoolean("confirmed");
         this.conversationId = rs.getString("conversationId");
+    }
+
+    public boolean isAdded() {
+        return added > removed;
     }
 
     @Override
@@ -66,8 +70,8 @@ public class Contact implements DatabaseObject {
         ps.setString(2, uri);
         if (displayName != null) ps.setString(3, displayName);
         else ps.setString(3, "");
-        ps.setLong(4, timestamp);
-        ps.setInt(5, status);
+        ps.setLong(4, added);
+        ps.setLong(5, removed);
         ps.setBoolean(6, banned);
         ps.setBoolean(7, confirmed);
         ps.setString(8, conversationId);
@@ -81,6 +85,15 @@ public class Contact implements DatabaseObject {
 
     @Override
     public PreparedStatement getUpdate(PreparedStatement ps) throws Exception {
-        return null;
+        if (displayName != null) ps.setString(1, displayName);
+        else ps.setString(1, "");
+        ps.setLong(2, added);
+        ps.setLong(3, removed);
+        ps.setBoolean(4, banned);
+        ps.setBoolean(5, confirmed);
+        ps.setString(6, conversationId);
+        ps.setString(7, owner);
+        ps.setString(8, uri);
+        return ps;
     }
 }

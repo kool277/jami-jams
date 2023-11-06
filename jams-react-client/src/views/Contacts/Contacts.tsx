@@ -156,7 +156,7 @@ export default function Users(props) {
           at the moment the admin sees his contacts in each user profile he visits
         */
         const originalContacts = response.data.filter(
-          (contact) => contact.added >= 0
+          (contact) => contact.added > contact.removed
         );
         for (const contact of originalContacts) {
           contact.display = "";

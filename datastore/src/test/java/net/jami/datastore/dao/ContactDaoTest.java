@@ -68,6 +68,6 @@ class ContactDaoTest {
 
     @Test
     void deleteObject() throws Exception {
-        Assertions.assertFalse(contactDao.deleteObject("owner", "uri"));
+        Assertions.assertFalse(contactDao.removeContact("owner", "uri"));
     }
 }

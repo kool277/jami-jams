@@ -63,18 +63,30 @@ public class ContactDao extends AbstractDao<Contact> {
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
         try {
-            String delete = "DELETE FROM contacts WHERE owner = ?";
-            PreparedStatement ps = connection.getConnection().prepareStatement(delete);
-            ps.setString(1, contactList.get(0).getOwner());
-            ps.executeUpdate();
+            // Initiate transaction
+            connection.getConnection().setAutoCommit(false);
+            String update =
+                    "UPDATE contacts SET displayName = ?, added = ?, removed = ?, banned = ?, confirmed = ?, conversationId = ? "
+                            + "WHERE owner = ? AND uri = ?";
+
             String insert =
-                    "INSERT INTO contacts (owner, uri, displayName, timestamp, status, banned, confirmed, conversationId) VALUES "
+                    "INSERT INTO contacts (owner, uri, displayName, added, removed, banned, confirmed, conversationId) VALUES "
                             + "(?, ?, ?, ?, ?, ?, ?, ?)";
             for (Contact contact : contactList) {
-                ps = connection.getConnection().prepareStatement(insert);
-                contact.getInsert(ps);
-                ps.executeUpdate();
+                PreparedStatement updatePs = connection.getConnection().prepareStatement(update);
+                contact.getUpdate(updatePs);
+                int rowsUpdated = updatePs.executeUpdate();
+
+                if (rowsUpdated == 0) {
+                    // If no rows were updated, perform an insert
+                    PreparedStatement insertPs =
+                            connection.getConnection().prepareStatement(insert);
+                    contact.getInsert(insertPs);
+                    insertPs.executeUpdate();
+                }
             }
+            // Commit transaction
+            connection.getConnection().commit();
             return true;
         } catch (Exception e) {
             log.error("Could not update contacts: {}", e.getMessage());
@@ -84,8 +96,9 @@ public class ContactDao extends AbstractDao<Contact> {
         }
     }
 
-    public boolean deleteObject(String owner, String uri) {
-        String query = "DELETE FROM contacts WHERE owner = ? AND uri = ?";
-        return executeUpdate(query, List.of(owner, uri));
+    public boolean removeContact(String owner, String uri) {
+        String query = "UPDATE contacts SET removed = ? WHERE owner = ? AND uri = ?";
+        String removedTimestamp = String.valueOf(System.currentTimeMillis() / 1000);
+        return executeUpdate(query, List.of(removedTimestamp, owner, uri));
     }
 }

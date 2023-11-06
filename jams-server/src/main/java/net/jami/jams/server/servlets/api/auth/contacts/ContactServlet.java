@@ -93,8 +93,8 @@ public class ContactServlet extends HttpServlet {
         // TODO: Replace with mergetool.
         Contact contact = new Contact();
         contact.setDisplayName(obj.get("displayName").toString());
-        contact.setTimestamp(System.currentTimeMillis() / 1000);
-        contact.setStatus('A');
+        contact.setAdded(System.currentTimeMillis() / 1000);
+        contact.setRemoved(0L);
         contact.setOwner(owner);
         contact.setUri(obj.get("uri").getAsString());
 
@@ -126,7 +126,7 @@ public class ContactServlet extends HttpServlet {
         String owner = req.getAttribute("username").toString();
         String uri = req.getParameter("uri");
 
-        if (dataStore.getContactDao().deleteObject(owner, uri)) resp.setStatus(200);
+        if (dataStore.getContactDao().removeContact(owner, uri)) resp.setStatus(200);
         else
             TomcatCustomErrorHandler.sendCustomError(
                     resp, 500, "could not delete a contact due to server-side error");
@@ -134,7 +134,7 @@ public class ContactServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {post} /api/auth/contacts Add contact
+     * @api {post} /api/auth/contacts Sync contact list
      * @apiName putContact
      * @apiGroup Contacts
      *
