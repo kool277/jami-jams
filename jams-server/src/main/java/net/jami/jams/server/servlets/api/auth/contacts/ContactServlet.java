@@ -96,7 +96,7 @@ public class ContactServlet extends HttpServlet {
         contact.setTimestamp(System.currentTimeMillis() / 1000);
         contact.setStatus('A');
         contact.setOwner(owner);
-        contact.setUri(obj.get("uri").toString());
+        contact.setUri(obj.get("uri").getAsString());
 
         List<Contact> localList = dataStore.getContactDao().getByOwner(owner);
 
