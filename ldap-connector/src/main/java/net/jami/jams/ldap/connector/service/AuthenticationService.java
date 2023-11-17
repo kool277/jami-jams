@@ -46,7 +46,8 @@ public class AuthenticationService {
     public boolean authenticateUser(String username, String password) {
         try {
             FormatDnResolver dnResolver = new FormatDnResolver();
-            dnResolver.setFormat(settings.getUsernameField() + "=%s," + settings.getBaseDN());
+            dnResolver.setFormat(
+                    settings.getUsernameField() + "=%s,ou=users," + settings.getBaseDN());
             SimpleBindAuthenticationHandler bindAuthenticationHandler =
                     new SimpleBindAuthenticationHandler(connectionFactory);
             Authenticator auth = new Authenticator();

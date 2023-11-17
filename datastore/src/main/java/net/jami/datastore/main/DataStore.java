@@ -26,6 +26,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import net.jami.datastore.dao.ContactDao;
+import net.jami.datastore.dao.ConversationDao;
+import net.jami.datastore.dao.ConversationRequestDao;
 import net.jami.datastore.dao.DeviceDao;
 import net.jami.datastore.dao.GroupDao;
 import net.jami.datastore.dao.PolicyDao;
@@ -58,6 +60,8 @@ public class DataStore implements AuthenticationSource {
     private DeviceDao deviceDao;
     private SystemDao systemDao;
     private ContactDao contactDao;
+    private ConversationDao conversationDao;
+    private ConversationRequestDao conversationRequestDao;
     private UserProfileDao userProfileDao;
     private UserGroupMappingsDao userGroupMappingsDao;
     public static final Integer RESULTS_PER_PAGE = 24;
@@ -74,6 +78,8 @@ public class DataStore implements AuthenticationSource {
         deviceDao = new DeviceDao();
         systemDao = new SystemDao();
         contactDao = new ContactDao();
+        conversationDao = new ConversationDao();
+        conversationRequestDao = new ConversationRequestDao();
         userProfileDao = new UserProfileDao();
         userGroupMappingsDao = new UserGroupMappingsDao();
     }

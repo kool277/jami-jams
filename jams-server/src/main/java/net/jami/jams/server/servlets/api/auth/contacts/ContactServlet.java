@@ -161,7 +161,7 @@ public class ContactServlet extends HttpServlet {
         remoteList.forEach(contact -> contact.setOwner(owner));
         List<Contact> result = ContactMerger.mergeContacts(localList, remoteList);
 
-        if (!dataStore.getContactDao().storeContactList(result))
+        if (result.size() > 0 && !dataStore.getContactDao().storeContactList(result))
             TomcatCustomErrorHandler.sendCustomError(resp, 500, "Could not store contacts!");
         else {
             resp.getOutputStream().write(gson.toJson(result).getBytes());
