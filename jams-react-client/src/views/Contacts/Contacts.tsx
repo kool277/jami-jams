@@ -102,7 +102,7 @@ export default function Users(props) {
       configApiCall(
         api_path_get_user_directory_search,
         "GET",
-        { queryString: value ? value : "*", page: "1" },
+        { queryString: value ? value : "*" },
         null
       )
     )

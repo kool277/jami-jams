@@ -53,7 +53,7 @@ export default function CustomInput(props) {
       ) : null}
       <Input
         classes={{
-          root: marginTop,
+          root: marginTop + " " + inputProps.inputMarginClass,
           disabled: classes.disabled,
           underline: underlineClasses,
         }}

@@ -147,7 +147,7 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
             <div>
               <CustomInput
                 formControlProps={{
-                  className: classes.margin + " " + classes.search,
+                  className: classes.search,
                 }}
                 inputProps={{
                   placeholder: placeholder,
@@ -155,6 +155,7 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
                     "aria-label": placeholder,
                   },
                   onKeyUp: handleSearchTargets,
+                  inputMarginClass: classes.margin,
                 }}
               />
             </div>
