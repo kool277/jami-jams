@@ -67,16 +67,18 @@ public class ConversationDao extends AbstractDao<Conversation> {
                     "INSERT INTO conversations (owner, id, created, removed, erased, members, lastDisplayed) VALUES "
                             + "(?, ?, ?, ?, ?, ?, ?)";
             for (Conversation conversation : conversationList) {
-                PreparedStatement updatePs = connection.getConnection().prepareStatement(update);
-                conversation.getUpdate(updatePs);
-                int rowsUpdated = updatePs.executeUpdate();
-
-                if (rowsUpdated == 0) {
-                    // If no rows were updated, perform an insert
-                    PreparedStatement insertPs =
-                            connection.getConnection().prepareStatement(insert);
-                    conversation.getInsert(insertPs);
-                    insertPs.executeUpdate();
+                try (PreparedStatement updatePs =
+                        connection.getConnection().prepareStatement(update)) {
+                    conversation.getUpdate(updatePs);
+                    int rowsUpdated = updatePs.executeUpdate();
+                    if (rowsUpdated == 0) {
+                        // If no rows were updated, perform an insert
+                        try (PreparedStatement insertPs =
+                                connection.getConnection().prepareStatement(insert)) {
+                            conversation.getInsert(insertPs);
+                            insertPs.executeUpdate();
+                        }
+                    }
                 }
             }
             // Commit transaction

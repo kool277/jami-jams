@@ -63,7 +63,9 @@ public class ConversationRequest implements DatabaseObject {
 
     @Override
     public PreparedStatement getDelete(PreparedStatement ps) throws Exception {
-        return null;
+        ps.setString(1, owner);
+        ps.setString(2, conversationId);
+        return ps;
     }
 
     @Override

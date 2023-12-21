@@ -21,10 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
+import net.jami.jams.common.objects.conversations.Conversation;
 import net.jami.jams.common.objects.conversations.ConversationRequest;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -66,16 +68,18 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
                     "INSERT INTO conversation_requests (owner, conversationId, sender, metadatas, received, declined) VALUES "
                             + "(?, ?, ?, ?, ?, ?)";
             for (ConversationRequest conversationRequest : conversationRequestList) {
-                PreparedStatement updatePs = connection.getConnection().prepareStatement(update);
-                conversationRequest.getUpdate(updatePs);
-                int rowsUpdated = updatePs.executeUpdate();
-
-                if (rowsUpdated == 0) {
-                    // If no rows were updated, perform an insert
-                    PreparedStatement insertPs =
-                            connection.getConnection().prepareStatement(insert);
-                    conversationRequest.getInsert(insertPs);
-                    insertPs.executeUpdate();
+                try (PreparedStatement updatePs =
+                        connection.getConnection().prepareStatement(update)) {
+                    conversationRequest.getUpdate(updatePs);
+                    int rowsUpdated = updatePs.executeUpdate();
+                    if (rowsUpdated == 0) {
+                        // If no rows were updated, perform an insert
+                        try (PreparedStatement insertPs =
+                                connection.getConnection().prepareStatement(insert)) {
+                            conversationRequest.getInsert(insertPs);
+                            insertPs.executeUpdate();
+                        }
+                    }
                 }
             }
             // Commit transaction
@@ -87,5 +91,46 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
         } finally {
             DataStore.connectionPool.returnConnection(connection);
         }
+    }
+
+    public List<ConversationRequest> filterConversationRequests(
+            List<ConversationRequest> conversationRequestList,
+            List<Conversation> conversationList) {
+        List<ConversationRequest> filteredConversationRequest = new ArrayList<>();
+        if (conversationRequestList.isEmpty()) {
+            log.error("Cannot filter empty conversationRequest list");
+            return filteredConversationRequest;
+        }
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+        try {
+            for (ConversationRequest conversationRequest : conversationRequestList) {
+                boolean conversationRequestDeleted = false;
+                for (Conversation conversation : conversationList) {
+                    if (conversationRequest.getConversationId().equals(conversation.getId())
+                            && conversationRequest.getOwner().equals(conversation.getOwner())) {
+                        // Delete the conversation request from the database
+                        String delete =
+                                "DELETE FROM conversation_requests WHERE owner = ? AND conversationId = ?";
+                        connection.getConnection().setAutoCommit(false);
+                        try (PreparedStatement deletePs =
+                                connection.getConnection().prepareStatement(delete)) {
+                            conversationRequest.getDelete(deletePs);
+                            deletePs.executeUpdate();
+                        }
+                        conversationRequestDeleted = true;
+                        break;
+                    }
+                }
+                if (!conversationRequestDeleted) {
+                    filteredConversationRequest.add(conversationRequest);
+                }
+            }
+            connection.getConnection().commit();
+        } catch (Exception e) {
+            log.error("Could not delete conversationRequests: {}", e.getMessage());
+        } finally {
+            DataStore.connectionPool.returnConnection(connection);
+        }
+        return filteredConversationRequest;
     }
 }

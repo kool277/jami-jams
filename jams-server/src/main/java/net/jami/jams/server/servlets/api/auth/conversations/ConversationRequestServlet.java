@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import net.jami.jams.common.objects.conversations.Conversation;
 import net.jami.jams.common.objects.conversations.ConversationRequest;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
@@ -46,7 +47,8 @@ public class ConversationRequestServlet extends HttpServlet {
      * @apiName postConversationRequests
      * @apiGroup ConversationRequests
      *
-     * @apiParam {body} Conversation JSON representation of the conversationRequest object
+     * @apiParam {body} Conversation JSON representation of the conversationRequest
+     *           object
      * @apiParamExample {json} Request-Example: [
      *                  {"conversationId":"1231221","received":1594742298377},
      *                  {"conversationId":"213123","declined":1594742298377} ]
@@ -65,19 +67,28 @@ public class ConversationRequestServlet extends HttpServlet {
             HttpServletRequest req, HttpServletResponse resp, String owner) throws IOException {
         List<ConversationRequest> localList =
                 dataStore.getConversationRequestDao().getByOwner(owner);
+        List<Conversation> conversationList = dataStore.getConversationDao().getByOwner(owner);
         List<ConversationRequest> remoteList =
                 Arrays.asList(gson.fromJson(req.getReader(), ConversationRequest[].class));
 
         remoteList.forEach(conversationRequest -> conversationRequest.setOwner(owner));
-        List<ConversationRequest> result =
+        List<ConversationRequest> mergedConversationRequests =
                 ConversationMerger.mergeConversationRequests(localList, remoteList);
 
-        if (result.size() > 0
-                && !dataStore.getConversationRequestDao().storeConversationRequestList(result))
+        // Conversation requests should be deleted from the database if a conversation
+        // is already created
+        List<ConversationRequest> filteredConversationRequests =
+                dataStore
+                        .getConversationRequestDao()
+                        .filterConversationRequests(mergedConversationRequests, conversationList);
+        if (filteredConversationRequests.size() > 0
+                && !dataStore
+                        .getConversationRequestDao()
+                        .storeConversationRequestList(filteredConversationRequests))
             TomcatCustomErrorHandler.sendCustomError(
                     resp, 500, "Could not store conversationRequests!");
         else {
-            resp.getOutputStream().write(gson.toJson(result).getBytes());
+            resp.getOutputStream().write(gson.toJson(filteredConversationRequests).getBytes());
             resp.flushBuffer();
         }
     }
