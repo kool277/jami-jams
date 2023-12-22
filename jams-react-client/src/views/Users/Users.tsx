@@ -187,27 +187,25 @@ export default function Users() {
 
           <GridContainer>
             <GridItem xs={12} sm={12} md={6}>
-              {!noUsersFound && (
-                <CustomInput
-                  formControlProps={{
-                    className: classes.margin + " " + classes.search,
-                  }}
-                  inputProps={{
-                    placeholder: i18next.t(
-                      "search_users_using",
-                      "Search users using (username, first name, last name)"
-                    ),
-                    inputProps: {
-                      "aria-label": i18next.t(
-                        "search_users",
-                        "Search users"
-                      ) as string,
-                    },
-                    onKeyUp: handleSearchUsers,
-                  }}
-                />
-              )}
-              {!noUsersFound && <Search />}
+              <CustomInput
+                formControlProps={{
+                  className: classes.margin + " " + classes.search,
+                }}
+                inputProps={{
+                  placeholder: i18next.t(
+                    "search_users_using",
+                    "Search users using (username, first name, last name)"
+                  ),
+                  inputProps: {
+                    "aria-label": i18next.t(
+                      "search_users",
+                      "Search users"
+                    ) as string,
+                  },
+                  onKeyUp: handleSearchUsers,
+                }}
+              />
+              <Search />
             </GridItem>
             <GridItem xs={12} sm={12} md={6}>
               {!noUsersFound && (
