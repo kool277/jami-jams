@@ -48,6 +48,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import i18next from "i18next";
+import { Contact } from "../../types/Contact";
 
 const styles = {
   ...headerLinksStyle,
@@ -391,24 +392,26 @@ export default function Users(props) {
           </div>
         </GridItem>
         {contacts
-          .filter((data) => {
+          .filter((data: Contact) => {
             if (searchValue === null) return data;
             else {
               if (
-                typeof data.name !== "undefined" &&
+                typeof data.username !== "undefined" &&
                 typeof data.firstName !== "undefined" &&
                 typeof data.lastName !== "undefined" &&
                 typeof data.uri !== "undefined"
               ) {
                 return (
-                  data.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+                  data.username
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase()) ||
                   data.firstName
                     .toLowerCase()
                     .includes(searchValue.toLowerCase()) ||
                   data.lastName
                     .toLowerCase()
                     .includes(searchValue.toLowerCase()) ||
-                  data.uri.toLowerCase().includes(searchValue.toLowerCase())
+                  data.uri.toLowerCase() === searchValue.toLowerCase()
                 );
               } else {
                 return data;
