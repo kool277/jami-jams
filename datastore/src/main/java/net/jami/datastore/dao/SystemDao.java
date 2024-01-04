@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.objects.system.SystemAccount;
 
-import java.sql.ResultSet;
 import java.util.Optional;
 
 @Slf4j
@@ -39,13 +38,11 @@ public class SystemDao extends AbstractDao<SystemAccount> {
     }
 
     public Optional<SystemAccount> getCA() {
-        ResultSet rs = executeQuery("SELECT * FROM system WHERE entity = 'CA'");
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet("SELECT * FROM system WHERE entity = 'CA'");
     }
 
     public Optional<SystemAccount> getOCSP() {
-        ResultSet rs = executeQuery("SELECT * FROM system WHERE entity = 'OCSP'");
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet("SELECT * FROM system WHERE entity = 'OCSP'");
     }
 
     @Override

@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.objects.user.User;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,18 +39,15 @@ public class UserDao extends AbstractDao<User> {
     }
 
     public List<User> getAll() {
-        ResultSet rs = executeQuery("SELECT * FROM users");
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet("SELECT * FROM users");
     }
 
     public Optional<User> getByUsername(String username) {
-        ResultSet rs = executeQuery("SELECT * FROM users WHERE username = ?", username);
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet("SELECT * FROM users WHERE username = ?", username);
     }
 
     public List<User> getByJamiId(String jamiId) {
-        ResultSet rs = executeQuery("SELECT * FROM users WHERE jamiId = ?", jamiId);
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet("SELECT * FROM users WHERE jamiId = ?", jamiId);
     }
 
     @Override

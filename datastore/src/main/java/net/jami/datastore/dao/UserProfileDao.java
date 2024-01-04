@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.objects.user.UserProfile;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,26 +66,23 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
     }
 
     public List<UserProfile> getAllUserProfile() {
-        ResultSet rs = executeQuery("SELECT * FROM local_directory");
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet("SELECT * FROM local_directory");
     }
 
     public List<UserProfile> searchUsername(String username) {
         String query = "SELECT * FROM local_directory WHERE username LIKE ?";
-        ResultSet rs = executeQuery(query, username + "%");
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet(query, username + "%");
     }
 
     public List<UserProfile> searchFullName(String name) {
         String query = "SELECT * FROM local_directory WHERE firstName LIKE ? OR lastName LIKE ?";
         name = name + "%";
-        ResultSet rs = executeQuery(query, List.of(name, name));
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet(query, List.of(name, name));
     }
 
     public Optional<UserProfile> getByUsername(String username) {
-        ResultSet rs = executeQuery("SELECT * FROM local_directory WHERE username = ?", username);
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet(
+                "SELECT * FROM local_directory WHERE username = ?", username);
     }
 
     @Override

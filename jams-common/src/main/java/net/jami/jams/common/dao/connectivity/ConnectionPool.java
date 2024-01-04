@@ -25,56 +25,72 @@ package net.jami.jams.common.dao.connectivity;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 public class ConnectionPool {
 
-    private final ConcurrentLinkedQueue<SQLConnection> connections = new ConcurrentLinkedQueue<>();
-    private String connectionURI;
+    private static final int MAX_POOL_SIZE = 15;
+
+    private volatile ConcurrentLinkedQueue<SQLConnection> connectionPool =
+            new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<SQLConnection> usedConnections =
+            new ConcurrentLinkedQueue<>();
+    private final String connectionURI;
 
     // Load Derby class.
-
     public ConnectionPool(String connectionURI) {
+        this.connectionURI = connectionURI;
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            this.connectionURI = connectionURI;
-            while (connections.size() < 10) {
+            while (connectionPool.size() < MAX_POOL_SIZE) {
                 try {
-                    connections.add(new SQLConnection(DriverManager.getConnection(connectionURI)));
+                    connectionPool.add(createConnection(this.connectionURI));
                 } catch (Exception e) {
-                    log.error("Could not create a link with the database: " + e);
+                    log.error("Could not create a link with the database: ", e);
                 }
             }
         } catch (Exception e) {
-            log.error("Could not load ApacheDerby class driver: " + e);
+            log.error("Could not load ApacheDerby class driver: ", e);
         }
     }
 
-    public SQLConnection getConnection() {
+    public synchronized SQLConnection getConnection() {
         try {
-            SQLConnection sqlConnection = null;
-            while (sqlConnection == null) {
-                sqlConnection = connections.poll();
+            if (connectionPool.isEmpty()) {
+                if (usedConnections.size() < MAX_POOL_SIZE) {
+                    connectionPool.add(createConnection(this.connectionURI));
+                } else {
+                    throw new RuntimeException(
+                            "Maximum pool size reached, no available connections!");
+                }
             }
-            if (sqlConnection.isStale())
-                sqlConnection = new SQLConnection(DriverManager.getConnection(connectionURI));
-            return sqlConnection;
+
+            SQLConnection connection = connectionPool.poll();
+
+            if (connection.isStale()) {
+                connection.getConnection().close();
+                connection = createConnection(this.connectionURI);
+            }
+
+            connection.getConnection().setAutoCommit(true);
+            usedConnections.add(connection);
+
+            return connection;
+
         } catch (Exception e) {
-            log.info("A connection could not be obtained with error " + e);
+            log.error("A connection could not be obtained with error ", e);
             return null;
         }
     }
 
-    public void returnConnection(SQLConnection sqlConnection) {
-        try {
-            if (sqlConnection.isStale()) {
-                sqlConnection.getConnection().close();
-                sqlConnection = new SQLConnection(DriverManager.getConnection(connectionURI));
-            }
-            connections.add(sqlConnection);
-        } catch (Exception e) {
-            log.error("Could not return a connection!");
-        }
+    public boolean returnConnection(SQLConnection sqlConnection) {
+        connectionPool.add(sqlConnection);
+        return usedConnections.remove(sqlConnection);
+    }
+
+    private SQLConnection createConnection(String connectionURI) throws SQLException {
+        return new SQLConnection(DriverManager.getConnection(connectionURI));
     }
 }

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.objects.user.Policy;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,14 +16,12 @@ public class PolicyDao extends AbstractDao<Policy> {
     }
 
     public List<Policy> getAll() {
-        ResultSet rs = executeQuery("SELECT * FROM policies");
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet("SELECT * FROM policies");
     }
 
     public Optional<Policy> getByName(String name) {
         String q = "SELECT * FROM policies WHERE name = ?";
-        ResultSet rs = executeQuery(q, List.of(name));
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet(q, List.of(name));
     }
 
     public Optional<Policy> getByUsername(String username) {
@@ -34,8 +31,7 @@ public class PolicyDao extends AbstractDao<Policy> {
                         + " JOIN groups g ON ugm.groupid = g.id"
                         + " JOIN policies p ON g.blueprint = p.name"
                         + " WHERE ugm.username = ?";
-        ResultSet rs = executeQuery(query, List.of(username));
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet(query, List.of(username));
     }
 
     @Override

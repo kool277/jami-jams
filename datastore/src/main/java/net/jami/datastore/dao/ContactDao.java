@@ -30,7 +30,6 @@ import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.contacts.Contact;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.List;
 
 @Slf4j
@@ -42,8 +41,7 @@ public class ContactDao extends AbstractDao<Contact> {
     }
 
     public List<Contact> getByOwner(String owner) {
-        ResultSet rs = executeQuery("SELECT * FROM contacts WHERE owner = ?", owner);
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet("SELECT * FROM contacts WHERE owner = ?", owner);
     }
 
     // Not used because the strategy here is different.
@@ -62,6 +60,9 @@ public class ContactDao extends AbstractDao<Contact> {
         }
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
+        if (connection == null) {
+            return false;
+        }
         try {
             // Initiate transaction
             connection.getConnection().setAutoCommit(false);
@@ -83,6 +84,7 @@ public class ContactDao extends AbstractDao<Contact> {
                             connection.getConnection().prepareStatement(insert);
                     contact.getInsert(insertPs);
                     insertPs.executeUpdate();
+                    insertPs.close();
                 }
             }
             // Commit transaction

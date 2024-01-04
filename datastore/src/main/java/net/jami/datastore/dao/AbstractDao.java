@@ -44,99 +44,114 @@ public abstract class AbstractDao<T> {
 
     public abstract boolean storeObject(T object);
 
-    protected ResultSet executeQuery(String query) {
-        return executeQuery(query, new ArrayList<>());
+    protected Optional<T> getFirstObjectFromResultSet(String query) {
+        return getFirstObjectFromResultSet(query, new ArrayList<>());
     }
 
-    protected ResultSet executeQuery(String query, String param) {
-        return executeQuery(query, List.of(param));
+    protected Optional<T> getFirstObjectFromResultSet(String query, String param) {
+        return getFirstObjectFromResultSet(query, List.of(param));
     }
 
-    protected ResultSet executeQuery(String query, List<String> params) {
+    protected Optional<T> getFirstObjectFromResultSet(String query, List<String> params) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
-        try {
-            PreparedStatement ps = connection.getConnection().prepareStatement(query);
-            for (int i = 0; i < params.size(); i++) {
-                ps.setString(i + 1, params.get(i));
-            }
-            return ps.executeQuery();
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to fetch an object:");
-            e.printStackTrace();
-            return null;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
-        }
-    }
 
-    protected Optional<T> getFirstObjectFromResultSet(ResultSet rs) {
-        try {
-            if (rs.next()) {
-                T obj = tClass.getConstructor(ResultSet.class).newInstance(rs);
-                rs.close();
-                return Optional.of(obj);
+        if (connection != null) {
+            try {
+                try (PreparedStatement ps = connection.getConnection().prepareStatement(query)) {
+                    for (int i = 0; i < params.size(); i++) {
+                        ps.setString(i + 1, params.get(i));
+                    }
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            T obj = tClass.getConstructor(ResultSet.class).newInstance(rs);
+                            return Optional.of(obj);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error(
+                        "An error has occurred while trying to get the first result from the database:",
+                        e);
+            } finally {
+                DataStore.connectionPool.returnConnection(connection);
             }
-        } catch (Exception e) {
-            log.error(
-                    "An error has occurred while trying to get the first result from the database:");
-            e.printStackTrace();
         }
-
         return Optional.empty();
     }
 
-    protected List<T> getObjectsFromResultSet(ResultSet rs) {
+    protected List<T> getObjectsFromResultSet(String query) {
+        return getObjectsFromResultSet(query, new ArrayList<>());
+    }
+
+    protected List<T> getObjectsFromResultSet(String query, String param) {
+        return getObjectsFromResultSet(query, List.of(param));
+    }
+
+    protected List<T> getObjectsFromResultSet(String query, List<String> params) {
+        SQLConnection connection = DataStore.connectionPool.getConnection();
+
         List<T> result = new ArrayList<>();
 
-        try {
-            while (rs.next()) {
-                result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
+        if (connection != null) {
+            try {
+                try (PreparedStatement ps = connection.getConnection().prepareStatement(query)) {
+                    for (int i = 0; i < params.size(); i++) {
+                        ps.setString(i + 1, params.get(i));
+                    }
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            result.add(tClass.getConstructor(ResultSet.class).newInstance(rs));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error(
+                        "An error has occurred while trying to get results from the database:", e);
+            } finally {
+                DataStore.connectionPool.returnConnection(connection);
             }
-
-            rs.close();
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to get results from the database:");
-            e.printStackTrace();
         }
-
         return result;
     }
 
     protected boolean executeUpdate(String query, List<String> params) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
-        try {
-            PreparedStatement ps = connection.getConnection().prepareStatement(query);
+        if (connection != null) {
+            try (PreparedStatement ps = connection.getConnection().prepareStatement(query)) {
 
-            for (int i = 0; i < params.size(); i++) {
-                ps.setString(i + 1, params.get(i));
+                for (int i = 0; i < params.size(); i++) {
+                    ps.setString(i + 1, params.get(i));
+                }
+
+                boolean executeUpdate = ps.executeUpdate() != 0;
+                return executeUpdate;
+            } catch (Exception e) {
+                log.error("An error has occurred while trying to execute update:", e);
+            } finally {
+                DataStore.connectionPool.returnConnection(connection);
             }
-
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to execute update:");
-            e.printStackTrace();
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
         }
+        return false;
     }
 
     protected boolean executeInsert(String query, DatabaseObject object) {
         SQLConnection connection = DataStore.connectionPool.getConnection();
 
-        try {
-            PreparedStatement ps = connection.getConnection().prepareStatement(query);
+        if (connection != null) {
+            try {
+                PreparedStatement ps = connection.getConnection().prepareStatement(query);
+                ps = object.getInsert(ps);
+                boolean executeUpdate = ps.executeUpdate() != 0;
+                ps.close();
 
-            ps = object.getInsert(ps);
-
-            return ps.executeUpdate() != 0;
-        } catch (Exception e) {
-            log.error("An error has occurred while trying to execute insert:");
-            e.printStackTrace();
-            return false;
-        } finally {
-            DataStore.connectionPool.returnConnection(connection);
+                return executeUpdate;
+            } catch (Exception e) {
+                log.error("An error has occurred while trying to execute insert:", e);
+            } finally {
+                DataStore.connectionPool.returnConnection(connection);
+            }
         }
+        return false;
     }
 }

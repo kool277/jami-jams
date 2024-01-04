@@ -25,7 +25,6 @@ import net.jami.jams.common.objects.conversations.Conversation;
 import net.jami.jams.common.objects.conversations.ConversationRequest;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +37,8 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
     }
 
     public List<ConversationRequest> getByOwner(String owner) {
-        ResultSet rs = executeQuery("SELECT * FROM conversation_requests WHERE owner = ?", owner);
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet(
+                "SELECT * FROM conversation_requests WHERE owner = ?", owner);
     }
 
     @Override
@@ -57,6 +56,9 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
         }
 
         SQLConnection connection = DataStore.connectionPool.getConnection();
+        if (connection == null) {
+            return false;
+        }
         try {
             // Initiate transaction
             connection.getConnection().setAutoCommit(false);

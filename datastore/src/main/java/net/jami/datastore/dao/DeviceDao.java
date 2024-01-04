@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.objects.devices.Device;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,15 +39,17 @@ public class DeviceDao extends AbstractDao<Device> {
     }
 
     public List<Device> getByOwner(String owner) {
-        ResultSet rs = executeQuery("SELECT * FROM devices WHERE owner = ?", List.of(owner));
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet("SELECT * FROM devices WHERE owner = ?", List.of(owner));
     }
 
     public Optional<Device> getByDeviceIdAndOwner(String deviceId, String owner) {
         // TODO deviceId is the primary key, owner is possibly a useless field
+
         String query = "SELECT * FROM devices WHERE deviceId = ? AND owner = ?";
-        ResultSet rs = executeQuery(query, List.of(deviceId, owner));
-        return getFirstObjectFromResultSet(rs);
+        Optional<Device> firstObjectFromResultSet =
+                getFirstObjectFromResultSet(query, List.of(deviceId, owner));
+
+        return firstObjectFromResultSet;
     }
 
     @Override

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.objects.user.Group;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,13 +16,11 @@ public class GroupDao extends AbstractDao<Group> {
     }
 
     public List<Group> getAll() {
-        ResultSet rs = executeQuery("SELECT * FROM groups");
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet("SELECT * FROM groups");
     }
 
     public Optional<Group> getById(String id) {
-        ResultSet rs = executeQuery("SELECT * FROM groups WHERE id = ?", List.of(id));
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet("SELECT * FROM groups WHERE id = ?", List.of(id));
     }
 
     @Override

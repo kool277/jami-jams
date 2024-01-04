@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.objects.user.UserGroupMapping;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,21 +16,20 @@ public class UserGroupMappingsDao extends AbstractDao<UserGroupMapping> {
     }
 
     public List<UserGroupMapping> getByGroupId(String groupId) {
-        ResultSet rs = executeQuery("SELECT * FROM usergroupmappings WHERE groupId = ?", groupId);
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet(
+                "SELECT * FROM usergroupmappings WHERE groupId = ?", groupId);
     }
 
     public List<UserGroupMapping> getByUsername(String username) {
-        ResultSet rs = executeQuery("SELECT * FROM usergroupmappings WHERE username = ?", username);
-        return getObjectsFromResultSet(rs);
+        return getObjectsFromResultSet(
+                "SELECT * FROM usergroupmappings WHERE username = ?", username);
     }
 
     public Optional<UserGroupMapping> getByGroupIdAndUsername(String groupId, String username) {
         // TODO The primary key should be (groupId, username)
         String query = "SELECT * FROM usergroupmappings WHERE groupId = ? AND username = ?";
         List<String> params = List.of(groupId, username);
-        ResultSet rs = executeQuery(query, params);
-        return getFirstObjectFromResultSet(rs);
+        return getFirstObjectFromResultSet(query, params);
     }
 
     @Override
