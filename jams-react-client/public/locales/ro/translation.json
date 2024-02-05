@@ -39,7 +39,7 @@
     "password_must_match": "Parolele trebuie să fie la fel",
     "password_confirmation_required": "Confirmarea parolei e obligatorie.",
     "information_appears_incorrect_connection_directory_failed": "Informațiile furnizate par a fi incorecte, nu s-a putut face legătura cu dosarul. Verifică informațiile și datele de autentificare furnizate și încearcă din nou.",
-    "identity_management": "Administrarea identității",
+    "identity_management": "Gestionarea identității",
     "select_type_of_user_directory": "Alege dosarul care să fie integrat în JAMS",
     "set_identity_parameters": "Stabilește parametrii identității",
     "create_administrator_user": "Creează un Utilizator Administrator",
