@@ -177,15 +177,17 @@ TYPE=$(xdg-mime query filetype datastore/target/site/jacoco/index.html)
 xdg-mime default firefox.desktop "$TYPE"
 ```
 
-## Visualize the derby database
-The IntelliJ Ultimate Edition Database view can help visualize the database schema.
-Don't forget to launch jams locally at least once before proceeding.
-1. Open this project in IntelliJ
-2. View -> Tool Windows -> Database
-3. Plus icon -> Data Source from Path
-4. Select the jami-jams/jams/jams folder
-5. Select the Apache Derby (Embedded) driver
-6. Select No auth, click Ok, refresh the database window and the tables should appear!
+## Access the derby database
+The DBeaver Community software can help visualize the database schema. You can install it from its [official website](https://dbeaver.io/download/). Once installed, here are the steps to access the database:
+
+1. On the top left, select New Database Connection (Shift+Ctrl+N).
+2. Select Derby Embedded from the list.
+3. Choose Connect by: host.
+4. Select the jami-jams/jams/jams folder in Path
+5. Leave Username and Password empty and click finish
+6. The database data can new be viewed under jams->APP->TABLES
+
+You can also use Apache Derby's official [ij cli tool](https://db.apache.org/derby/papers/DerbyTut/ij_intro.html) to access the database.
 
 ## About jams-server/src/main/java/net/jami/jams/server/filters
 The files in the `filters` folder are prefixed "A", "B", "C" and "D" so that the

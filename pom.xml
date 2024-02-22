@@ -33,6 +33,8 @@
         <lombok.version>1.18.28</lombok.version>
         <log4j.version>1.7.30</log4j.version>
         <jupiter.api.version>5.7.0-M1</jupiter.api.version>
+        <mockito.version>5.10.0</mockito.version>
+        <mockito-inline.version>5.2.0</mockito-inline.version>
         <tomcat.version>10.0.0-M5</tomcat.version>
         <map.struct.version>1.3.0.Final</map.struct.version>
         <maven.surefire.version>2.22.1</maven.surefire.version>
@@ -91,6 +93,24 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${jupiter.api.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>${mockito-inline.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

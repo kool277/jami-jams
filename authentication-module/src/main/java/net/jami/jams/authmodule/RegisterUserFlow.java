@@ -44,8 +44,11 @@ public class RegisterUserFlow {
         user.getX509Fields().setCommonName(user.getUsername());
         user = certificateAuthority.getSignedCertificate(user);
         String[] ethKeyPair = null;
-        while (ethKeyPair == null) {
+        try {
             ethKeyPair = ETHAddressGenerator.generateAddress();
+        } catch (Exception e) {
+            log.error("Error generating ETH address", e);
+            return false;
         }
         user.setEthAddress(ethKeyPair[0]);
         user.setEthKey(ethKeyPair[1]);

@@ -6,10 +6,26 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Attach Debugger",
+            "name": "Debug JamsProd",
+            "request": "attach",
+            "hostName": "192.168.50.255",
+            "port": 8000,
+            "projectName": "jams-server"
+        },
+        {
+            "type": "java",
+            "name": "Debug JamsLocal",
+            "request": "attach",
+            "hostName": "192.168.51.70",
+            "port": 5002,
+            "projectName": "jams-server"
+        },
+        {
+            "type": "java",
+            "name": "Debug JamsDev",
             "request": "attach",
             "hostName": "localhost",
-            "port": 35000,
+            "port": 5002,
             "projectName": "jams-server"
         }
     ]
