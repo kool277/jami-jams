@@ -4,8 +4,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import net.jami.datastore.dao.UserDao;
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
+import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
@@ -23,13 +25,22 @@ import java.io.File;
 @ExtendWith(MockitoExtension.class)
 class RegisterUserFlowTest {
     @Mock private static DataStore dataStoreMock;
+    @Mock private static UserDao userDaoMock;
     @Mock private static CertificateAuthority certificateAuthorityMock;
     @Mock private NameServer nameServer;
     private static UserAuthenticationModule userAuthModule;
+    private User user = new User();
 
     @BeforeEach
     void setUp() {
+        user.setUsername("Test User");
+        user.setAccessLevel(AccessLevel.USER);
         mockStatic(UserAuthenticationModule.class);
+        when(nameServer.registerName(any(String.class), any(NameRegistrationRequest.class)))
+                .thenReturn(200);
+        when(dataStoreMock.getUserDao()).thenReturn(userDaoMock);
+        when(userDaoMock.storeObject(any(User.class))).thenReturn(true);
+        when(certificateAuthorityMock.getSignedCertificate(any(User.class))).thenReturn(user);
         try {
             userAuthModule = new UserAuthenticationModule(dataStoreMock, certificateAuthorityMock);
         } catch (Exception e) {
@@ -52,12 +63,8 @@ class RegisterUserFlowTest {
     }
 
     @Test
-    void createUser() throws Exception {
-        User user = new User();
-        when(certificateAuthorityMock.getSignedCertificate(any(User.class))).thenReturn(user);
-        user.setUsername("Test User");
-        user.setAccessLevel(AccessLevel.USER);
-        RegisterUserFlow.createUser(user, nameServer);
-        Assertions.assertNotNull(user.getAddress(), "User ETHAddress was not generated!");
+    void createUser() {
+        boolean userCreationSuccess = RegisterUserFlow.createUser(user, nameServer);
+        Assertions.assertTrue(userCreationSuccess);
     }
 }

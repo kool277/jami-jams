@@ -47,7 +47,8 @@ public class RegisterUserFlow {
         try {
             ethKeyPair = ETHAddressGenerator.generateAddress();
         } catch (Exception e) {
-            log.error("Error generating ETH address", e);
+            log.error("Failed to generate an Ethereum key pair for the user " + user.getUsername());
+            e.printStackTrace();
             return false;
         }
         user.setEthAddress(ethKeyPair[0]);

@@ -25,5 +25,12 @@ package net.jami.jams.common.objects.user;
 public enum AccessLevel {
     ADMIN,
     USER,
-    DEVICE
+    DEVICE;
+
+    public static AccessLevel fromString(String str) {
+        if (str.equals("ADMIN")) return ADMIN;
+        if (str.equals("USER")) return USER;
+        if (str.equals("DEVICE")) return DEVICE;
+        return null;
+    }
 }

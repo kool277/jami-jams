@@ -86,7 +86,12 @@ public final class HexBin {
     public static byte[] decode(String encoded) {
         if (encoded == null) return null;
         int lengthData = encoded.length();
-        if (lengthData % 2 != 0) return null;
+        // Check if the length is odd
+        if (lengthData % 2 != 0) {
+            // If odd, add a leading zero to make it even
+            encoded = "0" + encoded;
+            lengthData++;
+        }
 
         char[] binaryData = encoded.toCharArray();
         int lengthDecode = lengthData / 2;

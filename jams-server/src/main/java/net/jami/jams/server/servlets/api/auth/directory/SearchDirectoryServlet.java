@@ -127,33 +127,32 @@ public class SearchDirectoryServlet extends HttpServlet {
                         s.addAll(userProfiles);
                         userProfiles = new ArrayList<>(s);
                     }
-                    userProfiles.parallelStream()
-                            .forEach(
-                                    profile -> {
-                                        List<User> results = new ArrayList<>();
-                                        while (results.isEmpty()) {
-                                            results =
-                                                    dataStore
-                                                            .getUserDao()
-                                                            .getByUsername(profile.getUsername())
-                                                            .map(user -> List.of(user))
-                                                            .orElseGet(() -> List.of());
-                                            if (results.isEmpty()) {
-                                                User user = new User();
-                                                user.setUsername(profile.getUsername());
-                                                user.setRealm(k.getRealm());
-                                                user.setUserType(k.getType());
-                                                user.setAccessLevel(AccessLevel.USER);
-                                                userAuthenticationModule.createUser(
-                                                        user.getUserType(),
-                                                        user.getRealm(),
-                                                        nameServer,
-                                                        user);
-                                            } else {
-                                                profile.setId(results.get(0).getJamiId());
-                                            }
-                                        }
-                                    });
+                    userProfiles.forEach(
+                            profile -> {
+                                List<User> results = new ArrayList<>();
+                                while (results.isEmpty()) {
+                                    results =
+                                            dataStore
+                                                    .getUserDao()
+                                                    .getByUsername(profile.getUsername())
+                                                    .map(user -> List.of(user))
+                                                    .orElseGet(() -> List.of());
+                                    if (results.isEmpty()) {
+                                        User user = new User();
+                                        user.setUsername(profile.getUsername());
+                                        user.setRealm(k.getRealm());
+                                        user.setUserType(k.getType());
+                                        user.setAccessLevel(AccessLevel.USER);
+                                        userAuthenticationModule.createUser(
+                                                user.getUserType(),
+                                                user.getRealm(),
+                                                nameServer,
+                                                user);
+                                    } else {
+                                        profile.setId(results.get(0).getJamiId());
+                                    }
+                                }
+                            });
                 });
 
         JsonObject obj = new JsonObject();

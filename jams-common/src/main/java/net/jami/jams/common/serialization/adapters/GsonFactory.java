@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder;
 import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.objects.conversations.Conversation;
 import net.jami.jams.common.objects.conversations.ConversationRequest;
+import net.jami.jams.common.objects.roots.X509Entity;
+import net.jami.jams.common.objects.user.User;
 
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
@@ -15,6 +17,7 @@ import java.security.cert.X509Certificate;
 public class GsonFactory {
     public static Gson createGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(User.class, new UserAdapter());
         gsonBuilder.registerTypeAdapter(Contact.class, new ContactAdapter());
         gsonBuilder.registerTypeAdapter(Conversation.class, new ConversationAdapter());
         gsonBuilder.registerTypeAdapter(
@@ -22,6 +25,7 @@ public class GsonFactory {
         gsonBuilder.registerTypeAdapter(PKCS10CertificationRequest.class, new CSRDeserializer());
         gsonBuilder.registerTypeAdapter(PrivateKey.class, new PrivateKeyAdapter());
         gsonBuilder.registerTypeAdapter(X509Certificate.class, new X509CertificateAdapter());
+        gsonBuilder.registerTypeAdapter(X509Entity.class, new X509EntityAdapter());
         Gson gson = gsonBuilder.create();
         return gson;
     }
