@@ -85,7 +85,7 @@ public class SystemAccountBuilder {
                             new Date(
                                     System.currentTimeMillis()
                                             + systemAccount.getX509Fields().getLifetime()),
-                            new X500Name("CN=" + systemAccount.getX509Fields().getDN()),
+                            new X500Name(systemAccount.getX509Fields().getDN()),
                             SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
             systemAccount.setPrivateKey(keyPair.getPrivate());
             systemAccount.setCertificate(

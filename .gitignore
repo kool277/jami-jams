@@ -91,6 +91,7 @@ target/
 testdb/
 tomcat.*/
 /jams
+dependency-reduced-pom.xml
 #userguide/site
 versions.json
 

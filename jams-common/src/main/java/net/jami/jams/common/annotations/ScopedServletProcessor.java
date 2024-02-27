@@ -113,13 +113,13 @@ public class ScopedServletProcessor extends AbstractProcessor {
                             "jar:file:"
                                     + parentDirectory
                                     + File.separator
-                                    + "compile-libs/tomcat-embed-core-10.0.0-M5.jar!/");
+                                    + "compile-libs/tomcat-embed-core-10.1.19.jar!/");
             URL cpUrl3 =
                     new URL(
                             "jar:file:"
                                     + parentDirectory
                                     + File.separator
-                                    + "compile-libs/tomcat-annotations-api-10.0.0-M5.jar!/");
+                                    + "compile-libs/tomcat-annotations-api-10.1.19.jar!/");
 
             URLClassLoader cpUrlLoader = new URLClassLoader(new URL[] {cpUrl1, cpUrl3});
 
