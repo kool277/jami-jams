@@ -30,7 +30,7 @@
         <maven.compiler.version>3.8.1</maven.compiler.version>
         <java.version>11</java.version>
         <bouncy.castle.version>1.70</bouncy.castle.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <log4j.version>1.7.30</log4j.version>
         <jupiter.api.version>5.7.0-M1</jupiter.api.version>
         <mockito.version>5.10.0</mockito.version>
