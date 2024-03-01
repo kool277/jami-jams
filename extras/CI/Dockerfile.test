@@ -1,0 +1,16 @@
+ARG JAVA_VERSION=11
+
+FROM maven:3.9.6-eclipse-temurin-${JAVA_VERSION}
+
+WORKDIR /test
+COPY pom.xml .
+COPY ad-connector/pom.xml ad-connector/pom.xml
+COPY authentication-module/pom.xml authentication-module/pom.xml
+COPY datastore/pom.xml datastore/pom.xml
+COPY jami-dht/pom.xml jami-dht/pom.xml
+COPY jami-nameserver/pom.xml jami-nameserver/pom.xml
+COPY jams-ca/pom.xml jams-ca/pom.xml
+COPY jams-common/pom.xml jams-common/pom.xml
+COPY jams-launcher/pom.xml jams-launcher/pom.xml
+COPY ldap-connector/pom.xml ldap-connector/pom.xml
+COPY jams-server/pom.xml jams-server/pom.xml
