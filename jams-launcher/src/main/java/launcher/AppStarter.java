@@ -45,8 +45,10 @@ public class AppStarter extends Thread {
     private long jamsProcessId = -1L;
 
     /**
-     * The launcher is essentially responsible of firing up the main application JAR.
-     * The problematic here is whenever we will fire up a JAR (but then we need to be able to
+     * The launcher is essentially responsible of firing up the main application
+     * JAR.
+     * The problematic here is whenever we will fire up a JAR (but then we need to
+     * be able to
      * kill and restart his PID, or whenever we fork via a main).
      */
     private void setupZmqBridge() {
@@ -86,13 +88,48 @@ public class AppStarter extends Thread {
         parentArgs = args;
         try {
             jamsProcessId = startAccountManagementServer(args);
+
+            // Get a ProcessHandle for the process with the given PID
+            ProcessHandle jamsProcessHandle =
+                    ProcessHandle.of(jamsProcessId)
+                            .orElseThrow(
+                                    () ->
+                                            new IllegalArgumentException(
+                                                    "No process with PID " + jamsProcessId));
+
+            // Create a separate thread to wait for the child process to finish
+            Thread waitForProcessThread =
+                    new Thread(
+                            () -> {
+                                try {
+                                    jamsProcessHandle
+                                            .onExit()
+                                            .thenAccept(
+                                                    ph -> {
+                                                        log.info(
+                                                                "JAMS Server has finished prematurely");
+                                                        System.exit(1);
+                                                    })
+                                            .get(); // Wait for the process to finish
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+            waitForProcessThread.start();
+
             setupZmqBridge();
             Runtime.getRuntime()
                     .addShutdownHook(
                             new Thread(
                                     () -> {
                                         log.info("Shutting down...");
-                                        ProcessHandle.of(jamsProcessId).get().destroyForcibly();
+                                        ProcessHandle.of(jamsProcessId)
+                                                .ifPresentOrElse(
+                                                        process -> process.destroyForcibly(),
+                                                        () ->
+                                                                log.warn(
+                                                                        "No process with PID "
+                                                                                + jamsProcessId));
                                     }));
         } catch (Exception e) {
             log.warn(
@@ -106,7 +143,8 @@ public class AppStarter extends Thread {
         appStarter.start();
     }
 
-    // How this works - once the JAMSUpdater has notified back upstream to do an update, we lockdown
+    // How this works - once the JAMSUpdater has notified back upstream to do an
+    // update, we lockdown
     // and run the good old routine
     @Override
     public void run() {
