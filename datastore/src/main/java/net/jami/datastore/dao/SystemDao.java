@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 by Savoir-faire Linux
+ * Copyright (C) 2020-2024 by Savoir-faire Linux
  * Authors: William Enright <william.enright@savoirfairelinux.com>
  *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
  *          Johnny Flores <johnny.flores@savoirfairelinux.com>

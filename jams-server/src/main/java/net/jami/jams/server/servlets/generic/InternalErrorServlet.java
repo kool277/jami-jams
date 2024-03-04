@@ -1,11 +1,5 @@
 /*
- * Copyright (C) 2020 by Savoir-faire Linux
- * Authors: William Enright <william.enright@savoirfairelinux.com>
- *          Ndeye Anna Ndiaye <anna.ndiaye@savoirfairelinux.com>
- *          Johnny Flores <johnny.flores@savoirfairelinux.com>
- *          Mohammed Raza <mohammed.raza@savoirfairelinux.com>
- *          Felix Sidokhine <felix.sidokhine@savoirfairelinux.com>
- *
+ * Copyright (C) 2020-2024 by Savoir-faire Linux
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

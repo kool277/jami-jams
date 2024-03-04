@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2023 by Savoir-faire Linux
- *
+ * Copyright (C) 2020-2024 by Savoir-faire Linux
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
