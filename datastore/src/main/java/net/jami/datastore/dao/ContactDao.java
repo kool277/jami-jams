@@ -42,8 +42,8 @@ public class ContactDao extends AbstractDao<Contact> {
     @Override
     public boolean storeObject(Contact object) {
         String query =
-                "INSERT INTO contacts (owner, uri, displayName, timestamp, status)"
-                        + " VALUES (?, ?, ?, ?, ?)";
+                "INSERT INTO contacts (owner, uri, displayName, added, removed, banned, confirmed, conversationId) VALUES "
+                        + "(?, ?, ?, ?, ?, ?, ?, ?)";
         return executeInsert(query, object);
     }
 

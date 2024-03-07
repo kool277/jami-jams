@@ -48,7 +48,7 @@ public class UserDao extends AbstractDao<User> {
     public boolean storeObject(User object) {
         String query =
                 "INSERT INTO users "
-                        + "(username, password, userType, realm, ethAddress, ethKey, jamiId,certificate, privatekey, accessLevel, needsPasswordReset, salt) "
+                        + "(username, password, userType, realm, ethAddress, ethKey, jamiId, certificate, privatekey, accessLevel, needsPasswordReset, salt) "
                         + " VALUES "
                         + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 

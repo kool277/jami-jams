@@ -21,42 +21,51 @@ import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.conversations.Conversation;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
 class ConversationDaoTest {
-    private ConversationDao conversationDao;
+    private static ConversationDao conversationDao;
+    private static Conversation conversation;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         conversationDao = new ConversationDao();
         Assertions.assertNotNull(conversationDao);
+
+        conversation = new Conversation();
+        conversation.setOwner("test");
+        conversation.setId("test");
+        conversation.setCreated(0L);
+        conversation.setRemoved(0L);
+        conversation.setErased(0L);
+        conversation.setMembers("test");
+        conversation.setLastDisplayed("test");
     }
 
     @Test
     void getByOwner() throws Exception {
-        Assertions.assertTrue(conversationDao.getByOwner("test").isEmpty());
+        conversationDao.storeObject(conversation);
+        Assertions.assertFalse(conversationDao.getByOwner("test").isEmpty());
     }
 
-    @Test
-    void storeObject() throws Exception {
-        Conversation conversation = new Conversation();
-        Assertions.assertFalse(conversationDao.storeObject(conversation));
-    }
 
     @Test
-    void storeCoList() throws Exception {
+    void storeEmptyConversationList() {
         ArrayList<Conversation> conversationList = new ArrayList<>();
         Assertions.assertFalse(conversationDao.storeConversationList(conversationList));
+    }
 
-        Conversation conversation = new Conversation();
+    @Test
+    void storeConversationList() {
+        ArrayList<Conversation> conversationList = new ArrayList<>();
         conversationList.add(conversation);
-        Assertions.assertFalse(conversationDao.storeConversationList(conversationList));
+        Assertions.assertTrue(conversationDao.storeConversationList(conversationList));
     }
 }

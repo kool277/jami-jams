@@ -16,48 +16,63 @@
  */
 package net.jami.datastore.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.devices.Device;
+import net.jami.jams.common.utils.X509Utils;
+
+import java.io.InputStream;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 class DeviceDaoTest {
-    private DeviceDao deviceDao;
+    private static DeviceDao deviceDao;
+    private static Device device;
+    private static String strPrivateKey;
+    private static String strCertificate;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
+    @BeforeAll
+    static void setUp() throws Exception {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         deviceDao = new DeviceDao();
         Assertions.assertNotNull(deviceDao);
+
+        InputStream path;
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        path = classLoader.getResourceAsStream("cakey.txt");
+        strPrivateKey = new String(path.readAllBytes());
+        path = classLoader.getResourceAsStream("cacert.txt");
+        strCertificate = new String(path.readAllBytes());
+
+        device = new Device();
+        device.setDeviceId("test");
+        device.setOwner("test");
+        device.setDisplayName("test");
+        device.setCertificate(X509Utils.getCertificateFromPEMString(strCertificate));
+        device.setPrivateKey(X509Utils.getKeyFromPEMString(strPrivateKey));
+
     }
 
     @Test
-    void getByOwner() throws Exception {
-        Assertions.assertTrue(deviceDao.getByOwner("test").isEmpty());
+    void getByOwner() {
+        deviceDao.storeObject(device);
+        Assertions.assertFalse(deviceDao.getByOwner("test").isEmpty());
     }
 
     @Test
-    void getByDeviceIdAndOwner() throws Exception {
-        Assertions.assertTrue(deviceDao.getByDeviceIdAndOwner("deviceid", "owner").isEmpty());
+    void getByDeviceIdAndOwner() {
+        deviceDao.storeObject(device);
+        Assertions.assertFalse(deviceDao.getByDeviceIdAndOwner("test", "test").isEmpty());
     }
 
     @Test
-    void storeObject() throws Exception {
-        Device device = new Device();
-        Assertions.assertFalse(deviceDao.storeObject(device));
-    }
-
-    @Test
-    void updateObject() throws Exception {
-        Assertions.assertFalse(deviceDao.updateObject("devicename", "username", "deviceid"));
+    void updateObject() {
+        deviceDao.storeObject(device);
+        Assertions.assertTrue(deviceDao.updateObject("test", "test", "test"));
     }
 }

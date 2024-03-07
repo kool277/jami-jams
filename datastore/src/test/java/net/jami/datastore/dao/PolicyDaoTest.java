@@ -16,58 +16,75 @@
  */
 package net.jami.datastore.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
+import net.jami.jams.common.objects.user.Group;
 import net.jami.jams.common.objects.user.Policy;
+import net.jami.jams.common.objects.user.UserGroupMapping;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
-class PolicyDaoTest {
-    private PolicyDao policyDao;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
+class PolicyDaoTest {
+    private static PolicyDao policyDao;
+    private static Policy policy;
+
+    @BeforeAll
+    static void setUp() {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         policyDao = new PolicyDao();
         Assertions.assertNotNull(policyDao);
+
+        policy = new Policy();
+        policy.setName("test");
+        policy.setPolicyData("test");
     }
 
     @Test
-    void getAll() throws Exception {
-        Assertions.assertTrue(policyDao.getAll().isEmpty());
+    void getAll() {
+        policyDao.storeObject(policy);
+        Assertions.assertFalse(policyDao.getAll().isEmpty());
     }
 
     @Test
-    void getByName() throws Exception {
-        Assertions.assertTrue(policyDao.getByName("test").isEmpty());
+    void getByName() {
+        policyDao.storeObject(policy);
+        Assertions.assertFalse(policyDao.getByName("test").isEmpty());
     }
 
     @Test
-    void getByUsername() throws Exception {
-        Assertions.assertTrue(policyDao.getByUsername("test").isEmpty());
+    void getByUsername() {
+        UserGroupMappingsDao ugmDao = new UserGroupMappingsDao();
+        UserGroupMapping ugm = new UserGroupMapping();
+        ugm.setUsername("test");
+        ugm.setGroupId("test");
+        ugmDao.storeObject(ugm);
+
+        GroupDao groupDao = new GroupDao();
+        Group group = new Group();
+        group.setId("test");
+        group.setName("test");
+        group.setBlueprint("test");
+        groupDao.storeObject(group);
+
+        policyDao.storeObject(policy);
+        Assertions.assertFalse(policyDao.getByUsername("test").isEmpty());
     }
 
     @Test
-    void storeObject() throws Exception {
-        Policy policyData = new Policy();
-        Assertions.assertFalse(policyDao.storeObject(policyData));
+    void updateObject() {
+        policyDao.storeObject(policy);
+        Assertions.assertTrue(policyDao.updateObject("test", "test"));
     }
 
     @Test
-    void updateObject() throws Exception {
-        Assertions.assertFalse(policyDao.updateObject("name", "policyData"));
-    }
-
-    @Test
-    void deleteObject() throws Exception {
-        Assertions.assertFalse(policyDao.deleteObject("name"));
+    void deleteObject() {
+        policyDao.storeObject(policy);
+        Assertions.assertTrue(policyDao.deleteObject("test"));
     }
 }

@@ -16,65 +16,79 @@
  */
 package net.jami.datastore.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.UserProfile;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 class UserProfileDaoTest {
-    private UserProfileDao userProfileDao;
+    private static UserProfileDao userProfileDao;
+    private static UserProfile userProfile;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
+    @BeforeAll
+    static void setUp() {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         userProfileDao = new UserProfileDao();
         Assertions.assertNotNull(userProfileDao);
+
+        userProfile = new UserProfile();
+        userProfile.setUsername("test");
+        userProfile.setFirstName("test");
+        userProfile.setLastName("test");
+        userProfile.setEmail("test");
+        userProfile.setProfilePicture("test");
+        userProfile.setOrganization("test");
+        userProfile.setPhoneNumber("test");
+        userProfile.setPhoneNumberExtension("test");
+        userProfile.setFaxNumber("test");
+        userProfile.setMobileNumber("test");
+        userProfile.setId("test");
     }
 
     @Test
-    void insertIfNotExists() throws Exception {
-        UserProfile userProfile = new UserProfile();
-        userProfileDao.insertIfNotExists(userProfile);
+    void storeObject() {
+        Assertions.assertTrue(userProfileDao.storeObject(userProfile));
     }
 
     @Test
-    void getAll() throws Exception {
-        Assertions.assertTrue(userProfileDao.getAllUserProfile().isEmpty());
+    void getAll(){
+        userProfileDao.storeObject(userProfile);
+        Assertions.assertFalse(userProfileDao.getAllUserProfile().isEmpty());
     }
 
     @Test
-    void searchUsername() throws Exception {
-        Assertions.assertTrue(userProfileDao.searchUsername("test").isEmpty());
+    void searchUsername() {
+        userProfileDao.storeObject(userProfile);
+        Assertions.assertFalse(userProfileDao.searchUsername("test").isEmpty());
     }
 
     @Test
-    void searchFullName() throws Exception {
-        Assertions.assertTrue(userProfileDao.searchFullName("test").isEmpty());
+    void searchFullName() {
+        userProfileDao.storeObject(userProfile);
+        Assertions.assertFalse(userProfileDao.searchFullName("test").isEmpty());
     }
 
     @Test
-    void getByUsername() throws Exception {
-        Assertions.assertTrue(userProfileDao.getByUsername("test").isEmpty());
-    }
-
-    @Test
-    void storeObject() throws Exception {
-        UserProfile userProfile = new UserProfile();
-        Assertions.assertFalse(userProfileDao.storeObject(userProfile));
+    void getByUsername() {
+        userProfileDao.storeObject(userProfile);
+        Assertions.assertTrue(userProfileDao.getByUsername("test").isPresent());
     }
 
     @Test
     void updateUserProfile() throws Exception {
-        UserProfile userProfile = new UserProfile();
-        Assertions.assertFalse(userProfileDao.updateUserProfile(userProfile));
+        userProfileDao.storeObject(userProfile);
+        Assertions.assertTrue(userProfileDao.updateUserProfile(userProfile));
+    }
+
+    @Test
+    void insertIfNotExists() throws Exception {
+        userProfileDao.insertIfNotExists(userProfile);
+        Assertions.assertTrue(userProfileDao.getByUsername("test").isPresent());
     }
 }

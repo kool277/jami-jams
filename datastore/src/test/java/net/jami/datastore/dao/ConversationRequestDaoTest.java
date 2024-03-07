@@ -18,47 +18,97 @@ package net.jami.datastore.dao;
 
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
+import net.jami.jams.common.objects.conversations.Conversation;
 import net.jami.jams.common.objects.conversations.ConversationRequest;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.ArrayList;
 
 class ConversationRequestDaoTest {
-    private ConversationRequestDao conversationRequestDao;
+    private static ConversationRequestDao conversationRequestDao;
+    private static ConversationRequest conversationRequest;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         conversationRequestDao = new ConversationRequestDao();
         Assertions.assertNotNull(conversationRequestDao);
+
+        conversationRequest = new ConversationRequest();
+        conversationRequest.setOwner("test");
+        conversationRequest.setConversationId("test");
+        conversationRequest.setSender("test");
+        conversationRequest.setMetadatas("test");
+        conversationRequest.setReceived(0L);
+        conversationRequest.setDeclined(0L);
+        Assertions.assertNotNull(conversationRequest);
     }
 
     @Test
-    void getByOwner() throws Exception {
-        Assertions.assertTrue(conversationRequestDao.getByOwner("test").isEmpty());
+    void storeObject() {
+        Assertions.assertTrue(conversationRequestDao.storeObject(conversationRequest));
     }
 
     @Test
-    void storeObject() throws Exception {
-        ConversationRequest conversationRequest = new ConversationRequest();
-        Assertions.assertFalse(conversationRequestDao.storeObject(conversationRequest));
+    void getByOwner() {
+        conversationRequestDao.storeObject(conversationRequest);
+        Assertions.assertFalse(conversationRequestDao.getByOwner("test").isEmpty());
     }
 
     @Test
-    void storeConversationRequestList() throws Exception {
-        ArrayList<ConversationRequest> conversationList = new ArrayList<>();
+    void storeEmptyConversationRequestList() {
+        ArrayList<ConversationRequest> emptyConversationRequestList = new ArrayList<>();
         Assertions.assertFalse(
-                conversationRequestDao.storeConversationRequestList(conversationList));
+                conversationRequestDao.storeConversationRequestList(emptyConversationRequestList));
+    }
 
-        ConversationRequest conversationRequest = new ConversationRequest();
-        conversationList.add(conversationRequest);
-        Assertions.assertFalse(
-                conversationRequestDao.storeConversationRequestList(conversationList));
+    @Test
+    void storeConversationRequestList() {
+        ArrayList<ConversationRequest> conversationRequestList = new ArrayList<>();
+        conversationRequestList.add(conversationRequest);
+        Assertions.assertTrue(
+                conversationRequestDao.storeConversationRequestList(conversationRequestList));
+    }
+
+    @Test
+    void filterConversationRequests() {
+        // Create a new conversation request with a different ownder and conversationId
+        ConversationRequest conversationRequest2 = new ConversationRequest();
+        conversationRequest2.setOwner("test2");
+        conversationRequest2.setConversationId("test2");
+        conversationRequest2.setSender(conversationRequest.getSender());
+        conversationRequest2.setMetadatas(conversationRequest.getMetadatas());
+        conversationRequest2.setReceived(conversationRequest.getReceived());
+        conversationRequest2.setDeclined(conversationRequest.getDeclined());
+        // Store the conversation requests
+        conversationRequestDao.storeObject(conversationRequest);
+        conversationRequestDao.storeObject(conversationRequest2);
+        // Filter the conversation requests
+        Conversation conversation = new Conversation();
+        conversation.setOwner("test");
+        conversation.setId("test");
+        conversation.setCreated(0L);
+        conversation.setRemoved(0L);
+        conversation.setErased(0L);
+        conversation.setMembers("test");
+        conversation.setLastDisplayed("test");
+        ArrayList<Conversation> conversationList = new ArrayList<>();
+        conversationList.add(conversation);
+        ArrayList<ConversationRequest> conversationRequestList = new ArrayList<>();
+        conversationRequestList.add(conversationRequest);
+        conversationRequestList.add(conversationRequest2);
+
+        List<ConversationRequest> filteredConversationRequest = conversationRequestDao
+                .filterConversationRequests(conversationRequestList, conversationList);
+        Assertions.assertEquals(1, filteredConversationRequest.size());
+        ConversationRequest remainingConversationRequest = filteredConversationRequest.get(0);
+        Assertions.assertEquals(conversationRequest2.getOwner(), remainingConversationRequest.getOwner());
     }
 }

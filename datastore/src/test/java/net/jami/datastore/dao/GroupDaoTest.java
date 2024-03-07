@@ -16,53 +16,54 @@
  */
 package net.jami.datastore.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.Group;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 class GroupDaoTest {
-    private GroupDao groupDao;
+    private static GroupDao groupDao;
+    private static Group group;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
+    @BeforeAll
+    static void setUp() {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         groupDao = new GroupDao();
         Assertions.assertNotNull(groupDao);
+
+        group = new Group();
+        group.setId("test");
+        group.setName("test");
+        group.setBlueprint("test");
     }
 
     @Test
     void getAll() throws Exception {
-        Assertions.assertTrue(groupDao.getAll().isEmpty());
+        groupDao.storeObject(group);
+        Assertions.assertFalse(groupDao.getAll().isEmpty());
     }
 
     @Test
     void getById() throws Exception {
-        Assertions.assertTrue(groupDao.getById("test").isEmpty());
-    }
-
-    @Test
-    void storeObject() throws Exception {
-        Group group = new Group();
-        Assertions.assertFalse(groupDao.storeObject(group));
+        groupDao.storeObject(group);
+        Assertions.assertFalse(groupDao.getById("test").isEmpty());
     }
 
     @Test
     void updateObject() throws Exception {
-        Assertions.assertFalse(groupDao.updateObject("id", "name", "blueprint"));
+        groupDao.storeObject(group);
+        Assertions.assertTrue(groupDao.updateObject("test", "name", "blueprint"));
     }
 
     @Test
     void deleteObject() throws Exception {
-        Assertions.assertFalse(groupDao.deleteObject("id"));
+        groupDao.storeObject(group);
+        Assertions.assertTrue(groupDao.deleteObject("test"));
     }
 }

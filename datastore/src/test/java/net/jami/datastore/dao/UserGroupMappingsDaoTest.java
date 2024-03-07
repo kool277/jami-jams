@@ -16,54 +16,53 @@
  */
 package net.jami.datastore.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.UserGroupMapping;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-@Slf4j
 class UserGroupMappingsDaoTest {
-    private UserGroupMappingsDao ugmDao;
+    private static UserGroupMappingsDao ugmDao;
+    private static UserGroupMapping ugm;
 
-    @BeforeEach
-    void beforeEach() throws Exception {
+    @BeforeAll
+    static void setUp() {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         ugmDao = new UserGroupMappingsDao();
         Assertions.assertNotNull(ugmDao);
+
+        ugm = new UserGroupMapping();
+        ugm.setUsername("test");
+        ugm.setGroupId("test");
     }
 
     @Test
-    void getByGroupId() throws Exception {
-        Assertions.assertTrue(ugmDao.getByGroupId("test").isEmpty());
+    void getByGroupId() {
+        ugmDao.storeObject(ugm);
+        Assertions.assertFalse(ugmDao.getByGroupId("test").isEmpty());
     }
 
     @Test
-    void getByUsername() throws Exception {
-        Assertions.assertTrue(ugmDao.getByUsername("test").isEmpty());
+    void getByUsername() {
+        ugmDao.storeObject(ugm);
+        Assertions.assertFalse(ugmDao.getByUsername("test").isEmpty());
     }
 
     @Test
-    void getByGroupIdAndUsername() throws Exception {
-        Assertions.assertTrue(ugmDao.getByGroupIdAndUsername("groupid", "username").isEmpty());
+    void getByGroupIdAndUsername() {
+        ugmDao.storeObject(ugm);
+        Assertions.assertFalse(ugmDao.getByGroupIdAndUsername("test", "test").isEmpty());
     }
 
     @Test
-    void storeObject() throws Exception {
-        UserGroupMapping ugm = new UserGroupMapping();
-        Assertions.assertFalse(ugmDao.storeObject(ugm));
-    }
-
-    @Test
-    void deleteObject() throws Exception {
-        Assertions.assertFalse(ugmDao.deleteObject("username", "groupid"));
-        Assertions.assertFalse(ugmDao.deleteObject("*", "groupid"));
+    void deleteObject() {
+        ugmDao.storeObject(ugm);
+        Assertions.assertTrue(ugmDao.deleteObject("test", "test"));
     }
 }

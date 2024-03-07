@@ -21,47 +21,62 @@ import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.contacts.Contact;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
 class ContactDaoTest {
-    private ContactDao contactDao;
+    private static ContactDao contactDao;
+    private static Contact contact;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         SQLConnection connection = DataStore.connectionPool.getConnection();
         Assertions.assertNotNull(connection);
 
         contactDao = new ContactDao();
         Assertions.assertNotNull(contactDao);
+
+        contact = new Contact();
+        contact.setOwner("test");
+        contact.setUri("test");
+        contact.setDisplayName("test");
+        contact.setAdded(0L);
+        contact.setRemoved(0L);
+        contact.setBanned(false);
+        contact.setConfirmed(false);
+        contact.setConversationId("test");
     }
 
     @Test
-    void getByOwner() throws Exception {
-        Assertions.assertTrue(contactDao.getByOwner("test").isEmpty());
+    void getByOwner() {
+        contactDao.storeObject(contact);
+        Assertions.assertFalse(contactDao.getByOwner("test").isEmpty());
     }
 
     @Test
-    void storeObject() throws Exception {
-        Contact contact = new Contact();
-        Assertions.assertFalse(contactDao.storeObject(contact));
+    void storeEmptyContactList() {
+        ArrayList<Contact> emptyContactList = new ArrayList<>();
+        Assertions.assertFalse(contactDao.storeContactList(emptyContactList));
     }
 
     @Test
-    void storeContactList() throws Exception {
+    void storeContactList() {
         ArrayList<Contact> contactList = new ArrayList<>();
-        Assertions.assertFalse(contactDao.storeContactList(contactList));
-
-        Contact contact = new Contact();
         contactList.add(contact);
-        Assertions.assertFalse(contactDao.storeContactList(contactList));
+        Assertions.assertTrue(contactDao.storeContactList(contactList));
     }
 
     @Test
-    void deleteObject() throws Exception {
+    void deleteContact() {
+        contactDao.storeObject(contact);
+        Assertions.assertFalse(contactDao.removeContact("owner", "uri"));
+    }
+
+    @Test
+    void deleteNonExistentContact() {
         Assertions.assertFalse(contactDao.removeContact("owner", "uri"));
     }
 }

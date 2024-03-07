@@ -16,8 +16,6 @@
  */
 package net.jami.datastore.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import net.jami.jams.common.objects.user.UserProfile;
 
 import java.sql.SQLException;
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 public class UserProfileDao extends AbstractDao<UserProfile> {
 
     // Fix this to include the fields from AD/LDAP.
@@ -35,12 +32,13 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
     }
 
     public void insertIfNotExists(UserProfile userProfile) throws SQLException {
-        String query =
-                "INSERT INTO local_directory"
-                        + " (username, firstName, lastName, email, profilePicture, organization, phoneNumber, phoneNumberExtension, faxNumber, mobileNumber)"
-                        + " SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?"
-                        + " FROM local_directory"
-                        + " WHERE NOT EXISTS (SELECT 1 FROM local_directory WHERE username = ?)";
+        String update =
+                "UPDATE local_directory SET username = ?, firstName = ?, lastName = ?, email = ?, profilePicture = ?, organization=?, phoneNumber=?, phoneNumberExtension=?, faxNumber=?, mobileNumber=?"
+                        + "WHERE username = ?";
+
+        String insert =
+                "INSERT INTO local_directory (username, firstName, lastName, email, profilePicture, organization, phoneNumber, phoneNumberExtension, faxNumber, mobileNumber) VALUES "
+                        + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         List<String> params = new ArrayList<>();
         params.add(userProfile.getUsername());
@@ -55,7 +53,17 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
         params.add(userProfile.getMobileNumber());
         params.add(userProfile.getUsername());
 
-        this.executeUpdate(query, params);
+        // Attempt to update the user profile first
+        boolean updateSuccess = this.executeUpdate(update, params);
+        if (!updateSuccess) {
+            // Remove the last parameter from the list since it is not needed for the insert
+            // statement
+            if (!params.isEmpty()) {
+                params.remove(params.size() - 1);
+            }
+            // If the update fails, insert the user profile
+            this.executeUpdate(insert, params);
+        }
     }
 
     public List<UserProfile> getAllUserProfile() {
