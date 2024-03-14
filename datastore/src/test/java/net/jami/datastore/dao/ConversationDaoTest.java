@@ -55,7 +55,6 @@ class ConversationDaoTest {
         Assertions.assertFalse(conversationDao.getByOwner("test").isEmpty());
     }
 
-
     @Test
     void storeEmptyConversationList() {
         ArrayList<Conversation> conversationList = new ArrayList<>();

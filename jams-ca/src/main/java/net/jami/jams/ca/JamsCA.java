@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.ca.workers.crl.CRLWorker;
+import net.jami.jams.ca.workers.crl.RevocationCallback;
 import net.jami.jams.ca.workers.csr.CertificateWorker;
 import net.jami.jams.ca.workers.ocsp.OCSPWorker;
 import net.jami.jams.common.cryptoengineapi.CertificateAuthority;
@@ -44,7 +45,7 @@ import java.util.Base64;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
-public class JamsCA implements CertificateAuthority {
+public class JamsCA implements CertificateAuthority, RevocationCallback {
 
     // These are the workers which are responsible for CRL/OCSP, they have an odd relationship.
     private static CRLWorker crlWorker;
@@ -61,6 +62,9 @@ public class JamsCA implements CertificateAuthority {
     // CA certificate & OCSP Certificates, because they are often used.
     public static SystemAccount CA;
     public static SystemAccount OCSP;
+    // Flag to indicate completion of the revokeCertificate method
+    private boolean revokeCompleted = false;
+    private final Object lock = new Object();
 
     static {
         Security.addProvider(new BouncyCastleProvider());
@@ -95,6 +99,7 @@ public class JamsCA implements CertificateAuthority {
 
         if (ca != null && ocsp != null) {
             crlWorker = new CRLWorker(CA.getPrivateKey(), CA.getCertificate());
+            crlWorker.setRevocationCallback(this);
             try {
                 ocspWorker = new OCSPWorker(OCSP.getPrivateKey(), OCSP.getCertificate(), crlWorker);
             } catch (Exception e) {
@@ -128,6 +133,25 @@ public class JamsCA implements CertificateAuthority {
         crlWorker.getInput().add(revocationRequest);
         synchronized (crlWorker.getInput()) {
             crlWorker.getInput().notify();
+        }
+    }
+
+    @Override
+    public void onRevocationCompleted() {
+        revokeCompleted = true;
+        // Notify waiting threads
+        synchronized (lock) {
+            lock.notifyAll();
+        }
+    }
+
+    public synchronized void waitForRevokeCompletion() throws InterruptedException {
+        synchronized (lock) {
+            while (!revokeCompleted) {
+                lock.wait(); // Wait until revokeCertificate completes and notifies
+            }
+            // Reset the flag after processing the completion notification
+            revokeCompleted = false;
         }
     }
 

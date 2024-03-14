@@ -22,7 +22,9 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.objects.contacts.Contact;
 import net.jami.jams.common.objects.conversations.Conversation;
 import net.jami.jams.common.objects.conversations.ConversationRequest;
+import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.requests.DeviceRegistrationRequest;
+import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.roots.X509Entity;
 import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
@@ -136,6 +138,27 @@ class GsonFactoryTest {
         String input = "{\"csr\":\"" + strPkcs10Request + "\"}";
         DeviceRegistrationRequest request = gson.fromJson(input, DeviceRegistrationRequest.class);
         Assertions.assertNotNull(request.getCsr(), "CSR Should not have been null!");
+    }
+
+    @Test
+    void DeviceSerializeTest() {
+        Device device = new Device();
+        device.setDeviceId("testDeviceId");
+        device.setOwner("testOwner");
+        device.setDisplayName("testDisplayName");
+        device.setCertificate(X509Utils.getCertificateFromPEMString(strCertificate));
+        device.setPrivateKey(X509Utils.getKeyFromPEMString(strPrivateKey));
+        String serializedDevice = gson.toJson(device);
+        Assertions.assertNotNull(serializedDevice, "Serialization failed!");
+    }
+
+    @Test
+    void DeviceRevocationResponseSerializeTest() {
+        DeviceRevocationResponse deviceRevocationResponse = new DeviceRevocationResponse();
+        deviceRevocationResponse.setSuccess(true);
+        deviceRevocationResponse.setTimestamp("test");
+        String serializedDeviceRevocationResponse = gson.toJson(deviceRevocationResponse);
+        Assertions.assertNotNull(serializedDeviceRevocationResponse, "Serialization failed!");
     }
 
     @Test

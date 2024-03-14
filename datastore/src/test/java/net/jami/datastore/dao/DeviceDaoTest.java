@@ -21,11 +21,11 @@ import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.utils.X509Utils;
 
-import java.io.InputStream;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.InputStream;
 
 class DeviceDaoTest {
     private static DeviceDao deviceDao;
@@ -55,7 +55,6 @@ class DeviceDaoTest {
         device.setDisplayName("test");
         device.setCertificate(X509Utils.getCertificateFromPEMString(strCertificate));
         device.setPrivateKey(X509Utils.getKeyFromPEMString(strPrivateKey));
-
     }
 
     @Test

@@ -48,6 +48,8 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
 
     @Getter @Setter private AtomicBoolean stop = new AtomicBoolean(false);
 
+    private RevocationCallback revocationCallback;
+
     public CRLWorker(PrivateKey privateKey, X509Certificate certificate) {
         super(privateKey, certificate);
         try {
@@ -108,6 +110,10 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
         }
     }
 
+    public void setRevocationCallback(RevocationCallback revocationCallback) {
+        this.revocationCallback = revocationCallback;
+    }
+
     @Override
     public void run() {
         boolean needsRefresh = false;
@@ -130,6 +136,9 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
                     log.info(
                             "Successfully revoked the certificated with ID "
                                     + revocationRequest.getIdentifier());
+                    if (revocationCallback != null) {
+                        revocationCallback.onRevocationCompleted();
+                    }
                 }
             } catch (Exception e) {
                 log.error("An error has occured in the CRL signing thread: " + e);

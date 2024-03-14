@@ -55,7 +55,7 @@ public class OCSPServlet extends HttpServlet {
             String issuerId = req.getPathInfo().replace("/", "");
 
             /*
-             * If there is no issue id we are dealing with a certificate signed byt the CA
+             * If there is no issuerId we are dealing with a certificate signed by the CA
              * root
              * Else the certificate is a device certificate signed by a user with and the
              * issuerId is his Jami Id

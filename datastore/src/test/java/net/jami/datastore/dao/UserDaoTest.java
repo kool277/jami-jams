@@ -23,16 +23,16 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 class UserDaoTest {
     private static UserDao userDao;
@@ -62,7 +62,7 @@ class UserDaoTest {
         user = createMockUser();
     }
 
-    static private User createMockUser() {
+    private static User createMockUser() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);

@@ -40,6 +40,8 @@ public interface CertificateAuthority {
 
     void revokeCertificate(RevocationRequest revocationRequest);
 
+    void waitForRevokeCompletion() throws InterruptedException;
+
     AtomicReference<X509CRLHolder> getLatestCRL();
 
     String getLatestCRLPEMEncoded();

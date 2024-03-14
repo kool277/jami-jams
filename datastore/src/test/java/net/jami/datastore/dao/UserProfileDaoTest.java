@@ -57,7 +57,7 @@ class UserProfileDaoTest {
     }
 
     @Test
-    void getAll(){
+    void getAll() {
         userProfileDao.storeObject(userProfile);
         Assertions.assertFalse(userProfileDao.getAllUserProfile().isEmpty());
     }

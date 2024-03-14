@@ -49,7 +49,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
   const history = useHistory();
 
   const [devices, setDevices] = useState<Device[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<Device>({
+  const [selectedDevice, setSelectedDevice] = useState<Device | undefined>({
     deviceId: "",
     displayName: "",
     revoked: false,
@@ -59,7 +59,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [openRevoke, setOpenRevoke] = useState(false);
 
-  useEffect(() => {
+  const fetchDevices = () => {
     auth.checkDirectoryType(() => {
       const requestConfig = auth.hasAdminScope()
         ? configApiCall(api_path_get_admin_devices, "GET", { username }, null)
@@ -81,6 +81,10 @@ const Devices: FC<DevicesProps> = ({ username }) => {
           }
         });
     });
+  };
+
+  useEffect(() => {
+    fetchDevices();
   }, []);
 
   const getDeviceStatus = (device: Device) => {
@@ -112,6 +116,9 @@ const Devices: FC<DevicesProps> = ({ username }) => {
   };
 
   const handleUpdate = () => {
+    if (!selectedDevice) {
+      return;
+    }
     let requestConfig;
     if (auth.hasAdminScope()) {
       requestConfig = configApiCall(
@@ -140,7 +147,10 @@ const Devices: FC<DevicesProps> = ({ username }) => {
     }
 
     axios(requestConfig)
-      .then(() => {
+      .then((response) => {
+        if (response.status === 200) {
+          fetchDevices();
+        }
         setSelectedDevice(undefined);
         setOpenEdit(false);
       })
@@ -150,6 +160,9 @@ const Devices: FC<DevicesProps> = ({ username }) => {
   };
 
   const handleDeviceRevoke = () => {
+    if (!selectedDevice) {
+      return;
+    }
     let requestConfig;
     if (auth.hasAdminScope()) {
       const url =
@@ -169,9 +182,12 @@ const Devices: FC<DevicesProps> = ({ username }) => {
     }
 
     axios(requestConfig)
-      .then(() => {
+      .then((response) => {
         setSelectedDevice(undefined);
         setOpenRevoke(false);
+        if (response.data.success) {
+          fetchDevices();
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -190,73 +206,83 @@ const Devices: FC<DevicesProps> = ({ username }) => {
             <TableCell>
               {i18next.t("device_id", "Device Id") as string}
             </TableCell>
-            <TableCell align="right">
-              {i18next.t("status", "Status") as string}
-            </TableCell>
-            <TableCell align="right">
-              {i18next.t("actions", "Actions") as string}
-            </TableCell>
+            {auth.hasAdminScope() && (
+              <TableCell>{i18next.t("status", "Status") as string}</TableCell>
+            )}
+            <TableCell>{i18next.t("actions", "Actions") as string}</TableCell>
           </TableRow>
         </TableHead>
         {devices != null && (
           <TableBody>
-            {devices.map((device) => (
-              <TableRow key={device.displayName} className={classes.tableRow}>
-                <TableCell className={tableCellClasses}>
-                  {device.displayName}
-                </TableCell>
-                <TableCell className={tableCellClasses}>
-                  {device.deviceId}
-                </TableCell>
-                <TableCell align="right" className={tableCellClasses}>
-                  {getDeviceStatus(device)}
-                </TableCell>
-                {!device.revoked && (
-                  <TableCell align="right" className={classes.tableActions}>
-                    <Tooltip
-                      id="tooltip-top"
-                      title="Edit Device"
-                      placement="top"
-                      classes={{ tooltip: classes.tooltip }}
-                    >
-                      <IconButton
-                        aria-label="Edit"
-                        className={classes.tableActionButton}
-                        onClick={(e) => handleClickEdit(e, device)}
-                        size="large"
-                      >
-                        <Edit
-                          className={
-                            classes.tableActionButtonIcon + " " + classes.edit
+            {devices.map(
+              (device) =>
+                (auth.hasAdminScope() || !device.revoked) && (
+                  <TableRow key={device.deviceId} className={classes.tableRow}>
+                    <TableCell className={tableCellClasses}>
+                      {device.displayName}
+                    </TableCell>
+                    <TableCell className={tableCellClasses}>
+                      {device.deviceId}
+                    </TableCell>
+                    {auth.hasAdminScope() && (
+                      <TableCell align="right" className={tableCellClasses}>
+                        {getDeviceStatus(device)}
+                      </TableCell>
+                    )}
+                    {!device.revoked && (
+                      <TableCell className={classes.tableActions}>
+                        <Tooltip
+                          id="tooltip-top"
+                          title="Edit Device"
+                          placement="top"
+                          classes={{ tooltip: classes.tooltip }}
+                        >
+                          <IconButton
+                            aria-label="Edit"
+                            className={classes.tableActionButton}
+                            onClick={(e) => handleClickEdit(e, device)}
+                            size="large"
+                          >
+                            <Edit
+                              className={
+                                classes.tableActionButtonIcon +
+                                " " +
+                                classes.edit
+                              }
+                            />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip
+                          id="tooltip-top-start"
+                          title={
+                            i18next.t(
+                              "revoke_device",
+                              "Revoke Device"
+                            ) as string
                           }
-                        />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip
-                      id="tooltip-top-start"
-                      title={
-                        i18next.t("revoke_device", "Revoke Device") as string
-                      }
-                      placement="top"
-                      classes={{ tooltip: classes.tooltip }}
-                    >
-                      <IconButton
-                        aria-label="Close"
-                        className={classes.tableActionButton}
-                        onClick={(e) => handleClickRevoke(e, device)}
-                        size="large"
-                      >
-                        <Close
-                          className={
-                            classes.tableActionButtonIcon + " " + classes.close
-                          }
-                        />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
+                          placement="top"
+                          classes={{ tooltip: classes.tooltip }}
+                        >
+                          <IconButton
+                            aria-label="Close"
+                            className={classes.tableActionButton}
+                            onClick={(e) => handleClickRevoke(e, device)}
+                            size="large"
+                          >
+                            <Close
+                              className={
+                                classes.tableActionButtonIcon +
+                                " " +
+                                classes.close
+                              }
+                            />
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )
+            )}
           </TableBody>
         )}
       </Table>

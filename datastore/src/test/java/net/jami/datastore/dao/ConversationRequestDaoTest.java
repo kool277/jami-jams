@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 class ConversationRequestDaoTest {
     private static ConversationRequestDao conversationRequestDao;
@@ -105,10 +105,12 @@ class ConversationRequestDaoTest {
         conversationRequestList.add(conversationRequest);
         conversationRequestList.add(conversationRequest2);
 
-        List<ConversationRequest> filteredConversationRequest = conversationRequestDao
-                .filterConversationRequests(conversationRequestList, conversationList);
+        List<ConversationRequest> filteredConversationRequest =
+                conversationRequestDao.filterConversationRequests(
+                        conversationRequestList, conversationList);
         Assertions.assertEquals(1, filteredConversationRequest.size());
         ConversationRequest remainingConversationRequest = filteredConversationRequest.get(0);
-        Assertions.assertEquals(conversationRequest2.getOwner(), remainingConversationRequest.getOwner());
+        Assertions.assertEquals(
+                conversationRequest2.getOwner(), remainingConversationRequest.getOwner());
     }
 }

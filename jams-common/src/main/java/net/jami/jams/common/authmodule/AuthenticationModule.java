@@ -23,8 +23,6 @@ import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.user.User;
 
-import org.bouncycastle.cert.X509CRLHolder;
-
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,8 +33,7 @@ public interface AuthenticationModule {
 
     AuthTokenResponse authenticateUser(String username, String password);
 
-    AuthTokenResponse authenticateUser(
-            X509Certificate[] certificates, X509CRLHolder crl, X509Certificate ca);
+    AuthTokenResponse authenticateUser(X509Certificate[] certificates);
 
     ConcurrentHashMap<AuthModuleKey, AuthenticationSource> getAuthSources();
 

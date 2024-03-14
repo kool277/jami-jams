@@ -67,6 +67,7 @@ public class RegisterDeviceFlow {
                 log.error("Could not succesfully create a device certificate!");
                 return null;
             }
+            device.setDeviceId(DeviceReceiptGenerator.generateDeviceId(device));
             dataStore.getDeviceDao().storeObject(device);
 
             DeviceRegistrationResponse response = new DeviceRegistrationResponse();

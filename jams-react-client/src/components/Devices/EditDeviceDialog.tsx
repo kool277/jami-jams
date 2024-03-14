@@ -6,7 +6,7 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { Formik, Field } from "formik";
+import { Formik, Form, Field } from "formik";
 import i18next from "i18next";
 import { Dispatch, FC, SetStateAction } from "react";
 import * as Yup from "yup";
@@ -15,7 +15,7 @@ import { Device } from "./Devices";
 interface EditDeviceDialogProps {
   openEdit: boolean;
   handleClose: () => void;
-  selectedDevice: Device;
+  selectedDevice: Device | undefined;
   setDisplayName: Dispatch<SetStateAction<string>>;
   handleUpdate: () => void;
 }
@@ -23,7 +23,7 @@ interface EditDeviceDialogProps {
 const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
   openEdit,
   handleClose,
-  selectedDevice,
+  selectedDevice = { deviceId: "", displayName: "", revoked: false },
   setDisplayName,
   handleUpdate,
 }) => {
@@ -53,11 +53,11 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
         validationSchema={validationSchema}
       >
         {({ errors, touched }) => (
-          <form>
+          <Form>
             <DialogContent>
               <Field name="displayName">
                 {({ field }) => (
-                  <div>
+                  <div onChange={(event) => setDisplayName(event.target.value)}>
                     <TextField
                       autoFocus
                       margin="dense"
@@ -67,7 +67,6 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
                         "Device Display Name"
                       )}
                       fullWidth
-                      onChange={setDisplayName(field.value)}
                       helperText={
                         errors.displayName &&
                         touched.displayName &&
@@ -87,7 +86,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
                 {i18next.t("update", "Update") as string}
               </Button>
             </DialogActions>
-          </form>
+          </Form>
         )}
       </Formik>
     </Dialog>

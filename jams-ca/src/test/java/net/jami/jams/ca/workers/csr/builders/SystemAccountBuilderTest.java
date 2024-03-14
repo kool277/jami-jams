@@ -113,9 +113,7 @@ class SystemAccountBuilderTest {
         revocationRequest.setIdentifier(new BigInteger("91828882"));
         revocationRequest.setRevocationType(RevocationType.USER);
         jamsCA.revokeCertificate(revocationRequest);
-        synchronized (this) {
-            this.wait(500);
-        }
+        jamsCA.waitForRevokeCompletion();
         Assertions.assertNotNull(jamsCA.getLatestCRL());
         Assertions.assertEquals(
                 1,
@@ -126,9 +124,7 @@ class SystemAccountBuilderTest {
         revocationRequest.setIdentifier(new BigInteger("17262653"));
         revocationRequest.setRevocationType(RevocationType.USER);
         jamsCA.revokeCertificate(revocationRequest);
-        synchronized (this) {
-            this.wait(500);
-        }
+        jamsCA.waitForRevokeCompletion();
         Assertions.assertNotNull(jamsCA.getLatestCRL());
         Assertions.assertEquals(
                 2,

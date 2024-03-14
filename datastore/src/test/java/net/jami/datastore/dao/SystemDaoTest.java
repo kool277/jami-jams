@@ -22,11 +22,11 @@ import net.jami.jams.common.objects.system.SystemAccount;
 import net.jami.jams.common.objects.system.SystemAccountType;
 import net.jami.jams.common.utils.X509Utils;
 
-import java.io.InputStream;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.InputStream;
 
 class SystemDaoTest {
     private static SystemDao systemDao;

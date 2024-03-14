@@ -45,8 +45,19 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SignatureException;
+import java.security.cert.CertPath;
+import java.security.cert.CertPathValidator;
+import java.security.cert.CertificateFactory;
+import java.security.cert.PKIXParameters;
+import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -58,6 +69,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
     private static final String AD_CONNECTOR_CLASS = "net.jami.jams.ad.connector.ADConnector";
     public static DataStore datastore;
     public static CertificateAuthority certificateAuthority;
+    private CertificateFactory certificateFactory;
+    CertPathValidator certPathValidator;
     private final TokenController tokenController;
     private PrivateKey privateKey = null;
     private PublicKey publicKey = null;
@@ -70,6 +83,10 @@ public class UserAuthenticationModule implements AuthenticationModule {
             throws Exception {
         UserAuthenticationModule.datastore = dataStore;
         UserAuthenticationModule.certificateAuthority = certificateAuthority;
+
+        certificateFactory = CertificateFactory.getInstance("X.509");
+        certPathValidator = CertPathValidator.getInstance("PKIX");
+
         authenticationSources.put(
                 new AuthModuleKey("LOCAL", AuthenticationSourceType.LOCAL), datastore);
         log.info("Started authentication module - default local source is already enabled!");
@@ -112,8 +129,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
             publicInput.close();
             log.info("Succesfully loaded OAuth public key!");
         }
-        // TODO: Read signing key, if file does not exist create it (also create the corresponding
-        // public key)
+        // TODO: Read signing key, if file does not exist create it (also create the
+        // corresponding public key)
         tokenController = new TokenController(privateKey);
         // Also expose the public key programatically.
         log.info("OAuth2 Token System instantiated succesfully!");
@@ -176,8 +193,8 @@ public class UserAuthenticationModule implements AuthenticationModule {
                 user.setAccessLevel(AccessLevel.USER);
                 user.setRealm(key.getRealm());
                 user.setUserType(key.getType());
-                // This is legal with a null ONLY because in this case there is no relation with a
-                // external server.
+                // This is legal with a null ONLY because in this case there is no relation with
+                // a external server.
                 RegisterUserFlow.createUser(user, null);
                 return tokenController.getToken(user, null);
             }
@@ -186,18 +203,41 @@ public class UserAuthenticationModule implements AuthenticationModule {
     }
 
     @Override
-    public AuthTokenResponse authenticateUser(
-            X509Certificate[] certificates, X509CRLHolder crl, X509Certificate ca) {
-        // Extract the username for the certificate and verify that it is not revoked.
-        X509Certificate clientCert = certificates[1];
-        X509Certificate deviceCert = certificates[0];
+    public AuthTokenResponse authenticateUser(X509Certificate[] certificates) {
         try {
-            // Check if the certificate is even valid.
-            clientCert.checkValidity();
-            // Check if the certificate was provided by a valid authority.
-            clientCert.verify(ca.getPublicKey());
-            // Here we need to make a request to the CRL to find out if it has been revoked.
-            if (crl.getRevokedCertificate(clientCert.getSerialNumber()) != null) return null;
+            // Verify the certificate chain
+            // We create the certificate chain and remove the self-signed root CA
+            List<X509Certificate> certificatesWithoutRootCA =
+                    new ArrayList<>(Arrays.asList(certificates));
+            if (!certificatesWithoutRootCA.isEmpty()) {
+                X509Certificate lastCert =
+                        certificatesWithoutRootCA.get(certificatesWithoutRootCA.size() - 1);
+                if (isSelfSigned(lastCert)) {
+                    certificatesWithoutRootCA.remove(lastCert);
+                }
+            } else {
+                return null;
+            }
+
+            CertPath certPath = certificateFactory.generateCertPath(certificatesWithoutRootCA);
+
+            PKIXParameters pkixParams =
+                    new PKIXParameters(
+                            Collections.singleton(
+                                    new TrustAnchor(certificateAuthority.getCA(), null)));
+            // Set OCSP revocation check to false since we use the internal CRL
+            pkixParams.setRevocationEnabled(false);
+            // Check that the certificates are valid at this time
+            pkixParams.setDate(new Date());
+            certPathValidator.validate(certPath, pkixParams);
+            // Check certificate revocation with the internal CRL
+            X509CRLHolder crl = certificateAuthority.getLatestCRL().get();
+            for (X509Certificate certificate : certificatesWithoutRootCA) {
+                if (crl.getRevokedCertificate(certificate.getSerialNumber()) != null) return null;
+            }
+            // Now that the certificate chain is valid, we can extract the user and device
+            X509Certificate clientCert = certificates[1];
+            X509Certificate deviceCert = certificates[0];
             String username = X509Utils.extractDNFromCertificate(clientCert).get("CN");
             // We need to extract the deviceId from the certificate
             User user = datastore.getUserDao().getByUsername(username).orElseThrow();
@@ -205,6 +245,16 @@ public class UserAuthenticationModule implements AuthenticationModule {
                     user, X509Utils.extractDNFromCertificate(deviceCert).get("UID"));
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public static boolean isSelfSigned(X509Certificate cert) {
+        try {
+            PublicKey key = cert.getPublicKey();
+            cert.verify(key);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -232,9 +282,11 @@ public class UserAuthenticationModule implements AuthenticationModule {
     @Override
     public boolean createUser(
             AuthenticationSourceType type, String realm, NameServer nameServer, User user) {
-        // This concept doesn't exist for LDAP or AD or any other hosted directory, in this case we
+        // This concept doesn't exist for LDAP or AD or any other hosted directory, in
+        // this case we
         // simply run
-        // very theoretically, we should allow LDAP to publish to the public registry, but this is a
+        // very theoretically, we should allow LDAP to publish to the public registry,
+        // but this is a
         // lot
         // more complex.
         return RegisterUserFlow.createUser(user, nameServer);

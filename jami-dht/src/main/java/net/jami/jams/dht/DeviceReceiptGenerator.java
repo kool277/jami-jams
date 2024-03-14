@@ -37,6 +37,7 @@ package net.jami.jams.dht;
 
 import lombok.extern.slf4j.Slf4j;
 
+import net.jami.jams.common.objects.devices.Device;
 import net.jami.jams.common.objects.user.User;
 
 import org.apache.commons.codec.binary.Base64;
@@ -164,6 +165,17 @@ public class DeviceReceiptGenerator {
                             .digest(user.getCertificate().getPublicKey().getEncoded()));
         } catch (Exception e) {
             log.error("Could not generate JamiId with error " + e);
+            return null;
+        }
+    }
+
+    public static String generateDeviceId(Device device) {
+        try {
+            return Hex.encodeHexString(
+                    MessageDigest.getInstance(MessageDigestAlgorithms.SHA_256)
+                            .digest(device.getCertificate().getPublicKey().getEncoded()));
+        } catch (Exception e) {
+            log.error("Could not generate deviceId with error " + e);
             return null;
         }
     }
