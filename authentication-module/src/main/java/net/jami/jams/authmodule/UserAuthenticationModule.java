@@ -154,7 +154,9 @@ public class UserAuthenticationModule implements AuthenticationModule {
         try {
             Class<?> cls = LibraryLoader.classLoader.loadClass(className);
             AuthenticationSource source =
-                    (AuthenticationSource) cls.getConstructor(String.class).newInstance(settings);
+                    (AuthenticationSource)
+                            cls.getConstructor(String.class, DataStore.class)
+                                    .newInstance(settings, UserAuthenticationModule.datastore);
             authenticationSources.put(
                     new AuthModuleKey(
                             source.getInfo().getRealm(),
@@ -271,7 +273,9 @@ public class UserAuthenticationModule implements AuthenticationModule {
             if (type.equals(AuthenticationSourceType.LDAP)) className = LDAP_CONNECTOR_CLASS;
             Class<?> cls = LibraryLoader.classLoader.loadClass(className);
             AuthenticationSource source =
-                    (AuthenticationSource) cls.getConstructor(String.class).newInstance(settings);
+                    (AuthenticationSource)
+                            cls.getConstructor(String.class, DataStore.class)
+                                    .newInstance(settings, UserAuthenticationModule.datastore);
             return source.test();
         } catch (Exception e) {
             log.error("The testing of the source was unsuccessful: " + e);

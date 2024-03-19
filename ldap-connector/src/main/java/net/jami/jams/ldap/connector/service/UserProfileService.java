@@ -16,13 +16,12 @@
  */
 package net.jami.jams.ldap.connector.service;
 
-import static net.jami.jams.server.Server.dataStore;
-
 import lombok.extern.slf4j.Slf4j;
 
 import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.ldap.connector.LDAPConnector;
+import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import org.ldaptive.Connection;
 import org.ldaptive.ConnectionFactory;
@@ -41,9 +40,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class UserProfileService {
+    private static DataStore dataStore;
     private final ConnectionFactory connectionFactory;
 
-    public UserProfileService(ConnectionFactory connectionFactory) {
+    public UserProfileService(DataStore dataStore, ConnectionFactory connectionFactory) {
+        UserProfileService.dataStore = dataStore;
         this.connectionFactory = connectionFactory;
     }
 
@@ -143,6 +144,25 @@ public class UserProfileService {
         } catch (Exception e) {
             log.error("An error occurred while trying to invoke methods: " + e);
             return null;
+        }
+    }
+
+    public void synchronizeUsersWithLDAP() {
+        log.info("Synchronizing LDAP user profiles");
+        // Fetcg all users from the LDAP
+        List<UserProfile> profilesFromLDAP =
+                getUserProfile("*", "LOGON_NAME", false, Optional.empty());
+        // There is a use case where a user is not in the LDAP directory but is in the database.
+        // When this happens, we need to revoke the user from the database.
+        List<UserProfile> profilesFromDatabase = dataStore.getUserProfileDao().getAllUserProfile();
+        for (UserProfile p : profilesFromDatabase) {
+            if (profilesFromLDAP.stream().noneMatch(r -> r.getUsername().equals(p.getUsername()))) {
+                log.info("Revoking user " + p.getUsername() + " from the database.");
+                RevokeUserFlow.revokeUser(p.getUsername());
+                // We also remove the user from the local_directory table to avoid duplicate
+                // revocations
+                dataStore.getUserProfileDao().deleteUserProfile(p.getUsername());
+            }
         }
     }
 }

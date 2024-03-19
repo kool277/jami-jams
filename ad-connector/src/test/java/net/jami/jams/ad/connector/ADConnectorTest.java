@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.gson.Gson;
 
+import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.activedirectory.ActiveDirectorySettings;
 import net.jami.jams.common.objects.user.UserProfile;
 
@@ -32,9 +33,10 @@ class ADConnectorTest {
     @BeforeEach
     void setUp() {
         Gson gson = new Gson();
+        DataStore dataStore = new DataStore("jdbc:derby:memory:testdb;create=true");
         ActiveDirectorySettings activeDirectorySettings = new ActiveDirectorySettings();
         String settings = gson.toJson(activeDirectorySettings);
-        adConnector = new ADConnector(settings);
+        adConnector = new ADConnector(settings, dataStore);
     }
 
     @Test

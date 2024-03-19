@@ -111,4 +111,11 @@ public class UserProfileDao extends AbstractDao<UserProfile> {
                         + " WHERE username = ?";
         return executeInsert(query, userProfile);
     }
+
+    public boolean deleteUserProfile(String username) {
+        String query = "DELETE FROM local_directory WHERE username = ?";
+        List<String> params = new ArrayList<>();
+        params.add(username);
+        return this.executeUpdate(query, params);
+    }
 }

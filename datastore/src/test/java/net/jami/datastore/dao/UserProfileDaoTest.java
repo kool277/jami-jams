@@ -91,4 +91,10 @@ class UserProfileDaoTest {
         userProfileDao.insertIfNotExists(userProfile);
         Assertions.assertTrue(userProfileDao.getByUsername("test").isPresent());
     }
+
+    @Test
+    void deleteUserProfile() throws Exception {
+        userProfileDao.storeObject(userProfile);
+        Assertions.assertTrue(userProfileDao.deleteUserProfile("test"));
+    }
 }

@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 
+import net.jami.datastore.main.DataStore;
 import net.jami.jams.common.authentication.AuthenticationSource;
 import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
@@ -37,6 +38,9 @@ import org.ldaptive.DefaultConnectionFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class LDAPConnector implements AuthenticationSource {
@@ -45,7 +49,7 @@ public class LDAPConnector implements AuthenticationSource {
     private final UserProfileService userProfileService;
     public static LDAPSettings settings;
 
-    public LDAPConnector(String strSettings) {
+    public LDAPConnector(String strSettings, DataStore dataStore) {
         Gson gson = GsonFactory.createGson();
         LDAPConnector.settings = gson.fromJson(strSettings, LDAPSettings.class);
         BindConnectionInitializer bindConnectionInitializer = new BindConnectionInitializer();
@@ -58,7 +62,16 @@ public class LDAPConnector implements AuthenticationSource {
                         .connectionInitializers(bindConnectionInitializer)
                         .build();
         authenticationService = new AuthenticationService(new DefaultConnectionFactory(connConfig));
-        userProfileService = new UserProfileService(new DefaultConnectionFactory(connConfig));
+        userProfileService =
+                new UserProfileService(dataStore, new DefaultConnectionFactory(connConfig));
+        // Configure scheduler to revoke users
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        Runnable synchronizationTask = userProfileService::synchronizeUsersWithLDAP;
+        long initialDelay = 1;
+        long period = 1;
+
+        // Schedule the task
+        scheduler.scheduleAtFixedRate(synchronizationTask, initialDelay, period, TimeUnit.MINUTES);
         log.info("Started LDAP Connector!");
     }
 

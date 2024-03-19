@@ -186,7 +186,7 @@ public class UserServlet extends HttpServlet {
                     });
         }
         if (devResponse.get() != null && devResponse.get().isSuccess()) {
-            resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
+            resp.getOutputStream().write(gson.toJson(devResponse.get()).getBytes());
             resp.flushBuffer();
         } else resp.sendError(500, "An exception has occurred while trying to revoke a user!");
     }

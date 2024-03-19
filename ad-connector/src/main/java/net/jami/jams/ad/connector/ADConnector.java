@@ -22,6 +22,7 @@ import com.imperva.ddc.core.query.Endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 
+import net.jami.datastore.main.DataStore;
 import net.jami.jams.ad.connector.service.AuthenticationService;
 import net.jami.jams.ad.connector.service.UserProfileService;
 import net.jami.jams.common.authentication.AuthenticationSource;
@@ -35,6 +36,9 @@ import net.jami.jams.common.serialization.adapters.GsonFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class ADConnector implements AuthenticationSource {
@@ -44,7 +48,7 @@ public class ADConnector implements AuthenticationSource {
     private final AuthenticationService authenticationService = new AuthenticationService();
     private final UserProfileService userProfileService;
 
-    public ADConnector(String settings) {
+    public ADConnector(String settings, DataStore dataStore) {
         Gson gson = GsonFactory.createGson();
         ADConnector.settings = gson.fromJson(settings, ActiveDirectorySettings.class);
         for (int i = 0; i < 10; i++) {
@@ -54,7 +58,15 @@ public class ADConnector implements AuthenticationSource {
             endpoint.setHost(ADConnector.settings.getHost());
             endpoints.add(endpoint);
         }
-        userProfileService = new UserProfileService();
+        userProfileService = new UserProfileService(dataStore);
+        // Configure scheduler to revoke users
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        Runnable synchronizationTask = userProfileService::synchronizeUsersWithAD;
+        long initialDelay = 1;
+        long period = 1;
+
+        // Schedule the task
+        scheduler.scheduleAtFixedRate(synchronizationTask, initialDelay, period, TimeUnit.MINUTES);
         log.info("Started Active Directory Connector!");
     }
 

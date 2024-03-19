@@ -27,6 +27,11 @@
             <groupId>org.zapodot</groupId>
             <artifactId>embedded-ldap-junit</artifactId>
             <version>${embedded.ldap.unit}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit-vintage.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

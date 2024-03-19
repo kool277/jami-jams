@@ -26,6 +26,8 @@ import net.jami.jams.common.objects.requests.RevocationType;
 import net.jami.jams.common.objects.responses.DeviceRevocationResponse;
 import net.jami.jams.common.objects.user.User;
 
+import java.math.BigInteger;
+
 @Slf4j
 public class RevokeUserFlow {
 
@@ -37,27 +39,28 @@ public class RevokeUserFlow {
                 log.error("Could not find user!");
                 return null;
             }
+            BigInteger serialNumber = user.getCertificate().getSerialNumber();
             RevocationRequest request = new RevocationRequest();
             request.setRevocationType(RevocationType.USER);
-            request.setIdentifier(user.getCertificate().getSerialNumber());
+            request.setIdentifier(serialNumber);
             certificateAuthority.revokeCertificate(request);
-            long statTime = System.currentTimeMillis();
-            while (certificateAuthority
-                            .getLatestCRL()
-                            .get()
-                            .getRevokedCertificate(user.getCertificate().getSerialNumber())
-                    == null) {
-                log.warn("Certificate has not yet appeared in CRL!");
-                if (System.currentTimeMillis() - statTime > 1000) {
-                    log.error(
-                            "The certificate has not appeared within 1 second, we are considering the operation has failed");
-                    response.setSuccess(false);
-                    return response;
-                }
+
+            // Wait for the CRL worker to complete certificate revocation
+            certificateAuthority.waitForRevokeCompletion();
+
+            // Check if the certificate has been revoked
+            if (certificateAuthority.getLatestCRL().get().getRevokedCertificate(serialNumber)
+                    != null) {
+                // Certificate successfully revoked
+                response.setSuccess(true);
+                return response;
+            } else {
+                // Certificate not yet revoked
+                log.error(
+                        "The certificate has not appeared in the CRL. Operation may have failed.");
+                response.setSuccess(false);
+                return response;
             }
-            // Finally we return the successful response
-            response.setSuccess(true);
-            return response;
         } catch (Exception e) {
             log.error(
                     "An exception has occurred while trying to revoke a device with error {}",

@@ -43,3 +43,15 @@ givenName: Adrien
 cn: Adrien Beraud
 sn: Beraud
 mail: adrien.beraud@savoirfairelinux.com
+
+dn: uid=plarose,ou=users,dc=savoirfairelinux,dc=net
+objectClass: posixAccount
+objectClass: inetorgperson
+objectClass: organizationalperson
+objectClass: top
+uid: plarose
+userPassword: password
+givenName: Philippe
+cn: Philippe Larose
+sn: Larose
+mail: philippe.larose@savoirfairelinux.com
