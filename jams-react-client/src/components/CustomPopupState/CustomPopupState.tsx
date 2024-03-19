@@ -5,7 +5,11 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-export default function CustomPopupState(props) {
+interface CustomPopupStateProps {
+  message: string;
+}
+
+export default function CustomPopupState(props: CustomPopupStateProps) {
   return (
     <IconButton size="large">
       <PopupState variant="popover" popupId="demo-popup-popover">

@@ -3,11 +3,14 @@ import { Autocomplete, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import i18next from "i18next";
+import { FieldInputProps, FormikProps } from "formik";
 
-function countryToFlag(isoCode) {
+function countryToFlag(isoCode: string) {
   return isoCode
     .toUpperCase()
-    .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397));
+    .replace(/./g, (char: string) =>
+      String.fromCodePoint(char.charCodeAt(0) + 127397)
+    );
 }
 
 const useStyles = makeStyles({
@@ -20,7 +23,15 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CountrySelect({ setFieldValue, handleBlur }) {
+interface CountrySelectProps {
+  setFieldValue: FormikProps<any>["setFieldValue"];
+  handleBlur: FieldInputProps<any>["onBlur"];
+}
+
+export default function CountrySelect({
+  setFieldValue,
+  handleBlur,
+}: CountrySelectProps) {
   const classes = useStyles();
 
   return (

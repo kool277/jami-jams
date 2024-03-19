@@ -14,6 +14,7 @@ import {
   Grid,
   Chip,
   LinearProgress,
+  Theme,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -47,7 +48,7 @@ import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react";
 import UserProfileFieldsList from "./UserProfileFieldsList";
 import AdminAddUserToGroup from "./AdminAddUserToGroup";
 
-const styles = (theme) => ({
+const styles = (theme: Theme) => ({
   ...dashboardStyle,
   root: {
     flexGrow: 1,
@@ -184,7 +185,7 @@ export interface UserProfile {
   phoneNumberExtension: string;
   faxNumber: string;
   mobileNumber: string;
-  jamiId?: string;
+  id: string;
 }
 
 export interface GroupMembership {
@@ -220,6 +221,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
     phoneNumberExtension: "",
     faxNumber: "",
     mobileNumber: "",
+    id: "",
   });
   const [groupMemberships, setGroupMemberships] = useState<GroupMembership[]>(
     []

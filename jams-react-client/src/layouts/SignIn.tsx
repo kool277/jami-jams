@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
 import Container from "@mui/material/Container";
-import MuiAlert from "@mui/material/Alert";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import auth from "../auth";
 
 import LanguagePicker from "../components/LanguagePicker/LanguagePicker";
@@ -19,7 +19,7 @@ import i18next from "i18next";
 import logo from "assets/img/jams_logo_no_gnu_package.svg";
 import * as Yup from "yup";
 import { Theme } from "@mui/material";
-function Alert(props) {
+function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
@@ -61,7 +61,11 @@ export default function SignIn() {
    * Formik Validation Fields
    */
 
-  const initialValues = { username: "", password: "" };
+  interface SignInFormValues {
+    username: string;
+    password: string;
+  }
+  const initialValues: SignInFormValues = { username: "", password: "" };
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required("Username is required."),
@@ -84,7 +88,7 @@ export default function SignIn() {
     }
   });
 
-  function handleSubmit(values) {
+  function handleSubmit(values: SignInFormValues) {
     const jsonData = {
       username: values.username,
       password: values.password,

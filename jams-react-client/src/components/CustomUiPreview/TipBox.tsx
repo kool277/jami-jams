@@ -8,7 +8,8 @@ const styles = {
   root: {
     maxWidth: "115px",
     flexBasis: "100%",
-    backgroundColor: (props) => props.color,
+    backgroundColor: (props: { color: string; fontColor: string }) =>
+      props.color,
     padding: "0px 5px 5px 5px",
     borderRadius: "3px",
   },
@@ -19,12 +20,12 @@ const styles = {
     verticalAlign: "middle",
     fontSize: "8px",
     marginLeft: "0.5rem",
-    color: (props) => props.fontColor,
+    color: (props: { color: string; fontColor: string }) => props.fontColor,
   },
   text: {
     fontSize: "6px",
     margin: 0,
-    color: (props) => props.fontColor,
+    color: (props: { color: string; fontColor: string }) => props.fontColor,
   },
 };
 

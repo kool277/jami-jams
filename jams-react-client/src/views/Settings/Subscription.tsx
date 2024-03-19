@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@mui/material/Button";
@@ -39,7 +39,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function Subscription(props) {
+interface SubscriptionProps {
+  setError: Dispatch<SetStateAction<boolean>>;
+  setErrorMessage: Dispatch<SetStateAction<string>>;
+  setSeverity: Dispatch<SetStateAction<string>>;
+}
+
+export default function Subscription(props: SubscriptionProps) {
   const classes = useStyles();
   const [activated, setActivated] = useState(false);
 
@@ -90,7 +96,7 @@ export default function Subscription(props) {
     },
   });
 
-  function handleSubmit(values) {
+  function handleSubmit(values: { subscriptionCode: string }) {
     //e.preventDefault();
     const jsonData = {
       base64License: values.subscriptionCode,
@@ -164,7 +170,6 @@ export default function Subscription(props) {
                           "Subscription Code"
                         ) as string
                       }
-                      name="subscriptionCode"
                       autoComplete="subscriptionCode"
                       autoFocus
                       {...formik.getFieldProps("subscriptionCode")}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
@@ -49,6 +49,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import i18next from "i18next";
 import { Contact } from "../../types/Contact";
+import { UserProfile } from "views/UserProfile/DisplayUserProfile";
 
 const styles = {
   ...headerLinksStyle,
@@ -84,17 +85,22 @@ const styles = {
 
 const useStyles = makeStyles(styles as any);
 
-export default function Users(props) {
+interface UsersProps {
+  username: string;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function Users(props: UsersProps) {
   const classes = useStyles();
   const history = useHistory();
-  const [contacts, setContacts] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [searchValue, setSearchValue] = useState(null);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [removedContact, setRemovedContact] = useState("");
-  const [removedContactName, setRemovedContactName] = useState();
+  const [removedContactName, setRemovedContactName] = useState<string>();
   const [open, setOpen] = useState(false);
   const [allowedToAdd, setAllowedToAdd] = useState(true);
 
@@ -108,9 +114,9 @@ export default function Users(props) {
       )
     )
       .then((response) => {
-        const profiles = [];
+        const profiles: UserProfile[] = [];
         const profilesResults = response.data.profiles;
-        profilesResults.forEach((profile) => {
+        profilesResults.forEach((profile: UserProfile) => {
           if (profile.username !== props.username) {
             let existingContact = false;
             contacts.forEach((contact) => {
@@ -157,7 +163,7 @@ export default function Users(props) {
           at the moment the admin sees his contacts in each user profile he visits
         */
         const originalContacts = response.data.filter(
-          (contact) => contact.added > contact.removed
+          (contact: Contact) => contact.added > contact.removed
         );
         for (const contact of originalContacts) {
           contact.display = "";
@@ -196,11 +202,12 @@ export default function Users(props) {
       });
   };
 
-  const addContactToUser = (value) => {
+  const addContactToUser = (contact: Contact) => {
+    console.log(contact);
     const data = {
       owner: props.username,
-      uri: value.id,
-      displayName: `${value.firstName} ${value.lastName}`,
+      uri: contact.uri,
+      displayName: `${contact.firstName} ${contact.lastName}`,
       timestamp: "",
       status: "",
       banned: false,
@@ -296,7 +303,7 @@ export default function Users(props) {
     }
   };
 
-  const handleRemoveContact = (uri, name) => {
+  const handleRemoveContact = (uri: string, name: string) => {
     setRemovedContact(uri);
     setRemovedContactName(name);
     setOpen(true);
@@ -380,7 +387,8 @@ export default function Users(props) {
                     "Search contacts"
                   ) as string,
                 },
-                onKeyUp: (e) => setSearchValue(e.target.value),
+                onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) =>
+                  setSearchValue((e.target as HTMLInputElement).value),
               }}
             />
             <Search />
@@ -393,7 +401,7 @@ export default function Users(props) {
         </GridItem>
         {contacts
           .filter((data: Contact) => {
-            if (searchValue === null) return data;
+            if (searchValue.length === 0) return data;
             else {
               if (
                 typeof data.username !== "undefined" &&

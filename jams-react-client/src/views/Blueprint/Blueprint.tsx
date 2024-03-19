@@ -53,7 +53,7 @@ interface BlueprintProps {
 export const Blueprint: FC<BlueprintProps> = ({ blueprintName }) => {
   const [openedTab, setOpenedTab] = useState(0);
 
-  const handleChange = (event, newValue: number) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setOpenedTab(newValue);
   };
 

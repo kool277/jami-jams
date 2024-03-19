@@ -1,3 +1,4 @@
+import React from "react";
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
@@ -10,7 +11,16 @@ import styles from "assets/jss/material-dashboard-react/components/cardStyle";
 
 const useStyles = makeStyles(styles as any);
 
-export default function Card(props) {
+interface CardProps {
+  className?: string;
+  children?: React.ReactNode;
+  plain?: boolean;
+  profile?: boolean;
+  chart?: boolean;
+  [key: string]: any;
+}
+
+export default function Card(props: CardProps) {
   const classes = useStyles();
   const { className, children, plain, profile, chart, ...rest } = props;
   const cardClasses = classNames({
@@ -18,7 +28,7 @@ export default function Card(props) {
     [classes.cardPlain]: plain,
     [classes.cardProfile]: profile,
     [classes.cardChart]: chart,
-    [className]: className !== undefined,
+    ...(className ? { [className]: true } : {}),
   });
   return (
     <div className={cardClasses} {...rest}>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Formik } from "formik";
 import FormikField from "components/FormikField/FormikField";
 import * as Yup from "yup";
@@ -55,14 +55,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function General(props) {
+interface GeneralProps {
+  username: string;
+  setError: Dispatch<SetStateAction<boolean>>;
+  setErrorMessage: Dispatch<SetStateAction<string>>;
+  setSeverity: Dispatch<SetStateAction<string>>;
+}
+
+export default function General(props: GeneralProps) {
   const classes = useStyles();
 
   const [copied, setCopied] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const changePassword = (values) => {
+  const changePassword = (values: { password: string }) => {
     const data = {
       username: props.username,
       password: values.password,

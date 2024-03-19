@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 // @mui/material components
@@ -75,8 +75,10 @@ import i18next from "i18next";
 
 import generator from "generate-password-browser";
 import { UserProfile } from "./DisplayUserProfile";
+import { Theme } from "@mui/material";
+import { Area } from "react-easy-crop/types";
 
-const styles = (theme) => ({
+const styles = (theme: Theme) => ({
   ...dashboardStyle,
   root: {
     flexGrow: 1,
@@ -224,6 +226,12 @@ interface UserProfileForm extends UserProfile {
   confirmPassword?: string;
 }
 
+interface EditCreateUserProfileProps {
+  createUser: boolean;
+  username?: string;
+  setDisplayUser?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 const toBase64 = (file: File): Promise<string | undefined> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -232,7 +240,9 @@ const toBase64 = (file: File): Promise<string | undefined> =>
     reader.onerror = reject;
   });
 
-export default function EditCreateUserProfile(props) {
+export default function EditCreateUserProfile(
+  props: EditCreateUserProfileProps
+) {
   const classes = useStyles();
   const history = useHistory();
   const [copied, setCopied] = useState(false);
@@ -277,7 +287,7 @@ export default function EditCreateUserProfile(props) {
     phoneNumber: "",
     phoneNumberExtension: "",
     mobileNumber: "",
-    jamiId: "",
+    id: "",
   });
 
   useEffect(() => {
@@ -292,7 +302,7 @@ export default function EditCreateUserProfile(props) {
           return Math.min(oldProgress + diff, 100);
         });
       }, 500);
-      setUserName(props.username);
+      setUserName(props.username || "");
       axios(
         configApiCall(
           api_path_get_user_profile + props.username,
@@ -302,8 +312,8 @@ export default function EditCreateUserProfile(props) {
         )
       )
         .then((response) => {
-          const user = response.data;
-          const values = {
+          const user: UserProfile = response.data;
+          const values: UserProfileForm = {
             username: user.username,
             firstName: user.firstName,
             lastName: user.lastName,
@@ -314,6 +324,7 @@ export default function EditCreateUserProfile(props) {
             phoneNumber: user.phoneNumber,
             phoneNumberExtension: user.phoneNumberExtension,
             mobileNumber: user.mobileNumber,
+            id: user.id,
           };
           setInitialValues(values);
           setProfilePicture(user.profilePicture);
@@ -379,10 +390,12 @@ export default function EditCreateUserProfile(props) {
   };
 
   const handleCancelUpdate = () => {
-    props.setDisplayUser(true);
+    if (props.setDisplayUser) {
+      props.setDisplayUser(true);
+    }
   };
 
-  const handleUserProfileCreation = (data) => {
+  const handleUserProfileCreation = (data: UserProfileForm) => {
     axios(configApiCall(api_path_post_create_user_profile, "POST", data, null))
       .then(() => {
         history.push(`/user/${data.username}`);
@@ -392,7 +405,7 @@ export default function EditCreateUserProfile(props) {
       });
   };
 
-  const handleCreateUser = (data) => {
+  const handleCreateUser = (data: UserProfileForm) => {
     data.username = data.username.toLowerCase();
     const body = {
       username: data.username,
@@ -411,10 +424,12 @@ export default function EditCreateUserProfile(props) {
   };
 
   const handleUserUpdate = () => {
-    props.setDisplayUser(true);
+    if (props.setDisplayUser) {
+      props.setDisplayUser(true);
+    }
   };
 
-  const handleUpdateUser = (data) => {
+  const handleUpdateUser = (data: UserProfileForm) => {
     axios(configApiCall(api_path_put_update_user_profile, "PUT", data, null))
       .then(() => {
         handleUserUpdate();
@@ -424,7 +439,7 @@ export default function EditCreateUserProfile(props) {
       });
   };
 
-  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+  const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
     getCroppedImg(originalUploadedImage, croppedAreaPixels, rotation).then(
       (value) => {
         setProfilePicturePreview(value);
@@ -444,7 +459,7 @@ export default function EditCreateUserProfile(props) {
     setOpen(false);
   };
 
-  const handleFormikSubmit = (values) => {
+  const handleFormikSubmit = (values: UserProfileForm) => {
     values.profilePicture = profilePicture;
     if (props.createUser) {
       handleCreateUser(values);
@@ -460,7 +475,7 @@ export default function EditCreateUserProfile(props) {
     setPasswordVisible(false);
   };
 
-  const checkUserExists = async (value) => {
+  const checkUserExists = async (value: string) => {
     const data = {
       username: value,
     };
@@ -511,13 +526,13 @@ export default function EditCreateUserProfile(props) {
       ? Yup.string().required(
           i18next.t("password_is_required", "Password is required!") as string
         )
-      : null,
+      : Yup.string().nullable(),
     confirmPassword: props.createUser
       ? Yup.string().oneOf(
-          [Yup.ref("password"), null],
+          [Yup.ref("password"), undefined],
           i18next.t("password_must_match", "Passwords must match") as string
         )
-      : null,
+      : Yup.string().nullable(),
     firstName: Yup.string().min(
       2,
       i18next.t("first_name_is_too_short", "First name is too short!") as string
@@ -677,7 +692,7 @@ export default function EditCreateUserProfile(props) {
                             const pictureChange = document.getElementById(
                               "change-profile-picture"
                             );
-                            pictureChange.click();
+                            pictureChange?.click();
                           }}
                         />
                       </CardAvatar>
@@ -730,7 +745,8 @@ export default function EditCreateUserProfile(props) {
                                   </InputAdornment>
                                 }
                                 endAdornment={
-                                  values.username === "" ? null : userExists ? (
+                                  values.username ===
+                                  "" ? undefined : userExists ? (
                                     <CancelIcon style={{ color: "#cc0000" }} />
                                   ) : (
                                     <CheckCircleIcon
@@ -860,28 +876,30 @@ export default function EditCreateUserProfile(props) {
                               >
                                 {i18next.t("generate", "Generate") as string}
                               </Button>
-                              <CopyToClipboard
-                                text={values.password}
-                                onCopy={() => {
-                                  setCopied(true);
-                                  setGenerated(false);
-                                }}
-                              >
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  size="large"
-                                  className={classes.button}
-                                  startIcon={<FileCopyIcon />}
+                              {values.password && (
+                                <CopyToClipboard
+                                  text={values.password}
+                                  onCopy={() => {
+                                    setCopied(true);
+                                    setGenerated(false);
+                                  }}
                                 >
-                                  {
-                                    i18next.t(
-                                      "copy_to_clipboard",
-                                      "Copy to clipboard"
-                                    ) as string
-                                  }
-                                </Button>
-                              </CopyToClipboard>
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    className={classes.button}
+                                    startIcon={<FileCopyIcon />}
+                                  >
+                                    {
+                                      i18next.t(
+                                        "copy_to_clipboard",
+                                        "Copy to clipboard"
+                                      ) as string
+                                    }
+                                  </Button>
+                                </CopyToClipboard>
+                              )}
                               {copied ? (
                                 <span style={{ marginLeft: "10px" }}>
                                   {i18next.t("copied", "Copied") as string}

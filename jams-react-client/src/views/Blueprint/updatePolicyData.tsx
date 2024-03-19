@@ -9,9 +9,9 @@ import { Dispatch, SetStateAction } from "react";
 import { SnackbarProps } from "./PolicyDataContext";
 import { ServerUiCustomization } from "./ServerUiCustomization";
 
-const updatePerms = (data, field: string, value: any) => {
+const updatePerms = (data: PolicyData, field: string, value: boolean) => {
   data.defaultModerators = data.blueprintModerators
-    .map((moderator) => moderator.id)
+    ?.map((moderator) => moderator.id)
     .join("/");
   delete data.blueprintModerators;
 
@@ -23,7 +23,7 @@ const updatePerms = (data, field: string, value: any) => {
   return data;
 };
 
-const updateConfig = (data) => {
+const updateConfig = (data: PolicyData) => {
   const { selectedTurnOption, selectedDHTProxyOption } = data;
   // if undefined, it means we want the default values
   if (selectedTurnOption !== "customTurn") {
@@ -65,9 +65,9 @@ const convertRgbaToArgb = (rgba: string) => {
   return "#" + rgba.substring(7, 9) + rgba.substring(1, 7);
 };
 
-const updateUiCustomization = (data) => {
+const updateUiCustomization = (data: PolicyData) => {
   if (data.uiCustomization.isCustomizationEnabled === false) {
-    return data;
+    return;
   }
 
   const {
@@ -89,21 +89,26 @@ const updateUiCustomization = (data) => {
     logoUrl,
     logoSize,
   } = data.uiCustomization;
-  const ui: Partial<ServerUiCustomization> = {};
 
-  if (hasTitle === false) {
-    ui.title = "";
-  } else if (title !== "") {
-    ui.title = title;
-  }
-
-  if (hasDescription === false) {
-    ui.description = "";
-  } else if (description !== "") {
-    ui.description = description;
-  }
-
-  ui.areTipsEnabled = hasTips;
+  const ui: ServerUiCustomization = {
+    title: hasTitle ? title : "",
+    description: hasDescription ? description : "",
+    areTipsEnabled: hasTips,
+    backgroundType: "default",
+    tipBoxAndIdColor:
+      tipBoxAndIdColor !== DEFAULT_UI_CUSTOMIZATION.tipBoxAndIdColor
+        ? convertRgbaToArgb(tipBoxAndIdColor)
+        : undefined,
+    mainBoxColor:
+      hasMainBoxColor && mainBoxColor
+        ? convertRgbaToArgb(mainBoxColor)
+        : undefined,
+    logoUrl: hasLogo ? logoUrl : "",
+    logoSize:
+      logoSize !== DEFAULT_UI_CUSTOMIZATION.logoSize
+        ? logoSize
+        : DEFAULT_UI_CUSTOMIZATION.logoSize,
+  };
 
   if (hasBackground === false) {
     ui.backgroundType = "default";
@@ -113,29 +118,11 @@ const updateUiCustomization = (data) => {
   } else if (backgroundColor !== "") {
     ui.backgroundType = "color";
     ui.backgroundColorOrUrl = backgroundColor || "#ffffff";
-  } else {
-    ui.backgroundType = "default";
-  }
-
-  if (tipBoxAndIdColor !== DEFAULT_UI_CUSTOMIZATION.tipBoxAndIdColor) {
-    ui.tipBoxAndIdColor = convertRgbaToArgb(tipBoxAndIdColor);
-  }
-  if (hasMainBoxColor === true && mainBoxColor) {
-    ui.mainBoxColor = convertRgbaToArgb(mainBoxColor);
-  }
-
-  if (hasLogo === false) {
-    ui.logoUrl = "";
-  } else if (logoUrl !== "") {
-    ui.logoUrl = logoUrl;
-  }
-  if (logoSize !== DEFAULT_UI_CUSTOMIZATION.logoSize) {
-    ui.logoSize = logoSize;
   }
 
   console.log("updateUiCustomization", ui);
-  data.uiCustomization = JSON.stringify(ui);
-  return data;
+
+  return ui;
 };
 
 const sendPutRequest = (
@@ -194,11 +181,11 @@ export const _updatePolicyData = (
   let data: any = { ...policyData, [field]: value };
   data = updatePerms(data, field, value);
   data = updateConfig(data);
-  data = updateUiCustomization(data);
 
-  const ui: ServerUiCustomization = data;
+  const ui: ServerUiCustomization | undefined = updateUiCustomization(data);
 
   console.log("updatePolicyData", { field, value });
-
-  debouncedSendPutRequest(blueprintName, ui, setSnackbar);
+  if (ui !== undefined) {
+    debouncedSendPutRequest(blueprintName, ui, setSnackbar);
+  }
 };

@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-// @mui/material components
 import { makeStyles } from "@mui/styles";
 import Grid, { GridProps } from "@mui/material/Grid";
 import { FC, ReactNode } from "react";

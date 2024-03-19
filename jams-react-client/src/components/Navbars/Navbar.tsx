@@ -12,17 +12,21 @@ import Menu from "@mui/icons-material/Menu";
 import Button from "components/CustomButtons/Button";
 
 import styles from "assets/jss/material-dashboard-react/components/headerStyle";
+import { Route } from "layouts/BaseLayout";
 
 const useStyles = makeStyles(styles as any);
 
-export default function Header(props) {
+interface HeaderProps {
+  // color: "primary" | "info" | "success" | "warning" | "danger";
+  // rtlActive: boolean;
+  handleDrawerToggle: () => void;
+  routes: Route[];
+}
+
+export default function Header(props: HeaderProps) {
   const classes = useStyles();
-  const { color } = props;
-  const appBarClasses = classNames({
-    [" " + classes[color]]: color,
-  });
   return (
-    <AppBar className={classes.appBar + appBarClasses}>
+    <AppBar className={classes.appBar}>
       <Toolbar className={classes.container}>
         <div className={classes.flex}>
           <Button color="info" className={classes.title}></Button>

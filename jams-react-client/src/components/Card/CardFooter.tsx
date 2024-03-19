@@ -1,3 +1,4 @@
+import React from "react";
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
@@ -10,7 +11,16 @@ import styles from "assets/jss/material-dashboard-react/components/cardFooterSty
 
 const useStyles = makeStyles(styles as any);
 
-export default function CardFooter(props) {
+interface CardFooterProps {
+  className?: string;
+  plain?: boolean;
+  profile?: boolean;
+  stats?: boolean;
+  chart?: boolean;
+  children: React.ReactNode;
+}
+
+export default function CardFooter(props: CardFooterProps) {
   const classes = useStyles();
   const { className, children, plain, profile, stats, chart, ...rest } = props;
   const cardFooterClasses = classNames({
@@ -19,7 +29,7 @@ export default function CardFooter(props) {
     [classes.cardFooterProfile]: profile,
     [classes.cardFooterStats]: stats,
     [classes.cardFooterChart]: chart,
-    [className]: className !== undefined,
+    ...(className ? { [className]: true } : {}),
   });
   return (
     <div className={cardFooterClasses} {...rest}>

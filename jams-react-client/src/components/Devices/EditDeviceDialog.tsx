@@ -6,9 +6,9 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldProps } from "formik";
 import i18next from "i18next";
-import { Dispatch, FC, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, FC, SetStateAction } from "react";
 import * as Yup from "yup";
 import { Device } from "./Devices";
 
@@ -47,7 +47,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
       </DialogTitle>
       <Formik
         initialValues={{
-          displayName: selectedDevice.displayName,
+          displayName: selectedDevice?.displayName,
         }}
         onSubmit={handleUpdate}
         validationSchema={validationSchema}
@@ -56,16 +56,22 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
           <Form>
             <DialogContent>
               <Field name="displayName">
-                {({ field }) => (
-                  <div onChange={(event) => setDisplayName(event.target.value)}>
+                {({ field }: FieldProps) => (
+                  <div
+                    onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                      setDisplayName(event.target.value)
+                    }
+                  >
                     <TextField
                       autoFocus
                       margin="dense"
                       id="name"
-                      label={i18next.t(
-                        "device_display_name",
-                        "Device Display Name"
-                      )}
+                      label={
+                        i18next.t(
+                          "device_display_name",
+                          "Device Display Name"
+                        ) as string
+                      }
                       fullWidth
                       helperText={
                         errors.displayName &&
@@ -73,6 +79,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
                         errors.displayName
                       }
                       {...field}
+                      onChange={(e) => setDisplayName(e.target.value)}
                     />
                   </div>
                 )}

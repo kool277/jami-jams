@@ -1,3 +1,26 @@
+import { UserProfile } from "views/UserProfile/DisplayUserProfile";
+
+export interface UiCustomization {
+  isCustomizationEnabled: boolean;
+  hasTitle: boolean;
+  title: string;
+  hasDescription: boolean;
+  description: string;
+  hasTips: boolean;
+
+  hasBackground: boolean;
+  backgroundColor: string;
+  backgroundUrl: string;
+
+  tipBoxAndIdColor: string;
+  hasMainBoxColor: boolean;
+  mainBoxColor: string;
+
+  hasLogo: boolean;
+  logoUrl: string;
+  logoSize: number;
+}
+
 export const DEFAULT_UI_CUSTOMIZATION = {
   isCustomizationEnabled: false,
   hasTitle: true,
@@ -19,18 +42,50 @@ export const DEFAULT_UI_CUSTOMIZATION = {
   logoSize: 100,
 };
 
-const DEFAULT_POLICY_DATA_PERMISSIONS = {
+export interface PolicyDataPermissions {
+  videoEnabled: boolean;
+  publicInCalls: boolean;
+  autoAnswer: boolean;
+  peerDiscovery: boolean;
+  accountDiscovery: boolean;
+  accountPublish: boolean;
+  allowLookup: boolean;
+
+  rendezVous: boolean;
+  blueprintModerators?: UserProfile[];
+}
+
+const DEFAULT_POLICY_DATA_PERMISSIONS: PolicyDataPermissions = {
   videoEnabled: true,
   publicInCalls: false,
   autoAnswer: false,
   peerDiscovery: true,
+  accountPublish: true,
+  accountDiscovery: true,
   allowLookup: true,
 
   rendezVous: false,
   blueprintModerators: [],
 };
 
-const DEFAULT_POLICY_DATA_CONFIGURATION = {
+export interface PolicyDataNetwork {
+  upnpEnabled: boolean;
+  selectedTurnOption?: "defaultTurn" | "customTurn" | "disabledTurn";
+  turnEnabled?: boolean;
+  turnServer?: string;
+  turnServerUserName?: string;
+  turnServerPassword?: string;
+  proxyEnabled?: boolean;
+  selectedDHTProxyOption?:
+    | "defaultDHTProxy"
+    | "customDHTProxy"
+    | "disabledDHTProxy";
+  proxyServer?: string;
+  dhtProxyListUrl?: string;
+  defaultModerators?: string;
+}
+
+const DEFAULT_POLICY_DATA_CONFIGURATION: PolicyDataNetwork = {
   upnpEnabled: true,
 
   selectedTurnOption: "defaultTurn",
@@ -49,9 +104,6 @@ export const DEFAULT_POLICY_DATA = {
   uiCustomization: DEFAULT_UI_CUSTOMIZATION,
 };
 
-export type UiCustomization = typeof DEFAULT_UI_CUSTOMIZATION;
-export type PolicyDataPermissions = typeof DEFAULT_POLICY_DATA_PERMISSIONS;
-export type PolicyDataNetwork = typeof DEFAULT_POLICY_DATA_CONFIGURATION;
 export interface PolicyData extends PolicyDataPermissions, PolicyDataNetwork {
   uiCustomization: UiCustomization;
 }

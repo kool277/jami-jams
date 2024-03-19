@@ -1,3 +1,4 @@
+import React from "react";
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
@@ -10,13 +11,19 @@ import styles from "assets/jss/material-dashboard-react/components/cardIconStyle
 
 const useStyles = makeStyles(styles as any);
 
-export default function CardIcon(props) {
+interface CardIconProps {
+  className?: string;
+  color?: "warning" | "success" | "danger" | "info" | "primary" | "rose";
+  children: React.ReactNode;
+}
+
+export default function CardIcon(props: CardIconProps) {
   const classes = useStyles();
   const { className, children, color, ...rest } = props;
   const cardIconClasses = classNames({
     [classes.cardIcon]: true,
     [classes[color + "CardHeader"]]: color,
-    [className]: className !== undefined,
+    ...(className ? { [className]: true } : {}),
   });
   return (
     <div className={cardIconClasses} {...rest}>

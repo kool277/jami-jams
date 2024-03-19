@@ -10,4 +10,5 @@ export interface Contact {
   removed: number;
   uri: string;
   username: string;
+  conversationId: string;
 }

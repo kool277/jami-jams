@@ -1,3 +1,4 @@
+import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 // @mui/material components
@@ -13,7 +14,26 @@ import styles from "assets/jss/material-dashboard-react/components/customInputSt
 
 const useStyles = makeStyles(styles as any);
 
-export default function CustomInput(props) {
+interface CustomInputProps {
+  labelText?: React.ReactNode;
+  labelProps?: object;
+  id?: string;
+  formControlProps?: {
+    className?: string;
+  };
+  inputProps?: {
+    placeholder?: string;
+    inputProps?: {
+      "aria-label": string;
+    };
+    onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    inputMarginClass?: string;
+  };
+  error?: boolean;
+  success?: boolean;
+}
+
+export default function CustomInput(props: CustomInputProps) {
   const classes = useStyles();
   const {
     formControlProps,
@@ -40,7 +60,7 @@ export default function CustomInput(props) {
   return (
     <FormControl
       {...formControlProps}
-      className={formControlProps.className + " " + classes.formControl}
+      className={formControlProps?.className + " " + classes.formControl}
     >
       {labelText !== undefined ? (
         <InputLabel
@@ -53,7 +73,7 @@ export default function CustomInput(props) {
       ) : null}
       <Input
         classes={{
-          root: marginTop + " " + inputProps.inputMarginClass,
+          root: marginTop + " " + inputProps?.inputMarginClass,
           disabled: classes.disabled,
           underline: underlineClasses,
         }}

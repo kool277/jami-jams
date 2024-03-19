@@ -1,3 +1,4 @@
+import React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
@@ -6,7 +7,12 @@ import CustomPopupState from "../CustomPopupState/CustomPopupState";
 
 import i18next from "i18next";
 
-export default function LocalStorageForm(props) {
+interface LocalStorageFormProps {
+  nameServerChecked: boolean;
+  handleNameServerChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default function LocalStorageForm(props: LocalStorageFormProps) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>

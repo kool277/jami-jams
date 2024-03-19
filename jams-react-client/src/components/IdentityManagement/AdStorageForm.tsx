@@ -1,3 +1,4 @@
+import React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -8,7 +9,20 @@ import RadioGroup from "@mui/material/RadioGroup";
 
 import i18next from "i18next";
 
-export default function AdStorageForm(props) {
+import { ADFormValues } from "./IdentityManagement";
+import { FormikErrors, FormikTouched } from "formik";
+
+interface AdStorageFormProps {
+  isSSL: string;
+  handleIsSSLChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  values: ADFormValues;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  touched: FormikTouched<ADFormValues>;
+  errors: FormikErrors<ADFormValues>;
+}
+
+export default function AdStorageForm(props: AdStorageFormProps) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>

@@ -37,7 +37,7 @@ interface CustomImgDropZoneProps {
   accept?: Accept;
   maxFiles?: number;
   label: string;
-  file: string;
+  file: string | undefined;
   handleDelete: MouseEventHandler<HTMLButtonElement>;
 }
 

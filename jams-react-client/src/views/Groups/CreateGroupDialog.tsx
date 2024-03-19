@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Dialog,
@@ -8,6 +8,7 @@ import {
   InputAdornment,
   DialogActions,
   TextField,
+  ClassNameMap,
 } from "@mui/material";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import axios from "axios";
@@ -24,8 +25,9 @@ import { getBlueprintsOptions } from "./getBlueprintsOptions";
 import auth from "auth";
 import * as tool from "../../tools";
 import Button from "components/CustomButtons/Button";
+import { Group } from "./Groups";
 
-const getHelperText = (disableCreate, groupName) => {
+const getHelperText = (disableCreate: boolean, groupName: string) => {
   if (disableCreate && groupName.length > 0) {
     return i18next.t(
       "group_name_already_exists",
@@ -43,6 +45,10 @@ export default function CreateGroupDialog({
   openCreate,
   setOpenCreate,
   classes,
+}: {
+  openCreate: boolean;
+  setOpenCreate: (value: boolean) => void;
+  classes: ClassNameMap<string>;
 }) {
   const history = useHistory();
 
@@ -58,7 +64,7 @@ export default function CreateGroupDialog({
 
   const helperText = getHelperText(disableCreate, groupName);
 
-  const handleCheckGroupNameExists = (searchGroupNameValue) => {
+  const handleCheckGroupNameExists = (searchGroupNameValue: string) => {
     setDisableCreate(true);
     axios(
       configApiCall(
@@ -72,7 +78,7 @@ export default function CreateGroupDialog({
         const allGroups = response.data;
         setDisableCreate(false);
         setGroupNameExits(false);
-        allGroups.forEach((group) => {
+        allGroups.forEach((group: Group) => {
           if (searchGroupNameValue === group.name) {
             setDisableCreate(true);
             setGroupNameExits(true);
@@ -126,8 +132,10 @@ export default function CreateGroupDialog({
     getBlueprintsOptions(blueprints)
   );
 
-  const handleBlueprintsChange = (e) => {
-    setSelectedBlueprint(getBlueprintsOptions(blueprints)[e.target.value]);
+  const handleBlueprintsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setSelectedBlueprint(
+      getBlueprintsOptions(blueprints)[parseInt(e.target.value)]
+    );
   };
 
   const getBlueprints = () => {

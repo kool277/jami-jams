@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import clsx from "clsx";
 
 // @mui/material components
@@ -20,7 +20,7 @@ import FormLabel from "@mui/material/FormLabel";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 
-import Radio from "@mui/material/Radio";
+import Radio, { RadioProps } from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Switch from "@mui/material/Switch";
 
@@ -142,7 +142,7 @@ const styles = () => ({
 const useStyles = makeStyles(styles as any);
 
 // Inspired by blueprintjs
-const StyledRadio = (props) => {
+const StyledRadio = (props: RadioProps) => {
   const classes = useStyles();
 
   return (
@@ -157,7 +157,13 @@ const StyledRadio = (props) => {
   );
 };
 
-export default function EditBlueprintConfiguration(props) {
+interface EditBlueprintConfigurationProps {
+  blueprintName: string;
+}
+
+export default function EditBlueprintConfiguration(
+  props: EditBlueprintConfigurationProps
+) {
   const classes = useStyles();
   const { policyData, updatePolicyData, snackbar, setSnackbar } =
     useContext(PolicyDataContext);
@@ -176,11 +182,15 @@ export default function EditBlueprintConfiguration(props) {
 
   const [turnPasswordVisible, setTurnPasswordVisible] = useState(false);
 
-  const handleTurnChangedOption = (event) => {
+  const handleTurnChangedOption = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     updatePolicyData("selectedTurnOption", event.target.value);
   };
 
-  const handleDHTProxyChangedOption = (event) => {
+  const handleDHTProxyChangedOption = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     updatePolicyData("selectedDHTProxyOption", event.target.value);
   };
 

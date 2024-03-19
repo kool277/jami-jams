@@ -42,6 +42,7 @@ import configApiCall from "../../api";
 import { api_path_get_user_directory_search } from "../../globalUrls";
 
 import { PolicyDataContext } from "./PolicyDataContext";
+import { UserProfile } from "views/UserProfile/DisplayUserProfile";
 
 const styles = {
   ...dashboardStyle,
@@ -100,7 +101,13 @@ const styles = {
 
 const useStyles = makeStyles(styles as any);
 
-export default function EditBlueprintPermissions(props) {
+interface EditBlueprintPermissionsProps {
+  blueprintName: string;
+}
+
+export default function EditBlueprintPermissions(
+  props: EditBlueprintPermissionsProps
+) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -108,7 +115,7 @@ export default function EditBlueprintPermissions(props) {
     useContext(PolicyDataContext);
 
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
 
   const {
     videoEnabled,
@@ -130,8 +137,10 @@ export default function EditBlueprintPermissions(props) {
       )
     )
       .then((response) => {
-        const profilesResults = response.data.profiles;
-        const usernames = users.map((user) => user.username);
+        const profilesResults: UserProfile[] = response.data.profiles;
+        const usernames: string[] = users.map(
+          (user: UserProfile) => user.username
+        );
 
         const profiles = profilesResults.filter((profile) => {
           return !usernames.includes(profile.username);
@@ -147,16 +156,15 @@ export default function EditBlueprintPermissions(props) {
       });
   };
 
-  useEffect(() => {
-    searchUsers();
-  }, []);
-
-  const addModeratorToBlueprint = (user) => {
-    updatePolicyData("blueprintModerators", [...blueprintModerators, user]);
+  const addModeratorToBlueprint = (user: UserProfile) => {
+    updatePolicyData("blueprintModerators", [
+      ...(blueprintModerators || []),
+      user,
+    ]);
   };
 
-  const removeModeratorFromBlueprint = (user) => {
-    const newBlueprintModerators = blueprintModerators.filter(
+  const removeModeratorFromBlueprint = (user: UserProfile) => {
+    const newBlueprintModerators = blueprintModerators?.filter(
       (moderator) => moderator.id !== user.id
     );
     updatePolicyData("blueprintModerators", newBlueprintModerators);
@@ -175,7 +183,7 @@ export default function EditBlueprintPermissions(props) {
         )}
         searchTargets={searchUsers}
         targets={users}
-        existingTargets={blueprintModerators}
+        existingTargets={blueprintModerators ?? []}
         addElementToTarget={addModeratorToBlueprint}
         type="user"
       />
@@ -440,7 +448,7 @@ export default function EditBlueprintPermissions(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {blueprintModerators.map((user) => (
+              {blueprintModerators?.map((user) => (
                 <TableRow key={user.username} className={classes.tableRow}>
                   <TableCell className={classes.tableCell}>
                     <Link to={`/user/${user.username}`}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 // core components
 import Devices from "components/Devices/Devices";
@@ -18,7 +18,13 @@ import DisplayUserProfile from "./DisplayUserProfile";
 
 import i18next from "i18next";
 
-function TabPanel(props) {
+interface TabPanelProps {
+  children: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -40,11 +46,11 @@ function TabPanel(props) {
 
 TabPanel.propTypes = {
   children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
 };
 
-function a11yProps(value, index) {
+function a11yProps(value: number, index: number) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
@@ -52,13 +58,17 @@ function a11yProps(value, index) {
   };
 }
 
-export default function UserProfile(props) {
+interface UserProfileProps {
+  username: string;
+}
+
+export default function UserProfile(props: UserProfileProps) {
   const history = useHistory();
 
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState<number>(0);
   const [displayUser, setDisplayUser] = useState(true);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 

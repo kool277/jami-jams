@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
 import Container from "@mui/material/Container";
-import MuiAlert from "@mui/material/Alert";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import Paper from "@mui/material/Paper";
 
 import logo from "assets/img/jams_logo_no_gnu_package.svg";
@@ -19,7 +19,7 @@ import ServerParameters from "components/ServerParameters/ServerParameters";
 import LanguagePicker from "../components/LanguagePicker/LanguagePicker";
 import { Theme } from "@mui/material";
 
-function Alert(props) {
+function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
@@ -65,7 +65,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function SignUp(props) {
+interface SignUpProps {
+  step: number;
+}
+
+export default function SignUp(props: SignUpProps) {
   const classes = useStyles();
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Test");

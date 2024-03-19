@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 // core components
 import General from "./General";
 import Subscription from "./Subscription";
@@ -10,13 +10,19 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
-import MuiAlert from "@mui/material/Alert";
+import MuiAlert, { AlertColor } from "@mui/material/Alert";
 
 import auth from "auth";
 
 import i18next from "i18next";
 
-function TabPanel(props) {
+interface TabPanelProps {
+  children: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -38,11 +44,11 @@ function TabPanel(props) {
 
 TabPanel.propTypes = {
   children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
 };
 
-function a11yProps(value, index) {
+function a11yProps(value: number, index: number) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
@@ -50,7 +56,14 @@ function a11yProps(value, index) {
   };
 }
 
-function Alert(props) {
+interface AlertProps {
+  children: React.ReactNode;
+  severity?: AlertColor;
+  severityString: string;
+}
+
+function Alert(props: AlertProps) {
+  props.severity = props.severityString as AlertColor;
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
@@ -60,7 +73,7 @@ export default function Settings() {
   const [severity, setSeverity] = useState("error");
   const [errorMessage, setErrorMessage] = useState("Test");
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   if (!auth.hasAdminScope()) {
@@ -113,7 +126,7 @@ export default function Settings() {
           />
         </TabPanel>
         {error && errorMessage && (
-          <Alert severity={severity}>{errorMessage}</Alert>
+          <Alert severityString={severity}>{errorMessage}</Alert>
         )}
       </div>
     );

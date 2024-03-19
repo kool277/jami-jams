@@ -31,16 +31,18 @@ const getModerators = async (defaultModerators: string) => {
   return moderators;
 };
 
-const setPermissionsSettings = async (policyData) => {
-  policyData.blueprintModerators = await getModerators(
-    policyData.defaultModerators
-  );
+const setPermissionsSettings = async (policyData: PolicyData) => {
+  if (policyData.defaultModerators !== undefined) {
+    policyData.blueprintModerators = await getModerators(
+      policyData.defaultModerators
+    );
+  }
   delete policyData.defaultModerators;
 
   return policyData;
 };
 
-const setConfigurationSettings = (policyData) => {
+const setConfigurationSettings = (policyData: PolicyData) => {
   const { turnEnabled, proxyEnabled } = policyData;
 
   if (turnEnabled === true) {
@@ -75,55 +77,54 @@ const convertArgbToRgba = (argb: string) => {
   return "#" + argb.substr(3, 6) + argb.substr(1, 2);
 };
 
-const setCustomizationSettings = (policyData) => {
-  if (!policyData.uiCustomization) {
-    policyData.uiCustomization = DEFAULT_UI_CUSTOMIZATION;
-    return policyData;
+const setCustomizationSettings = (uiCustomization: string) => {
+  let ParsedUiCustomization: UiCustomization = DEFAULT_UI_CUSTOMIZATION;
+  if (!uiCustomization) {
+    return ParsedUiCustomization;
   }
-
-  const result = JSON.parse(policyData.uiCustomization);
-  const ui: Partial<UiCustomization> = { isCustomizationEnabled: true };
-
-  ui.hasTitle = result.title !== "";
-  ui.title = result.title;
-  ui.hasDescription = result.description !== "";
-  ui.description = result.description;
-  ui.hasTips = result.areTipsEnabled;
+  // If we reach this point, it means that the uiCustomization is enabled
+  const result = JSON.parse(uiCustomization);
+  ParsedUiCustomization.isCustomizationEnabled = true;
+  ParsedUiCustomization.hasTitle = result.title !== "";
+  ParsedUiCustomization.title = result.title;
+  ParsedUiCustomization.hasDescription = result.description !== "";
+  ParsedUiCustomization.description = result.description;
+  ParsedUiCustomization.hasTips = result.areTipsEnabled;
 
   if (result.backgroundType === "default") {
-    ui.hasBackground = false;
+    ParsedUiCustomization.hasBackground = false;
   } else if (result.backgroundType === "color") {
-    ui.hasBackground = true;
-    ui.backgroundColor = result.backgroundColorOrUrl;
+    ParsedUiCustomization.hasBackground = true;
+    ParsedUiCustomization.backgroundColor = result.backgroundColorOrUrl;
   } else if (result.backgroundType === "image") {
-    ui.hasBackground = true;
-    ui.backgroundUrl = result.backgroundColorOrUrl;
+    ParsedUiCustomization.hasBackground = true;
+    ParsedUiCustomization.backgroundUrl = result.backgroundColorOrUrl;
   }
 
-  ui.tipBoxAndIdColor = result.tipBoxAndIdColor
+  ParsedUiCustomization.tipBoxAndIdColor = result.tipBoxAndIdColor
     ? convertArgbToRgba(result.tipBoxAndIdColor)
     : DEFAULT_UI_CUSTOMIZATION.tipBoxAndIdColor;
 
-  ui.hasMainBoxColor = result.mainBoxColor !== undefined;
-  ui.mainBoxColor = result.mainBoxColor
+  ParsedUiCustomization.hasMainBoxColor = result.mainBoxColor !== undefined;
+  ParsedUiCustomization.mainBoxColor = result.mainBoxColor
     ? convertArgbToRgba(result.mainBoxColor)
     : DEFAULT_UI_CUSTOMIZATION.mainBoxColor;
 
   // Get the name of the file from the url
-  ui.hasLogo = result.logoUrl !== "";
-  ui.logoUrl = result.logoUrl;
-  ui.logoSize = result.logoSize || DEFAULT_UI_CUSTOMIZATION.logoSize;
+  ParsedUiCustomization.hasLogo = result.logoUrl !== "";
+  ParsedUiCustomization.logoUrl = result.logoUrl;
+  ParsedUiCustomization.logoSize =
+    result.logoSize || DEFAULT_UI_CUSTOMIZATION.logoSize;
 
-  policyData.uiCustomization = ui;
-  return policyData;
+  return ParsedUiCustomization;
 };
 
 export const parsePolicyData = async (data: string): Promise<PolicyData> => {
   let policyData = JSON.parse(data);
-
+  const tempUiCustomization: string = policyData.uiCustomization;
   policyData = await setPermissionsSettings(policyData);
   policyData = setConfigurationSettings(policyData);
-  policyData = setCustomizationSettings(policyData);
+  policyData.uiCustomization = setCustomizationSettings(tempUiCustomization);
 
-  return policyData;
+  return policyData as PolicyData;
 };

@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Formik, Field } from "formik";
+import {
+  Formik,
+  Field,
+  FieldInputProps,
+  FormikProps,
+  FormikValues,
+  FieldMetaProps,
+} from "formik";
 import * as Yup from "yup";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -12,7 +19,7 @@ import auth from "../../auth";
 import axios from "axios";
 import configApiCall from "../../api";
 import { api_path_post_install_ca } from "../../globalUrls";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import * as tool from "../../tools";
 import Input from "@mui/material/Input";
 import Typography from "@mui/material/Typography";
@@ -40,14 +47,33 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function CaSetup(props) {
+interface CaSetupProps {
+  setError: (error: boolean) => void;
+  setErrorMessage: (message: string) => void;
+}
+
+interface FormValuesSelfSigned {
+  commonname: string;
+  state: string;
+  city: string;
+  organization: string;
+  organizationunit: string;
+  country: string;
+}
+
+interface FormValuesExistingCA {
+  certificatefile: string;
+  privkeyfile: string;
+}
+
+export default function CaSetup(props: CaSetupProps) {
   const history = useHistory();
 
   /**
    * Formik Validation Fields
    */
 
-  const initialValuesform1 = {
+  const initialValuesform1: FormValuesSelfSigned = {
     commonname: "",
     state: "",
     city: "",
@@ -56,7 +82,10 @@ export default function CaSetup(props) {
     country: "",
   };
 
-  const initialValuesform2 = { certificatefile: "", privkeyfile: "" };
+  const initialValuesform2: FormValuesExistingCA = {
+    certificatefile: "",
+    privkeyfile: "",
+  };
 
   const validationSchemaform1 = Yup.object().shape({
     commonname: Yup.string().required(
@@ -133,7 +162,11 @@ export default function CaSetup(props) {
   );
   const [validityPeriod, setValidityPeriod] = useState(validityPeriods[0]);
 
-  function handleInstallCA(data) {
+  interface CAInstallResponse {
+    status: number;
+  }
+
+  function handleInstallCA(data: CAInstallResponse) {
     if (data.status === 500 || data.status === 512 || data.status === 513) {
       props.setError(true);
       props.setErrorMessage(
@@ -148,36 +181,51 @@ export default function CaSetup(props) {
     }
   }
 
-  const handleCertifOptionChange = (event) => {
+  const handleCertifOptionChange = (event: SelectChangeEvent) => {
     props.setError(false);
-    setCertificateOpt(getCertificateOptions[event.target.value]);
-  };
-
-  const handleValidPeriodChange = (event) => {
-    props.setError(false);
-    setValidityPeriod(
-      tool.retrieveArrayElement(event.target.value, validityPeriods)
+    const valueAsNumber = Number(event.target.value);
+    // Find the corresponding option from getCertificateOptions.
+    const selectedOption = getCertificateOptions.find(
+      (option) => option.value === valueAsNumber
     );
+    if (selectedOption) {
+      setCertificateOpt(selectedOption);
+    }
   };
 
-  const handleSubmit = (values) => {
+  const handleValidPeriodChange = (event: SelectChangeEvent) => {
+    props.setError(false);
+    const selectedOption = tool.retrieveArrayElement(
+      parseInt(event.target.value),
+      validityPeriods
+    );
+    if (selectedOption !== undefined) {
+      setValidityPeriod(selectedOption);
+    }
+  };
+
+  const handleSubmit = (
+    values: FormValuesSelfSigned | FormValuesExistingCA
+  ) => {
     let jsonData = {};
     if (certificateOpt.value === 0) {
+      const selfSignedValues = values as FormValuesSelfSigned;
       jsonData = {
         fields: {
-          commonName: values.commonname,
-          organizationalUnit: values.organizationUnit,
-          organization: values.organization,
-          city: values.city,
-          state: values.state,
-          country: values.country,
+          commonName: selfSignedValues.commonname,
+          organizationalUnit: selfSignedValues.organizationunit,
+          organization: selfSignedValues.organization,
+          city: selfSignedValues.city,
+          state: selfSignedValues.state,
+          country: selfSignedValues.country,
           lifetime: validityPeriod.value,
         },
       };
     } else if (certificateOpt.value === 1) {
+      const existingCAValues = values as FormValuesExistingCA;
       jsonData = {
-        caCertificate: values.certificatefile,
-        caKey: values.privkeyfile,
+        caCertificate: existingCAValues.certificatefile,
+        caKey: existingCAValues.privkeyfile,
       };
     }
 
@@ -221,7 +269,7 @@ export default function CaSetup(props) {
               <Select
                 labelId="certificate-option-select-label"
                 fullWidth
-                value={certificateOpt.value}
+                value={certificateOpt.value.toString()}
                 onChange={handleCertifOptionChange}
                 variant="outlined"
               >
@@ -325,7 +373,7 @@ export default function CaSetup(props) {
                 labelId="validity-period-select-label"
                 fullWidth
                 variant="outlined"
-                value={validityPeriod.value}
+                value={validityPeriod.value.toString()}
                 onChange={handleValidPeriodChange}
               >
                 {validityPeriodsItems}
@@ -375,7 +423,7 @@ export default function CaSetup(props) {
               <Select
                 labelId="demo-simple-select-label"
                 fullWidth
-                value={certificateOpt.value}
+                value={certificateOpt.value.toString()}
                 onChange={handleCertifOptionChange}
                 variant="outlined"
               >
@@ -385,18 +433,26 @@ export default function CaSetup(props) {
                 CA file (PEM-encoded)
               </Typography>
               <Field name="certificatefile">
-                {({ field, form }) => (
+                {({
+                  field,
+                  form,
+                }: {
+                  field: FieldInputProps<any>;
+                  form: FormikProps<FormikValues>;
+                }) => (
                   <div>
                     <Input
                       fullWidth
                       type="file"
-                      onChange={handleChange}
                       {...field}
+                      onChange={handleChange}
                     />
                     {form.errors.certificatefile &&
                     form.touched.certificatefile ? (
                       <span className="spanError">
-                        {form.errors.certificatefile}
+                        {typeof form.errors.certificatefile === "string"
+                          ? form.errors.certificatefile
+                          : "Error"}
                       </span>
                     ) : null}
                   </div>
@@ -406,7 +462,13 @@ export default function CaSetup(props) {
                 Key File (PEM-encoded)
               </Typography>
               <Field name="privkeyfile">
-                {({ field, meta }) => (
+                {({
+                  field, // This is now strongly typed
+                  meta, // So is this
+                }: {
+                  field: FieldInputProps<any>;
+                  meta: FieldMetaProps<any>;
+                }) => (
                   <div>
                     <Input fullWidth type="file" {...field} />
                     {meta.touched && meta.error && (
@@ -436,4 +498,5 @@ export default function CaSetup(props) {
       </Formik>
     );
   }
+  return null;
 }

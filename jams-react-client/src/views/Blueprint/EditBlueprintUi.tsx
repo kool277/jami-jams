@@ -93,14 +93,18 @@ const styles = {
 
 const useStyles = makeStyles(styles as any);
 
-export default function EditBlueprintUi({ blueprintName }) {
+export default function EditBlueprintUi({
+  blueprintName,
+}: {
+  blueprintName: string;
+}) {
   const classes = useStyles();
 
   const { policyData, updatePolicyData, snackbar, setSnackbar } =
     useContext(PolicyDataContext);
   const { uiCustomization } = policyData;
 
-  const setUiCustomization = (ui) => {
+  const setUiCustomization = (ui: UiCustomization) => {
     updatePolicyData("uiCustomization", ui);
   };
 

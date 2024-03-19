@@ -1,3 +1,4 @@
+import React from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -5,12 +6,30 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import CustomPopupState from "../CustomPopupState/CustomPopupState";
 
 import i18next from "i18next";
+import { LDAPFormValues } from "./IdentityManagement";
+import { FormikErrors, FormikTouched } from "formik";
 
-export default function LdapStorageForm(props) {
+interface LdapStorageFormProps {
+  useStartTLS: string;
+  handleUseStartTLSChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  ldapFilter: {
+    value: number;
+    label: string;
+  };
+  ldapFiltersTypesItems: any;
+  handleFilterIdChange: (event: SelectChangeEvent) => void;
+  values: LDAPFormValues;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBlur: (event: React.FocusEvent<HTMLInputElement>) => void;
+  touched: FormikTouched<LDAPFormValues>;
+  errors: FormikErrors<LDAPFormValues>;
+}
+
+export default function LdapStorageForm(props: LdapStorageFormProps) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -148,7 +167,7 @@ export default function LdapStorageForm(props) {
         <Select
           labelId="filter-ldap-select"
           fullWidth
-          value={props.ldapFilter.value}
+          value={props.ldapFilter.value.toString()}
           onChange={props.handleFilterIdChange}
           variant="outlined"
         >

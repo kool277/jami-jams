@@ -15,7 +15,11 @@ interface Language {
   name: string;
 }
 
-export default function LanguagePicker(props) {
+interface LanguagePickerProps {
+  navigationTarget: string;
+}
+
+export default function LanguagePicker(props: LanguagePickerProps) {
   const history = useHistory();
   const [language, setLanguage] = useState<string>(
     i18next.language || window.localStorage.i18nextLng || "en"
@@ -24,7 +28,7 @@ export default function LanguagePicker(props) {
 
   const { i18n } = useTranslation();
 
-  const handleChange = (value) => {
+  const handleChange = (value: string) => {
     setLanguage(value);
     i18n.changeLanguage(value).then(() => {
       history.push(props.navigationTarget);

@@ -1,4 +1,4 @@
-import { Fragment, FC, useCallback } from "react";
+import React, { Fragment, FC, useCallback } from "react";
 import clsx from "clsx";
 import { debounce } from "lodash";
 import { makeStyles } from "@mui/styles";
@@ -123,8 +123,8 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
 
   const initSearchTargets = useCallback(debounce(searchTargets, 500), []);
 
-  const handleSearchTargets = (e) => {
-    const searchValue = e.target.value;
+  const handleSearchTargets = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const searchValue = (e.target as HTMLInputElement).value;
     initSearchTargets(searchValue);
   };
 

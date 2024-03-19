@@ -15,13 +15,16 @@ import { UiCustomization } from "views/Blueprint/policyData.constants";
 const styles = {
   root: {
     height: "350px",
-    position: (props) => (props.isOldPreview ? "relative" : "absolute"),
+    position: (props: CustomUiPreviewProps) =>
+      props.isOldPreview ? "relative" : "absolute",
     left: 0,
     right: 0,
-    margin: (props) => (props.isOldPreview ? "0 0" : "0 20px"),
-    transition: (props) => (props.isOldPreview ? "none" : "opacity 0.25s"),
-    opacity: (props) => props.opacity,
-    zIndex: (props) => (props.isOldPreview ? "1" : "2"),
+    margin: (props: CustomUiPreviewProps) =>
+      props.isOldPreview ? "0 0" : "0 20px",
+    transition: (props: CustomUiPreviewProps) =>
+      props.isOldPreview ? "none" : "opacity 0.25s",
+    opacity: (props: CustomUiPreviewProps) => props.opacity,
+    zIndex: (props: CustomUiPreviewProps) => (props.isOldPreview ? "1" : "2"),
   },
   previewWindow: {
     position: "absolute",
@@ -53,8 +56,8 @@ const styles = {
     padding: "2rem",
     borderRadius: "0px 5px 5px 0px",
 
-    backgroundColor: (props) => props.backgroundColor,
-    backgroundImage: (props) => `url(${props.backgroundUrl})`,
+    backgroundColor: (props: UiCustomization) => props.backgroundColor,
+    backgroundImage: (props: UiCustomization) => `url(${props.backgroundUrl})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   },
@@ -70,7 +73,7 @@ const styles = {
   logo: {
     height: "40px",
     objectFit: "contain",
-    scale: (props) => props.logoSize / 100,
+    scale: (props: UiCustomization) => props.logoSize / 100,
   },
   welcomeCard: {
     display: "flex",
@@ -78,10 +81,11 @@ const styles = {
     // justifyContent: "center",
     alignItems: "center",
     borderRadius: "3px",
-    backgroundColor: (props) => props.mainBoxColor,
+    backgroundColor: (props: UiCustomization) => props.mainBoxColor,
     padding: "10px",
     width: "50%",
-    color: (props) => (luma(props.mainBoxColor) ? "#ffffff" : "#000000"),
+    color: (props: UiCustomization) =>
+      luma(props.mainBoxColor) ? "#ffffff" : "#000000",
   },
   title: {
     margin: 0,

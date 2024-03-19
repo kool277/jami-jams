@@ -1,4 +1,4 @@
-import { FC, ReactNode, createRef, useEffect, useState } from "react";
+import { FC, ReactElement, createRef, useEffect, useState } from "react";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -42,7 +42,7 @@ import Button from "@mui/material/Button";
 import i18next from "i18next";
 import { AccountCircle as AccountCircleIcon } from "@mui/icons-material";
 
-let ps;
+let ps: PerfectScrollbar;
 
 const useStyles = makeStyles(styles as any);
 
@@ -55,7 +55,11 @@ export interface Route {
   admin?: boolean;
 }
 
-export default function Admin(props) {
+interface AdminProps {
+  component: ReactElement;
+}
+
+export default function Admin(props: AdminProps) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -171,10 +175,12 @@ export default function Admin(props) {
     });
 
     if (navigator.platform.indexOf("Win") > -1) {
-      ps = new PerfectScrollbar(mainPanel.current, {
-        suppressScrollX: true,
-        suppressScrollY: false,
-      });
+      if (mainPanel.current !== null) {
+        ps = new PerfectScrollbar(mainPanel.current, {
+          suppressScrollX: true,
+          suppressScrollY: false,
+        });
+      }
       document.body.style.overflow = "hidden";
     }
     window.addEventListener("resize", resizeFunction);

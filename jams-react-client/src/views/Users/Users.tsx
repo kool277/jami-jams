@@ -1,4 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 // @mui/material components
@@ -31,6 +37,7 @@ import headerLinksStyle from "assets/jss/material-dashboard-react/components/hea
 import { debounce } from "lodash";
 
 import i18next from "i18next";
+import { UserProfile } from "views/UserProfile/DisplayUserProfile";
 
 const styles = {
   ...headerLinksStyle,
@@ -72,7 +79,7 @@ const useStyles = makeStyles(styles as any);
 export default function Users() {
   const classes = useStyles();
   const history = useHistory();
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
   const noUsersFound = users.length === 0;
   const [noMatchFound, setNoMatchFound] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -120,7 +127,7 @@ export default function Users() {
     };
   }, [history]);
 
-  const searchUsers = (value, page = 1) => {
+  const searchUsers = (value: string, page = 1) => {
     setSelectedPage(page);
     setLoading(true);
     setNoMatchFound(false);
@@ -152,12 +159,13 @@ export default function Users() {
     debounce((value) => searchUsers(value), 500),
     []
   );
-  const handleSearchUsers = (e) => {
-    setSearchValue(e.target.value);
-    initSearchUsers(e.target.value);
+  const handleSearchUsers = (e: KeyboardEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    setSearchValue(target.value);
+    initSearchUsers(target.value);
   };
 
-  const handleChangePage = (e, page) => {
+  const handleChangePage = (e: ChangeEvent<unknown>, page: number) => {
     searchUsers(searchValue, page);
   };
   return (

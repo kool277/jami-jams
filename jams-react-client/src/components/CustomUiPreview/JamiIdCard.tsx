@@ -27,7 +27,7 @@ const styles = {
     width: "100px",
     height: "100%",
     borderRadius: "5px 0px 0px 5px",
-    backgroundColor: (props) => props.color,
+    backgroundColor: (props: JamiIdCardProps) => props.color,
   },
   logo: {
     marginLeft: "5px",
@@ -37,7 +37,8 @@ const styles = {
     flex: 2,
     textAlign: "center",
     fontSize: "12px",
-    color: (props) => (luma(props.color) ? "#03B9E9" : "#005699"),
+    color: (props: JamiIdCardProps) =>
+      luma(props.color) ? "#03B9E9" : "#005699",
   },
   icons: {
     display: "flex",
@@ -48,7 +49,7 @@ const styles = {
     height: "100%",
     marginLeft: "1px",
     borderRadius: "0px 5px 5px 0px",
-    backgroundColor: (props) => props.color,
+    backgroundColor: (props: JamiIdCardProps) => props.color,
   },
   icon: {
     width: "6px",

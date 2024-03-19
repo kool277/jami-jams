@@ -1,3 +1,4 @@
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -7,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
 
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import configApiCall from "../../api";
 import { api_path_post_install_admin } from "../../globalUrls";
 
@@ -36,7 +37,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function CreateAdmin(props) {
+interface CreateAdminProps {
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function CreateAdmin(props: CreateAdminProps) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -72,7 +78,7 @@ export default function CreateAdmin(props) {
         .required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf(
-          [Yup.ref("password"), null],
+          [Yup.ref("password"), undefined],
           i18next.t("password_must_match", "Passwords must match") as string
         )
         .max(
@@ -95,7 +101,19 @@ export default function CreateAdmin(props) {
     },
   });
 
-  function createAdminCallBackHandler(response) {
+  interface AdminSubmitValues {
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }
+
+  interface ApiResponseData {
+    access_token: string; // Assuming access_token is a string
+  }
+
+  function createAdminCallBackHandler(
+    response: AxiosResponse<ApiResponseData>
+  ) {
     auth.setJWT(response.data["access_token"]);
     auth.admin = true;
     auth.authenticated = true;
@@ -103,14 +121,14 @@ export default function CreateAdmin(props) {
     history.push("/");
   }
 
-  function handleSubmit(values) {
+  function handleSubmit(values: AdminSubmitValues) {
     //e.preventDefault();
     const jsonData = {
       username: values.username,
       password: values.password,
     };
     axios(configApiCall(api_path_post_install_admin, "PUT", jsonData, null))
-      .then((response) => {
+      .then((response: AxiosResponse<ApiResponseData>) => {
         createAdminCallBackHandler(response);
       })
       .catch((error) => {
@@ -138,7 +156,6 @@ export default function CreateAdmin(props) {
             fullWidth
             id="username"
             label={i18next.t("username", "Username") as string}
-            name="username"
             autoComplete="email"
             autoFocus
             {...formik.getFieldProps("username")}
@@ -153,7 +170,6 @@ export default function CreateAdmin(props) {
             margin="normal"
             required
             fullWidth
-            name="password"
             label={i18next.t("password", "Password") as string}
             type="password"
             id="password"
@@ -171,7 +187,6 @@ export default function CreateAdmin(props) {
             margin="normal"
             required
             fullWidth
-            name="confirmPassword"
             label={i18next.t("confirm_password", "Confirm password") as string}
             type="password"
             id="confirmPassword"

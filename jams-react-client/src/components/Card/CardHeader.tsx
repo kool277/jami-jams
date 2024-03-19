@@ -1,3 +1,4 @@
+import React from "react";
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
@@ -10,7 +11,16 @@ import styles from "assets/jss/material-dashboard-react/components/cardHeaderSty
 
 const useStyles = makeStyles(styles as any);
 
-export default function CardHeader(props) {
+interface CardHeaderProps {
+  className?: string;
+  color?: "warning" | "success" | "danger" | "info" | "primary" | "rose";
+  plain?: boolean;
+  stats?: boolean;
+  icon?: boolean;
+  children?: React.ReactNode;
+}
+
+export default function CardHeader(props: CardHeaderProps) {
   const classes = useStyles();
   const { className, children, color, plain, stats, icon, ...rest } = props;
   const cardHeaderClasses = classNames({
@@ -19,7 +29,7 @@ export default function CardHeader(props) {
     [classes.cardHeaderPlain]: plain,
     [classes.cardHeaderStats]: stats,
     [classes.cardHeaderIcon]: icon,
-    [className]: className !== undefined,
+    ...(className ? { [className]: true } : {}),
   });
   return (
     <div className={cardHeaderClasses} {...rest}>

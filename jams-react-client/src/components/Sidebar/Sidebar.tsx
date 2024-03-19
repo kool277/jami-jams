@@ -1,7 +1,6 @@
 import { FC, createRef, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 
 // @mui/material components
 import { makeStyles } from "@mui/styles";
@@ -56,7 +55,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
   }, [mainPanel]);
 
   // verifies if routeName is the one active (in browser input)
-  function activeRoute(routeName) {
+  function activeRoute(routeName: string) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
   }
   const { color, logo, image, routes } = props;

@@ -1,3 +1,4 @@
+import React from "react";
 import Checkbox from "@mui/material/Checkbox";
 import Switch from "@mui/material/Switch";
 import FormGroup from "@mui/material/FormGroup";
@@ -9,9 +10,19 @@ import CustomImgDropZone from "components/CustomImgDropZone/CustomImgDropZone";
 
 import i18next from "i18next";
 import ColorPickerPopup from "./ColorPickerPopup";
-import { DEFAULT_UI_CUSTOMIZATION } from "./policyData.constants";
+import {
+  DEFAULT_UI_CUSTOMIZATION,
+  UiCustomization,
+} from "./policyData.constants";
 
-const IsCustomizationEnabledForm = ({
+/* eslint-disable no-unused-vars */
+interface IsCustomizationEnabledFormProps {
+  isCustomizationEnabled: boolean;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const IsCustomizationEnabledForm: React.FC<IsCustomizationEnabledFormProps> = ({
   isCustomizationEnabled,
   handleUpdateUi,
 }) => {
@@ -39,7 +50,17 @@ const IsCustomizationEnabledForm = ({
   );
 };
 
-const HasTitleForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface HasTitleFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const HasTitleForm: React.FC<HasTitleFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <FormGroup row>
       <FormControlLabel
@@ -59,7 +80,17 @@ const HasTitleForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const TitleForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface TitleFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const TitleForm: React.FC<TitleFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   if (!uiCustomization.hasTitle) {
     return null;
   }
@@ -89,7 +120,17 @@ const TitleForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const HasDescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface HasDescriptionFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const HasDescriptionForm: React.FC<HasDescriptionFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <FormGroup row>
       <FormControlLabel
@@ -109,7 +150,17 @@ const HasDescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const DescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface DescriptionFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const DescriptionForm: React.FC<DescriptionFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <FormGroup row>
       {uiCustomization.hasDescription && (
@@ -144,7 +195,17 @@ const DescriptionForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const HasTipsForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface HasTipsFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const HasTipsForm: React.FC<HasTipsFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <FormGroup row>
       <FormControlLabel
@@ -164,7 +225,17 @@ const HasTipsForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const HasBackgroundCustomForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface HasBackgroundCustomFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const HasBackgroundCustomForm: React.FC<HasBackgroundCustomFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <FormGroup row>
       <FormControlLabel
@@ -186,7 +257,17 @@ const HasBackgroundCustomForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const CustomBackgroundForm = ({
+/* eslint-disable no-unused-vars */
+interface CustomBackgroundFormProps {
+  uiCustomization: UiCustomization;
+  handleColorChange: (color: string) => void;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+  handleImgDrop: (acceptedFiles: any[], imgType: string) => void;
+  bgFile: string | undefined;
+}
+/* eslint-enable no-unused-vars */
+
+const CustomBackgroundForm: React.FC<CustomBackgroundFormProps> = ({
   uiCustomization,
   handleColorChange,
   handleUpdateUi,
@@ -246,7 +327,17 @@ const CustomBackgroundForm = ({
   );
 };
 
-const TipBoxAndIdColorForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface TipBoxAndIdColorFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const TipBoxAndIdColorForm: React.FC<TipBoxAndIdColorFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <>
       <span>
@@ -263,7 +354,17 @@ const TipBoxAndIdColorForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const MainBoxColorForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface MainBoxColorFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const MainBoxColorForm: React.FC<MainBoxColorFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <>
       <FormGroup row>
@@ -302,7 +403,17 @@ const MainBoxColorForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const HasLogoForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface HasLogoFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const HasLogoForm: React.FC<HasLogoFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <FormGroup row>
       <FormControlLabel
@@ -322,7 +433,18 @@ const HasLogoForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const LogoForm = ({
+/* eslint-disable no-unused-vars */
+interface LogoFormProps {
+  handleImgDrop: (acceptedFiles: any[], imgType: string) => void;
+  handleDeleteLogo: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+  logoFile: string | undefined;
+}
+/* eslint-enable no-unused-vars */
+
+const LogoForm: React.FC<LogoFormProps> = ({
   handleImgDrop,
   handleDeleteLogo,
   handleUpdateUi,
@@ -356,7 +478,17 @@ const LogoForm = ({
   );
 };
 
-const LogoSizeForm = ({ uiCustomization, handleUpdateUi }) => {
+/* eslint-disable no-unused-vars */
+interface LogoSizeFormProps {
+  uiCustomization: UiCustomization;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const LogoSizeForm: React.FC<LogoSizeFormProps> = ({
+  uiCustomization,
+  handleUpdateUi,
+}) => {
   return (
     <Box sx={{ width: "200px" }}>
       <span>{i18next.t("logo_size", "Size") as string}</span>
@@ -375,7 +507,16 @@ const LogoSizeForm = ({ uiCustomization, handleUpdateUi }) => {
   );
 };
 
-const EditBlueprintUiForm = ({
+/* eslint-disable no-unused-vars */
+interface EditBlueprintUiFormProps {
+  uiCustomization: UiCustomization;
+  setUiCustomization: (ui: UiCustomization) => void;
+  handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
+  handleImgDrop: (acceptedFiles: any[], imgType: string) => void;
+}
+/* eslint-enable no-unused-vars */
+
+const EditBlueprintUiForm: React.FC<EditBlueprintUiFormProps> = ({
   uiCustomization,
   setUiCustomization,
   handleUpdateUi,
@@ -386,7 +527,9 @@ const EditBlueprintUiForm = ({
   const bgFile = uiCustomization.backgroundUrl?.split("/").pop();
   const logoFile = uiCustomization.logoUrl?.split("/").pop();
 
-  const handleDeleteLogo = (e) => {
+  const handleDeleteLogo = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     setUiCustomization({
       ...uiCustomization,
       logoUrl: "",
@@ -394,7 +537,7 @@ const EditBlueprintUiForm = ({
     e.stopPropagation();
   };
 
-  const handleColorChange = (color) => {
+  const handleColorChange = (color: string) => {
     setUiCustomization({
       ...uiCustomization,
       backgroundColor: color,

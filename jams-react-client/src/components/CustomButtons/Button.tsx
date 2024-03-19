@@ -37,15 +37,15 @@ const RegularButton: FC<RegularButtonProps> = (props) => {
   } = props;
   const btnClasses = classNames({
     [classes.button]: true,
-    [classes[size]]: size,
-    [classes[color]]: color,
+    ...(size ? { [classes[size]]: size } : {}),
+    ...(color ? { [classes[color]]: color } : {}),
     [classes.round]: round,
     [classes.disabled]: disabled,
     [classes.simple]: simple,
     [classes.block]: block,
     [classes.link]: link,
     [classes.justIcon]: justIcon,
-    [className]: className,
+    ...(typeof className === "string" ? { [className]: className } : {}),
   });
   return (
     <Button {...rest} className={btnClasses}>

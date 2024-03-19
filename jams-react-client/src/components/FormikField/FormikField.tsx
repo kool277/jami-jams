@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { ReactElement } from "react";
 import PropTypes from "prop-types";
 import { ErrorMessage, Field } from "formik";
 
@@ -6,7 +6,21 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Input from "@mui/material/Input";
 
-const FormikField = (props) => {
+interface FormikFieldProps {
+  startAdornment?: ReactElement;
+  endAdornment?: ReactElement;
+  placeholder?: string;
+  required?: boolean;
+  name: string;
+  label: string;
+  type?: string;
+  autoComplete?: "on" | "off";
+  handleChange?: (value: string) => void;
+  onKeyUpError?: boolean;
+  onKeyUpErrorMessage?: string;
+}
+
+const FormikField = (props: FormikFieldProps) => {
   return (
     <div className="FormikField">
       <FormControl size="medium" error={props.onKeyUpError} fullWidth>
@@ -28,7 +42,9 @@ const FormikField = (props) => {
           fullWidth
           type={props.type}
           autoComplete={props.autoComplete}
-          onKeyUp={(e) => props.handleChange(e.target.value)}
+          onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) =>
+            props.handleChange?.(e.currentTarget.value)
+          }
         />
       </FormControl>
     </div>

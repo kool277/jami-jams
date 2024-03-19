@@ -38,6 +38,11 @@ import DialogTitle from "@mui/material/DialogTitle";
 import i18next from "i18next";
 import CreateBlueprintDialog from "./CreateBlueprintDialog";
 
+export interface Blueprint {
+  name: string;
+  policyData: string;
+}
+
 const styles = {
   ...headerLinksStyle,
   cardCategoryWhite: {
@@ -77,7 +82,7 @@ const useStyles = makeStyles(styles as any);
 export default function Blueprints() {
   const classes = useStyles();
   const history = useHistory();
-  const [blueprints, setBlueprints] = useState([]);
+  const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
   const [loading, setLoading] = useState(false);
   const [zeroBlueprint, setZeroBlueprint] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -118,7 +123,7 @@ export default function Blueprints() {
     };
   }, [history, open, openRemoveDialog]);
 
-  const handleRemoveBlueprint = (blueprintRemovedName) => {
+  const handleRemoveBlueprint = (blueprintRemovedName: string) => {
     setRemovedBlueprint(blueprintRemovedName);
     setOpenRemoveDialog(true);
   };
@@ -227,7 +232,7 @@ export default function Blueprints() {
             </p>
           </div>
         ) : (
-          blueprints.map((blueprint) => (
+          blueprints.map((blueprint: Blueprint) => (
             <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={blueprint.name}>
               <Card profile>
                 <Link to={`/blueprint/${blueprint.name}`}>

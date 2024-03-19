@@ -32,11 +32,16 @@ import {
   api_path_blueprints,
 } from "./globalUrls";
 
+interface Credentials {
+  username: string;
+  password: string;
+}
+
 const configApiCall = (
   api_path: string,
   request_type: string,
   data: any,
-  credentials: null
+  credentials: Credentials | null
 ): AxiosRequestConfig => {
   // build config call
   const config: AxiosRequestConfig = {

@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Formik } from "formik";
+import { Formik, FormikErrors, FormikTouched } from "formik";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { makeStyles } from "@mui/styles";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import { buildSelectMenuItems } from "../../tools";
 
@@ -43,19 +43,39 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function IdentityManagement(props) {
+interface IdentityManagementProps {
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export interface LDAPFormValues {
+  servername: string;
+  ldapadminusername: string;
+  ldappassword: string;
+  basedn: string;
+}
+
+export interface ADFormValues {
+  port: string;
+  host: string;
+  adadminusername: string;
+  adpassword: string;
+  domainname: string;
+}
+
+export default function IdentityManagement(props: IdentityManagementProps) {
   /**
    * Formik Validation Fields
    */
 
-  const initialValuesLDAPform = {
+  const initialValuesLDAPform: LDAPFormValues = {
     servername: "",
     ldapadminusername: "",
     ldappassword: "",
     basedn: "",
   };
 
-  const initialValuesADform = {
+  const initialValuesADform: ADFormValues = {
     port: "",
     host: "",
     adadminusername: "",
@@ -146,14 +166,14 @@ export default function IdentityManagement(props) {
   const [useStartTLS, setUseStartTLS] = useState("false");
   const [ldapFilter, setLdapFilter] = useState(ldapFiltersTypes[0]);
 
-  const handleFilterIdChange = (event) => {
-    setLdapFilter(ldapFiltersTypes[event.target.value]);
+  const handleFilterIdChange = (event: SelectChangeEvent) => {
+    setLdapFilter(ldapFiltersTypes[parseInt(event.target.value)]);
   };
-  const handleUseStartTLSChange = (event) => {
+  const handleUseStartTLSChange = (event: ChangeEvent<HTMLInputElement>) => {
     setUseStartTLS(event.target.value);
   };
 
-  const handleNameServerChange = (event) => {
+  const handleNameServerChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNameServerChecked(event.target.checked);
   };
 
@@ -163,17 +183,79 @@ export default function IdentityManagement(props) {
 
   const [isSSL, setIsSSL] = useState("false");
 
-  const handleIsSSLChange = (event) => {
+  const handleIsSSLChange = (event: ChangeEvent<HTMLInputElement>) => {
     setIsSSL(event.target.value);
   };
+
+  interface AuthenticationSource {
+    type: string;
+    localAuthSettings: {
+      publicNameServer: string;
+      publicNames: boolean;
+    };
+    ldapSettings: {};
+    activeDirectorySettings: {};
+  }
+
+  interface localSettings {
+    publicNameServer: string;
+    publicNames: boolean;
+  }
+
+  interface BaseSettings {
+    host: string;
+    username: string;
+    password: string;
+    // This will be overridden in the derived interfaces
+    fieldMappings: BaseFieldMappings | ADFieldMappings;
+  }
+
+  interface LDAPSettings extends BaseSettings {
+    useStartTLS?: boolean;
+    baseDN?: string;
+    usernameField?: string;
+    fieldMappings: BaseFieldMappings;
+  }
+
+  interface ADSettings extends BaseSettings {
+    isSSL?: boolean;
+    port?: number;
+    realm?: string;
+    fieldMappings: ADFieldMappings;
+  }
+
+  type BaseFieldMappings = {
+    givenName: string;
+    sn: string;
+    jpegPhoto: string;
+    mail: string;
+    telephoneNumber: string;
+    mobile: string;
+    facsimileTelephoneNumber: string;
+    extensionName: string;
+    o: string;
+    uid: string;
+  };
+
+  interface ADFieldMappings extends BaseFieldMappings {
+    sAMAccountName: string;
+  }
 
   /**
    * Form handle submit and server call
    */
 
   function setLocalStorageData() {
-    const authSource = {};
-    const settings = {
+    const authSource: AuthenticationSource = {
+      type: "",
+      localAuthSettings: {
+        publicNameServer: "",
+        publicNames: false,
+      },
+      ldapSettings: {},
+      activeDirectorySettings: {},
+    };
+    const settings: localSettings = {
       publicNameServer: "http://ns.jami.net",
       publicNames: nameServerChecked,
     };
@@ -183,60 +265,76 @@ export default function IdentityManagement(props) {
     return authSource;
   }
 
-  function setLdapStorageData(values) {
-    const authSource = {};
-    const settings = {};
+  function setLdapStorageData(values: LDAPFormValues) {
+    const settings: LDAPSettings = {
+      useStartTLS: useStartTLS === "true",
+      host: values.servername,
+      username: values.ldapadminusername,
+      password: values.ldappassword,
+      baseDN: values.basedn,
+      usernameField: ldapFilter.label,
+      fieldMappings: {
+        givenName: "FirstName",
+        sn: "LastName",
+        jpegPhoto: "ProfilePicture",
+        mail: "Email",
+        telephoneNumber: "PhoneNumber",
+        mobile: "MobileNumber",
+        facsimileTelephoneNumber: "FaxNumber",
+        extensionName: "PhoneNumberExtension",
+        o: "Organization",
+        uid: "Username",
+      },
+    };
 
-    settings["useStartTLS"] = useStartTLS === "true";
-    settings["host"] = values.servername;
-    settings["username"] = values.ldapadminusername;
-    settings["password"] = values.ldappassword;
-    settings["baseDN"] = values.basedn;
-    settings["usernameField"] = ldapFilter.label;
-
-    settings["fieldMappings"] = {};
-    settings["fieldMappings"]["givenName"] = "FirstName";
-    settings["fieldMappings"]["sn"] = "LastName";
-    settings["fieldMappings"]["jpegPhoto"] = "ProfilePicture";
-    settings["fieldMappings"]["mail"] = "Email";
-    settings["fieldMappings"]["telephoneNumber"] = "PhoneNumber";
-    settings["fieldMappings"]["mobile"] = "MobileNumber";
-    settings["fieldMappings"]["facsimileTelephoneNumber"] = "FaxNumber";
-    settings["fieldMappings"]["extensionName"] = "PhoneNumberExtension";
-    settings["fieldMappings"]["o"] = "Organization";
-    settings["fieldMappings"]["uid"] = "Username";
+    const authSource: AuthenticationSource = {
+      type: "LDAP",
+      localAuthSettings: {
+        publicNameServer: "",
+        publicNames: false,
+      },
+      ldapSettings: settings,
+      activeDirectorySettings: {},
+    };
 
     authSource["type"] = "LDAP";
     authSource["ldapSettings"] = settings;
     return authSource;
   }
 
-  function setAdStorageData(values) {
-    const authSource = {};
-    const settings = {};
+  function setAdStorageData(values: ADFormValues) {
+    const settings: ADSettings = {
+      isSSL: isSSL === "true",
+      host: values.host,
+      port: parseInt(values.port, 10),
+      realm: values.domainname,
+      username: values.adadminusername,
+      password: values.adpassword,
+      fieldMappings: {
+        sAMAccountName: "Username",
+        givenName: "FirstName",
+        sn: "LastName",
+        jpegPhoto: "ProfilePicture",
+        mail: "Email",
+        telephoneNumber: "PhoneNumber",
+        mobile: "MobileNumber",
+        facsimileTelephoneNumber: "FaxNumber",
+        extensionName: "PhoneNumberExtension",
+        o: "Organization",
+        uid: "Username",
+      },
+    };
 
-    settings["isSSL"] = isSSL === "true";
-    settings["host"] = values.host;
-    settings["port"] = parseInt(values.port, 10);
-    settings["realm"] = values.domainname;
-    settings["username"] = values.adadminusername;
-    settings["password"] = values.adpassword;
+    const authSource: AuthenticationSource = {
+      type: "AD",
+      localAuthSettings: {
+        publicNameServer: "",
+        publicNames: false,
+      },
+      ldapSettings: {},
+      activeDirectorySettings: settings,
+    };
 
-    settings["fieldMappings"] = {};
-    settings["fieldMappings"]["sAMAccountName"] = "Username";
-    settings["fieldMappings"]["givenName"] = "FirstName";
-    settings["fieldMappings"]["sn"] = "LastName";
-    settings["fieldMappings"]["jpegPhoto"] = "ProfilePicture";
-    settings["fieldMappings"]["mail"] = "Email";
-    settings["fieldMappings"]["telephoneNumber"] = "PhoneNumber";
-    settings["fieldMappings"]["mobile"] = "MobileNumber";
-    settings["fieldMappings"]["facsimileTelephoneNumber"] = "FaxNumber";
-    settings["fieldMappings"]["extensionName"] = "PhoneNumberExtension";
-    settings["fieldMappings"]["o"] = "Organization";
-    settings["fieldMappings"]["uid"] = "Username";
-
-    authSource["type"] = "AD";
-    authSource["activeDirectorySettings"] = settings;
     return authSource;
   }
 
@@ -245,11 +343,13 @@ export default function IdentityManagement(props) {
     history.push("/");
   }
 
-  function handleSubmit(values) {
+  function handleSubmit(values: LDAPFormValues | ADFormValues) {
     let data = {};
     if (directory.value === 1) {
+      values = values as LDAPFormValues;
       data = setLdapStorageData(values);
     } else {
+      values = values as ADFormValues;
       data = setAdStorageData(values);
     }
     axios(configApiCall(api_path_post_install_auth, "POST", data, null))
@@ -267,7 +367,7 @@ export default function IdentityManagement(props) {
       });
   }
 
-  function handleLocalSubmit(e) {
+  function handleLocalSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     let data = {};
     data = setLocalStorageData();
@@ -286,13 +386,27 @@ export default function IdentityManagement(props) {
       });
   }
 
-  const handleChangeDirectoryType = (event) => {
-    props.setError(false);
-    setDirectory(directoryTypes[event.target.value]);
+  const handleChangeDirectoryType = (event: SelectChangeEvent<number>) => {
+    const valueAsNumber = Number(event.target.value);
+    const selectedDirectoryType = directoryTypes.find(
+      (directoryType) => directoryType.value === valueAsNumber
+    );
+    if (selectedDirectoryType) {
+      setDirectory(selectedDirectoryType);
+    }
   };
 
-  function returnForm(values, touched, errors, handleChange, handleBlur) {
+  function returnForm(
+    values: LDAPFormValues | ADFormValues,
+    touched: FormikTouched<LDAPFormValues | ADFormValues>,
+    errors: FormikErrors<LDAPFormValues | ADFormValues>,
+    handleChange: (e: React.ChangeEvent<any>) => void,
+    handleBlur: (e: React.FocusEvent<any>) => void
+  ) {
     if (directory.value === 1) {
+      values = values as LDAPFormValues;
+      touched = touched as FormikTouched<LDAPFormValues>;
+      errors = errors as FormikErrors<LDAPFormValues>;
       return (
         <LdapForm
           useStartTLS={useStartTLS}
@@ -308,6 +422,9 @@ export default function IdentityManagement(props) {
         />
       );
     } else {
+      values = values as ADFormValues;
+      touched = touched as FormikTouched<ADFormValues>;
+      errors = errors as FormikErrors<ADFormValues>;
       return (
         <AdStorageForm
           isSSL={isSSL}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
@@ -80,6 +80,13 @@ const styles = {
   },
 };
 
+export interface Group {
+  id: number;
+  name: string;
+  groupMembersLength: number;
+  blueprint: string;
+}
+
 const useStyles = makeStyles(styles as any);
 
 export default function Groups() {
@@ -89,7 +96,7 @@ export default function Groups() {
   const [loading, setLoading] = useState(false);
   const [zeroGroup, setZeroGroup] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [searchValue, setSearchValue] = useState(null);
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const [openCreate, setOpenCreate] = useState(false);
 
@@ -99,7 +106,7 @@ export default function Groups() {
   });
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
 
-  const handleRemoveGroup = (group) => {
+  const handleRemoveGroup = (group: Group) => {
     setRemovedGroup(group);
     setOpenRemoveDialog(true);
   };
@@ -141,7 +148,7 @@ export default function Groups() {
       .then((response) => {
         const allGroups = response.data;
 
-        allGroups.forEach((group) => {
+        allGroups.forEach((group: Group) => {
           axios(
             configApiCall(
               api_path_get_group_members + group.id,
@@ -257,7 +264,8 @@ export default function Groups() {
                         "Search groups"
                       ) as string,
                     },
-                    onKeyUp: (e) => setSearchValue(e.target.value),
+                    onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) =>
+                      setSearchValue((e.target as HTMLInputElement).value),
                   }}
                 />
               )}
@@ -278,8 +286,8 @@ export default function Groups() {
             </div>
           ) : (
             groups
-              .filter((data) => {
-                if (searchValue === null) {
+              .filter((data: Group) => {
+                if (searchValue === "") {
                   return data;
                 } else {
                   return data.name
@@ -287,7 +295,7 @@ export default function Groups() {
                     .includes(searchValue.toLowerCase());
                 }
               })
-              .map((group) => (
+              .map((group: Group) => (
                 <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={group.name}>
                   <Card profile>
                     <Link to={`/group/${group.id}`}>

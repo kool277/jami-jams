@@ -1,3 +1,4 @@
+import React from "react";
 import classNames from "classnames";
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
@@ -10,7 +11,16 @@ import styles from "assets/jss/material-dashboard-react/components/cardAvatarSty
 
 const useStyles = makeStyles(styles as any);
 
-export default function CardAvatar(props) {
+interface CardAvatarProps {
+  children: React.ReactNode;
+  className?: string;
+  plain?: boolean;
+  profile?: boolean;
+  displayProfile?: boolean;
+  editProfile?: boolean;
+}
+
+export default function CardAvatar(props: CardAvatarProps) {
   const classes = useStyles();
   const {
     children,
@@ -27,7 +37,7 @@ export default function CardAvatar(props) {
     [classes.cardAvatarDisplayProfile]: displayProfile,
     [classes.cardAvatarEditProfile]: editProfile,
     [classes.cardAvatarPlain]: plain,
-    [className]: className !== undefined,
+    ...(className ? { [className]: true } : {}),
   });
   return (
     <div className={cardAvatarClasses} {...rest}>

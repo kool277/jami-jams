@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -7,7 +7,7 @@ import { makeStyles } from "@mui/styles";
 import { Formik } from "formik";
 
 import CustomPopupState from "../CustomPopupState/CustomPopupState";
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Input from "@mui/material/Input";
 
 import * as tool from "../../tools";
@@ -44,7 +44,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default function ServerParameters({ setError, setErrorMessage }) {
+interface ServerParametersProps {
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function ServerParameters({
+  setError,
+  setErrorMessage,
+}: ServerParametersProps) {
   // Formik validation fields
   const initialValues = { domain: backend_address.origin };
   const validationSchema = Yup.object().shape({
@@ -53,7 +61,9 @@ export default function ServerParameters({ setError, setErrorMessage }) {
     ),
   });
 
-  type Settings = Yup.InferType<typeof validationSchema>;
+  type Settings = {
+    domain: string;
+  };
 
   const certificateRevocationTypes = [
     { value: 300000, label: i18next.t("5_minutes", "5 minutes") as string },
@@ -93,7 +103,8 @@ export default function ServerParameters({ setError, setErrorMessage }) {
   const [userAccountLifetime, setUserAccountLifetime] = useState(
     userAccountLifetimeTypes[0]
   );
-  const [sipConfigurationTemplate, setSIPCertificateTemplate] = useState(null);
+  const [sipConfigurationTemplate, setSIPCertificateTemplate] =
+    useState<File | null>(null);
   const [userlifeDisabled, setUserlifeDisabled] = useState(false);
 
   useEffect(() => {
@@ -149,26 +160,41 @@ export default function ServerParameters({ setError, setErrorMessage }) {
     }
   }
 
-  const handleCertificateRevocationChange = (event) => {
-    setCertificateRevocation(
-      tool.retrieveArrayElement(event.target.value, certificateRevocationTypes)
+  const handleCertificateRevocationChange = (event: SelectChangeEvent) => {
+    const selectedOption = tool.retrieveArrayElement(
+      parseInt(event.target.value),
+      certificateRevocationTypes
     );
+    if (selectedOption !== undefined) {
+      setCertificateRevocation(selectedOption);
+    }
   };
 
-  const handleDeviceLifetimeChange = (event) => {
-    setDeviceLifetime(
-      tool.retrieveArrayElement(event.target.value, deviceLifetimeTypes)
+  const handleDeviceLifetimeChange = (event: SelectChangeEvent) => {
+    const selectedOption = tool.retrieveArrayElement(
+      parseInt(event.target.value),
+      deviceLifetimeTypes
     );
+    if (selectedOption !== undefined) {
+      setDeviceLifetime(selectedOption);
+    }
   };
 
-  const handleUserAccountLifetimeChange = (event) => {
-    setUserAccountLifetime(
-      tool.retrieveArrayElement(event.target.value, userAccountLifetimeTypes)
+  const handleUserAccountLifetimeChange = (event: SelectChangeEvent) => {
+    const selectedOption = tool.retrieveArrayElement(
+      parseInt(event.target.value),
+      userAccountLifetimeTypes
     );
+    if (selectedOption !== undefined) {
+      setUserAccountLifetime(selectedOption);
+    }
   };
 
-  const handleSipConfigurationTemplateChange = (event) => {
-    setSIPCertificateTemplate(event.target.files[0]);
+  const handleSipConfigurationTemplateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0] || null;
+    setSIPCertificateTemplate(file);
   };
 
   return (
@@ -249,7 +275,7 @@ export default function ServerParameters({ setError, setErrorMessage }) {
             <Select
               labelId="certificate-revocation-select-label"
               fullWidth
-              value={certificateRevocation.value}
+              value={certificateRevocation.value.toString()}
               onChange={handleCertificateRevocationChange}
               variant="outlined"
             >
@@ -261,7 +287,7 @@ export default function ServerParameters({ setError, setErrorMessage }) {
             <Select
               labelId="device-lifetime-select-label"
               fullWidth
-              value={deviceLifetime.value}
+              value={deviceLifetime.value.toString()}
               onChange={handleDeviceLifetimeChange}
               variant="outlined"
             >
@@ -278,7 +304,7 @@ export default function ServerParameters({ setError, setErrorMessage }) {
             <Select
               labelId="user-account-lifetime-select-label"
               fullWidth
-              value={userAccountLifetime.value}
+              value={userAccountLifetime.value.toString()}
               onChange={handleUserAccountLifetimeChange}
               variant="outlined"
             >

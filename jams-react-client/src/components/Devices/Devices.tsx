@@ -126,7 +126,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
           "?username=" +
           username +
           "&deviceId=" +
-          selectedDevice.deviceId +
+          selectedDevice?.deviceId +
           "&deviceName=" +
           displayName,
         "PUT",
@@ -137,7 +137,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
       requestConfig = configApiCall(
         api_path_rename_device +
           "/" +
-          selectedDevice.deviceId +
+          selectedDevice?.deviceId +
           "?deviceName=" +
           displayName,
         "PUT",
@@ -170,11 +170,11 @@ const Devices: FC<DevicesProps> = ({ username }) => {
         "?username=" +
         username +
         "&deviceId=" +
-        selectedDevice.deviceId;
+        selectedDevice?.deviceId;
       requestConfig = configApiCall(url, "DELETE", null, null);
     } else {
       requestConfig = configApiCall(
-        api_path_delete_auth_device_revoke + "/" + selectedDevice.deviceId,
+        api_path_delete_auth_device_revoke + "/" + selectedDevice?.deviceId,
         "DELETE",
         null,
         null

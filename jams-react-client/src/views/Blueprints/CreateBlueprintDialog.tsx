@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import i18next from "i18next";
@@ -18,7 +18,7 @@ import { api_path_blueprints } from "globalUrls";
 
 import Button from "components/CustomButtons/Button";
 
-const getHelperText = (disableCreate, blueprintName) => {
+const getHelperText = (disableCreate: boolean, blueprintName: string) => {
   if (disableCreate && blueprintName.length > 0) {
     return i18next.t(
       "blueprint_name_already_exists",
@@ -35,7 +35,13 @@ const getHelperText = (disableCreate, blueprintName) => {
   return "";
 };
 
-export default function CreateBlueprintDialog({ open, setOpen }) {
+export default function CreateBlueprintDialog({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) {
   const history = useHistory();
 
   const [blueprintName, setBlueprintName] = useState("");
@@ -48,7 +54,7 @@ export default function CreateBlueprintDialog({ open, setOpen }) {
     setOpen(false);
   };
 
-  const handleCheckBlueprintNameExists = (searchBlueprintNameValue) => {
+  const handleCheckBlueprintNameExists = (searchBlueprintNameValue: string) => {
     setDisableCreate(true);
     axios(
       configApiCall(

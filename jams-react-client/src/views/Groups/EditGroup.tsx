@@ -25,7 +25,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import InputLabel from "@mui/material/InputLabel";
 
-import Select from "@mui/material/Select";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditIcon from "@mui/icons-material/Edit";
@@ -65,6 +65,9 @@ import { debounce } from "lodash";
 
 import { getBlueprintsOptions } from "./getBlueprintsOptions";
 import { ClassNameMap } from "@mui/material";
+import { Blueprint } from "views/Blueprints/Blueprints";
+import { UserProfile } from "views/UserProfile/DisplayUserProfile";
+import { Group } from "./Groups";
 
 const useStyles = makeStyles(() => ({
   ...(devicesStyle as any),
@@ -112,24 +115,34 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function EditGroup(props) {
+export interface GroupMember {
+  username: string;
+  groupId: string;
+}
+
+interface EditGroupProps {
+  groupid: string;
+  name?: string;
+}
+
+export default function EditGroup(props: EditGroupProps) {
   const classes: ClassNameMap<any> = useStyles();
   const history = useHistory();
 
   const [name, setName] = useState("");
   const [newName, setNewName] = useState("");
-  const [blueprints, setBlueprints] = useState([]);
+  const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
   const [selectedBlueprint, setSelectedBlueprint] = useState({
     value: 0,
     label: "No blueprint",
   });
-  const [groupMembers, setGroupMembers] = useState([]);
+  const [groupMembers, setGroupMembers] = useState<UserProfile[]>([]);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [groupNameExits, setGroupNameExits] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
 
-  const getUserInfo = (username) =>
-    new Promise((resolve, reject) => {
+  const getUserInfo = (username: string) =>
+    new Promise<UserProfile>((resolve, reject) => {
       axios(
         configApiCall(api_path_get_user_profile + username, "GET", null, null)
       )
@@ -149,7 +162,7 @@ export default function EditGroup(props) {
         axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
           .then((response) => {
             setBlueprints(response.data);
-            response.data.forEach((blueprint, i) => {
+            response.data.forEach((blueprint: Blueprint, i: number) => {
               if (blueprint.name === group["blueprint"])
                 setSelectedBlueprint({ value: i, label: blueprint.name });
             });
@@ -174,9 +187,9 @@ export default function EditGroup(props) {
         )
           .then((response) => {
             const members = response.data;
-            members.forEach((member) => {
-              getUserInfo(member.username).then((userInfo) => {
-                const newGroupMembers = groupMembers;
+            members.forEach((member: GroupMember) => {
+              getUserInfo(member.username).then((userInfo: UserProfile) => {
+                const newGroupMembers: UserProfile[] = groupMembers;
                 newGroupMembers.push(userInfo);
                 setGroupMembers(newGroupMembers);
 
@@ -242,9 +255,9 @@ export default function EditGroup(props) {
       )
     )
       .then((response) => {
-        const profiles = [];
+        const profiles: UserProfile[] = [];
         const profilesResults = response.data.profiles;
-        profilesResults.forEach((profile) => {
+        profilesResults.forEach((profile: UserProfile) => {
           let existingUser = false;
           users.forEach((user) => {
             if (profile.username === user.username) existingUser = true;
@@ -262,7 +275,7 @@ export default function EditGroup(props) {
       });
   };
 
-  const addUserInGroup = (user) => {
+  const addUserInGroup = (user: UserProfile) => {
     const data = {
       username: user.username,
     };
@@ -290,7 +303,7 @@ export default function EditGroup(props) {
       });
   };
 
-  const deleteUserFromGroup = (user) => {
+  const deleteUserFromGroup = (user: UserProfile) => {
     const data = {
       username: user.username,
     };
@@ -316,8 +329,8 @@ export default function EditGroup(props) {
       });
   };
 
-  const handleBlueprintsChange = (e) => {
-    const option = getBlueprintsOptions(blueprints)[e.target.value];
+  const handleBlueprintsChange = (e: SelectChangeEvent<number>) => {
+    const option = getBlueprintsOptions(blueprints)[e.target.value as number];
     updateGroup(option.label !== "No blueprint found" ? option.label : "");
     setSelectedBlueprint(option);
   };
@@ -331,7 +344,7 @@ export default function EditGroup(props) {
     []
   );
 
-  const handleCheckGroupNameExists = (searchGroupNameValue) => {
+  const handleCheckGroupNameExists = (searchGroupNameValue: string) => {
     axios(
       configApiCall(
         api_path_get_list_group + "?groupName=" + searchGroupNameValue,
@@ -342,7 +355,7 @@ export default function EditGroup(props) {
     )
       .then((response) => {
         setGroupNameExits(false);
-        response.data.forEach((group) => {
+        response.data.forEach((group: Group) => {
           if (searchGroupNameValue === group.name) {
             setGroupNameExits(true);
           }

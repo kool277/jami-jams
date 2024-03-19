@@ -1,7 +1,14 @@
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import auth from "./auth";
 
-export const ProtectedRoute = ({ component: Component, ...rest }) => {
+export const ProtectedRoute = ({
+  component: Component,
+  ...rest
+}: {
+  component: React.ComponentType<any>;
+  [key: string]: any;
+}) => {
   return (
     <Route
       {...rest}

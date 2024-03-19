@@ -21,7 +21,16 @@ interface PolicyDataProp {
   setSnackbar: (snackbar: SnackbarProps) => void;
 }
 
-export const PolicyDataContext = createContext<PolicyDataProp>(null);
+export const PolicyDataContext = createContext<PolicyDataProp>({
+  policyData: DEFAULT_POLICY_DATA,
+  updatePolicyData: () => {},
+  snackbar: {
+    open: false,
+    severity: "success",
+    message: "",
+  },
+  setSnackbar: () => {},
+});
 
 interface Props {
   blueprintName: string;

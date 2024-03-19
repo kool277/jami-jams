@@ -1,3 +1,4 @@
+import React from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@mui/styles";
 import clsx from "clsx";
@@ -35,7 +36,12 @@ const useQontoStepIconStyles = makeStyles({
   },
 });
 
-function QontoStepIcon(props) {
+interface QontoStepIconProps {
+  active: boolean;
+  completed: boolean;
+}
+
+function QontoStepIcon(props: QontoStepIconProps) {
   const classes = useQontoStepIconStyles();
   const { active, completed } = props;
 
@@ -88,11 +94,18 @@ const useColorlibStepIconStyles = makeStyles({
   },
 });
 
-function ColorlibStepIcon(props) {
+type IconKeys = 1 | 2 | 3;
+interface ColorlibStepIconProps {
+  active: boolean;
+  completed: boolean;
+  icon: IconKeys;
+}
+
+function ColorlibStepIcon(props: ColorlibStepIconProps) {
   const classes = useColorlibStepIconStyles();
   const { active, completed } = props;
 
-  const icons = {
+  const icons: Record<IconKeys, React.JSX.Element> = {
     1: <SettingsIcon />,
     2: <GroupAddIcon />,
     3: <VideoLabelIcon />,
@@ -105,7 +118,7 @@ function ColorlibStepIcon(props) {
         [classes.completed]: completed,
       })}
     >
-      {icons[String(props.icon)]}
+      {icons[props.icon]}
     </div>
   );
 }
@@ -153,7 +166,11 @@ function getSteps() {
   ];
 }
 
-export default function CustomizedSteppers(props) {
+interface CustomizedSteppersProps {
+  step: number;
+}
+
+export default function CustomizedSteppers(props: CustomizedSteppersProps) {
   const classes = useStyles();
   const steps = getSteps();
 
@@ -169,3 +186,7 @@ export default function CustomizedSteppers(props) {
     </div>
   );
 }
+
+CustomizedSteppers.propTypes = {
+  step: PropTypes.number,
+};

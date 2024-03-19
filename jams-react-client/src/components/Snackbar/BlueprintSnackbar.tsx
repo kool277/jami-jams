@@ -1,11 +1,4 @@
-import {
-  forwardRef,
-  createRef,
-  Dispatch,
-  FC,
-  SetStateAction,
-  ForwardedRef,
-} from "react";
+import { forwardRef, createRef, FC, ForwardedRef } from "react";
 
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
@@ -29,7 +22,7 @@ const SlideTransition = forwardRef(function SlideTransition(
 
 interface BlueprintSnackbarProps {
   snackbar: SnackbarProps;
-  setSnackbar: Dispatch<SetStateAction<SnackbarProps>>;
+  setSnackbar: (snackbar: SnackbarProps) => void;
 }
 
 export const BlueprintSnackbar: FC<BlueprintSnackbarProps> = ({
@@ -39,7 +32,8 @@ export const BlueprintSnackbar: FC<BlueprintSnackbarProps> = ({
   const snackbarRef = createRef();
 
   const handleClose = () => {
-    setSnackbar((state) => ({ ...state, open: false }));
+    const newState = { ...snackbar, open: false };
+    setSnackbar(newState);
   };
 
   return (

@@ -28,12 +28,13 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
+import { Theme } from "@mui/material";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import generator from "generate-password-browser";
 
-const styles = (theme) => ({
+const styles = (theme: Theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -77,7 +78,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
     });
   };
 
-  const changePassword = (values) => {
+  const changePassword = (values: { password: string }) => {
     const data = {
       username: username,
       password: values.password,
@@ -95,7 +96,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
   const passwordSchema = Yup.object().shape({
     password: Yup.string().required("Password is required"),
     passwordConfirmation: Yup.string().oneOf(
-      [Yup.ref("password"), null],
+      [Yup.ref("password"), undefined],
       "Passwords must match"
     ),
   });

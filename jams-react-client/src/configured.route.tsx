@@ -1,9 +1,16 @@
+import React from "react";
 import { Route } from "react-router-dom";
 import auth from "./auth";
 import SignUp from "layouts/SignUp";
 import SignIn from "layouts/SignIn";
 
-export const ConfiguredRoute = ({ component: Component, ...rest }) => {
+export const ConfiguredRoute = ({
+  component: Component,
+  ...rest
+}: {
+  component: React.ComponentType<any>;
+  [key: string]: any;
+}) => {
   return (
     <Route
       {...rest}
