@@ -99,8 +99,9 @@ create_blueprint() {
             "rendezVous":false,
             "defaultModerators":"",
             "upnpEnabled":true,
-            "allowLookup":true
-    }'
+            "allowLookup":true,
+            "uiCustomization":"{\"areTipsEnabled\":true,\"backgroundType\":\"default\"}"
+        }'
 }
 
 create_group() {

@@ -4,54 +4,74 @@ import i18next from "i18next";
 import configApiCall from "api";
 import { api_path_blueprints } from "globalUrls";
 import { debounce } from "lodash";
-import { DEFAULT_UI_CUSTOMIZATION, PolicyData } from "./policyData.constants";
+import {
+  DEFAULT_UI_CUSTOMIZATION,
+  PolicyData,
+  ServerPolicyData,
+  createDefaultServerPolicyData,
+} from "./policyData.constants";
 import { Dispatch, SetStateAction } from "react";
 import { SnackbarProps } from "./PolicyDataContext";
 import { ServerUiCustomization } from "./ServerUiCustomization";
 
-const updatePerms = (data: PolicyData, field: string, value: boolean) => {
-  data.defaultModerators = data.blueprintModerators
-    ?.map((moderator) => moderator.id)
-    .join("/");
-  delete data.blueprintModerators;
+const updatePerms = (
+  data: PolicyData,
+  serverPolicyData: ServerPolicyData
+): ServerPolicyData => {
+  serverPolicyData.videoEnabled = data.videoEnabled;
+  serverPolicyData.publicInCalls = data.publicInCalls;
+  serverPolicyData.autoAnswer = data.autoAnswer;
+  serverPolicyData.peerDiscovery = data.peerDiscovery;
+  serverPolicyData.accountDiscovery = data.accountDiscovery;
+  serverPolicyData.accountPublish = data.accountPublish;
+  serverPolicyData.allowLookup = data.allowLookup;
+  serverPolicyData.rendezVous = data.rendezVous;
+  serverPolicyData.defaultModerators =
+    data.blueprintModerators?.map((moderator) => moderator.id).join("/") ?? "";
 
-  if (field === "peerDiscovery") {
-    data.accountDiscovery = value;
-    data.accountPublish = value;
-  }
-
-  return data;
+  return serverPolicyData;
 };
 
-const updateConfig = (data: PolicyData) => {
+const updateConfig = (
+  data: PolicyData,
+  serverPolicyData: ServerPolicyData
+): ServerPolicyData => {
   const { selectedTurnOption, selectedDHTProxyOption } = data;
+  serverPolicyData.upnpEnabled = data.upnpEnabled;
   // if undefined, it means we want the default values
   if (selectedTurnOption !== "customTurn") {
-    delete data.turnServer;
-    delete data.turnServerUserName;
-    delete data.turnServerPassword;
+    delete serverPolicyData.turnServer;
+    delete serverPolicyData.turnServerUserName;
+    delete serverPolicyData.turnServerPassword;
   }
 
   if (selectedDHTProxyOption !== "customDHTProxy") {
-    delete data.proxyServer;
-    delete data.dhtProxyListUrl;
+    delete serverPolicyData.proxyServer;
+    delete serverPolicyData.dhtProxyListUrl;
   }
 
   if (selectedTurnOption === "customTurn") {
-    data.turnEnabled = true;
+    serverPolicyData.turnEnabled = true;
+    serverPolicyData.turnServer = data.turnServer;
+    serverPolicyData.turnServerUserName = data.turnServerUserName;
+    serverPolicyData.turnServerPassword = data.turnServerPassword;
   } else if (selectedTurnOption === "disabledTurn") {
-    data.turnEnabled = false;
+    serverPolicyData.turnEnabled = false;
+  } else {
+    delete serverPolicyData.turnEnabled;
   }
-  delete data.selectedTurnOption;
 
   if (selectedDHTProxyOption === "customDHTProxy") {
-    data.proxyEnabled = true;
+    serverPolicyData.proxyEnabled = true;
+    serverPolicyData.proxyServer = data.proxyServer;
+    serverPolicyData.dhtProxyListUrl = data.dhtProxyListUrl;
   } else if (selectedDHTProxyOption === "disabledDHTProxy") {
-    data.proxyEnabled = false;
+    serverPolicyData.proxyEnabled = false;
+  } else {
+    delete serverPolicyData.proxyEnabled;
   }
-  delete data.selectedDHTProxyOption;
 
-  return data;
+  return serverPolicyData;
 };
 
 const convertRgbaToArgb = (rgba: string) => {
@@ -65,11 +85,10 @@ const convertRgbaToArgb = (rgba: string) => {
   return "#" + rgba.substring(7, 9) + rgba.substring(1, 7);
 };
 
-const updateUiCustomization = (data: PolicyData) => {
-  if (data.uiCustomization.isCustomizationEnabled === false) {
-    return;
-  }
-
+const updateUiCustomization = (
+  data: PolicyData,
+  serverPolicyData: ServerPolicyData
+): ServerPolicyData => {
   const {
     hasTitle,
     title,
@@ -89,6 +108,11 @@ const updateUiCustomization = (data: PolicyData) => {
     logoUrl,
     logoSize,
   } = data.uiCustomization;
+
+  if (data.uiCustomization.isCustomizationEnabled === false) {
+    serverPolicyData.uiCustomization = data.uiCustomization;
+    return serverPolicyData;
+  }
 
   const ui: ServerUiCustomization = {
     title: hasTitle ? title : "",
@@ -120,14 +144,14 @@ const updateUiCustomization = (data: PolicyData) => {
     ui.backgroundColorOrUrl = backgroundColor || "#ffffff";
   }
 
-  console.log("updateUiCustomization", ui);
+  serverPolicyData.uiCustomization = JSON.stringify(ui);
 
-  return ui;
+  return serverPolicyData;
 };
 
 const sendPutRequest = (
   blueprintName: string,
-  data: ServerUiCustomization,
+  data: ServerPolicyData,
   setSnackbar: (snackbar: SnackbarProps) => void
 ) => {
   console.log("PUT", data);
@@ -177,15 +201,11 @@ export const _updatePolicyData = (
   setSnackbar: (snackbar: SnackbarProps) => void
 ) => {
   setPolicyData((state) => ({ ...state, [field]: value }));
-
   let data: any = { ...policyData, [field]: value };
-  data = updatePerms(data, field, value);
-  data = updateConfig(data);
+  let serverPolicyData: ServerPolicyData = createDefaultServerPolicyData();
+  serverPolicyData = updatePerms(data, serverPolicyData);
+  serverPolicyData = updateConfig(data, serverPolicyData);
 
-  const ui: ServerUiCustomization | undefined = updateUiCustomization(data);
-
-  console.log("updatePolicyData", { field, value });
-  if (ui !== undefined) {
-    debouncedSendPutRequest(blueprintName, ui, setSnackbar);
-  }
+  serverPolicyData = updateUiCustomization(data, serverPolicyData);
+  debouncedSendPutRequest(blueprintName, serverPolicyData, setSnackbar);
 };

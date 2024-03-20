@@ -17,6 +17,10 @@ import configApiCall from "api";
 import { api_path_blueprints } from "globalUrls";
 
 import Button from "components/CustomButtons/Button";
+import {
+  DEFAULT_UI_CUSTOMIZATION,
+  ServerPolicyData,
+} from "views/Blueprint/policyData.constants";
 
 const getHelperText = (disableCreate: boolean, blueprintName: string) => {
   if (disableCreate && blueprintName.length > 0) {
@@ -84,7 +88,7 @@ export default function CreateBlueprintDialog({
   );
 
   const handleCreateBlueprint = () => {
-    const defaultPolicyData = {
+    const defaultPolicyData: ServerPolicyData = {
       videoEnabled: true,
       publicInCalls: false,
       allowCertFromContact: true,
@@ -98,6 +102,7 @@ export default function CreateBlueprintDialog({
       defaultModerators: "",
       upnpEnabled: true,
       allowLookup: true,
+      uiCustomization: DEFAULT_UI_CUSTOMIZATION,
     };
 
     axios(

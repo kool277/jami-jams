@@ -170,6 +170,10 @@ export default function EditBlueprintPermissions(
     updatePolicyData("blueprintModerators", newBlueprintModerators);
   };
 
+  useEffect(() => {
+    searchUsers();
+  }, []);
+
   return (
     <div>
       <BlueprintSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />

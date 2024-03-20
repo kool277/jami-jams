@@ -77,14 +77,19 @@ const convertArgbToRgba = (argb: string) => {
   return "#" + argb.substr(3, 6) + argb.substr(1, 2);
 };
 
-const setCustomizationSettings = (uiCustomization: string) => {
-  let ParsedUiCustomization: UiCustomization = DEFAULT_UI_CUSTOMIZATION;
-  if (!uiCustomization) {
-    return ParsedUiCustomization;
+const setCustomizationSettings = (
+  uiCustomization: string | UiCustomization
+) => {
+  if (!uiCustomization || typeof uiCustomization !== "string") {
+    return uiCustomization;
   }
   // If we reach this point, it means that the uiCustomization is enabled
+  let ParsedUiCustomization: UiCustomization = DEFAULT_UI_CUSTOMIZATION;
   const result = JSON.parse(uiCustomization);
-  ParsedUiCustomization.isCustomizationEnabled = true;
+  ParsedUiCustomization.isCustomizationEnabled =
+    result.isCustomizationEnabled !== undefined
+      ? result.isCustomizationEnabled
+      : true;
   ParsedUiCustomization.hasTitle = result.title !== "";
   ParsedUiCustomization.title = result.title;
   ParsedUiCustomization.hasDescription = result.description !== "";
@@ -121,10 +126,11 @@ const setCustomizationSettings = (uiCustomization: string) => {
 
 export const parsePolicyData = async (data: string): Promise<PolicyData> => {
   let policyData = JSON.parse(data);
-  const tempUiCustomization: string = policyData.uiCustomization;
   policyData = await setPermissionsSettings(policyData);
   policyData = setConfigurationSettings(policyData);
-  policyData.uiCustomization = setCustomizationSettings(tempUiCustomization);
+  policyData.uiCustomization = setCustomizationSettings(
+    policyData.uiCustomization
+  );
 
   return policyData as PolicyData;
 };

@@ -107,3 +107,46 @@ export const DEFAULT_POLICY_DATA = {
 export interface PolicyData extends PolicyDataPermissions, PolicyDataNetwork {
   uiCustomization: UiCustomization;
 }
+
+export function createDefaultServerPolicyData(): ServerPolicyData {
+  return {
+    videoEnabled: true,
+    publicInCalls: false,
+    allowCertFromContact: true,
+    allowCertFromHistory: true,
+    allowCertFromTrusted: true,
+    autoAnswer: false,
+    peerDiscovery: true,
+    accountDiscovery: true,
+    accountPublish: true,
+    rendezVous: false,
+    defaultModerators: "",
+    upnpEnabled: true,
+    allowLookup: true,
+    uiCustomization: "",
+  };
+}
+
+export interface ServerPolicyData {
+  videoEnabled: boolean;
+  publicInCalls: boolean;
+  allowCertFromContact: boolean;
+  allowCertFromHistory: boolean;
+  allowCertFromTrusted: boolean;
+  autoAnswer: boolean;
+  peerDiscovery: boolean;
+  accountDiscovery: boolean;
+  accountPublish: boolean;
+  rendezVous: boolean;
+  defaultModerators: string;
+  upnpEnabled: boolean;
+  allowLookup: boolean;
+  uiCustomization: string | UiCustomization;
+  turnEnabled?: boolean;
+  turnServer?: string;
+  turnServerUserName?: string;
+  turnServerPassword?: string;
+  proxyEnabled?: boolean;
+  dhtProxyListUrl?: string;
+  proxyServer?: string;
+}

@@ -48,7 +48,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import i18next from "i18next";
-import { Contact } from "../../types/Contact";
+import { Contact, ServerContact } from "../../types/Contact";
 import { UserProfile } from "views/UserProfile/DisplayUserProfile";
 
 const styles = {
@@ -162,7 +162,7 @@ export default function Users(props: UsersProps) {
           TODO: Include the username of the user of which we want to display contacts
           at the moment the admin sees his contacts in each user profile he visits
         */
-        const originalContacts = response.data.filter(
+        const originalContacts: Contact[] = response.data.filter(
           (contact: Contact) => contact.added > contact.removed
         );
         for (const contact of originalContacts) {
@@ -202,18 +202,18 @@ export default function Users(props: UsersProps) {
       });
   };
 
-  const addContactToUser = (contact: Contact) => {
-    console.log(contact);
-    const data = {
+  const addContactToUser = (contact: UserProfile) => {
+    const data: ServerContact = {
       owner: props.username,
-      uri: contact.uri,
+      uri: contact.id,
       displayName: `${contact.firstName} ${contact.lastName}`,
-      timestamp: "",
-      status: "",
+      added: 0,
+      removed: 0,
       banned: false,
       confirmed: false,
+      conversationId: "",
     };
-    if (auth.hasAdmin()) {
+    if (auth.hasAdminScope()) {
       axios(
         configApiCall(
           api_path_get_admin_contacts + "?username=" + props.username,
