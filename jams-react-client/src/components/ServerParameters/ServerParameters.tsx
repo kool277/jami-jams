@@ -103,8 +103,6 @@ export default function ServerParameters({
   const [userAccountLifetime, setUserAccountLifetime] = useState(
     userAccountLifetimeTypes[0]
   );
-  const [sipConfigurationTemplate, setSIPCertificateTemplate] =
-    useState<File | null>(null);
   const [userlifeDisabled, setUserlifeDisabled] = useState(false);
 
   useEffect(() => {
@@ -139,7 +137,6 @@ export default function ServerParameters({
         crlLifetime: certificateRevocation.value,
         deviceLifetime: deviceLifetime.value,
         userLifetime: userAccountLifetime.value,
-        sipConfig: sipConfigurationTemplate,
         signingAlgorithm: "SHA512WITHRSA",
       };
       axios(configApiCall(api_path_post_install_server, "POST", jsonData, null))
@@ -188,13 +185,6 @@ export default function ServerParameters({
     if (selectedOption !== undefined) {
       setUserAccountLifetime(selectedOption);
     }
-  };
-
-  const handleSipConfigurationTemplateChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0] || null;
-    setSIPCertificateTemplate(file);
   };
 
   return (
@@ -320,19 +310,6 @@ export default function ServerParameters({
                 }
               </span>
             ) : null}
-            <Typography variant="subtitle1" gutterBottom>
-              {
-                i18next.t(
-                  "sip_configuration_template",
-                  "SIP Configuration Template"
-                ) as string
-              }
-            </Typography>
-            <Input
-              fullWidth
-              type="file"
-              onChange={handleSipConfigurationTemplateChange}
-            />
 
             <Button
               type="submit"

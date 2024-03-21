@@ -13,12 +13,13 @@ post() {
     _data=$2
 
     printf '\n\n%s %s\n' "$_method" "$_route"
-    LAST_CURL_RESPONSE=$(curl "$HOST$_route" \
-        -sk \
-        -D /dev/stderr \
-        -H "Authorization: Bearer $BEARER" \
-        -H 'Content-Type: application/json;charset=UTF-8' \
-        --data-raw "$_data"
+    LAST_CURL_RESPONSE=$(
+        curl "$HOST$_route" \
+            -sk \
+            -D /dev/stderr \
+            -H "Authorization: Bearer $BEARER" \
+            -H 'Content-Type: application/json;charset=UTF-8' \
+            --data-raw "$_data"
     )
     echo "$LAST_CURL_RESPONSE"
 }
@@ -28,11 +29,12 @@ get_bearer() {
     _route=$2
 
     printf '\n\n%s %s\n' "$_method" "$_route"
-    BEARER=$(curl "$HOST$_route" \
-        -sk \
-        -D /dev/stderr \
-        -X "$_method" \
-        --data-raw '{"username":"admin","password":"admin"}'
+    BEARER=$(
+        curl "$HOST$_route" \
+            -sk \
+            -D /dev/stderr \
+            -X "$_method" \
+            --data-raw '{"username":"admin","password":"admin"}'
     )
     BEARER=$(echo "$BEARER" | jq -r '.access_token')
     echo "BEARER=$BEARER"
@@ -52,7 +54,7 @@ install_ca() {
             "state":"myState",
             "country":"AI",
             "lifetime":157784630000
-        }}'
+    }}'
 }
 
 install_auth() {
@@ -63,7 +65,7 @@ install_auth() {
                 "publicNameServer":"http://ns.jami.net",
                 "publicNames":false
             }
-        }'
+    }'
 }
 
 install_settings() {
@@ -73,9 +75,8 @@ install_settings() {
             "crlLifetime":300000,
             "deviceLifetime":31556952000,
             "userLifetime":31556952000,
-            "sipConfig":null,
             "signingAlgorithm":"SHA512WITHRSA"
-        }'
+    }'
 }
 
 login() {
@@ -99,7 +100,7 @@ create_blueprint() {
             "defaultModerators":"",
             "upnpEnabled":true,
             "allowLookup":true
-        }'
+    }'
 }
 
 create_group() {
@@ -132,7 +133,7 @@ create_user() {
             "phoneNumberExtension":"",
             "mobileNumber":"",
             "jamiId":""
-        }'
+    }'
 
     post "/api/admin/group/members/$GROUP_ID" '{"username":"'"$_username"'"}'
 }
