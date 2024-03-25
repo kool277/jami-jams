@@ -3,7 +3,7 @@
     "password": "Passwort",
     "confirm_password": "Passwort bestätigen",
     "continue": "Weiter",
-    "users": "Users",
+    "users": "Benutzer",
     "groups": "Gruppen",
     "blueprints": "Vorlagen",
     "settings": "Einstellungen",
@@ -117,7 +117,7 @@
     "permissions": "Rechte",
     "configuration": "Konfiguration",
     "enable_upnp": "UPnP einschalten",
-    "use_jami_default_turn_configuration": "Use default TURN configuration",
+    "use_jami_default_turn_configuration": "Standard-TURN-Konfiguration verwenden",
     "use_a_custom_turn_configuration": "Eine eigene TURN-Konfiguration verwenden",
     "turn_server_address": "TURN-Server-Adresse",
     "turn_server_username": "TURN-Server-Benutzername",
@@ -269,9 +269,9 @@
     "preview_tip1": "Bild und einen Spitznamen hinzufügen, um Ihr Profil zu vervollständigen",
     "preview_tip2": "Warum sollte ich mein Konto speichern?",
     "preview_tip3": "Wie setze ich Shortcuts?",
-    "tip_box_id_color": "Tip Box and Jami ID color",
-    "enable_main_box": "Add a box behind the title, description and Jami ID",
-    "main_box_color": "Box color",
-    "logo_size": "Size",
-    "default_settings": "Default settings"
+    "tip_box_id_color": "Tip Box und Jami ID-Farbe",
+    "enable_main_box": "Eine Box hinter dem Titel, der Beschreibung und der Jami-ID hinzufügen",
+    "main_box_color": "Boxfarbe",
+    "logo_size": "Größe",
+    "default_settings": "Standardeinstellungen"
 }
