@@ -172,8 +172,8 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
                     "aria-label": placeholder,
                   },
                   onKeyUp: handleSearchTargets,
-                  inputMarginClass: classes.margin,
                 }}
+                inputClass={classes.margin}
               />
             </div>
             <Divider />

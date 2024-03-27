@@ -44,8 +44,8 @@ interface CustomInputProps {
       "aria-label": string;
     };
     onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    inputMarginClass?: string;
   };
+  inputClass?: string;
   error?: boolean;
   success?: boolean;
 }
@@ -58,6 +58,7 @@ export default function CustomInput(props: CustomInputProps) {
     id,
     labelProps,
     inputProps,
+    inputClass,
     error,
     success,
   } = props;
@@ -71,9 +72,16 @@ export default function CustomInput(props: CustomInputProps) {
     [classes.underlineSuccess]: success && !error,
     [classes.underline]: true,
   });
-  const marginTop = classNames({
+  // Existing logic for applying classes based on labelText
+  const marginTopClass = classNames({
     [classes.marginTop]: labelText === undefined,
   });
+
+  const inputRootClass = classNames({
+    [marginTopClass]: true,
+    ...(inputClass ? { [inputClass]: true } : {}),
+  });
+
   return (
     <FormControl
       {...formControlProps}
@@ -90,7 +98,7 @@ export default function CustomInput(props: CustomInputProps) {
       ) : null}
       <Input
         classes={{
-          root: marginTop + " " + inputProps?.inputMarginClass,
+          root: inputRootClass,
           disabled: classes.disabled,
           underline: underlineClasses,
         }}

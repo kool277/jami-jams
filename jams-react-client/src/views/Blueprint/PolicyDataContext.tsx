@@ -75,11 +75,9 @@ export const PolicyDataContextProvider: FC<Props> = ({
       )
     )
       .then((response) => {
-        console.log("GET", response.data.policyData);
         return parsePolicyData(response.data.policyData);
       })
       .then((policyData) => {
-        console.log("PARSED", policyData);
         setPolicyData(policyData);
       })
       .catch((error) => {

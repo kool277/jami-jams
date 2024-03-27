@@ -146,11 +146,13 @@ export default function Users(props: UsersProps) {
       })
       .catch((error) => {
         setUsers([]);
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
-        } else if (error.response.status === 403) {
+        } else if (error.response && error.response.status === 403) {
           setAllowedToAdd(false);
+        } else {
+          console.error("Error during API request on searchContacts: " + error);
         }
       });
   };
@@ -212,9 +214,11 @@ export default function Users(props: UsersProps) {
         setLoading(false);
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
+        } else {
+          console.error("Error during API request on getAllContacts: " + error);
         }
       });
   };

@@ -185,12 +185,13 @@ export default function EditGroup(props: EditGroupProps) {
             });
           })
           .catch((error) => {
-            if (error.response.status === 401) {
+            if (error.response && error.response.status === 401) {
               auth.authenticated = false;
               history.push("/signin");
-            }
-            if (error.response.status === 500) {
+            } else if (error.response && error.response.status === 500) {
               setBlueprints([]);
+            } else {
+              console.error("Error fetching blueprints: " + error);
             }
           });
 
@@ -217,12 +218,15 @@ export default function EditGroup(props: EditGroupProps) {
             });
           })
           .catch((error) => {
-            if (error.response.status === 404) {
+            if (error.response && error.response.status === 404) {
               setGroupMembers([]);
-            }
-            if (error.response.status === 401) {
+            } else if (error.response && error.response.status === 401) {
               auth.authenticated = false;
               history.push("/signin");
+            } else {
+              console.error(
+                "Error fetching group members of: " + props.name + " " + error
+              );
             }
           });
 
@@ -285,9 +289,11 @@ export default function EditGroup(props: EditGroupProps) {
       })
       .catch((error) => {
         setUsers([]);
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
+        } else {
+          console.error("Error fetching users: " + error);
         }
       });
   };
@@ -314,9 +320,9 @@ export default function EditGroup(props: EditGroupProps) {
         setOpenDrawer(false);
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        if (error.response && error.response.status === 409) {
           alert(`${user.username} is already part of ${name}`);
-        } else console.log("Error updating group: " + error);
+        } else console.error("Error updating group: " + error);
       });
   };
 

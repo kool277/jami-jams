@@ -79,7 +79,7 @@ export default function Subscription(props: SubscriptionProps) {
         if (response.data["activated"] === true) setActivated(true);
       })
       .catch((error) => {
-        if (error.response.status === 500) {
+        if (error.response && error.response.status === 500) {
           props.setErrorMessage(
             i18next.t(
               "an_error_occured_while_getting_license_information",
@@ -88,6 +88,8 @@ export default function Subscription(props: SubscriptionProps) {
           );
           props.setSeverity("error");
           props.setError(true);
+        } else {
+          console.error("Error getting license information: " + error);
         }
       });
   });
@@ -114,7 +116,6 @@ export default function Subscription(props: SubscriptionProps) {
   });
 
   function handleSubmit(values: { subscriptionCode: string }) {
-    //e.preventDefault();
     const jsonData = {
       base64License: values.subscriptionCode,
     };
@@ -138,7 +139,7 @@ export default function Subscription(props: SubscriptionProps) {
         props.setError(true);
       })
       .catch((error) => {
-        if (error.response.status === 500) {
+        if (error.response && error.response.status === 500) {
           props.setErrorMessage(
             i18next.t(
               "a_generic_occured_while_trying_to_load_license_or_license_could_not_be_found",
@@ -147,6 +148,8 @@ export default function Subscription(props: SubscriptionProps) {
           );
           props.setSeverity("error");
           props.setError(true);
+        } else {
+          console.error("Error registering license: " + error);
         }
       });
   }

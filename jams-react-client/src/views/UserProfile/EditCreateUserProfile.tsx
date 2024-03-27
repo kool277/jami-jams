@@ -511,8 +511,7 @@ export default function EditCreateUserProfile(
         }
         return false;
       })
-      .catch((error) => {
-        console.log("Error checking for existing users: " + error);
+      .catch(() => {
         return false;
       });
 

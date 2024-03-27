@@ -44,8 +44,12 @@ import * as tool from "../../tools";
 import Button from "components/CustomButtons/Button";
 import { Group } from "./Groups";
 
-const getHelperText = (disableCreate: boolean, groupName: string) => {
-  if (disableCreate && groupName.length > 0) {
+const getHelperText = (
+  disableCreate: boolean,
+  groupName: string,
+  groupNameExits: boolean
+) => {
+  if (disableCreate && groupName.length > 0 && groupNameExits) {
     return i18next.t(
       "group_name_already_exists",
       "Group name already exists!"
@@ -79,7 +83,7 @@ export default function CreateGroupDialog({
     label: "No blueprint",
   });
 
-  const helperText = getHelperText(disableCreate, groupName);
+  const helperText = getHelperText(disableCreate, groupName, groupNameExits);
 
   const handleCheckGroupNameExists = (searchGroupNameValue: string) => {
     setDisableCreate(true);
@@ -162,12 +166,13 @@ export default function CreateGroupDialog({
         setSelectedBlueprint(getBlueprintsOptions(response.data)[0]);
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
-        }
-        if (error.response.status === 500) {
+        } else if (error.response && error.response.status === 500) {
           setBlueprints([]);
+        } else {
+          console.error("Error getting blueprints: " + error);
         }
       });
   };

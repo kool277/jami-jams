@@ -345,9 +345,11 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
           });
         })
         .catch((error) => {
-          if (error.response.status === 401) {
+          if (error.response && error.response.status === 401) {
             auth.authenticated = false;
             history.push("/signin");
+          } else {
+            console.error("Error getting user: " + error);
           }
         });
     });

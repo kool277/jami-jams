@@ -178,9 +178,11 @@ export default function Groups() {
               group["groupMembersLength"] = response.data.length;
             })
             .catch((error) => {
-              if (error.response.status === 401) {
+              if (error.response && error.response.status === 401) {
                 auth.authenticated = false;
                 history.push("/");
+              } else {
+                console.error("Error getting group members: " + error);
               }
             });
         });
@@ -188,12 +190,13 @@ export default function Groups() {
         setLoading(false);
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
-        }
-        if (error.response.status === 404) {
+        } else if (error.response && error.response.status === 404) {
           setZeroGroup(true);
+        } else {
+          console.error("Error getting groups: " + error);
         }
       });
     return () => {

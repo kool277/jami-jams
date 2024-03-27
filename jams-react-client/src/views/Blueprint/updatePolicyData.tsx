@@ -171,8 +171,6 @@ const sendPutRequest = (
   data: ServerPolicyData,
   setSnackbar: (snackbar: SnackbarProps) => void
 ) => {
-  console.log("PUT", data);
-
   axios(
     configApiCall(
       api_path_blueprints + "?name=" + blueprintName,

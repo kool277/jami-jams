@@ -53,7 +53,7 @@ public class AddressServlet extends HttpServlet {
             throws ServletException, IOException {
         String[] path = req.getPathInfo().split("/");
         String username = nameServer.getNameFromAddress(path[path.length - 1]);
-
+        resp.setContentType("application/json;charset=UTF-8");
         if (username == null) {
             TomcatCustomErrorHandler.sendCustomError(resp, 404, "Address not found!");
             return;

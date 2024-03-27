@@ -144,10 +144,10 @@ class Auth {
         cb();
       })
       .catch((error) => {
-        if (error.response.status === 404) {
+        if (error.response && error.response.status === 404) {
           this.admin = true;
         } else {
-          console.log(
+          console.error(
             "Error during API request on checkAdminAccountStatus: " + error
           );
         }
@@ -160,16 +160,18 @@ class Auth {
       .then((response) => {
         if (response.data["installed"] === "true") {
           this.installed = true;
-          console.log("Server is installed");
         } else {
           this.installed = false;
-          console.log("Server is not installed");
         }
         cb();
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           this.authenticated = false;
+        } else {
+          console.error(
+            "Error during API request on checkServerInstalled: " + error
+          );
         }
       });
   }
@@ -188,8 +190,12 @@ class Auth {
           cb();
         })
         .catch((error) => {
-          if (error.response.status === 401) {
+          if (error.response && error.response.status === 401) {
             this.authenticated = false;
+          } else {
+            console.error(
+              "Error during API request on checkLastKnownStep: " + error
+            );
           }
           cb();
         });
@@ -204,8 +210,12 @@ class Auth {
           cb();
         })
         .catch((error) => {
-          if (error.response.status === 401) {
+          if (error.response && error.response.status === 401) {
             this.authenticated = false;
+          } else {
+            console.error(
+              "Error during API request on checkForUpdates: " + error
+            );
           }
           cb();
         });

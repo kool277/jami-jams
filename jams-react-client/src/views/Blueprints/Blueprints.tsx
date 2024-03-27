@@ -130,9 +130,11 @@ export default function Blueprints() {
       })
       .catch((error) => {
         setBlueprints([]);
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");
+        } else {
+          console.log("Error getting blueprints: " + error);
         }
       });
     return () => {

@@ -134,9 +134,11 @@ export default function Users() {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
+        } else {
+          console.error("Error getting users: " + error);
         }
       });
     return () => {
@@ -166,9 +168,11 @@ export default function Users() {
       .catch((error) => {
         setUsers([]);
         setLoading(false);
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
+        } else {
+          console.error("Error getting users: " + error);
         }
       });
   };

@@ -91,10 +91,11 @@ const Devices: FC<DevicesProps> = ({ username }) => {
           }
         })
         .catch((error) => {
-          console.log(error);
-          if (error.response.status === 401) {
+          if (error.response && error.response.status === 401) {
             auth.authenticated = false;
             history.push("/signin");
+          } else {
+            console.log("Error getting devices: " + error);
           }
         });
     });

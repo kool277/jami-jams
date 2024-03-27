@@ -39,8 +39,12 @@ import {
   ServerPolicyData,
 } from "views/Blueprint/policyData.constants";
 
-const getHelperText = (disableCreate: boolean, blueprintName: string) => {
-  if (disableCreate && blueprintName.length > 0) {
+const getHelperText = (
+  disableCreate: boolean,
+  blueprintName: string,
+  blueprintNameExists: boolean
+) => {
+  if (disableCreate && blueprintName.length > 0 && blueprintNameExists) {
     return i18next.t(
       "blueprint_name_already_exists",
       "Blueprint name already exists!"
@@ -69,7 +73,11 @@ export default function CreateBlueprintDialog({
   const [blueprintNameExists, setBlueprintNameExists] = useState(false);
   const [disableCreate, setDisableCreate] = useState(true);
 
-  const helperText = getHelperText(disableCreate, blueprintName);
+  const helperText = getHelperText(
+    disableCreate,
+    blueprintName,
+    blueprintNameExists
+  );
 
   const handleClose = () => {
     setOpen(false);

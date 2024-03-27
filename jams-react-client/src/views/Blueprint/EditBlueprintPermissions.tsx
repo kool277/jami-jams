@@ -166,9 +166,11 @@ export default function EditBlueprintPermissions(
       })
       .catch((error) => {
         setUsers([]);
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/");
+        } else {
+          console.error("Error during API request on searchUsers: " + error);
         }
       });
   };
