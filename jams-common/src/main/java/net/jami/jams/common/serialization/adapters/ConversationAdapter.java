@@ -26,22 +26,11 @@ public class ConversationAdapter
         implements JsonSerializer<Conversation>, JsonDeserializer<Conversation> {
 
     /**
-     * {
-     * "created" : 1701180312,
-     * "erased" : 1701180454,
-     * "id" : "63afe87b8b18a3cfc40a4524ebd441c4a7d2336a",
-     * "lastDisplayed" : "63afe87b8b18a3cfc40a4524ebd441c4a7d2336a",
-     * "members" :
-     * [
-     * {
-     * "uri" : "7172ad8cf00c93235886d8ce1b2889638c0da68d"
-     * },
-     * {
-     * "uri" : "bf82b61537582a53fb0a28553f77060cc7a332c3"
-     * }
-     * ],
-     * "removed" : 1701180454
-     * }
+     * { "created" : 1701180312, "erased" : 1701180454, "id" :
+     * "63afe87b8b18a3cfc40a4524ebd441c4a7d2336a", "lastDisplayed" :
+     * "63afe87b8b18a3cfc40a4524ebd441c4a7d2336a", "members" : [ { "uri" :
+     * "7172ad8cf00c93235886d8ce1b2889638c0da68d" }, { "uri" :
+     * "bf82b61537582a53fb0a28553f77060cc7a332c3" } ], "removed" : 1701180454 }
      */
     @Override
     public Conversation deserialize(

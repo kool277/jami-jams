@@ -45,11 +45,9 @@ public class ContactServlet extends HttpServlet {
      * @api {get} /api/auth/contacts View contacts
      * @apiName getContact
      * @apiGroup Contacts
-     *
      * @apiSuccess (200) {body} Contact[] List of contacts for the user
-     * @apiSuccessExample {json} Success-Response: [{ "uri": "jami://7e3ab29383",
-     *                    "added": 18272662662 }, { "uri": "jami://7e3ab29383",
-     *                    "removed": 12387873 }, ]
+     * @apiSuccessExample {json} Success-Response: [{ "uri": "jami://7e3ab29383", "added":
+     *     18272662662 }, { "uri": "jami://7e3ab29383", "removed": 12387873 }, ]
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -67,11 +65,8 @@ public class ContactServlet extends HttpServlet {
      * @api {put} /api/auth/contacts Add contact
      * @apiName putContact
      * @apiGroup Contacts
-     *
      * @apiParam {body} Contact JSON representation of the contact object
-     * @apiParamExample {json} Request-Example:
-     *      { "uri": "jami://7e3ab29383" }
-     *
+     * @apiParamExample {json} Request-Example: { "uri": "jami://7e3ab29383" }
      * @apiSuccess (200) {null} null successfully added contact
      * @apiError (500) {null} null contact could not be successfully added
      */
@@ -89,9 +84,7 @@ public class ContactServlet extends HttpServlet {
      * @api {delete} /api/auth/contacts Delete a contact
      * @apiName deleteContact
      * @apiGroup Contacts
-     *
      * @apiParam {query} uri uri of the contact to delete
-     *
      * @apiSuccess (200) {null} null successfully deleted contact
      * @apiError (500) {null} null contact could not be successfully deleted
      */
@@ -112,12 +105,9 @@ public class ContactServlet extends HttpServlet {
      * @api {post} /api/auth/contacts Sync contact list
      * @apiName putContact
      * @apiGroup Contacts
-     *
      * @apiParam {body} Contact JSON representation of the contact object
-     * @apiParamExample {json} Request-Example: [
-     *                  {"uri":"tcp://def@local","added":1594742298377},
-     *                  {"uri":"tcp://abc@19293.com","removed":1594742298377} ]
-     *
+     * @apiParamExample {json} Request-Example: [ {"uri":"tcp://def@local","added":1594742298377},
+     *     {"uri":"tcp://abc@19293.com","removed":1594742298377} ]
      * @apiSuccess (200) {json} Contact[] successfully added contact
      * @apiError (500) {null} null contact could not be successfully added
      */

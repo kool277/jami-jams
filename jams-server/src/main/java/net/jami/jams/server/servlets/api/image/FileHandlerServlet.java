@@ -50,15 +50,12 @@ public class FileHandlerServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {post} /api/image/filehandler/<blueprintName>/<imageType>
-     *      Upload an image
+     * @api {post} /api/image/filehandler/<blueprintName>/<imageType> Upload an image
      * @apiName postImage
      * @apiGroup Images
-     *
      * @apiParam {param} blueprintName The name of the blueprint
      * @apiParam {param} imageType 'logo' or 'background'
      * @apiParam {body} image The new logo image or background image
-     *
      * @apiSuccess (200) {null} null successfully uploaded image
      * @apiError (400) {null} null missing path info
      * @apiError (500) {null} null contact could not be successfully added
@@ -121,15 +118,12 @@ public class FileHandlerServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {get} /api/image/filehandler/<blueprintName>/<imageType>/<fileName>
-     *      Get an image
+     * @api {get} /api/image/filehandler/<blueprintName>/<imageType>/<fileName> Get an image
      * @apiName getImage
      * @apiGroup Images
-     *
      * @apiParam {param} blueprintName The name of the blueprint
      * @apiParam {param} imageType 'logo' or 'background'
      * @apiParam {param} fileName The name of the file
-     *
      * @apiSuccess (200) {null} null successfully got image
      * @apiError (400) {null} null missing path info
      * @apiError (404) {null} null image not found

@@ -44,12 +44,9 @@ public class ConversationServlet extends HttpServlet {
      * @api {post} /api/auth/conversations Sync conversation list
      * @apiName postConversations
      * @apiGroup Conversations
-     *
      * @apiParam {body} Conversation JSON representation of the conversation object
-     * @apiParamExample {json} Request-Example: [
-     *                  {"id":"1231221","created":1594742298377},
-     *                  {"id":"213123","removed":1594742298377} ]
-     *
+     * @apiParamExample {json} Request-Example: [ {"id":"1231221","created":1594742298377},
+     *     {"id":"213123","removed":1594742298377} ]
      * @apiSuccess (200) {json} Conversation[] user's conversations
      * @apiError (500) {null} null conversation could not be successfully synced
      */

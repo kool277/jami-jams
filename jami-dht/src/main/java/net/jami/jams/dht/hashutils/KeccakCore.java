@@ -19,8 +19,7 @@
 package net.jami.jams.dht.hashutils;
 
 /**
- * This class implements the core operations for the Keccak digest
- * algorithm.
+ * This class implements the core operations for the Keccak digest algorithm.
  *
  * <pre>
  * ==========================(LICENSE BEGIN)============================
@@ -49,8 +48,8 @@ package net.jami.jams.dht.hashutils;
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 258 $
- * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
+ * @version $Revision: 258 $
+ * @author Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 abstract class KeccakCore extends DigestEngine {
 
@@ -75,13 +74,12 @@ abstract class KeccakCore extends DigestEngine {
     };
 
     /**
-     * Encode the 64-bit word {@code val} into the array
-     * {@code buf} at offset {@code off}, in little-endian
-     * convention (least significant byte first).
+     * Encode the 64-bit word {@code val} into the array {@code buf} at offset {@code off}, in
+     * little-endian convention (least significant byte first).
      *
-     * @param val   the value to encode
-     * @param buf   the destination buffer
-     * @param off   the destination offset
+     * @param val the value to encode
+     * @param buf the destination buffer
+     * @param off the destination offset
      */
     private static final void encodeLELong(long val, byte[] buf, int off) {
         buf[off] = (byte) val;
@@ -95,12 +93,11 @@ abstract class KeccakCore extends DigestEngine {
     }
 
     /**
-     * Decode a 64-bit little-endian word from the array {@code buf}
-     * at offset {@code off}.
+     * Decode a 64-bit little-endian word from the array {@code buf} at offset {@code off}.
      *
-     * @param buf   the source buffer
-     * @param off   the source offset
-     * @return  the decoded value
+     * @param buf the source buffer
+     * @param off the source offset
+     * @return the decoded value
      */
     private static final long decodeLELong(byte[] buf, int off) {
         return (buf[off] & 0xFFL)
@@ -113,12 +110,16 @@ abstract class KeccakCore extends DigestEngine {
                 | ((buf[off + 7] & 0xFFL) << 56);
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void engineReset() {
         doReset();
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void processBlock(byte[] data) {
         /* Input block */
         for (int i = 0; i < data.length; i += 8) A[i >>> 3] ^= decodeLELong(data, i);
@@ -526,7 +527,9 @@ abstract class KeccakCore extends DigestEngine {
         }
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void doPadding(byte[] out, int off) {
         int ptr = flush();
         byte[] buf = getBlockBuffer();
@@ -549,14 +552,18 @@ abstract class KeccakCore extends DigestEngine {
         System.arraycopy(tmpOut, 0, out, off, dlen);
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void doInit() {
         A = new long[25];
         tmpOut = new byte[(getDigestLength() + 7) & ~7];
         doReset();
     }
 
-    /** @see Digest */
+    /**
+     * @see Digest
+     */
     public int getBlockLength() {
         return 200 - 2 * getDigestLength();
     }
@@ -571,13 +578,17 @@ abstract class KeccakCore extends DigestEngine {
         A[20] = 0xFFFFFFFFFFFFFFFFL;
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected Digest copyState(KeccakCore dst) {
         System.arraycopy(A, 0, dst.A, 0, 25);
         return super.copyState(dst);
     }
 
-    /** @see Digest */
+    /**
+     * @see Digest
+     */
     public String toString() {
         return "Keccak-" + (getDigestLength() << 3);
     }

@@ -26,17 +26,9 @@ public class ConversationRequestAdapter
         implements JsonSerializer<ConversationRequest>, JsonDeserializer<ConversationRequest> {
 
     /**
-     * {
-     * "conversationId" : "b158323bd68c7f71f606e0a4fb505f59a8212afe",
-     * "from" : "89c5c8d61df665f9dde97a23666772bccb658c22",
-     * "metadatas" :
-     * {
-     * "avatar" : "",
-     * "title" : " "
-     * },
-     * "received" : 1701188208
-     * }
-     *
+     * { "conversationId" : "b158323bd68c7f71f606e0a4fb505f59a8212afe", "from" :
+     * "89c5c8d61df665f9dde97a23666772bccb658c22", "metadatas" : { "avatar" : "", "title" : " " },
+     * "received" : 1701188208 }
      */
     @Override
     public ConversationRequest deserialize(

@@ -45,13 +45,10 @@ public class ConversationRequestServlet extends HttpServlet {
      * @api {post} /api/auth/conversationRequests Sync conversationRequest list
      * @apiName postConversationRequests
      * @apiGroup ConversationRequests
-     *
-     * @apiParam {body} Conversation JSON representation of the conversationRequest
-     *           object
+     * @apiParam {body} Conversation JSON representation of the conversationRequest object
      * @apiParamExample {json} Request-Example: [
-     *                  {"conversationId":"1231221","received":1594742298377},
-     *                  {"conversationId":"213123","declined":1594742298377} ]
-     *
+     *     {"conversationId":"1231221","received":1594742298377},
+     *     {"conversationId":"213123","declined":1594742298377} ]
      * @apiSuccess (200) {json} ConversationRequest[] user's converationRequests
      * @apiError (500) {null} null contact could not be successfully added
      */

@@ -39,27 +39,14 @@ public class PolicyDataServlet extends HttpServlet {
      * @api {get} /api/auth/policyData Get policy data
      * @apiName getPolicyData
      * @apiGroup Policy Data
-     *
-     *
      * @apiSuccess (200) {body} Policy Data
-     * @apiSuccessExample {json} Success-Response:
-     *                    [{
-     *                    "allowCertFromHistory": true,
-     *                    "allowLookup": true,
-     *                    "allowCertFromContact": true,
-     *                    "allowCertFromTrusted": true,
-     *                    "Account.videoEnabled": true,
-     *                    "DHTRelay.PublicInCalls": false,
-     *                    "Account.autoAnswer": false,
-     *                    "Account.peerDiscovery": true,
-     *                    "Account.accountDiscovery": true,
-     *                    "Account.accountPublish": true,
-     *                    "Account.rendezVous": false,
-     *                    "Account.upnpEnabled": true,
-     *                    "Account.defaultModerators": "",
-     *                    "Account.uiCustomization":
-     *                    "{\"areTipsEnabled\":false,\"backgroundType\":\"default\"}"
-     *                    }]
+     * @apiSuccessExample {json} Success-Response: [{ "allowCertFromHistory": true, "allowLookup":
+     *     true, "allowCertFromContact": true, "allowCertFromTrusted": true, "Account.videoEnabled":
+     *     true, "DHTRelay.PublicInCalls": false, "Account.autoAnswer": false,
+     *     "Account.peerDiscovery": true, "Account.accountDiscovery": true,
+     *     "Account.accountPublish": true, "Account.rendezVous": false, "Account.upnpEnabled": true,
+     *     "Account.defaultModerators": "", "Account.uiCustomization":
+     *     "{\"areTipsEnabled\":false,\"backgroundType\":\"default\"}" }]
      * @apiError (404) {null} null Policy Data could not be retrieved
      * @apiError (500) {null} null Policy Data could not be retrieved
      */

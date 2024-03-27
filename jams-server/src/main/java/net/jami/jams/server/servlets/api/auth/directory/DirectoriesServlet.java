@@ -40,23 +40,9 @@ public class DirectoriesServlet extends HttpServlet {
      * @api {get} /api/auth/directories Return the list of directories
      * @apiName getDirectories
      * @apiGroup Directories
-     *
-     *
      * @apiSuccess (200) {body} AuthModuleKey[] array of available authentication sources
-     * @apiSuccessExample {json} Success-Response:
-     * [{
-     *     "realm":"savoirfairelinux",
-     *     "type":"LDAP"
-     * },
-     * {
-     *     "realm":"LOCAL",
-     *     "type":"LOCAL"
-     * },
-     * ...
-     * {
-     *     "realm":"savoirfairelinux-ad",
-     *     "type":"AD"
-     * }]
+     * @apiSuccessExample {json} Success-Response: [{ "realm":"savoirfairelinux", "type":"LDAP" }, {
+     *     "realm":"LOCAL", "type":"LOCAL" }, ... { "realm":"savoirfairelinux-ad", "type":"AD" }]
      * @apiError (500) {null} null could not return any authentication sources
      */
     @Override

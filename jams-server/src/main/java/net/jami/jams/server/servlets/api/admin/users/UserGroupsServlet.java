@@ -47,12 +47,9 @@ public class UserGroupsServlet extends HttpServlet {
      * @api {get} /api/admin/user/[username]/groups/ Get JAMS user groups
      * @apiName getUserGroups
      * @apiGroup User
-     *
      * @apiSuccess (200) {body} User json user object representation
-     * @apiSuccessExample {json} Success-Response:
-     * {
-     *      "groups": ["a5085350-3348-11eb-adc1-0242ac120002", "abde9b76-3348-11eb-adc1-0242ac120002"]
-     * }
+     * @apiSuccessExample {json} Success-Response: { "groups":
+     *     ["a5085350-3348-11eb-adc1-0242ac120002", "abde9b76-3348-11eb-adc1-0242ac120002"] }
      * @apiError (404) {null} null could not find groups for this user
      */
     @Override

@@ -31,6 +31,37 @@ node('jami-jamsbuildvm-01') {
         sh '''git clone --depth=1 --branch=master https://${RING_GERRIT_URL}/jami-jams'''
     }
 
+    stage('Lint') {
+        if (env.GERRIT_REFSPEC != null) {
+            dir(topDir) {
+                sh '''git fetch origin ${GERRIT_REFSPEC} && git checkout FETCH_HEAD
+                docker build -f extras/CI/Dockerfile.test -t jams-lint .
+                '''
+
+                parallel(
+                    "lint-client": {
+                        sh '''
+                        docker run --rm jams-lint sh -c "cd jams-react-client && npm run lint:check"
+                        '''
+                    },
+                    "tsc-compile-client": {
+                        sh '''
+                        docker run --rm jams-lint sh -c "cd jams-react-client && npm run compile"
+                        '''
+                    },
+                    "lint-server": {
+                        sh '''
+                        docker run --rm jams-lint google-java-format -a --skip-reflowing-long-strings --set-exit-if-changed --glob=**/*.java
+                        '''
+                    },
+                    failFast: true // Aborts the parallel steps if one of them fails
+                )
+            }
+        }  else {
+            error "FAILED: I don't know what to test"
+        }
+    }
+
     stage('Test') {
         if (env.GERRIT_REFSPEC != null) {
             dir(topDir) {
@@ -40,19 +71,19 @@ node('jami-jamsbuildvm-01') {
                     "test-jdk-11": {
                         sh '''
                         docker build -f extras/CI/Dockerfile.test -t jams-test:11 --build-arg JAVA_VERSION=11 .
-                        docker run jams-test:11 mvn verify
+                        docker run --rm jams-test:11 mvn verify
                         '''
                     },
                     "test-jdk-17": {
                         sh '''
                         docker build -f extras/CI/Dockerfile.test -t jams-test:17 --build-arg JAVA_VERSION=17 .
-                        docker run jams-test:17 mvn verify
+                        docker run --rm jams-test:17 mvn verify
                         '''
                     },
                     "test-jdk-21": {
                         sh '''
                         docker build -f extras/CI/Dockerfile.test -t jams-test:21 --build-arg JAVA_VERSION=21 .
-                        docker run jams-test:21 mvn verify
+                        docker run --rm jams-test:21 mvn verify
                         '''
                     },
                     failFast: true // Aborts the parallel steps if one of them fails
@@ -157,8 +188,17 @@ node('jami-jamsbuildvm-01') {
 
         stage('Post') {
             dir(topDir) {
+                // Archive the artifacts
                 archiveArtifacts artifacts: 'jams.tar', fingerprint: true
             }
         }
     }
+
+    stage('Cleanup') {
+        dir(topDir) {
+            // Remove dangling docker images and containers
+            sh '''docker container prune -f && docker image prune -f'''
+        }
+    }
+
 }

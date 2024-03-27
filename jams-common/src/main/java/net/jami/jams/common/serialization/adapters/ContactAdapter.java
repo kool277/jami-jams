@@ -25,13 +25,8 @@ import java.lang.reflect.Type;
 public class ContactAdapter implements JsonSerializer<Contact>, JsonDeserializer<Contact> {
 
     /**
-     * {
-     * "added" : 1595523510,
-     * "banned" : false,
-     * "uri" : "520290d7f45e5811fe5af637d328e7fbf5e8cab9",
-     * "removed" : 0,
-     * "conversationId": "6a61013979964f70c8fb9183a8b238d58a1846ed"
-     * }
+     * { "added" : 1595523510, "banned" : false, "uri" : "520290d7f45e5811fe5af637d328e7fbf5e8cab9",
+     * "removed" : 0, "conversationId": "6a61013979964f70c8fb9183a8b238d58a1846ed" }
      */
     @Override
     public Contact deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

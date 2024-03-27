@@ -18,8 +18,7 @@ package net.jami.jams.dht.hashutils;
 
 // $Id: Keccak256.java 189 2010-05-14 21:21:46Z tp $
 /**
- * <p>This class implements the Keccak-256 digest algorithm under the
- * {@link Digest} API.</p>
+ * This class implements the Keccak-256 digest algorithm under the {@link Digest} API.
  *
  * <pre>
  * ==========================(LICENSE BEGIN)============================
@@ -48,22 +47,24 @@ package net.jami.jams.dht.hashutils;
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 189 $
- * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
+ * @version $Revision: 189 $
+ * @author Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 public class Keccak256 extends KeccakCore {
 
-    /**
-     * Create the engine.
-     */
+    /** Create the engine. */
     public Keccak256() {}
 
-    /** @see Digest */
+    /**
+     * @see Digest
+     */
     public Digest copy() {
         return copyState(new Keccak256());
     }
 
-    /** @see Digest */
+    /**
+     * @see Digest
+     */
     public int getDigestLength() {
         return 32;
     }

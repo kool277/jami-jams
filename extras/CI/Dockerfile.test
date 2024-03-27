@@ -2,15 +2,18 @@ ARG JAVA_VERSION=11
 
 FROM maven:3.9.6-eclipse-temurin-${JAVA_VERSION}
 
+# Install Node.js v20.x
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /test
-COPY pom.xml .
-COPY ad-connector/pom.xml ad-connector/pom.xml
-COPY authentication-module/pom.xml authentication-module/pom.xml
-COPY datastore/pom.xml datastore/pom.xml
-COPY jami-dht/pom.xml jami-dht/pom.xml
-COPY jami-nameserver/pom.xml jami-nameserver/pom.xml
-COPY jams-ca/pom.xml jams-ca/pom.xml
-COPY jams-common/pom.xml jams-common/pom.xml
-COPY jams-launcher/pom.xml jams-launcher/pom.xml
-COPY ldap-connector/pom.xml ldap-connector/pom.xml
-COPY jams-server/pom.xml jams-server/pom.xml
+COPY . .
+
+# Install google-java-format tool
+RUN npm install -g google-java-format
+
+# Install client dependencies
+RUN cd jams-react-client && npm install

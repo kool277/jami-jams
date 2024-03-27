@@ -19,8 +19,7 @@
 package net.jami.jams.dht.hashutils;
 
 /**
- * This class implements SHA-224 and SHA-256, which differ only by the IV
- * and the output length.
+ * This class implements SHA-224 and SHA-256, which differ only by the IV and the output length.
  *
  * <pre>
  * ==========================(LICENSE BEGIN)============================
@@ -49,14 +48,12 @@ package net.jami.jams.dht.hashutils;
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 214 $
- * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
+ * @version $Revision: 214 $
+ * @author Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 abstract class SHA2Core extends MDHelper {
 
-    /**
-     * Create the object.
-     */
+    /** Create the object. */
     SHA2Core() {
         super(false, 8);
     }
@@ -83,18 +80,24 @@ abstract class SHA2Core extends MDHelper {
 
     private int[] currentVal, W;
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected Digest copyState(SHA2Core dst) {
         System.arraycopy(currentVal, 0, dst.currentVal, 0, currentVal.length);
         return super.copyState(dst);
     }
 
-    /** @see Digest */
+    /**
+     * @see Digest
+     */
     public int getBlockLength() {
         return 64;
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void engineReset() {
         System.arraycopy(getInitVal(), 0, currentVal, 0, 8);
     }
@@ -102,11 +105,13 @@ abstract class SHA2Core extends MDHelper {
     /**
      * Get the initial value for this algorithm.
      *
-     * @return  the initial value (eight 32-bit words)
+     * @return the initial value (eight 32-bit words)
      */
     abstract int[] getInitVal();
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void doPadding(byte[] output, int outputOffset) {
         makeMDPadding();
         int olen = getDigestLength();
@@ -114,7 +119,9 @@ abstract class SHA2Core extends MDHelper {
             encodeBEInt(currentVal[i], output, outputOffset + j);
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void doInit() {
         currentVal = new int[8];
         W = new int[64];
@@ -122,13 +129,12 @@ abstract class SHA2Core extends MDHelper {
     }
 
     /**
-     * Encode the 32-bit word {@code val} into the array
-     * {@code buf} at offset {@code off}, in big-endian
-     * convention (most significant byte first).
+     * Encode the 32-bit word {@code val} into the array {@code buf} at offset {@code off}, in
+     * big-endian convention (most significant byte first).
      *
-     * @param val   the value to encode
-     * @param buf   the destination buffer
-     * @param off   the destination offset
+     * @param val the value to encode
+     * @param buf the destination buffer
+     * @param off the destination offset
      */
     private static final void encodeBEInt(int val, byte[] buf, int off) {
         buf[off] = (byte) (val >>> 24);
@@ -138,12 +144,11 @@ abstract class SHA2Core extends MDHelper {
     }
 
     /**
-     * Decode a 32-bit big-endian word from the array {@code buf}
-     * at offset {@code off}.
+     * Decode a 32-bit big-endian word from the array {@code buf} at offset {@code off}.
      *
-     * @param buf   the source buffer
-     * @param off   the source offset
-     * @return  the decoded value
+     * @param buf the source buffer
+     * @param off the source offset
+     * @return the decoded value
      */
     private static final int decodeBEInt(byte[] buf, int off) {
         return ((buf[off] & 0xFF) << 24)
@@ -153,19 +158,20 @@ abstract class SHA2Core extends MDHelper {
     }
 
     /**
-     * Perform a circular rotation by {@code n} to the left
-     * of the 32-bit word {@code x}. The {@code n} parameter
-     * must lie between 1 and 31 (inclusive).
+     * Perform a circular rotation by {@code n} to the left of the 32-bit word {@code x}. The {@code
+     * n} parameter must lie between 1 and 31 (inclusive).
      *
-     * @param x   the value to rotate
-     * @param n   the rotation count (between 1 and 31)
-     * @return  the rotated value
+     * @param x the value to rotate
+     * @param n the rotation count (between 1 and 31)
+     * @return the rotated value
      */
     private static int circularLeft(int x, int n) {
         return (x << n) | (x >>> (32 - n));
     }
 
-    /** @see DigestEngine */
+    /**
+     * @see DigestEngine
+     */
     protected void processBlock(byte[] data) {
         int A = currentVal[0];
         int B = currentVal[1];
@@ -634,7 +640,9 @@ abstract class SHA2Core extends MDHelper {
         */
     }
 
-    /** @see Digest */
+    /**
+     * @see Digest
+     */
     public String toString() {
         return "SHA-" + (getDigestLength() << 3);
     }

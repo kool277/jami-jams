@@ -28,104 +28,91 @@ public enum RevocationReason {
 
     /**
      * Code = 0, Name = unspecified
-     * <p>
-     * Can be used to revoke certificates for reasons other than the specific codes.
-     * </p>
+     *
+     * <p>Can be used to revoke certificates for reasons other than the specific codes.
      */
     UNSPECIFIED(0, "unspecified"),
 
     /**
      * Code = 1, Name = keyCompromise
-     * <p>
-     * Used in revoking an end-entity certificate. It indicates that it is known or
-     * suspected that the subject's private key, or other aspects of the subject
-     * validated in the certificate, have been compromised.
-     * </p>
+     *
+     * <p>Used in revoking an end-entity certificate. It indicates that it is known or suspected
+     * that the subject's private key, or other aspects of the subject validated in the certificate,
+     * have been compromised.
      */
     KEY_COMPROMISE(1, "keyCompromise"),
 
     /**
      * Code = 2, Name = CACompromise
-     * <p>
-     * Used in revoking a CA-certificate. It indicates that it is known or suspected
-     * that the subject's private key, or other aspects of the subject validated in
-     * the certificate, have been compromised.
-     * </p>
+     *
+     * <p>Used in revoking a CA-certificate. It indicates that it is known or suspected that the
+     * subject's private key, or other aspects of the subject validated in the certificate, have
+     * been compromised.
      */
     CA_COMPROMISE(2, "CACompromise"),
 
     /**
      * Code = 3, Name = affiliationChanged
-     * <p>
-     * Indicates that the subject's name or other information in the certificate has
-     * been modified but there is no cause to suspect that the private key has been
-     * compromised.
-     * </p>
+     *
+     * <p>Indicates that the subject's name or other information in the certificate has been
+     * modified but there is no cause to suspect that the private key has been compromised.
      */
     AFFILIATION_CHANGED(3, "affiliationChanged"),
 
     /**
      * Code = 4, Name = superseded
-     * <p>
-     * Indicates that the certificate has been superseded but there is no cause to
-     * suspect that the private key has been compromised.
-     * </p>
+     *
+     * <p>Indicates that the certificate has been superseded but there is no cause to suspect that
+     * the private key has been compromised.
      */
     SUPERSEDED(4, "superseded"),
 
     /**
      * Code = 5, Name = cessationOfOperation
-     * <p>
-     * Indicates that the certificate is no longer needed for the purpose for which
-     * it was issued but there is no cause to suspect that the private key has been
-     * compromised.
-     * </p>
+     *
+     * <p>Indicates that the certificate is no longer needed for the purpose for which it was issued
+     * but there is no cause to suspect that the private key has been compromised.
      */
     CESSATION_OF_OPERATION(5, "cessationOfOperation"),
 
     /**
      * Code = 6, Name = certificateHold
-     * <p>
-     * Indicates that the certificate is temporarily revoked but there is no cause
-     * to suspect that the private kye has been compromised; the certificate can
-     * later be revoked with another reason code, or unrevoked and returned to use.
+     *
+     * <p>Indicates that the certificate is temporarily revoked but there is no cause to suspect
+     * that the private kye has been compromised; the certificate can later be revoked with another
+     * reason code, or unrevoked and returned to use.
      */
     CERTIFICATE_HOLD(6, "certificateHold"),
 
     /**
      * Code = 7, Name = unused
-     * <p>
-     * This code is obsolete and unused.
-     * </p>
+     *
+     * <p>This code is obsolete and unused.
      */
     UNUSED(7, "unused"),
 
     /**
      * Code = 8, Name = removeFromCRL
-     * <p>
-     * Indicates that the certificate has been unrevoked. NOTE: This is specific to
-     * the CertificateHold reason and is only used in DeltaCRLs.
-     * </p>
+     *
+     * <p>Indicates that the certificate has been unrevoked. NOTE: This is specific to the
+     * CertificateHold reason and is only used in DeltaCRLs.
      */
     REMOVE_FROM_CRL(8, "removeFromCRL"),
 
     /**
      * Code = 9, Name = privilegeWithdrawn
-     * <p>
-     * Indicates that a certificate (public-key or attribute certificate) was
-     * revoked because a privilege contained within that certificate has been
-     * withdrawn. Unused in OpenSSL.
-     * </p>
+     *
+     * <p>Indicates that a certificate (public-key or attribute certificate) was revoked because a
+     * privilege contained within that certificate has been withdrawn. Unused in OpenSSL.
      */
     PRIVILEGE_WITHDRAWN(9, "privilegeWithdrawn"),
 
     /**
      * Code = 10, Name = AACompromise
-     * <p>
-     * Indicates that it is known or suspected that aspects of the AA validated in
-     * the attribute certificate, have been compromised. It applies to authority
-     * attribute (AA) certificates only. Unused in OpenSSL.
-     * </p>
+     *
+     * <p>Indicates that it is known or suspected that aspects of the AA validated in the attribute
+     * certificate, have been compromised. It applies to authority attribute (AA) certificates only.
+     * Unused in OpenSSL.
      */
     AA_COMPROMISE(10, "AACompromise");
 

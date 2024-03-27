@@ -43,8 +43,9 @@
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
     "format": "prettier --write --loglevel warn 'src/**/*.{js,jsx,ts,tsx}'",
-    "lint:check": "eslint . --ext=js,jsx,ts,tsx;  exit 0",
-    "lint:fix": "eslint . --ext=js,jsx,ts,tsx --fix;  exit 0",
+    "lint:check": "eslint . --ext=js,jsx,ts,tsx",
+    "lint:fix": "eslint . --ext=js,jsx,ts,tsx --fix",
+    "compile": "tsc",
     "build-package-css": "cp src/assets/css/material-dashboard-react.css dist/material-dashboard-react.css",
     "build-package": "npm run build-package-css && babel src --out-dir dist"
   },

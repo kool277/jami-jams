@@ -52,9 +52,7 @@ public class LoginServlet extends HttpServlet {
      * @apiGroup Login
      * @apiParam {header} [authorization] classical HTTP auth header
      * @apiParam {attribute} [X509Certificate] X509 User certificate
-     * @apiParam {body} [LoginRequest] username/password sent to server as JSON
-     *           object
-     *
+     * @apiParam {body} [LoginRequest] username/password sent to server as JSON object
      * @apiSuccess (200) {body} AuthTokenResponse the 0Auth authentication token
      * @apiError (403) {null} null The user is unauthorized
      */

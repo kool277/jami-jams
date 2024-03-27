@@ -106,7 +106,7 @@ that can be installed with npm:
 
 And is used with the following command:
 
-`google-java-format -i -a --skip-reflowing-long-strings --skip-javadoc-formatting **/*.java `
+`google-java-format -i -a --skip-reflowing-long-strings **/*.java`
 
 ## Generate documentation
 

@@ -36,9 +36,8 @@ import net.jami.jams.server.Server;
 import java.io.IOException;
 
 /**
- * Since we have the @ScopedServletMethod annotation, the admin filter became
- * absolutely useless
- * as we can simply scope things.
+ * Since we have the @ScopedServletMethod annotation, the admin filter became absolutely useless as
+ * we can simply scope things.
  */
 @WebFilter(urlPatterns = {"/api/auth/*", "/api/admin/*"})
 @Slf4j

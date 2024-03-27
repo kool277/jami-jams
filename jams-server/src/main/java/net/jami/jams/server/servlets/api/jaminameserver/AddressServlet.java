@@ -42,13 +42,8 @@ public class AddressServlet extends HttpServlet {
      * @api {get} /api/nameserver/addr/* Lookup user from address
      * @apiName getAddr
      * @apiGroup NameServer
-     *
      * @apiSuccess (200) {path} String username
-     * @apiSuccessExample {json} Success-Response:
-     *{
-     *      "name": "sidokhine6"
-     * }
-     *
+     * @apiSuccessExample {json} Success-Response: { "name": "sidokhine6" }
      * @apiError (404) {null} null Address does not exist
      * @apiError (500) {null} null could not fetch user information
      */

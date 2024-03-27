@@ -45,11 +45,9 @@ public class AppStarter extends Thread {
     private long jamsProcessId = -1L;
 
     /**
-     * The launcher is essentially responsible of firing up the main application
-     * JAR.
-     * The problematic here is whenever we will fire up a JAR (but then we need to
-     * be able to
-     * kill and restart his PID, or whenever we fork via a main).
+     * The launcher is essentially responsible of firing up the main application JAR. The
+     * problematic here is whenever we will fire up a JAR (but then we need to be able to kill and
+     * restart his PID, or whenever we fork via a main).
      */
     private void setupZmqBridge() {
         publisher = context.socket(SocketType.PUB);

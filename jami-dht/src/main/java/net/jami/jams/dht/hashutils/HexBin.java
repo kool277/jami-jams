@@ -36,10 +36,9 @@ package net.jami.jams.dht.hashutils;
 /**
  * format validation
  *
- * This class encodes/decodes hexadecimal data
+ * <p>This class encodes/decodes hexadecimal data
  *
  * @xerces.internal
- *
  * @author Jeffrey Rodriguez
  * @version $Id: HexBin.java 446747 2006-09-15 21:46:20Z mrglavas $
  */

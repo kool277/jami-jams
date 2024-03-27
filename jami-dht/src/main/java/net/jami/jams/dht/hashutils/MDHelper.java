@@ -19,9 +19,9 @@
 package net.jami.jams.dht.hashutils;
 
 /**
- * <p>This class implements the padding common to MD4, MD5, the SHA family,
- * and RIPEMD-160. This code works as long as the internal block length
- * is a power of 2, which is the case for all these algorithms.</p>
+ * This class implements the padding common to MD4, MD5, the SHA family, and RIPEMD-160. This code
+ * works as long as the internal block length is a power of 2, which is the case for all these
+ * algorithms.
  *
  * <pre>
  * ==========================(LICENSE BEGIN)============================
@@ -50,41 +50,35 @@ package net.jami.jams.dht.hashutils;
  * ===========================(LICENSE END)=============================
  * </pre>
  *
- * @version   $Revision: 157 $
- * @author    Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
+ * @version $Revision: 157 $
+ * @author Thomas Pornin &lt;thomas.pornin@cryptolog.com&gt;
  */
 abstract class MDHelper extends DigestEngine {
 
     /**
-     * Create the object. Little-endian padding is for MD4, MD5 and
-     * RIPEMD-160; the SHA family uses big-endian padding. The
-     * MD padding includes an encoding of the input message bit length,
-     * which is over 64 bits for some algorithms, 128-bit for others
-     * (namely SHA-384 and SHA-512). Note that this implementation
-     * handles only message lengths which fit on 64 bits.
+     * Create the object. Little-endian padding is for MD4, MD5 and RIPEMD-160; the SHA family uses
+     * big-endian padding. The MD padding includes an encoding of the input message bit length,
+     * which is over 64 bits for some algorithms, 128-bit for others (namely SHA-384 and SHA-512).
+     * Note that this implementation handles only message lengths which fit on 64 bits.
      *
-     * @param littleEndian   {@code true} for little-endian padding
-     * @param lenlen         the length encoding length, in bytes (must
-     *                       be at least 8)
+     * @param littleEndian {@code true} for little-endian padding
+     * @param lenlen the length encoding length, in bytes (must be at least 8)
      */
     MDHelper(boolean littleEndian, int lenlen) {
         this(littleEndian, lenlen, (byte) 0x80);
     }
 
     /**
-     * Create the object. Little-endian padding is for MD4, MD5 and
-     * RIPEMD-160; the SHA family uses big-endian padding. The
-     * MD padding includes an encoding of the input message bit length,
-     * which is over 64 bits for some algorithms, 128-bit for others
-     * (namely SHA-384 and SHA-512). Note that this implementation
-     * handles only message lengths which fit on 64 bits. The first
-     * additional byte value is specified; this is normally 0x80,
-     * except for Tiger (not Tiger2) which uses 0x01.
+     * Create the object. Little-endian padding is for MD4, MD5 and RIPEMD-160; the SHA family uses
+     * big-endian padding. The MD padding includes an encoding of the input message bit length,
+     * which is over 64 bits for some algorithms, 128-bit for others (namely SHA-384 and SHA-512).
+     * Note that this implementation handles only message lengths which fit on 64 bits. The first
+     * additional byte value is specified; this is normally 0x80, except for Tiger (not Tiger2)
+     * which uses 0x01.
      *
-     * @param littleEndian   {@code true} for little-endian padding
-     * @param lenlen         the length encoding length, in bytes (must
-     *                       be at least 8)
-     * @param fbyte          the first padding byte
+     * @param littleEndian {@code true} for little-endian padding
+     * @param lenlen the length encoding length, in bytes (must be at least 8)
+     * @param fbyte the first padding byte
      */
     MDHelper(boolean littleEndian, int lenlen, byte fbyte) {
         this.littleEndian = littleEndian;
@@ -96,10 +90,7 @@ abstract class MDHelper extends DigestEngine {
     private final byte[] countBuf;
     private final byte fbyte;
 
-    /**
-     * Compute the padding. The padding data is input into the engine,
-     * which is flushed.
-     */
+    /** Compute the padding. The padding data is input into the engine, which is flushed. */
     protected void makeMDPadding() {
         int dataLen = flush();
         int blen = getBlockLength();
@@ -128,13 +119,12 @@ abstract class MDHelper extends DigestEngine {
     }
 
     /**
-     * Encode the 32-bit word {@code val} into the array
-     * {@code buf} at offset {@code off}, in little-endian
-     * convention (least significant byte first).
+     * Encode the 32-bit word {@code val} into the array {@code buf} at offset {@code off}, in
+     * little-endian convention (least significant byte first).
      *
-     * @param val   the value to encode
-     * @param buf   the destination buffer
-     * @param off   the destination offset
+     * @param val the value to encode
+     * @param buf the destination buffer
+     * @param off the destination offset
      */
     private static final void encodeLEInt(int val, byte[] buf, int off) {
         buf[off] = (byte) val;
@@ -144,13 +134,12 @@ abstract class MDHelper extends DigestEngine {
     }
 
     /**
-     * Encode the 32-bit word {@code val} into the array
-     * {@code buf} at offset {@code off}, in big-endian
-     * convention (most significant byte first).
+     * Encode the 32-bit word {@code val} into the array {@code buf} at offset {@code off}, in
+     * big-endian convention (most significant byte first).
      *
-     * @param val   the value to encode
-     * @param buf   the destination buffer
-     * @param off   the destination offset
+     * @param val the value to encode
+     * @param buf the destination buffer
+     * @param off the destination offset
      */
     private static final void encodeBEInt(int val, byte[] buf, int off) {
         buf[off] = (byte) (val >>> 24);

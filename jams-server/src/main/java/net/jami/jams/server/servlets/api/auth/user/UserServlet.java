@@ -46,23 +46,12 @@ public class UserServlet extends HttpServlet {
      * @api {get} /api/auth/user Get JAMS user info
      * @apiName getUser
      * @apiGroup User
-     *
      * @apiSuccess (200) {body} User json user object representation
-     * @apiSuccessExample {json} Success-Response:
-     * {
-     *      "username":"jdoe",
-     *      "password":null,
-     *      "userType":"AD",
-     *      "realm":"savoirfairelinux",
-     *      "accessLevel":"USER",
-     *      "needsPasswordReset":false,
-     *      "ethAddress":"8272773ac",
-     *      "ethKey":"192938ae72772ab",
-     *      "jamiId":"6e3552723df",
-     *      "certificate":"pem_formatted_certificate",
-     *      "privateKey":"pem_formatted_key",
-     *      "revoked":false
-     * }
+     * @apiSuccessExample {json} Success-Response: { "username":"jdoe", "password":null,
+     *     "userType":"AD", "realm":"savoirfairelinux", "accessLevel":"USER",
+     *     "needsPasswordReset":false, "ethAddress":"8272773ac", "ethKey":"192938ae72772ab",
+     *     "jamiId":"6e3552723df", "certificate":"pem_formatted_certificate",
+     *     "privateKey":"pem_formatted_key", "revoked":false }
      * @apiError (500) {null} null could not fetch user information
      */
     @Override
@@ -98,7 +87,6 @@ public class UserServlet extends HttpServlet {
      * @apiName putUser
      * @apiGroup User
      * @apiParam {query} password new password
-     *
      * @apiSuccess (200) {null} null password successfully changed
      * @apiError (500) {null} null could not changed password
      */

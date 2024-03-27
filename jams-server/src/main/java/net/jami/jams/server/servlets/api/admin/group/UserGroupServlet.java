@@ -49,12 +49,8 @@ public class UserGroupServlet extends HttpServlet {
      * @api {get} /api/admin/group/[groupId]/members/ Get JAMS groups members
      * @apiName getGroupMembers
      * @apiGroup Group
-     *
      * @apiSuccess (200) {body} Array of usernames
-     * @apiSuccessExample {json} Success-Response:
-     * {
-     *      "usernames": ["user1", "user2", "user3"]
-     * }
+     * @apiSuccessExample {json} Success-Response: { "usernames": ["user1", "user2", "user3"] }
      * @apiError (404) {null} null could not find members for this groups
      */
     @Override

@@ -18,14 +18,14 @@ package net.jami.jams.common.cryptoengineapi.ocsp;
 
 public enum CertificateStatus {
     VALID,
-    /** The certificate is valid         **/
+    /** The certificate is valid * */
     REVOKED,
-    /** The certificate has been revoked **/
+    /** The certificate has been revoked * */
     EXPIRED,
-    /** The certificate is expired       **/
+    /** The certificate is expired * */
     UNKNOWN;
 
-    /** The certificate is unknown       **/
+    /** The certificate is unknown * */
     public static CertificateStatus fromString(String status) {
         switch (status) {
             case "V":

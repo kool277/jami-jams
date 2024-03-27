@@ -41,15 +41,9 @@ public class NameServlet extends HttpServlet {
      * @api {get} /api/nameserver/name/* Look up a user on the nameserver
      * @apiName getName
      * @apiGroup NameServer
-     *
      * @apiSuccess (200) {path} String username
-     * @apiSuccessExample {json} Success-Response:
-     * {
-     *   "publickey": "",
-     *   "signature": "",
-     *   "name": "sidokhine6",
-     *   "addr": "0d1f0002ce728d6aa8b98b5227c75fc773735f9e"
-     * }
+     * @apiSuccessExample {json} Success-Response: { "publickey": "", "signature": "", "name":
+     *     "sidokhine6", "addr": "0d1f0002ce728d6aa8b98b5227c75fc773735f9e" }
      * @apiError (404) {null} null user does not exist
      * @apiError (500) {null} null could not fetch user information
      */
