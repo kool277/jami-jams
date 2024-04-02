@@ -193,22 +193,33 @@ export default function Users(props: UsersProps) {
               null,
               null
             )
-          ).then((response) => {
-            contact.username = response.data.name;
-            axios(
-              configApiCall(
-                api_path_get_user_profile + contact.username,
-                "GET",
-                null,
-                null
+          )
+            .then((response) => {
+              contact.username = response.data.name;
+              axios(
+                configApiCall(
+                  api_path_get_user_profile + contact.username,
+                  "GET",
+                  null,
+                  null
+                )
               )
-            ).then((response) => {
-              contact.profilePicture = response.data.profilePicture;
-              contact.firstName = response.data.firstName;
-              contact.lastName = response.data.lastName;
-              contact.organization = response.data.organization;
+                .then((response) => {
+                  contact.profilePicture = response.data.profilePicture;
+                  contact.firstName = response.data.firstName;
+                  contact.lastName = response.data.lastName;
+                  contact.organization = response.data.organization;
+                })
+                .catch(() => {
+                  // If this point is reached, it means we have a contact that no longer has a profile
+                  // This can happen if the user is removed from the LDAP/AD server
+                  originalContacts.splice(originalContacts.indexOf(contact), 1);
+                });
+            })
+            .catch(() => {
+              // If this point is reached, it means we have a contact that is no longer part of the nameserver
+              originalContacts.splice(originalContacts.indexOf(contact), 1);
             });
-          });
         }
         setContacts(originalContacts);
         setLoading(false);
