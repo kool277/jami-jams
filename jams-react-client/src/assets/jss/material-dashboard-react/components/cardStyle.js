@@ -20,6 +20,7 @@ const cardStyle = {
     minWidth: "0",
     wordWrap: "break-word",
     fontSize: ".875rem",
+    justifyContent: "space-between",
     "& ul": {
       "list-style": "none",
       padding: 0,

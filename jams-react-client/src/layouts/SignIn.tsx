@@ -144,7 +144,7 @@ export default function SignIn() {
       <div className={classes.paper}>
         <img
           src={logo}
-          style={{ width: "25em", paddingBottom: "20px" }}
+          style={{ maxWidth: "25em", paddingBottom: "20px" }}
           alt="logo"
         />
         <Typography component="h1" variant="h5">

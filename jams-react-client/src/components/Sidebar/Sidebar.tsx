@@ -29,7 +29,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Icon from "@mui/material/Icon";
 import Snackbar from "@mui/material/Snackbar/Snackbar";
 
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import UpdateIcon from "@mui/icons-material/Update";
 
 import styles from "assets/jss/material-dashboard-react/components/sidebarStyle";
@@ -182,7 +182,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
             [classes.itemIconRTL]: false,
           })}
         >
-          <ExitToAppIcon />
+          <ExitToAppOutlinedIcon />
         </Icon>
         <ListItemText
           primary={i18next.t("Logout", "Logout") as string}

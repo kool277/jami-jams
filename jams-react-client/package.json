@@ -34,6 +34,7 @@
     "react-i18next": "^11.7.3",
     "react-image-file-resizer": "^0.3.8",
     "react-router-dom": "5.2.0",
+    "ubuntu-fontface": "^0.1.13",
     "yup": "^1.2.0"
   },
   "scripts": {

@@ -25,11 +25,7 @@ import Typography from "@mui/material/Typography";
 import { makeStyles } from "@mui/styles";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import InputAdornment from "@mui/material/InputAdornment";
 
 import GridContainer from "components/Grid/GridContainer";
@@ -50,6 +46,12 @@ import LanguagePicker from "../../components/LanguagePicker/LanguagePicker";
 import pjson from "../../../package.json";
 import generator from "generate-password-browser";
 import { Theme } from "@mui/material";
+import {
+  FileCopyOutlined,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
+  VpnKeyOutlined,
+} from "@mui/icons-material";
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -209,7 +211,7 @@ export default function General(props: GeneralProps) {
                         type={passwordVisible ? "text" : "password"}
                         startAdornment={
                           <InputAdornment position="start">
-                            <VpnKeyIcon />
+                            <VpnKeyOutlined />
                           </InputAdornment>
                         }
                         endAdornment={
@@ -220,9 +222,9 @@ export default function General(props: GeneralProps) {
                             size="large"
                           >
                             {passwordVisible ? (
-                              <VisibilityIcon />
+                              <VisibilityOutlined />
                             ) : (
-                              <VisibilityOffIcon />
+                              <VisibilityOffOutlined />
                             )}
                           </IconButton>
                         }
@@ -230,9 +232,6 @@ export default function General(props: GeneralProps) {
                         onKeyUpError={false}
                         onKeyUpErrorMessage=""
                       />
-                      {touched.password && errors.password ? (
-                        <span>{errors.password.toString()}</span>
-                      ) : null}
 
                       <FormikField
                         name="confirmPassword"
@@ -247,7 +246,7 @@ export default function General(props: GeneralProps) {
                         type={passwordVisible ? "text" : "password"}
                         startAdornment={
                           <InputAdornment position="start">
-                            <VpnKeyIcon />
+                            <VpnKeyOutlined />
                           </InputAdornment>
                         }
                         endAdornment={
@@ -258,9 +257,9 @@ export default function General(props: GeneralProps) {
                             size="large"
                           >
                             {passwordVisible ? (
-                              <VisibilityIcon />
+                              <VisibilityOutlined />
                             ) : (
-                              <VisibilityOffIcon />
+                              <VisibilityOffOutlined />
                             )}
                           </IconButton>
                         }
@@ -268,9 +267,6 @@ export default function General(props: GeneralProps) {
                         onKeyUpError={false}
                         onKeyUpErrorMessage=""
                       />
-                      {touched.confirmPassword && errors.confirmPassword ? (
-                        <span>{errors.confirmPassword.toString()}</span>
-                      ) : null}
 
                       <Button
                         variant="contained"
@@ -306,7 +302,7 @@ export default function General(props: GeneralProps) {
                           variant="contained"
                           size="large"
                           className={classes.button}
-                          startIcon={<FileCopyIcon />}
+                          startIcon={<FileCopyOutlined />}
                         >
                           {
                             i18next.t(

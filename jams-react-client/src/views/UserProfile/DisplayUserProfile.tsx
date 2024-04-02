@@ -30,14 +30,8 @@ import {
   DialogTitle,
   Grid,
   Chip,
-  LinearProgress,
   Theme,
 } from "@mui/material";
-
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
 import auth from "auth";
 import configApiCall from "api";
@@ -64,6 +58,11 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 import { hexToRgb, blackColor } from "assets/jss/material-dashboard-react";
 import UserProfileFieldsList from "./UserProfileFieldsList";
 import AdminAddUserToGroup from "./AdminAddUserToGroup";
+import {
+  DeleteOutlineOutlined,
+  EditOutlined,
+  VpnKeyOutlined,
+} from "@mui/icons-material";
 
 const styles = (theme: Theme) => ({
   ...dashboardStyle,
@@ -82,7 +81,7 @@ const styles = (theme: Theme) => ({
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
   },
@@ -179,9 +178,6 @@ const styles = (theme: Theme) => ({
   loading: {
     width: "100%",
   },
-  whiteButtonText: {
-    color: "white",
-  },
 });
 
 const useStyles = makeStyles(styles as any);
@@ -248,7 +244,6 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
   const [revokedUser, setRevokedUser] = useState("");
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const removeUserFromGroup = (group: GroupMembership) => {
@@ -272,19 +267,6 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
 
   useEffect(() => {
     setLoading(true);
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
-
-    return () => {
-      clearInterval(timer);
-    };
   }, [history, username]);
 
   const getAdminUserGroups = () => {
@@ -435,12 +417,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
           <Button onClick={handleClose} color="primary">
             {i18next.t("cancel", "Cancel") as string}
           </Button>
-          <Button
-            onClick={revokeUser}
-            color="info"
-            className={classes.whiteButtonText}
-            autoFocus
-          >
+          <Button onClick={revokeUser} color="info" autoFocus>
             {i18next.t("revoke", "Revoke") as string}
           </Button>
         </DialogActions>
@@ -450,9 +427,6 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         open={changePasswordOpen}
         onClose={() => setChangePasswordOpen(false)}
       />
-      <div className={classes.loading}>
-        {loading && <LinearProgress variant="determinate" value={progress} />}
-      </div>
       {!loading && (
         <GridContainer>
           <Grid item xs={12} sm={12} md={6}>
@@ -484,7 +458,9 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                         </div>
                       </div>
                     </Grid>
-                    <UserProfileFieldsList user={user} />
+                    <Grid item xs={12}>
+                      <UserProfileFieldsList user={user} />
+                    </Grid>
                   </Grid>
                 </div>
               </CardBody>
@@ -494,10 +470,9 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                     {canEdit() && (
                       <Button
                         color="info"
-                        className={classes.whiteButtonText}
                         onClick={() => setDisplayUser(false)}
                       >
-                        <EditIcon />{" "}
+                        <EditOutlined />{" "}
                         {i18next.t("edit_profile", "Edit profile") as string}
                       </Button>
                     )}
@@ -506,12 +481,11 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                     {auth.isLocalDirectory() && auth.hasAdminScope() && (
                       <Button
                         color="info"
-                        className={classes.whiteButtonText}
                         onClick={() => {
                           setChangePasswordOpen(true);
                         }}
                       >
-                        <VpnKeyIcon />{" "}
+                        <VpnKeyOutlined />{" "}
                         {
                           i18next.t(
                             "change_password",
@@ -528,10 +502,9 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                     {auth.hasAdminScope() && revoked === false && (
                       <Button
                         color="info"
-                        className={classes.whiteButtonText}
                         onClick={() => handleClickOpen(user.username)}
                       >
-                        <DeleteIcon fontSize="small" />{" "}
+                        <DeleteOutlineOutlined fontSize="small" />{" "}
                         {i18next.t("revoke_user", "Revoke user") as string}
                       </Button>
                     )}

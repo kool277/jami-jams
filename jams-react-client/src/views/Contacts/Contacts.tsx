@@ -54,7 +54,6 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
-import LinearProgress from "@mui/material/LinearProgress";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle";
 import TemporaryDrawer from "components/Drawer/Drawer";
@@ -67,6 +66,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import i18next from "i18next";
 import { Contact, ServerContact } from "../../types/Contact";
 import { UserProfile } from "views/UserProfile/DisplayUserProfile";
+import { InfoOutlined } from "@mui/icons-material";
 
 const styles = {
   ...headerLinksStyle,
@@ -77,12 +77,15 @@ const styles = {
     marginTop: "0",
     marginBottom: "0",
   },
+  cardBody: {
+    marginTop: "0",
+  },
   cardTitleWhite: {
     color: "#FFFFFF",
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
   },
@@ -91,12 +94,27 @@ const styles = {
   },
   search: {
     width: "90%",
+    maxWidth: "500px",
   },
   loading: {
     width: "100%",
   },
   actionButtons: {
     height: "3em",
+  },
+  cardBodyContent: {
+    wordWrap: "break-word",
+    fontSize: "12px",
+  },
+  link: {
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+  },
+  contactsNotFound: {
+    marginLeft: "10px",
+    display: "flex",
+    alignItems: "center",
   },
 };
 
@@ -113,7 +131,6 @@ export default function Users(props: UsersProps) {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [removedContact, setRemovedContact] = useState("");
@@ -222,7 +239,6 @@ export default function Users(props: UsersProps) {
             });
         }
         setContacts(originalContacts);
-        setLoading(false);
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -276,8 +292,7 @@ export default function Users(props: UsersProps) {
   };
 
   useEffect(() => {
-    setLoading(true);
-    const timer = setInterval(() => {
+    setInterval(() => {
       setProgress((oldProgress) => {
         if (oldProgress === 100) {
           return 0;
@@ -288,9 +303,7 @@ export default function Users(props: UsersProps) {
     }, 500);
     getAllContacts();
     searchContacts();
-    return () => {
-      clearInterval(timer);
-    };
+    return;
   }, [openDrawer]);
 
   const removeContact = () => {
@@ -409,10 +422,7 @@ export default function Users(props: UsersProps) {
                 className: classes.margin + " " + classes.search,
               }}
               inputProps={{
-                placeholder: i18next.t(
-                  "search_contacts_using",
-                  "Search contact fields (URI, firstname, lastname)"
-                ),
+                placeholder: i18next.t("search_contacts", "Search contacts"),
                 inputProps: {
                   "aria-label": i18next.t(
                     "search_contacts",
@@ -424,17 +434,13 @@ export default function Users(props: UsersProps) {
               }}
             />
             <Search />
-            <div className={classes.loading}>
-              {loading && (
-                <LinearProgress variant="determinate" value={progress} />
-              )}
-            </div>
           </div>
         </GridItem>
         {contacts
           .filter((data: Contact) => {
-            if (searchValue.length === 0) return data;
-            else {
+            if (searchValue.length === 0) {
+              return true;
+            } else {
               if (
                 typeof data.username !== "undefined" &&
                 typeof data.firstName !== "undefined" &&
@@ -454,21 +460,23 @@ export default function Users(props: UsersProps) {
                   data.uri.toLowerCase() === searchValue.toLowerCase()
                 );
               } else {
-                return data;
+                return false;
               }
             }
           })
           .map((contact) => (
             <GridItem
               xs={12}
-              sm={12}
-              md={2}
+              sm={6}
+              md={3}
+              lg={2}
+              xl={2}
               key={contact.uri}
               style={{ display: contact.display }}
             >
               {contact.username && (
                 <Card profile>
-                  <CardBody profile>
+                  <CardBody profile className={classes.cardBody}>
                     <CardAvatar profile>
                       <img
                         src={
@@ -480,22 +488,23 @@ export default function Users(props: UsersProps) {
                       />
                     </CardAvatar>
                     <a
-                      style={{ float: "right", top: 0 }}
+                      className={classes.link}
                       href={`/user/${contact.username}`}
                     >
-                      <LaunchIcon
-                        fontSize="small"
-                        style={{
-                          marginRight: "10px",
-                          color: "black",
-                        }}
-                      ></LaunchIcon>
+                      <IconButton color="primary" size="medium">
+                        <LaunchIcon
+                          fontSize="small"
+                          style={{
+                            color: "black",
+                          }}
+                        ></LaunchIcon>
+                      </IconButton>
                     </a>
                     <h4 className={classes.cardTitle}>
                       {(contact.firstName || contact.lastName) &&
                         `${contact.firstName} ${contact.lastName}`}
                     </h4>
-                    <ul>
+                    <ul className={classes.cardBodyContent}>
                       <li style={{ display: "block" }}>
                         {contact.username && (
                           <img
@@ -540,7 +549,7 @@ export default function Users(props: UsersProps) {
                       onClick={() => {
                         handleRemoveContact(contact.uri, contact.username);
                       }}
-                      size="large"
+                      size="medium"
                     >
                       <DeleteOutlineIcon />
                     </IconButton>
@@ -549,9 +558,18 @@ export default function Users(props: UsersProps) {
               )}
             </GridItem>
           ))}
-        {contacts.length === 0 &&
-          ((props.username +
-            i18next.t("has_no_contacts", " has no contacts")) as string)}
+        {contacts.length === 0 && (
+          <div className={classes.contactsNotFound}>
+            <InfoOutlined />
+
+            <p style={{ marginLeft: "10px" }}>
+              {
+                (props.username +
+                  i18next.t("has_no_contacts", " has no contacts")) as string
+              }
+            </p>
+          </div>
+        )}
       </GridContainer>
     </div>
   );

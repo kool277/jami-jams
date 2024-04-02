@@ -31,9 +31,6 @@ import CustomInput from "components/CustomInput/CustomInput";
 import IconButton from "@mui/material/IconButton";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Search from "@mui/icons-material/Search";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import PersonIcon from "@mui/icons-material/Person";
-import InfoIcon from "@mui/icons-material/Info";
 
 import axios from "axios";
 import configApiCall from "api";
@@ -52,11 +49,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import LinearProgress from "@mui/material/LinearProgress";
-
 import i18next from "i18next";
 
 import CreateGroupDialog from "./CreateGroupDialog";
+import {
+  AllInboxOutlined,
+  InfoOutlined,
+  PersonOutline,
+} from "@mui/icons-material";
 
 const styles = {
   cardCategoryWhite: {
@@ -71,15 +71,20 @@ const styles = {
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
+  },
+  cardTitle: {
+    marginTop: "0px",
+    height: "2em",
   },
   deleteIcon: {
     float: "right",
   },
   search: {
     width: "90%",
+    maxWidth: "500px",
   },
   loading: {
     width: "100%",
@@ -88,9 +93,6 @@ const styles = {
     marginLeft: "10px",
     display: "flex",
     alignItems: "center",
-  },
-  whiteButtonText: {
-    color: "white",
   },
   inputBottomMargin: {
     marginBottom: "1rem",
@@ -110,9 +112,7 @@ export default function Groups() {
   const classes = useStyles();
   const history = useHistory();
   const [groups, setGroups] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [zeroGroup, setZeroGroup] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [searchValue, setSearchValue] = useState<string>("");
 
   const [openCreate, setOpenCreate] = useState(false);
@@ -150,17 +150,6 @@ export default function Groups() {
   };
 
   useEffect(() => {
-    setLoading(true);
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
-
     axios(configApiCall(api_path_get_list_group, "GET", null, null))
       .then((response) => {
         const allGroups = response.data;
@@ -187,7 +176,6 @@ export default function Groups() {
             });
         });
         setGroups(allGroups);
-        setLoading(false);
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -199,9 +187,7 @@ export default function Groups() {
           console.error("Error getting groups: " + error);
         }
       });
-    return () => {
-      clearInterval(timer);
-    };
+    return;
   }, [openCreate, openRemoveDialog, history]);
 
   if (!auth.hasAdminScope()) {
@@ -242,7 +228,7 @@ export default function Groups() {
                   "Are you sure you want to delete"
                 ) as string
               }{" "}
-              <strong>{removedGroup.name}</strong> ?
+              <strong>&nbsp;{removedGroup.name}</strong> ?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -274,10 +260,7 @@ export default function Groups() {
                     className: classes.margin + " " + classes.search,
                   }}
                   inputProps={{
-                    placeholder: i18next.t(
-                      "search_groups_placeholder",
-                      "Search groups…"
-                    ),
+                    placeholder: i18next.t("search_groups", "Search groups"),
                     inputProps: {
                       "aria-label": i18next.t(
                         "search_groups",
@@ -290,27 +273,22 @@ export default function Groups() {
                 />
               )}
               {!zeroGroup && <Search />}
-              <div className={classes.loading}>
-                {!zeroGroup && loading && (
-                  <LinearProgress variant="determinate" value={progress} />
-                )}
-              </div>
             </div>
           </GridItem>
           {zeroGroup ? (
             <div className={classes.groupsNotFound}>
-              <InfoIcon />{" "}
+              <InfoOutlined />{" "}
               <p style={{ marginLeft: "10px" }}>
                 {i18next.t("no_groups_found", "No groups Found") as string}
               </p>
             </div>
           ) : (
             groups
-              .filter((data: Group) => {
+              .filter((group: Group) => {
                 if (searchValue === "") {
-                  return data;
+                  return group;
                 } else {
-                  return data.name
+                  return group.name
                     .toLowerCase()
                     .includes(searchValue.toLowerCase());
                 }
@@ -321,26 +299,27 @@ export default function Groups() {
                     <Link to={`/group/${group.id}`}>
                       <CardBody profile>
                         <h3 className={classes.cardTitle}>{group.name}</h3>
-                        <ul>
+                        <ul style={{ fontSize: "12px" }}>
                           <li>
-                            <PersonIcon
-                              fontSize="small"
-                              style={{ marginRight: "10px" }}
-                            />
+                            <PersonOutline style={{ marginRight: "10px" }} />
                             <strong style={{ marginRight: "5px" }}>
                               {group.groupMembersLength}
                             </strong>
                             {i18next.t("users", "Users") as string}
                           </li>
                           <li>
-                            <MailOutlineIcon
-                              fontSize="small"
-                              style={{ marginRight: "10px" }}
-                            />
-                            <strong style={{ marginRight: "5px" }}>
-                              {i18next.t("blueprint", "Blueprint") as string}
-                            </strong>
-                            {group.blueprint}
+                            <AllInboxOutlined style={{ marginRight: "10px" }} />
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <strong style={{ marginRight: "5px" }}>
+                                {i18next.t("blueprint", "Blueprint") as string}
+                              </strong>
+                              {group.blueprint}
+                            </div>
                           </li>
                         </ul>
                       </CardBody>

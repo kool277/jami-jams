@@ -26,6 +26,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  ClassNameMap,
 } from "@mui/material";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -48,7 +49,7 @@ interface AdminAddUserToGroupProps {
   username: string;
   openDrawer: boolean;
   setOpenDrawer: (open: boolean) => void;
-  classes: any;
+  classes: ClassNameMap<string>;
   groupMemberships: GroupMembership[];
   setGroupMemberships: (groupMemberships: GroupMembership[]) => void;
   removeUserFromGroup: (group: GroupMembership) => void;
@@ -151,9 +152,6 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
             <TableRow>
               <TableCell align="left">
                 {i18next.t("group_name", "Group name") as string}
-              </TableCell>
-              <TableCell align="right">
-                {i18next.t("action", "Action") as string}
               </TableCell>
             </TableRow>
           </TableHead>

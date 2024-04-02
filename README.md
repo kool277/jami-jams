@@ -28,67 +28,18 @@ from 8080, then run:
 
 Where the `pem` and `key` files are a pem encoded certificate and key.
 
-## How to generate server.pem and server.key pair
+## How to generate a trusted server.pem and server.key pair
 
-In order to generate a pair of pem and key use the following command using openssl.
+In order to test JAMS with the Jami client, you need to generate a locally-trusted development certificate. Here is how to do it using `mkcert`:
 
-`openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout server.key -out server.pem`
+First follow the mkcert [installation guide](https://github.com/FiloSottile/mkcert?tab=readme-ov-file#installation).
 
-Note that a self signed certificate will be rejected from opendht,
-QNetworkAccessManager and other curl-like program by default. The following
-changes should disable those checks.
-
-```diff
-src/http.cpp | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/src/http.cpp b/src/http.cpp
-index 6b7d4aad..f10a4138 100644
---- a/src/http.cpp
-+++ b/src/http.cpp
-@@ -111,7 +111,7 @@ std::shared_ptr<asio::ssl::context>
- newTlsClientContext(const std::shared_ptr<dht::Logger>& logger)
- {
-     auto ctx = std::make_shared<asio::ssl::context>(asio::ssl::context::tls_client);
--    ctx->set_verify_mode(asio::ssl::verify_peer | asio::ssl::verify_fail_if_no_peer_cert);
-+    ctx->set_verify_mode(asio::ssl::verify_peer);
-
-     if (char* path = getenv("CA_ROOT_FILE")) {
-         if (logger)
-@@ -160,7 +160,7 @@ Connection::Connection(asio::io_context& ctx, std::shared_ptr<dht::crypto::Certi
-     asio::error_code ec;
-     if (server_ca) {
-         ssl_ctx_ = std::make_shared<asio::ssl::context>(asio::ssl::context::tls_client);
--        ssl_ctx_->set_verify_mode(asio::ssl::verify_peer | asio::ssl::verify_fail_if_no_peer_cert);
-+        ssl_ctx_->set_verify_mode(asio::ssl::verify_peer);
-         auto ca = server_ca->toString(false/*chain*/);
-         ssl_ctx_->add_certificate_authority(asio::const_buffer{ca.data(), ca.size()}, ec);
-         if (ec)
-@@ -488,6 +488,7 @@ Connection::set_ssl_verification(const std::string& hostname, const asio::ssl::v
-             ssl_socket_->asio_ssl_stream().set_verify_callback([
-                     id = id_, logger = logger_, hostname, checkOcsp = checkOcsp_
-                 ] (bool preverified, asio::ssl::verify_context& ctx) -> bool {
-+                    return true;
-                     X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
-                     if (logger) {
-                         char subject_name[1024];
-@@ -1218,7 +1219,7 @@ Request::connect(std::vector<asio::ip::tcp::endpoint>&& endpoints, HandlerCb cb)
-             conn_ = std::make_shared<Connection>(ctx_, server_ca_, client_identity_, logger_);
-         else
-             conn_ = std::make_shared<Connection>(ctx_, true/*ssl*/, logger_);
--        conn_->set_ssl_verification(get_url().host, asio::ssl::verify_peer | asio::ssl::verify_fail_if_no_peer_cert);
-+        conn_->set_ssl_verification(get_url().host, asio::ssl::verify_peer);
-     }
-     else
-         conn_ = std::make_shared<Connection>(ctx_, false/*ssl*/, logger_);
+Then run the following commands:
 
 ```
-
-```cpp
-// jami-client-qt/src/app/networkmanager.cpp NetworkManager::NetworkManager
-QSslConfiguration sslConfig = QSslConfiguration::defaultConfiguration();
-sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
-QSslConfiguration::setDefaultConfiguration(sslConfig);
+mkcert -install # Creates a local certificate authority (CA). This step is required only once.
+mkcert -key-file server.key -cert-file server.pem localhost 127.0.0.1 ::1
+cp server.key server.pem /path/to/jami-jams/jams/
 ```
 
 ## Run with the debugger enabled

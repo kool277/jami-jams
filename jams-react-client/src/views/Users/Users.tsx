@@ -37,8 +37,6 @@ import Card from "components/Card/Card";
 import CardAvatar from "components/Card/CardAvatar";
 import CardBody from "components/Card/CardBody";
 
-import InfoIcon from "@mui/icons-material/Info";
-import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import Search from "@mui/icons-material/Search";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -49,12 +47,12 @@ import { api_path_get_user_directory_search } from "globalUrls";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
-import LinearProgress from "@mui/material/LinearProgress";
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle";
 import { debounce } from "lodash";
 
 import i18next from "i18next";
 import { UserProfile } from "views/UserProfile/DisplayUserProfile";
+import { BusinessCenterOutlined, InfoOutlined } from "@mui/icons-material";
 
 const styles = {
   ...headerLinksStyle,
@@ -70,7 +68,7 @@ const styles = {
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
   },
@@ -79,6 +77,7 @@ const styles = {
   },
   search: {
     width: "90%",
+    maxWidth: "500px",
   },
   loading: {
     width: "100%",
@@ -90,6 +89,12 @@ const styles = {
   },
   cardBodyContent: {
     wordWrap: "break-word",
+    fontSize: "12px",
+  },
+  link: {
+    "&:hover": {
+      color: "unset",
+    },
   },
 };
 const useStyles = makeStyles(styles as any);
@@ -97,10 +102,8 @@ export default function Users() {
   const classes = useStyles();
   const history = useHistory();
   const [users, setUsers] = useState<UserProfile[]>([]);
-  const noUsersFound = users.length === 0;
+  const [noUsersFound, setNoUsersFound] = useState(false);
   const [noMatchFound, setNoMatchFound] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [showRevokedUsers, setShowRevokedUsers] = useState(false);
 
   const [searchValue, setSearchValue] = useState("");
@@ -109,16 +112,6 @@ export default function Users() {
 
   const [numberPages, setNumberPages] = useState(1);
   useEffect(() => {
-    setLoading(true);
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
     axios(
       configApiCall(
         api_path_get_user_directory_search,
@@ -130,10 +123,13 @@ export default function Users() {
       .then((response) => {
         setUsers(response.data.profiles);
         setNumberPages(response.data.numPages);
-        setLoading(false);
+        if (response.data.profiles.length === 0) {
+          setNoUsersFound(true);
+        } else {
+          setNoUsersFound(false);
+        }
       })
       .catch((error) => {
-        setLoading(false);
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
@@ -141,16 +137,10 @@ export default function Users() {
           console.error("Error getting users: " + error);
         }
       });
-    return () => {
-      clearInterval(timer);
-    };
   }, [history]);
 
   const searchUsers = (value: string, page = 1) => {
     setSelectedPage(page);
-    setLoading(true);
-    setNoMatchFound(false);
-    setUsers([]);
     axios(
       configApiCall(
         api_path_get_user_directory_search,
@@ -160,14 +150,20 @@ export default function Users() {
       )
     )
       .then((response) => {
-        setLoading(false);
         setUsers(response.data.profiles);
         setNumberPages(response.data.numPages);
         setNoMatchFound(response.data.profiles.length === 0);
+        setNoUsersFound(false);
+        if (value.length === 0) {
+          setNoMatchFound(false);
+          // This is the case were the search value is empty but there is still no users found
+          if (response.data.profiles.length === 0) {
+            setNoUsersFound(true);
+          }
+        }
       })
       .catch((error) => {
         setUsers([]);
-        setLoading(false);
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
           history.push("/signin");
@@ -194,7 +190,7 @@ export default function Users() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={12}>
           {auth.isLocalDirectory() && auth.hasAdminScope() && (
-            <Link to={"/createuser"}>
+            <Link to={"/createuser"} className={classes.link}>
               <Button variant="contained" color="primary">
                 <AddCircleOutlineIcon />{" "}
                 {i18next.t("create_user", "Create user") as string}
@@ -210,7 +206,11 @@ export default function Users() {
                 color="primary"
               />
             }
-            style={{ marginLeft: "1rem" }}
+            style={
+              auth.isLocalDirectory() && auth.hasAdminScope()
+                ? { marginLeft: "1rem" }
+                : { marginLeft: "-8px" }
+            }
             label="Display revoked users"
           />
 
@@ -221,10 +221,7 @@ export default function Users() {
                   className: classes.margin + " " + classes.search,
                 }}
                 inputProps={{
-                  placeholder: i18next.t(
-                    "search_users_using",
-                    "Search users using (username, first name, last name)"
-                  ),
+                  placeholder: i18next.t("search_users", "Search users"),
                   inputProps: {
                     "aria-label": i18next.t(
                       "search_users",
@@ -237,7 +234,7 @@ export default function Users() {
               <Search />
             </GridItem>
             <GridItem xs={12} sm={12} md={6}>
-              {!noUsersFound && (
+              {numberPages > 1 && !noMatchFound && (
                 <Pagination
                   count={numberPages}
                   page={selectedPage}
@@ -247,15 +244,9 @@ export default function Users() {
             </GridItem>
           </GridContainer>
 
-          <div className={classes.loading}>
-            {loading && (
-              <LinearProgress variant="determinate" value={progress} />
-            )}
-          </div>
-
           {noUsersFound && (
             <div className={classes.usersNotFound}>
-              <InfoIcon />
+              <InfoOutlined />
 
               <p style={{ marginLeft: "10px" }}>
                 {i18next.t("no_users_found", "No users found") as string}
@@ -263,7 +254,7 @@ export default function Users() {
             </div>
           )}
         </GridItem>
-        {(!noUsersFound || !noMatchFound) &&
+        {!noMatchFound &&
           users
             .sort(function (a, b) {
               if (a.username < b.username) {
@@ -277,7 +268,10 @@ export default function Users() {
             .map((user) => (
               <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={user.username}>
                 <Card profile>
-                  <Link to={`/user/${user.username}`}>
+                  <Link
+                    to={`/user/${user.username}`}
+                    style={{ height: "100%" }}
+                  >
                     <CardBody profile>
                       <CardAvatar profile>
                         <img
@@ -317,7 +311,7 @@ export default function Users() {
                             </li>
                             <li>
                               {user.organization && (
-                                <BusinessOutlinedIcon
+                                <BusinessCenterOutlined
                                   fontSize="small"
                                   style={{ marginRight: "10px" }}
                                 />
@@ -334,7 +328,7 @@ export default function Users() {
             ))}
         {noMatchFound && (
           <div className={classes.usersNotFound}>
-            <InfoIcon />
+            <InfoOutlined />
 
             <p style={{ marginLeft: "10px" }}>
               {

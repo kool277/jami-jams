@@ -20,7 +20,7 @@ const headerStyle = (theme) => ({
     position: "absolute",
     width: "50%",
     [theme.breakpoints.down("lg")]: {
-      width: "130px",
+      width: "auto",
     },
     [theme.breakpoints.up("md")]: {
       display: "none",

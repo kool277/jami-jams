@@ -47,9 +47,6 @@ import { PolicyDataContext } from "./PolicyDataContext";
 
 const styles = {
   ...dashboardStyle,
-  card: {
-    minWidth: "600px",
-  },
   cardBody: {
     flexGrow: 1,
   },
@@ -65,7 +62,7 @@ const styles = {
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
   },
@@ -202,7 +199,7 @@ export default function EditBlueprintUi({
       <BlueprintSnackbar snackbar={snackbar} setSnackbar={setSnackbar} />
       <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
-          <Card profile className={classes.card}>
+          <Card profile>
             <CardHeader color="info" stats icon>
               <CardIcon color="info">
                 <SettingsIcon />

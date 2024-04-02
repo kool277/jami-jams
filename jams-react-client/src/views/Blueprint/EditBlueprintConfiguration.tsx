@@ -118,7 +118,7 @@ const styles = () => ({
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
   },
@@ -153,6 +153,9 @@ const styles = () => ({
     maxHeight: "60vh",
     minWidth: "80vh",
     maxWidth: "80vh",
+  },
+  marginTop: {
+    marginTop: "15px",
   },
 });
 
@@ -308,7 +311,7 @@ export default function EditBlueprintConfiguration(
                                 : "none",
                           }}
                         >
-                          <FormControl className={classes.margin}>
+                          <FormControl className={classes.marginTop}>
                             <InputLabel htmlFor="turnServer">
                               {
                                 i18next.t(
@@ -340,7 +343,7 @@ export default function EditBlueprintConfiguration(
                                 : "none",
                           }}
                         >
-                          <FormControl className={classes.margin}>
+                          <FormControl className={classes.marginTop}>
                             <InputLabel htmlFor="turnServerUserName">
                               {
                                 i18next.t(
@@ -375,7 +378,7 @@ export default function EditBlueprintConfiguration(
                                 : "none",
                           }}
                         >
-                          <FormControl className={classes.margin}>
+                          <FormControl className={classes.marginTop}>
                             <InputLabel htmlFor="turnServerPassword">
                               {
                                 i18next.t(
@@ -469,7 +472,7 @@ export default function EditBlueprintConfiguration(
                         />
                         <FormGroup row>
                           <FormControl
-                            className={classes.margin}
+                            className={classes.marginTop}
                             style={{
                               display:
                                 selectedDHTProxyOption === "customDHTProxy"
@@ -501,7 +504,7 @@ export default function EditBlueprintConfiguration(
                         </FormGroup>
                         <FormGroup row>
                           <FormControl
-                            className={classes.margin}
+                            className={classes.marginTop}
                             style={{
                               display:
                                 selectedDHTProxyOption === "customDHTProxy"

@@ -137,8 +137,10 @@ const sidebarStyle = (theme) => ({
     listStyle: "none",
     position: "fixed",
     bottom: "0",
-    left: "0",
     width: drawerWidth,
+    [theme.breakpoints.up("md")]: {
+      left: "0",
+    },
   },
   item: {
     position: "relative",

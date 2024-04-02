@@ -59,6 +59,7 @@ export const BlueprintSnackbar: FC<BlueprintSnackbarProps> = ({
       TransitionComponent={SlideTransition}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       open={snackbar.open}
+      autoHideDuration={5000}
       onClose={handleClose}
       message={snackbar.message}
       key={"bottomright"}

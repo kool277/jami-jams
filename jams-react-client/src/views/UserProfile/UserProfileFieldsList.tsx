@@ -32,8 +32,8 @@ import SmartphoneOutlinedIcon from "@mui/icons-material/SmartphoneOutlined";
 import LocalPrintshopOutlinedIcon from "@mui/icons-material/LocalPrintshopOutlined";
 import PhoneForwardedOutlinedIcon from "@mui/icons-material/PhoneForwardedOutlined";
 
-import PersonIcon from "@mui/icons-material/Person";
 import { UserProfile } from "./DisplayUserProfile";
+import { PersonOutlineOutlined } from "@mui/icons-material";
 
 interface UserProfileFieldsListProps {
   user: UserProfile;
@@ -47,7 +47,7 @@ const UserProfileFieldsList: FC<UserProfileFieldsListProps> = ({ user }) => {
           <ListItem>
             <ListItemAvatar>
               <Avatar>
-                <PersonIcon />
+                <PersonOutlineOutlined />
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={`${user.firstName} ${user.lastName}`} />

@@ -26,12 +26,6 @@ import Navbar from "components/Navbars/Navbar";
 import Footer from "components/Footer/Footer";
 import Sidebar from "components/Sidebar/Sidebar";
 
-// @mui/icons-material
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Person from "@mui/icons-material/Person";
-import Group from "@mui/icons-material/Group";
-import AllInbox from "@mui/icons-material/AllInbox";
-import SettingsIcon from "@mui/icons-material/Settings";
 // core components/views for Admin layout
 import Users from "views/Users/Users";
 import Groups from "views/Groups/Groups";
@@ -59,6 +53,13 @@ import Button from "@mui/material/Button";
 
 import i18next from "i18next";
 import { Route } from "./BaseLayout";
+import {
+  AccountCircleOutlined,
+  AllInboxOutlined,
+  GroupOutlined,
+  PersonOutline,
+  SettingsOutlined,
+} from "@mui/icons-material";
 
 let ps: PerfectScrollbar;
 
@@ -89,7 +90,7 @@ export default function Admin(props: AdminProps) {
     {
       path: `/user/${auth.getUsername()}`,
       name: i18next.t("myprofile", "My profile") as string,
-      icon: AccountCircleIcon,
+      icon: AccountCircleOutlined,
       component: Users,
       layout: "/admin",
       admin: false,
@@ -97,7 +98,7 @@ export default function Admin(props: AdminProps) {
     {
       path: "/users",
       name: i18next.t("users", "Users") as string,
-      icon: Person,
+      icon: PersonOutline,
       component: Users,
       layout: "/admin",
       admin: false,
@@ -105,7 +106,7 @@ export default function Admin(props: AdminProps) {
     {
       path: "/groups",
       name: i18next.t("groups", "Groups") as string,
-      icon: Group,
+      icon: GroupOutlined,
       component: Groups,
       layout: "/admin",
       admin: true,
@@ -113,7 +114,7 @@ export default function Admin(props: AdminProps) {
     {
       path: "/blueprints",
       name: i18next.t("blueprints", "Blueprints") as string,
-      icon: AllInbox,
+      icon: AllInboxOutlined,
       component: Blueprints,
       layout: "/admin",
       admin: true,
@@ -121,7 +122,7 @@ export default function Admin(props: AdminProps) {
     {
       path: "/settings",
       name: i18next.t("settings", "Settings") as string,
-      icon: SettingsIcon,
+      icon: SettingsOutlined,
       component: Settings,
       layout: "/admin",
       admin: true,

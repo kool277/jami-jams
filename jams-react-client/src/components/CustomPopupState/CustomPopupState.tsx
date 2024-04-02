@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import InfoIcon from "@mui/icons-material/Info";
 import Popover from "@mui/material/Popover";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { InfoOutlined } from "@mui/icons-material";
 
 interface CustomPopupStateProps {
   message: string;
@@ -32,7 +32,7 @@ export default function CustomPopupState(props: CustomPopupStateProps) {
       <PopupState variant="popover" popupId="demo-popup-popover">
         {(popupState) => (
           <div>
-            <InfoIcon
+            <InfoOutlined
               color="disabled"
               fontSize="small"
               {...bindTrigger(popupState)}

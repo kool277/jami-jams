@@ -85,6 +85,11 @@ export default function CreateBlueprintDialog({
 
   const handleCheckBlueprintNameExists = (searchBlueprintNameValue: string) => {
     setDisableCreate(true);
+    if (searchBlueprintNameValue.length === 0) {
+      setDisableCreate(true);
+      setBlueprintNameExists(false);
+      return;
+    }
     axios(
       configApiCall(
         api_path_blueprints + "?name=" + searchBlueprintNameValue,
@@ -163,7 +168,7 @@ export default function CreateBlueprintDialog({
       <DialogContent>
         <TextField
           autoFocus
-          error={blueprintNameExists}
+          error={blueprintNameExists || disableCreate}
           margin="dense"
           id="blueprintName"
           label={i18next.t("blueprint_name", "Blueprint name") as string}

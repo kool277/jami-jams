@@ -23,15 +23,15 @@ const footerStyle = {
     display: "block",
   },
   right: {
-    paddingTop: "15px",
+    paddingTop: "10px",
     margin: "0",
-    fontSize: "14px",
+    fontSize: "12px",
     float: "right!important",
   },
   footer: {
     bottom: "0",
     borderTop: "1px solid " + grayColor[11],
-    padding: "15px 0",
+    padding: "10px 0",
     ...defaultFont,
   },
   container,

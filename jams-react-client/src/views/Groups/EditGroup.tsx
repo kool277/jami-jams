@@ -104,7 +104,7 @@ const useStyles = makeStyles(() => ({
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
   },
@@ -513,9 +513,6 @@ export default function EditGroup(props: EditGroupProps) {
                 </TableCell>
                 <TableCell align="left">
                   {i18next.t("last_name", "Last name") as string}
-                </TableCell>
-                <TableCell align="right">
-                  {i18next.t("action", "Action") as string}
                 </TableCell>
               </TableRow>
             </TableHead>

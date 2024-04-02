@@ -239,7 +239,6 @@ export default function CreateGroupDialog({
         <Button
           onClick={handleCreateGroup}
           color="info"
-          className={classes.whiteButtonText}
           disabled={disableCreate}
           autoFocus
         >

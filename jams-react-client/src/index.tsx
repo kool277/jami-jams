@@ -59,6 +59,7 @@ import SettingsRoute from "routes/SettingsRoute";
 import SignIn from "layouts/SignIn";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
+import "../node_modules/ubuntu-fontface/ubuntu.min.css";
 
 import "./i18n";
 import { grayColor } from "assets/jss/material-dashboard-react";
@@ -78,6 +79,7 @@ const theme = createTheme({
     allVariants: {
       color: grayColor[2],
     },
+    fontFamily: ["Ubuntu", "sans-serif"].join(","),
   },
 });
 

@@ -18,10 +18,7 @@ const tasksStyle = {
     borderBottom: "1px solid " + grayColor[5],
   },
   tableActions: {
-    display: "flex",
-    border: "none",
     padding: "12px 8px !important",
-    verticalAlign: "middle",
   },
   tableCell: {
     ...defaultFont,
@@ -30,6 +27,7 @@ const tasksStyle = {
     lineHeight: "1.42857143",
     fontSize: "14px",
     textAlign: "left",
+    wordBreak: "break-all",
   },
   tableCellRTL: {
     textAlign: "right",

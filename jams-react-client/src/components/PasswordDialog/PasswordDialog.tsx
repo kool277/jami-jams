@@ -62,9 +62,6 @@ const styles = (theme: Theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
-  whiteButtonText: {
-    color: "white",
-  },
 });
 
 const useStyles = makeStyles(styles as any);
@@ -291,7 +288,6 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
                       type="submit"
                       disabled={!isValid && !dirty}
                       color="info"
-                      className={classes.whiteButtonText}
                       autoFocus
                     >
                       Update password

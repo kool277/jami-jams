@@ -112,7 +112,7 @@ const styles = (theme: Theme) => ({
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
   },
@@ -230,9 +230,6 @@ const styles = (theme: Theme) => ({
       justifyContent: "center",
       alignItems: "center",
     },
-  },
-  whiteButtonText: {
-    color: "white",
   },
 });
 
@@ -648,12 +645,7 @@ export default function EditCreateUserProfile(
           </div>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={cropProfilePicture}
-            color="info"
-            className={classes.whiteButtonText}
-            autoFocus
-          >
+          <Button onClick={cropProfilePicture} color="info" autoFocus>
             {i18next.t("validate", "Validate") as string}
           </Button>
         </DialogActions>
@@ -1108,11 +1100,7 @@ export default function EditCreateUserProfile(
                     </CardBody>
                     <CardFooter className={classes.alignRight}>
                       {!props.createUser && (
-                        <Button
-                          color="info"
-                          className={classes.whiteButtonText}
-                          onClick={handleCancelUpdate}
-                        >
+                        <Button color="info" onClick={handleCancelUpdate}>
                           {i18next.t("cancel", "Cancel") as string}
                         </Button>
                       )}
@@ -1121,7 +1109,6 @@ export default function EditCreateUserProfile(
                           type="submit"
                           disabled={!isValid || !dirty || userExists}
                           color="info"
-                          className={classes.whiteButtonText}
                         >
                           {
                             i18next.t(
@@ -1131,12 +1118,7 @@ export default function EditCreateUserProfile(
                           }
                         </Button>
                       ) : (
-                        <Button
-                          type="submit"
-                          disabled={!isValid}
-                          color="info"
-                          className={classes.whiteButtonText}
-                        >
+                        <Button type="submit" disabled={!isValid} color="info">
                           {i18next.t("save_profile", "Save Profile") as string}
                         </Button>
                       )}

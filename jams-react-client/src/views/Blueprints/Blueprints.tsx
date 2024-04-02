@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
@@ -29,11 +29,8 @@ import Card from "components/Card/Card";
 import CardBody from "components/Card/CardBody";
 import CardFooter from "components/Card/CardFooter";
 
-import GroupIcon from "@mui/icons-material/Group";
-import PersonIcon from "@mui/icons-material/Person";
 import Search from "@mui/icons-material/Search";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import InfoIcon from "@mui/icons-material/Info";
 
 import axios from "axios";
 import configApiCall from "api";
@@ -54,6 +51,11 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 import i18next from "i18next";
 import CreateBlueprintDialog from "./CreateBlueprintDialog";
+import {
+  GroupOutlined,
+  InfoOutlined,
+  PersonOutline,
+} from "@mui/icons-material";
 
 export interface Blueprint {
   name: string;
@@ -74,15 +76,20 @@ const styles = {
     marginTop: "0px",
     minHeight: "auto",
     fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Ubuntu'",
     marginBottom: "3px",
     textDecoration: "none",
+  },
+  cardTitle: {
+    marginTop: "0px",
+    height: "2em",
   },
   deleteIcon: {
     float: "right",
   },
   search: {
     width: "90%",
+    maxWidth: "500px",
   },
   loading: {
     width: "100%",
@@ -100,9 +107,8 @@ export default function Blueprints() {
   const classes = useStyles();
   const history = useHistory();
   const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
-  const [loading, setLoading] = useState(false);
   const [zeroBlueprint, setZeroBlueprint] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [searchValue, setSearchValue] = useState<string>("");
 
   const [open, setOpen] = useState(false);
 
@@ -110,23 +116,12 @@ export default function Blueprints() {
   const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
     axios(configApiCall(api_path_blueprints + "?name=*", "GET", null, null))
       .then((response) => {
         const allBluePrints = response.data;
         if (allBluePrints.length === 0) setZeroBlueprint(true);
         else setZeroBlueprint(false);
         setBlueprints(allBluePrints);
-        setLoading(false);
       })
       .catch((error) => {
         setBlueprints([]);
@@ -137,9 +132,7 @@ export default function Blueprints() {
           console.log("Error getting blueprints: " + error);
         }
       });
-    return () => {
-      clearInterval(timer);
-    };
+    return;
   }, [history, open, openRemoveDialog]);
 
   const handleRemoveBlueprint = (blueprintRemovedName: string) => {
@@ -187,7 +180,7 @@ export default function Blueprints() {
                 "Are you sure you want to delete"
               ) as string
             }
-            <strong>{removedBlueprint}</strong> ?
+            <strong>&nbsp;{removedBlueprint}</strong> ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -218,8 +211,8 @@ export default function Blueprints() {
                 }}
                 inputProps={{
                   placeholder: i18next.t(
-                    "search_blueprints_placeholder",
-                    "Search blueprints…"
+                    "search_blueprints",
+                    "Search blueprints"
                   ),
                   inputProps: {
                     "aria-label": i18next.t(
@@ -227,20 +220,17 @@ export default function Blueprints() {
                       "Search blueprints"
                     ),
                   },
+                  onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) =>
+                    setSearchValue((e.target as HTMLInputElement).value),
                 }}
               />
             )}
             {!zeroBlueprint && <Search />}
-            <div className={classes.loading}>
-              {loading && (
-                <LinearProgress variant="determinate" value={progress} />
-              )}
-            </div>
           </div>
         </GridItem>
         {zeroBlueprint ? (
           <div className={classes.blueprintsNotFound}>
-            <InfoIcon />
+            <InfoOutlined />
             <p style={{ marginLeft: "10px" }}>
               {
                 i18next.t(
@@ -251,57 +241,68 @@ export default function Blueprints() {
             </p>
           </div>
         ) : (
-          blueprints.map((blueprint: Blueprint) => (
-            <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={blueprint.name}>
-              <Card profile>
-                <Link to={`/blueprint/${blueprint.name}`}>
-                  <CardBody profile>
-                    <h3 className={classes.cardTitle}>
-                      {blueprint.name
-                        ? blueprint.name
-                        : (i18next.t(
-                            "no_blueprint_name",
-                            "No blueprint name"
-                          ) as string)}
-                    </h3>
-                    <ul>
-                      <li>
-                        {JSON.parse(blueprint.policyData).rendezVous ===
-                        true ? (
-                          <p>
-                            <GroupIcon
-                              fontSize="small"
-                              style={{ marginRight: "10px" }}
-                            />
-                            {i18next.t("rendezvous", "Rendezvous") as string}
-                          </p>
-                        ) : (
-                          <p>
-                            <PersonIcon
-                              fontSize="small"
-                              style={{ marginRight: "10px" }}
-                            />
-                            {i18next.t("standalone", "Standalone") as string}
-                          </p>
-                        )}
-                      </li>
-                    </ul>
-                  </CardBody>
-                </Link>
-                <CardFooter>
-                  <IconButton
-                    color="primary"
-                    onClick={() => {
-                      handleRemoveBlueprint(blueprint.name);
-                    }}
-                    size="large"
-                  >
-                    <DeleteOutlineIcon />
-                  </IconButton>
-                </CardFooter>
-              </Card>
-            </GridItem>
-          ))
+          blueprints
+            .filter((blueprint: Blueprint) => {
+              if (searchValue === "") {
+                return blueprint;
+              } else {
+                return blueprint.name
+                  .toLowerCase()
+                  .includes(searchValue.toLowerCase());
+              }
+            })
+            .map((blueprint: Blueprint) => (
+              <GridItem
+                xs={12}
+                sm={6}
+                md={3}
+                lg={2}
+                xl={2}
+                key={blueprint.name}
+              >
+                <Card profile>
+                  <Link to={`/blueprint/${blueprint.name}`}>
+                    <CardBody profile>
+                      <h3 className={classes.cardTitle}>
+                        {blueprint.name
+                          ? blueprint.name
+                          : (i18next.t(
+                              "no_blueprint_name",
+                              "No blueprint name"
+                            ) as string)}
+                      </h3>
+                      <ul style={{ fontSize: "12px" }}>
+                        <li>
+                          {JSON.parse(blueprint.policyData).rendezVous ===
+                          true ? (
+                            <React.Fragment>
+                              <GroupOutlined style={{ marginRight: "10px" }} />
+                              {i18next.t("rendezvous", "Rendezvous") as string}
+                            </React.Fragment>
+                          ) : (
+                            <React.Fragment>
+                              <PersonOutline style={{ marginRight: "10px" }} />
+                              {i18next.t("standalone", "Standalone") as string}
+                            </React.Fragment>
+                          )}
+                        </li>
+                      </ul>
+                    </CardBody>
+                  </Link>
+                  <CardFooter>
+                    <IconButton
+                      color="primary"
+                      onClick={() => {
+                        handleRemoveBlueprint(blueprint.name);
+                      }}
+                      size="large"
+                    >
+                      <DeleteOutlineIcon />
+                    </IconButton>
+                  </CardFooter>
+                </Card>
+              </GridItem>
+            ))
         )}
       </GridContainer>
     </div>

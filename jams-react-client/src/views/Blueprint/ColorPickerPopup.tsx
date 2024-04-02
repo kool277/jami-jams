@@ -22,7 +22,6 @@ import { HexAlphaColorPicker, HexColorPicker } from "react-colorful";
 const styles = {
   root: {
     position: "relative",
-    padding: "0 20px",
   },
   colorButtonStyle: {
     borderRadius: "50%",

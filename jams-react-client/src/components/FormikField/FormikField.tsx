@@ -41,7 +41,7 @@ const FormikField = (props: FormikFieldProps) => {
   return (
     <div className="FormikField">
       <FormControl size="medium" error={props.onKeyUpError} fullWidth>
-        <InputLabel htmlFor={props.name}>
+        <InputLabel htmlFor={props.name} style={{ marginTop: "10px" }}>
           {props.onKeyUpError ? (
             props.onKeyUpErrorMessage
           ) : (

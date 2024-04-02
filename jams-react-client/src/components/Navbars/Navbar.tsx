@@ -45,9 +45,6 @@ export default function Header(props: HeaderProps) {
   return (
     <AppBar className={classes.appBar}>
       <Toolbar className={classes.container}>
-        <div className={classes.flex}>
-          <Button color="info" className={classes.title}></Button>
-        </div>
         <Hidden mdUp implementation="css">
           <IconButton
             color="default"
