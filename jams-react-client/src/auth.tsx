@@ -203,6 +203,9 @@ class Auth {
   }
 
   checkForUpdates(cb: () => void) {
+    if (!this.hasAdminScope()) {
+      return;
+    }
     if (this.installed && this.authenticated) {
       axios(configApiCall(api_path_get_subscription_status, "GET", null, null))
         .then((response) => {

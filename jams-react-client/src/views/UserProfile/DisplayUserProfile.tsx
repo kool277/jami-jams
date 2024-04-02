@@ -271,6 +271,9 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
 
   const getAdminUserGroups = () => {
     // TODO do this in a single sql query on the server, with a JOIN
+    if (!auth.hasAdminScope()) {
+      return;
+    }
     axios(
       configApiCall(
         api_path_get_admin_user_groups + username,
