@@ -133,20 +133,6 @@ public class UserProfileService {
                     results.stream()
                             .map(UserProfileService::profileFromResponse)
                             .collect(Collectors.toList());
-            // There is a use case where a user is not in the LDAP directory but is in the database.
-            // When this happens, we need to revoke the user from the database.
-            List<UserProfile> profilesFromDatabase =
-                    dataStore.getUserProfileDao().getAllUserProfile();
-            for (UserProfile p : profilesFromDatabase) {
-                if (profilesFromResponse.stream()
-                        .noneMatch(r -> r.getUsername().equals(p.getUsername()))) {
-                    RevokeUserFlow.revokeUser(p.getUsername());
-                    // We also remove the user from the local_directory table to avoid duplicate
-                    // revocations
-                    dataStore.getUserProfileDao().deleteUserProfile(p.getUsername());
-                }
-            }
-            // Inserts the newly added profiles into the database.
             for (UserProfile p : profilesFromResponse) {
                 dataStore.getUserProfileDao().insertIfNotExists(p);
             }
