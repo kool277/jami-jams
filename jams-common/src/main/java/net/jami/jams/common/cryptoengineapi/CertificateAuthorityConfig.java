@@ -23,6 +23,7 @@ import lombok.Setter;
 @Setter
 public class CertificateAuthorityConfig {
     private String serverDomain;
+    private Boolean reverseProxy;
     private String signingAlgorithm;
     private Long crlLifetime;
     private Long userLifetime;

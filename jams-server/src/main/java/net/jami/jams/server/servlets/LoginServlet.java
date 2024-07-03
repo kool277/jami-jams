@@ -28,6 +28,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import net.jami.jams.ca.JamsCA;
 import net.jami.jams.common.annotations.JsonContent;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 import net.jami.jams.common.objects.user.User;
@@ -35,8 +36,14 @@ import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.serialization.tomcat.TomcatCustomErrorHandler;
 import net.jami.jams.server.servlets.api.auth.login.LoginRequest;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
 import java.util.Optional;
 
 @WebServlet("/api/login")
@@ -65,13 +72,39 @@ public class LoginServlet extends HttpServlet {
             res = processUsernamePasswordAuth(req.getHeader("authorization"));
         }
         // Case 2 SSL Certificate
-        else if (req.getAttribute("jakarta.servlet.request.X509Certificate") != null) {
+        String clientCert = req.getHeader("X-Client-Cert");
+        if (JamsCA.reverseProxy && clientCert != null) {
+            try {
+                // URL-decode the header value
+                String decodedHeader = URLDecoder.decode(clientCert, StandardCharsets.UTF_8.name());
+
+                // Remove the PEM header and footer
+                String pem =
+                        decodedHeader
+                                .replace("-----BEGIN CERTIFICATE-----", "")
+                                .replace("-----END CERTIFICATE-----", "")
+                                .replaceAll("\\s+", ""); // Remove all whitespace characters
+
+                // Decode the Base64 encoded certificate
+                byte[] decodedBytes = Base64.getDecoder().decode(pem);
+
+                // Generate the X509Certificate object
+                CertificateFactory factory = CertificateFactory.getInstance("X.509");
+                InputStream in = new ByteArrayInputStream(decodedBytes);
+                X509Certificate certificate = (X509Certificate) factory.generateCertificate(in);
+
+                // Process the certificate as needed
+                res = processX509Auth(certificate);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (req.getAttribute("jakarta.servlet.request.X509Certificate") != null) {
             res =
                     processX509Auth(
                             (X509Certificate[])
                                     req.getAttribute("jakarta.servlet.request.X509Certificate"));
         } else {
-            // Case 3: form submitted username/password
+            // Case 4: form submitted username/password
             LoginRequest object = gson.fromJson(req.getReader(), LoginRequest.class);
             if (object.getUsername() != null && object.getPassword() != null) {
                 res = processUsernamePasswordAuth(object.getUsername(), object.getPassword());

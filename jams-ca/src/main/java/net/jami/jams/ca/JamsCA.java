@@ -62,6 +62,8 @@ public class JamsCA implements CertificateAuthority, RevocationCallback {
     // CA certificate & OCSP Certificates, because they are often used.
     public static SystemAccount CA;
     public static SystemAccount OCSP;
+    // Whether JAMS is behind a reverse proxy or not.
+    public static boolean reverseProxy = false;
     // Flag to indicate completion of the revokeCertificate method
     private boolean revokeCompleted = false;
     private final Object lock = new Object();
@@ -83,6 +85,7 @@ public class JamsCA implements CertificateAuthority, RevocationCallback {
         crlLifetime = config.getCrlLifetime();
         userLifetime = config.getUserLifetime();
         deviceLifetime = config.getDeviceLifetime();
+        reverseProxy = config.getReverseProxy();
 
         if (deviceLifetime > userLifetime) {
             log.warn(

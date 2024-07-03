@@ -25,7 +25,6 @@ import { Formik } from "formik";
 
 import CustomPopupState from "../CustomPopupState/CustomPopupState";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Input from "@mui/material/Input";
 
 import * as tool from "../../tools";
 
@@ -39,7 +38,7 @@ import auth from "auth";
 import * as Yup from "yup";
 
 import i18next from "i18next";
-import { Theme } from "@mui/material";
+import { Checkbox, FormControlLabel, Theme } from "@mui/material";
 
 const useStyles = makeStyles((theme: Theme) => ({
   paper: {
@@ -71,7 +70,7 @@ export default function ServerParameters({
   setErrorMessage,
 }: ServerParametersProps) {
   // Formik validation fields
-  const initialValues = { domain: backend_address.origin };
+  const initialValues = { domain: backend_address.origin, reverseProxy: false };
   const validationSchema = Yup.object().shape({
     domain: Yup.string().required(
       i18next.t("domain_is_required", "Domain is required.") as string
@@ -80,6 +79,7 @@ export default function ServerParameters({
 
   type Settings = {
     domain: string;
+    reverseProxy: boolean;
   };
 
   const certificateRevocationTypes = [
@@ -154,6 +154,7 @@ export default function ServerParameters({
         crlLifetime: certificateRevocation.value,
         deviceLifetime: deviceLifetime.value,
         userLifetime: userAccountLifetime.value,
+        reverseProxy: values.reverseProxy,
         signingAlgorithm: "SHA512WITHRSA",
       };
       axios(configApiCall(api_path_post_install_server, "POST", jsonData, null))
@@ -327,7 +328,29 @@ export default function ServerParameters({
                 }
               </span>
             ) : null}
-
+            <Typography variant="subtitle1" gutterBottom>
+              {i18next.t("reverse_proxy", "Reverse proxy") as string}
+              <CustomPopupState
+                message={i18next.t(
+                  "set_whether_or_not_reverse_proxy",
+                  "Set whether or not your JAMS installation uses a dedicated reverse proxy like Nginx."
+                )}
+              />
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={values.reverseProxy}
+                  id="reverseProxy"
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "primary checkbox" }}
+                  color="primary"
+                />
+              }
+              label={
+                i18next.t("use_reverse_proxy", "Use a reverse proxy") as string
+              }
+            />
             <Button
               type="submit"
               fullWidth

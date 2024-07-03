@@ -18,6 +18,7 @@ package net.jami.jams.server.servlets.api.auth.login;
 
 import static net.jami.jams.server.Server.userAuthenticationModule;
 
+import net.jami.jams.authmodule.UserAuthenticationModule;
 import net.jami.jams.common.authmodule.AuthTokenResponse;
 
 import java.security.cert.X509Certificate;
@@ -27,6 +28,11 @@ public class AuthRequestProcessor {
     // This case does not talk to the authentication module, only to the ca
     public static AuthTokenResponse processX509Auth(X509Certificate[] certificates) {
         return userAuthenticationModule.authenticateUser(certificates);
+    }
+
+    // This is only called when JAMS is behind a reverse proxy
+    public static AuthTokenResponse processX509Auth(X509Certificate certificate) {
+        return ((UserAuthenticationModule) userAuthenticationModule).authenticateUser(certificate);
     }
 
     public static AuthTokenResponse processUsernamePasswordAuth(String username, String password) {

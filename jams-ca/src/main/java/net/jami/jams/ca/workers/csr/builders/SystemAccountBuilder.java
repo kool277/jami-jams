@@ -27,11 +27,14 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 
+import java.io.FileWriter;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 
 @Slf4j
@@ -40,9 +43,12 @@ public class SystemAccountBuilder {
     // Self-signed because it is a CA
     public static SystemAccount generateCA(SystemAccount systemAccount) {
         try {
+            // Generate RSA Key Pair
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(4096);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            // Build the X509 Certificate
             X509v3CertificateBuilder builder =
                     new X509v3CertificateBuilder(
                             new X500Name(systemAccount.getX509Fields().getDN()),
@@ -53,11 +59,23 @@ public class SystemAccountBuilder {
                                             + systemAccount.getX509Fields().getLifetime()),
                             new X500Name(systemAccount.getX509Fields().getDN()),
                             SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()));
-            systemAccount.setPrivateKey(keyPair.getPrivate());
-            systemAccount.setCertificate(
+
+            // Sign the Certificate
+            X509Certificate certificate =
                     CertificateSigner.signCertificate(
-                            keyPair.getPrivate(), builder, ExtensionLibrary.caExtensions));
+                            keyPair.getPrivate(), builder, ExtensionLibrary.caExtensions);
+
+            // Set the private key and certificate in the system account
+            systemAccount.setPrivateKey(keyPair.getPrivate());
+            systemAccount.setCertificate(certificate);
+
+            // Save the certificate to a PEM file
+            JcaPEMWriter pemWriter = new JcaPEMWriter(new FileWriter("CA.pem"));
+            pemWriter.writeObject(certificate);
+            pemWriter.close();
+
             return systemAccount;
+
         } catch (Exception e) {
             log.error("Could not generate the system's CA: " + e);
             return null;

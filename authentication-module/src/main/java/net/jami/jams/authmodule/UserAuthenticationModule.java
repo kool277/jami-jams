@@ -59,6 +59,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class UserAuthenticationModule implements AuthenticationModule {
@@ -237,15 +239,44 @@ public class UserAuthenticationModule implements AuthenticationModule {
                 if (crl.getRevokedCertificate(certificate.getSerialNumber()) != null) return null;
             }
             // Now that the certificate chain is valid, we can extract the user and device
-            X509Certificate clientCert = certificates[1];
-            X509Certificate deviceCert = certificates[0];
-            String username = X509Utils.extractDNFromCertificate(clientCert).get("CN");
+            X509Certificate clientCertificate = certificates[1];
+            X509Certificate deviceCertificate = certificates[0];
+            String username = X509Utils.extractDNFromCertificate(clientCertificate).get("CN");
             // We need to extract the deviceId from the certificate
             User user = datastore.getUserDao().getByUsername(username).orElseThrow();
             return tokenController.getToken(
-                    user, X509Utils.extractDNFromCertificate(deviceCert).get("UID"));
+                    user, X509Utils.extractDNFromCertificate(deviceCertificate).get("UID"));
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public AuthTokenResponse authenticateUser(X509Certificate deviceCertificate) {
+        // In thise case we only generate the token because the reverse proxy already validated the
+        // client's certificate chain
+        try {
+            String username = getIssuerCN(deviceCertificate);
+            User user = datastore.getUserDao().getByUsername(username).orElseThrow();
+            return tokenController.getToken(
+                    user, X509Utils.extractDNFromCertificate(deviceCertificate).get("UID"));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String getIssuerCN(X509Certificate certificate) {
+        // Get the issuer DN as a string
+        String issuerDN = certificate.getIssuerX500Principal().getName();
+
+        // Define a regex pattern to extract the CN part
+        Pattern pattern = Pattern.compile("CN=([^,]+)");
+        Matcher matcher = pattern.matcher(issuerDN);
+
+        // If a CN is found, return it
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return null; // or handle the case where CN is not found
         }
     }
 

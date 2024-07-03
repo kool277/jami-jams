@@ -23,24 +23,33 @@ The following is an example map of how you could configure JAMS behind Nginx (th
 
 The IP 10.10.0.1 is random, and should be seen as an example.
 
-
 Typically you would add a new site called ``jams-site.conf`` to your nginx configurations which would contain the following entries if you wanted to place an SSL certificate at the Nginx level:    <pre>
 <b>server {
         listen 443 ssl;
         listen [::]:443 ssl;
         ssl on;
-    	ssl_certificate /etc/certificates/mycertificate.pem
-    	ssl_certificate_key /etc/certificates/mycertificatekey.pem
+        ssl_certificate /etc/certificates/mycertificate.pem
+        ssl_certificate_key /etc/certificates/mycertificatekey.pem
+        ssl_client_certificate /jams/installation/path/CA.pem;
+        ssl_verify_client optional;
+        ssl_verify_depth 2;
         client_max_body_size 100M;
         server_name jams.mycompany.com;
         location / {
+                # Block client-supplied headers that could be used to spoof
+                if ($http_x_client_cert) {
+                        return 400;
+                }
                 proxy_pass              http://10.10.0.1:8080/;
                 proxy_set_header        X-Real-IP  $remote_addr;
                 proxy_set_header        Host $http_host;
+                proxy_set_header        X-Client-Cert $ssl_client_escaped_cert;
         }
 }</b></pre>
 
 This is the preferred setup method by most admins, as local traffic is usually run unencrypted since it is usually either inter-VM connection, a VLAN or another dedicated link.
+
+*Note: Since the CA is generated during the JAMS initial configuration, Nginx needs to be restarted once the initial setup is completed*
 
 ## Troubleshooting and resetting
 
@@ -63,7 +72,7 @@ Visit [https://jami.biz/](https://jami.biz/) and download JAMS.
 
 Extract JAMS to c:\jams
 
-### Download and install JDK 11 
+### Download and install JDK 11
 
 Download JDK 11 from https://www.oracle.com/java/technologies/javase-jdk11-downloads.html (choose the corresponding architecture of your VM)
 
@@ -82,14 +91,14 @@ Create a new file inside bin named openssl.cnf (make sure that the file extensio
 #
 # OpenSSL configuration file.
 #
- 
+
 # Establish working directory.
- 
+
 dir					= .
- 
+
 [ ca ]
 default_ca				= CA_default
- 
+
 [ CA_default ]
 serial					= $dir/serial
 database				= $dir/certindex.txt
@@ -103,7 +112,7 @@ email_in_dn				= no
 nameopt					= default_ca
 certopt					= default_ca
 policy					= policy_match
- 
+
 [ policy_match ]
 countryName				= match
 stateOrProvinceName			= match
@@ -111,7 +120,7 @@ organizationName			= match
 organizationalUnitName			= optional
 commonName				= supplied
 emailAddress				= optional
- 
+
 [ req ]
 default_bits				= 1024			# Size of keys
 default_keyfile				= key.pem		# name of generated keys
@@ -119,7 +128,7 @@ default_md				= md5				# message digest algorithm
 string_mask				= nombstr		# permitted characters
 distinguished_name			= req_distinguished_name
 req_extensions				= v3_req
- 
+
 [ req_distinguished_name ]
 # Variable name				Prompt string
 #-------------------------	  ----------------------------------
@@ -134,7 +143,7 @@ countryName_min				= 2
 countryName_max				= 2
 commonName				= Common Name (hostname, IP, or your name)
 commonName_max				= 64
- 
+
 # Default values for the above, for consistency and less typing.
 # Variable name				Value
 ------------------------	  ------------------------------
@@ -142,12 +151,12 @@ commonName_max				= 64
 localityName_default			= My Town
 stateOrProvinceName_default		= State or Providence
 countryName_default			= US
- 
+
 [ v3_ca ]
 basicConstraints			= CA:TRUE
 subjectKeyIdentifier			= hash
 authorityKeyIdentifier			= keyid:always,issuer:always
- 
+
 [ v3_req ]
 basicConstraints			= CA:FALSE
 subjectKeyIdentifier			= hash
@@ -254,7 +263,7 @@ Source: [https://medium.com/@lk.snatch/jar-file-as-windows-service-bonus-jar-to-
 
 ## Running JAMS as a Linux Service
 
-Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:    
+Running JAMS as a Linux Service is fairly straightforward with systemd - you simply created a service unit file with the following structure:
 <b>[Unit]
 Description=JAMS Server
 

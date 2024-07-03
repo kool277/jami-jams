@@ -141,6 +141,7 @@ class SystemAccountBuilderTest {
         config.setServerDomain("http://localhost");
         config.setCrlLifetime(1000000L);
         config.setDeviceLifetime(1000L);
+        config.setReverseProxy(false);
 
         Gson gson = GsonFactory.createGson();
         JamsCA jamsCA = new JamsCA();
@@ -164,7 +165,9 @@ class SystemAccountBuilderTest {
 
     @AfterAll
     static void afterAll() {
-        File file = new File(System.getProperty("user.dir") + File.separator + "jams.crl");
-        file.delete();
+        File jamsCrlFile = new File(System.getProperty("user.dir") + File.separator + "jams.crl");
+        File jamsCAFile = new File(System.getProperty("user.dir") + File.separator + "CA.pem");
+        jamsCAFile.delete();
+        jamsCrlFile.delete();
     }
 }

@@ -72,6 +72,7 @@ install_settings() {
     post '/api/install/settings' \
         '{
             "serverDomain":"http://localhost:8080",
+            "reverseProxy":false,
             "crlLifetime":300000,
             "deviceLifetime":31556952000,
             "userLifetime":31556952000,

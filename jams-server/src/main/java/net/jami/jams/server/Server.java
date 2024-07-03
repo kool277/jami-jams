@@ -41,9 +41,13 @@ import net.jami.jams.server.startup.CryptoEngineLoader;
 import net.jami.jams.server.update.JAMSUpdater;
 import net.jami.jams.server.update.UpdateInterface;
 
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -109,6 +113,8 @@ public class Server {
             try {
                 Reader reader = new FileReader(configJsonFile);
                 loadConfig(reader);
+                // This covers the case where the server is installed but the CA file is missing.
+                createCAFile();
                 log.info("All services are UP and ready for use...");
             } catch (Exception e) {
                 log.error(
@@ -140,6 +146,18 @@ public class Server {
             } else {
                 log.error("Failed to create images folder");
                 System.exit(-1);
+            }
+        }
+    }
+
+    private static void createCAFile() {
+        if (!new File("CA.pem").exists()) {
+            try {
+                JcaPEMWriter pemWriter = new JcaPEMWriter(new FileWriter("CA.pem"));
+                pemWriter.writeObject(certificateAuthority.getCA());
+                pemWriter.close();
+            } catch (IOException e) {
+                log.error("Could not create CA file: " + e);
             }
         }
     }
