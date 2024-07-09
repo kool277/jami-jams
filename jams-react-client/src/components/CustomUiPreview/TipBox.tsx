@@ -24,6 +24,7 @@ import { luma } from "./luma";
 const styles = {
   root: {
     maxWidth: "115px",
+    margin: "5px",
     flexBasis: "100%",
     backgroundColor: (props: { color: string; fontColor: string }) =>
       props.color,

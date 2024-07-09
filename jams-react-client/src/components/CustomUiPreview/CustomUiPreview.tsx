@@ -44,24 +44,14 @@ const styles = {
     zIndex: (props: CustomUiPreviewProps) => (props.isOldPreview ? "1" : "2"),
   },
   previewWindow: {
-    position: "absolute",
     left: "50%",
     top: "50%",
-    transform: "translate(-50%, -50%)",
     width: "100%",
     height: "350px",
 
     borderRadius: "5px",
     backgroundColor: "white",
-    display: "flex",
     boxShadow: "0px 3px 6px #0000005C",
-  },
-  sidebar: {
-    minWidth: "100px",
-    width: "100px",
-    height: "100%",
-    backgroundColor: "#f4f4f4",
-    borderRadius: "5px 0px 0px 5px",
   },
   welcomeScreen: {
     display: "flex",
@@ -69,8 +59,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
-
-    padding: "2rem",
+    height: "100%",
     borderRadius: "0px 5px 5px 0px",
 
     backgroundColor: (props: UiCustomization) => props.backgroundColor,
@@ -81,7 +70,6 @@ const styles = {
   mainContent: {
     display: "flex",
     flexDirection: "column",
-    width: "400px",
     // height: "100px",
     justifyContent: "center",
     alignItems: "center",
@@ -116,7 +104,6 @@ const styles = {
   tipRow: {
     display: "flex",
     justifyContent: "space-between",
-    width: "400px",
     marginTop: "0.5rem",
   },
 };
@@ -203,7 +190,6 @@ export const CustomUiPreview: FC<CustomUiPreviewProps> = ({
   return (
     <div className={classes.root}>
       <div className={classes.previewWindow}>
-        <div className={classes.sidebar}></div>
         <div className={classes.welcomeScreen}>
           <div className={classes.mainContent}>
             {hasLogo ? (

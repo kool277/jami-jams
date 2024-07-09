@@ -29,8 +29,6 @@ import CardAvatar from "components/Card/CardAvatar";
 import CardBody from "components/Card/CardBody";
 import CardFooter from "components/Card/CardFooter";
 
-import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import LaunchIcon from "@mui/icons-material/Launch";
 
@@ -66,7 +64,11 @@ import DialogTitle from "@mui/material/DialogTitle";
 import i18next from "i18next";
 import { Contact, ServerContact } from "../../types/Contact";
 import { UserProfile } from "views/UserProfile/DisplayUserProfile";
-import { InfoOutlined } from "@mui/icons-material";
+import {
+  BusinessCenterOutlined,
+  InfoOutlined,
+  QuestionAnswerOutlined,
+} from "@mui/icons-material";
 
 const styles = {
   ...headerLinksStyle,
@@ -518,7 +520,7 @@ export default function Users(props: UsersProps) {
                       </li>
                       <li style={{ display: "block" }}>
                         {contact.organization && (
-                          <BusinessOutlinedIcon
+                          <BusinessCenterOutlined
                             fontSize="small"
                             style={{ marginRight: "10px" }}
                           />
@@ -532,7 +534,7 @@ export default function Users(props: UsersProps) {
                             style={{ marginRight: "10px" }}
                           ></SmsFailedIcon>
                         ) : (
-                          <QuestionAnswerIcon
+                          <QuestionAnswerOutlined
                             fontSize="small"
                             style={{ marginRight: "10px" }}
                           />

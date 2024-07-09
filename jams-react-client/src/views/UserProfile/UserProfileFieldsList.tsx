@@ -41,7 +41,7 @@ interface UserProfileFieldsListProps {
 
 const UserProfileFieldsList: FC<UserProfileFieldsListProps> = ({ user }) => {
   return (
-    <Grid item xs={12} sm={12} md={6}>
+    <Grid item xs={12}>
       <List dense={false}>
         {(user.firstName || user.lastName) && (
           <ListItem>

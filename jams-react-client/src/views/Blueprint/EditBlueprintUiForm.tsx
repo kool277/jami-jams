@@ -20,7 +20,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Switch from "@mui/material/Switch";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { Box, Button, Slider, TextField } from "@mui/material";
+import { Box, Button, Divider, Slider, TextField } from "@mui/material";
 
 import Typography from "@mui/material/Typography";
 import CustomImgDropZone from "components/CustomImgDropZone/CustomImgDropZone";
@@ -592,6 +592,8 @@ const EditBlueprintUiForm: React.FC<EditBlueprintUiFormProps> = ({
             handleUpdateUi={handleUpdateUi}
           />
 
+          <Divider style={{ margin: "10px 0" }} />
+
           <HasBackgroundCustomForm
             uiCustomization={uiCustomization}
             handleUpdateUi={handleUpdateUi}
@@ -614,6 +616,8 @@ const EditBlueprintUiForm: React.FC<EditBlueprintUiFormProps> = ({
             uiCustomization={uiCustomization}
             handleUpdateUi={handleUpdateUi}
           />
+
+          <Divider style={{ margin: "10px 0" }} />
 
           <HasLogoForm
             uiCustomization={uiCustomization}

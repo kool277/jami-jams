@@ -127,6 +127,7 @@ const styles = (theme: Theme) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "end",
+    width: "100%",
     "& button": {
       marginRight: "1rem",
     },

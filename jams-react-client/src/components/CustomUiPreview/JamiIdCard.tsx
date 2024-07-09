@@ -31,7 +31,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    width: "150px",
     height: "20px",
     borderRadius: "5px",
   },

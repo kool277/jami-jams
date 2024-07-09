@@ -465,6 +465,9 @@ export default function EditBlueprintPermissions(
                 <TableCell align="left">
                   {i18next.t("last_name", "Last name") as string}
                 </TableCell>
+                <TableCell align="right">
+                  {i18next.t("action", "Action") as string}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
