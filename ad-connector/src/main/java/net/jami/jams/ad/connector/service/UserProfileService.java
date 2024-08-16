@@ -200,19 +200,23 @@ public class UserProfileService {
     public void synchronizeUsersWithAD() {
         log.info("Synchronizing Active Directory user profiles");
         // Fetch all users from the Active Directory
-        List<UserProfile> profilesFromResponse =
+        List<UserProfile> profilesFromAD =
                 getUserProfile("*", "LOGON_NAME", false, Optional.empty());
-        // There is a use case where a user is not in the LDAP directory but is in the database.
-        // When this happens, we need to revoke the user from the database.
-        List<UserProfile> profilesFromDatabase = dataStore.getUserProfileDao().getAllUserProfile();
-        for (UserProfile p : profilesFromDatabase) {
-            if (profilesFromResponse.stream()
-                    .noneMatch(r -> r.getUsername().equals(p.getUsername()))) {
-                log.info("Revoking user " + p.getUsername() + " from the database.");
-                RevokeUserFlow.revokeUser(p.getUsername());
-                // We also remove the user from the local_directory table to avoid duplicate
-                // revocations
-                dataStore.getUserProfileDao().deleteUserProfile(p.getUsername());
+        // Do not revoke users if there is an error, the AD server could be down.
+        if (profilesFromAD != null) {
+            // There is a use case where a user is not in the AD server but is in the database.
+            // When this happens, we need to revoke the user from the database.
+            List<UserProfile> profilesFromDatabase =
+                    dataStore.getUserProfileDao().getAllUserProfile();
+            for (UserProfile p : profilesFromDatabase) {
+                if (profilesFromAD.stream()
+                        .noneMatch(r -> r.getUsername().equals(p.getUsername()))) {
+                    log.info("Revoking user " + p.getUsername() + " from the database.");
+                    RevokeUserFlow.revokeUser(p.getUsername());
+                    // We also remove the user from the local_directory table to avoid duplicate
+                    // revocations
+                    dataStore.getUserProfileDao().deleteUserProfile(p.getUsername());
+                }
             }
         }
     }

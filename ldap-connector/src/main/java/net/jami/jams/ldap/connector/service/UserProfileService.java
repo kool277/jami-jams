@@ -152,16 +152,21 @@ public class UserProfileService {
         // Fetcg all users from the LDAP
         List<UserProfile> profilesFromLDAP =
                 getUserProfile("*", "LOGON_NAME", false, Optional.empty());
-        // There is a use case where a user is not in the LDAP directory but is in the database.
-        // When this happens, we need to revoke the user from the database.
-        List<UserProfile> profilesFromDatabase = dataStore.getUserProfileDao().getAllUserProfile();
-        for (UserProfile p : profilesFromDatabase) {
-            if (profilesFromLDAP.stream().noneMatch(r -> r.getUsername().equals(p.getUsername()))) {
-                log.info("Revoking user " + p.getUsername() + " from the database.");
-                RevokeUserFlow.revokeUser(p.getUsername());
-                // We also remove the user from the local_directory table to avoid duplicate
-                // revocations
-                dataStore.getUserProfileDao().deleteUserProfile(p.getUsername());
+        // Do not revoke users if there is an error, the LDAP server could be down.
+        if (profilesFromLDAP != null) {
+            // There is a use case where a user is not in the LDAP server but is in the database.
+            // When this happens, we need to revoke the user from the database.
+            List<UserProfile> profilesFromDatabase =
+                    dataStore.getUserProfileDao().getAllUserProfile();
+            for (UserProfile p : profilesFromDatabase) {
+                if (profilesFromLDAP.stream()
+                        .noneMatch(r -> r.getUsername().equals(p.getUsername()))) {
+                    log.info("Revoking user " + p.getUsername() + " from the database.");
+                    RevokeUserFlow.revokeUser(p.getUsername());
+                    // We also remove the user from the local_directory table to avoid duplicate
+                    // revocations
+                    dataStore.getUserProfileDao().deleteUserProfile(p.getUsername());
+                }
             }
         }
     }
