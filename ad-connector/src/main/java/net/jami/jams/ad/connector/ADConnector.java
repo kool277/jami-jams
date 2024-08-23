@@ -47,6 +47,7 @@ public class ADConnector implements AuthenticationSource {
     public static ActiveDirectorySettings settings;
     private final AuthenticationService authenticationService = new AuthenticationService();
     private final UserProfileService userProfileService;
+    private DataStore dataStore;
 
     public ADConnector(String settings, DataStore dataStore) {
         Gson gson = GsonFactory.createGson();
@@ -58,6 +59,7 @@ public class ADConnector implements AuthenticationSource {
             endpoint.setHost(ADConnector.settings.getHost());
             endpoints.add(endpoint);
         }
+        this.dataStore = dataStore;
         userProfileService = new UserProfileService(dataStore);
         // Configure scheduler to revoke users
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -112,15 +114,26 @@ public class ADConnector implements AuthenticationSource {
     @Override
     public List<UserProfile> searchUserProfiles(
             String queryString, String field, Optional<Integer> page) {
-        return userProfileService.getUserProfile(queryString, field, false, page);
+        List<UserProfile> results =
+                userProfileService.getUserProfile(queryString, field, false, page);
+        // There is a possibility that the LDAP server is offline or inaccessible
+        // In that case, we fallback to the local database
+        if (results == null) {
+            results = dataStore.searchUserProfiles(queryString, field, page);
+        }
+
+        return results;
     }
 
     @Override
     public UserProfile getUserProfile(String username) {
-        List<UserProfile> result =
+        List<UserProfile> results =
                 userProfileService.getUserProfile(username, "LOGON_NAME", true, Optional.empty());
-        if (result == null || result.size() != 1) return null;
-        return result.get(0);
+        if (results == null) {
+            return dataStore.getUserProfile(username);
+        }
+        if (results.size() != 1) return null;
+        return results.get(0);
     }
 
     @Override

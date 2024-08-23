@@ -48,6 +48,7 @@ public class LDAPConnector implements AuthenticationSource {
     private final AuthenticationService authenticationService;
     private final UserProfileService userProfileService;
     public static LDAPSettings settings;
+    private DataStore dataStore;
 
     public LDAPConnector(String strSettings, DataStore dataStore) {
         Gson gson = GsonFactory.createGson();
@@ -62,6 +63,7 @@ public class LDAPConnector implements AuthenticationSource {
                         .connectionInitializers(bindConnectionInitializer)
                         .build();
         authenticationService = new AuthenticationService(new DefaultConnectionFactory(connConfig));
+        this.dataStore = dataStore;
         userProfileService =
                 new UserProfileService(dataStore, new DefaultConnectionFactory(connConfig));
         // Configure scheduler to revoke users
@@ -83,14 +85,25 @@ public class LDAPConnector implements AuthenticationSource {
     @Override
     public List<UserProfile> searchUserProfiles(
             String queryString, String field, Optional<Integer> page) {
-        return userProfileService.getUserProfile(queryString, field, false, page);
+        List<UserProfile> results =
+                userProfileService.getUserProfile(queryString, field, false, page);
+        // There is a possibility that the LDAP server is offline or inaccessible
+        // In that case, we fallback to the local database
+        if (results == null) {
+            results = dataStore.searchUserProfiles(queryString, field, page);
+        }
+
+        return results;
     }
 
     @Override
     public UserProfile getUserProfile(String username) {
         List<UserProfile> results =
                 userProfileService.getUserProfile(username, "LOGON_NAME", true, Optional.empty());
-        if (results == null || results.size() != 1) return null;
+        if (results == null) {
+            return dataStore.getUserProfile(username);
+        }
+        if (results.size() != 1) return null;
         return results.get(0);
     }
 
