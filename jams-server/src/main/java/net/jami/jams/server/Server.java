@@ -168,6 +168,10 @@ public class Server {
         certificateAuthority =
                 CryptoEngineLoader.loadCertificateAuthority(
                         serverSettings.getCaConfiguration(), dataStore);
+        if (certificateAuthority == null) {
+            log.error("Could not load certificate authority - this is critical");
+            System.exit(1);
+        }
         userAuthenticationModule =
                 AuthModuleLoader.loadAuthenticationModule(dataStore, certificateAuthority);
 

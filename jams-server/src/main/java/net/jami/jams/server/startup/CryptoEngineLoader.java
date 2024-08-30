@@ -51,7 +51,7 @@ public class CryptoEngineLoader {
                     "Loaded X509 Engine - please make sure it is initialized before using it to sign requests!");
             return certificateAuthority;
         } catch (Exception e) {
-            log.error("Unable to load X509 Engine!");
+            log.error("Load X509 Engine failed with error:", e);
             return null;
         }
     }
