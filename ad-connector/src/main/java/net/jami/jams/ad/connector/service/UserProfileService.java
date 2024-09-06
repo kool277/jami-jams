@@ -203,7 +203,7 @@ public class UserProfileService {
         List<UserProfile> profilesFromAD =
                 getUserProfile("*", "LOGON_NAME", false, Optional.empty());
         // Do not revoke users if there is an error, the AD server could be down.
-        if (profilesFromAD != null) {
+        if (profilesFromAD != null && !profilesFromAD.isEmpty()) {
             // There is a use case where a user is not in the AD server but is in the database.
             // When this happens, we need to revoke the user from the database.
             List<UserProfile> profilesFromDatabase =
