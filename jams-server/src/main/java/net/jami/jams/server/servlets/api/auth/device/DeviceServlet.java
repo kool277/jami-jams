@@ -54,7 +54,7 @@ public class DeviceServlet extends HttpServlet {
      * @apiSuccess (200) {body} Device device information
      * @apiSuccessExample {json} Success-Response: { "certificate":"pem_encoded_certificate",
      *     "displayName":"My Galaxy S8", "deviceId":"6aec6252ad", "revoked":true }
-     * @apiError (500) {null} null Device could not be retrieved
+     * @apiError (500) {null} null Device was unable to be retrieved
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -88,7 +88,7 @@ public class DeviceServlet extends HttpServlet {
      * @apiParamExample {json} Request-Example: { "csr":"pem_encoded_csr", "deviceName":"My Galaxy
      *     S8" }
      * @apiSuccess (200) {body} DeviceRegistrationResponse registration response
-     * @apiError (500) {null} null Device could not be enrolled
+     * @apiError (500) {null} null Device was unable to be enrolled
      * @apiSuccessExample {json} Success-Response: {
      *     "certificateChain":"pem_encoded_certificate_chain", "displayName":"John Doe",
      *     "nameServer":"https://mydomain.com", "deviceReceipt": "device_receipt_object",
@@ -107,7 +107,7 @@ public class DeviceServlet extends HttpServlet {
 
         if (devResponse == null) {
             TomcatCustomErrorHandler.sendCustomError(
-                    resp, 500, "could not enroll a device due to server-side error");
+                    resp, 500, "A server error occurred while enrolling the device.");
             return;
         }
 
@@ -170,7 +170,7 @@ public class DeviceServlet extends HttpServlet {
      * @apiParam {path} deviceId id of the device
      * @apiParam {query} deviceName new name for the device
      * @apiSuccess (200) {null} null name changed successfully
-     * @apiError (500) {null} null device name could not be changed
+     * @apiError (500) {null} null device name was unable to be changed
      */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
@@ -183,7 +183,7 @@ public class DeviceServlet extends HttpServlet {
             resp.setStatus(200);
         else
             TomcatCustomErrorHandler.sendCustomError(
-                    resp, 500, "could not update device information due to server-side error");
+                    resp, 500, "A server error occurred while updating the device information.");
     }
 
     /**
@@ -192,8 +192,8 @@ public class DeviceServlet extends HttpServlet {
      * @apiName deleteDevice
      * @apiGroup Device
      * @apiParam {path} deviceId id of the device
-     * @apiSuccess (200) {null} null device successfully deactivated
-     * @apiError (500) {null} null device could not be deactivated
+     * @apiSuccess (200) {null} null device deactivated successfully
+     * @apiError (500) {null} null device was unable to be deactivated
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.USER})
@@ -220,6 +220,6 @@ public class DeviceServlet extends HttpServlet {
             resp.flushBuffer();
         } else
             TomcatCustomErrorHandler.sendCustomError(
-                    resp, 500, "could not revoke device due to server-side error");
+                    resp, 500, "A server error occurred while revoking the device.");
     }
 }

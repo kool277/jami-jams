@@ -65,7 +65,7 @@ public class UserBuilder {
             user.setCertificate(certificate);
             return user;
         } catch (Exception e) {
-            log.error("Could not generate a user certificate: " + e);
+            log.error("An error occurred while generating user certificate: " + e);
             return null;
         }
     }
@@ -90,7 +90,7 @@ public class UserBuilder {
 
             return user;
         } catch (Exception e) {
-            log.error("Could not refresh user certificate: " + e);
+            log.error("An error occurred while refreshing user certificate: " + e);
             return null;
         }
     }

@@ -36,7 +36,7 @@ public class ScopedServletAnnotationScanner {
             classNames.parallelStream().forEach(this::processClass);
 
         } catch (Exception e) {
-            log.info("Could not modify a target class with error {}", e.getMessage());
+            log.info("An error occurred while modifying the target class: {}", e.getMessage());
         }
     }
 
@@ -56,15 +56,15 @@ public class ScopedServletAnnotationScanner {
                         for (Annotation a : aa.getAnnotations()) {
                             if (a.getTypeName().equals(JsonContent.class.getName())) {
                                 log.info(
-                                        "[{}] has secured method {}, modifying method... ",
+                                        "[{}] has secured method {}, modifying method… ",
                                         cc.getSimpleName(),
                                         ctMethods[i].getName());
                                 // Build the code block that enforces security.
                                 String sb =
                                         "{\n"
                                                 +
-                                                // So this does not play nice when trying to use
-                                                // hash sets...
+                                                // So this does not play nice when attempting
+                                                // to use hash sets…
                                                 "resp.setContentType(\"application/json\");\n"
                                                 + "}\n";
                                 ctMethods[i].insertBefore(sb);

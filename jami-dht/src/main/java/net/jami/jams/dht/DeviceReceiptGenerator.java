@@ -112,7 +112,7 @@ public class DeviceReceiptGenerator {
 
             return outerMessagePack.toByteArray();
         } catch (Exception e) {
-            log.error("Could not build the device receipt!");
+            log.error("An error occurred while building the device receipt.");
             return null;
         }
     }
@@ -153,7 +153,7 @@ public class DeviceReceiptGenerator {
                 receipt.toString(), java.util.Base64.getEncoder().encodeToString(signature)
             };
         } catch (Exception e) {
-            log.error("Could not build generate device receipt!");
+            log.error("Unable to build generate device receipt!");
             return null;
         }
     }
@@ -164,7 +164,7 @@ public class DeviceReceiptGenerator {
                     MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1)
                             .digest(user.getCertificate().getPublicKey().getEncoded()));
         } catch (Exception e) {
-            log.error("Could not generate JamiId with error " + e);
+            log.error("Unable to generate JamiId with error " + e);
             return null;
         }
     }
@@ -175,7 +175,7 @@ public class DeviceReceiptGenerator {
                     MessageDigest.getInstance(MessageDigestAlgorithms.SHA_256)
                             .digest(device.getCertificate().getPublicKey().getEncoded()));
         } catch (Exception e) {
-            log.error("Could not generate deviceId with error " + e);
+            log.error("Unable to generate deviceId with error " + e);
             return null;
         }
     }

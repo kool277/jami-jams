@@ -28,7 +28,7 @@ public class ActivateSubscriptionWorkflow {
         try {
             // TODO: Decode the the data into a certificate and private key.
 
-            // TODO: Verify that the certificate has really been signed by SavoirFaireLinux and is
+            // TODO: Verify that the certificate has really been signed by Savoir-faire Linux and is
             // valid.
 
             // Build a keystore from the data.
@@ -39,10 +39,10 @@ public class ActivateSubscriptionWorkflow {
             FileOutputStream fos = new FileOutputStream("license.jks");
             ks.store(fos, password);
             fos.close();
-            log.info("Succesfully activated your license!");
+            log.info("JAMS license activated successfully.");
             return true;
         } catch (Exception e) {
-            log.error("The activation process failed with error: {}", e.getMessage());
+            log.error("An error occurred while attempting to activate license: {}", e.getMessage());
             return false;
         }
     }

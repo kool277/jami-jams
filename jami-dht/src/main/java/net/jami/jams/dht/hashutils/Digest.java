@@ -32,7 +32,7 @@ package net.jami.jams.dht.hashutils;
  * partial hash result without interrupting the complete computation.
  *
  * <p>{@code Digest} objects are stateful and hence not thread-safe; however, distinct {@code
- * Digest} objects can be accessed concurrently without any problem.
+ * Digest} objects can be accessed concurrently without any errors.
  *
  * <pre>
  * ==========================(LICENSE BEGIN)============================

@@ -188,7 +188,7 @@ export default function CaSetup(props: CaSetupProps) {
       props.setError(true);
       props.setErrorMessage(
         i18next.t(
-          "unknown_error_occured_while_installing_the_ca",
+          "unknown_error_occurred_while_installing_the_ca",
           "An unknown error occurred while installing the CA. Please try again."
         )
       );

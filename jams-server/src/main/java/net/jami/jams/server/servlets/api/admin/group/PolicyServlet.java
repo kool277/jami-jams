@@ -62,12 +62,12 @@ public class PolicyServlet extends HttpServlet {
         try {
             JsonParser.parseString(policyData);
         } catch (JsonSyntaxException e) {
-            resp.sendError(400, "Invalid JSON!");
+            resp.sendError(400, "Invalid JSON.");
             return;
         }
 
         if (dataStore.getPolicyDao().updateObject(name, policyData)) resp.setStatus(200);
-        else resp.sendError(500, "could not update the group's name!");
+        else resp.sendError(500, "An error occurred while attempting to update the group name.");
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PolicyServlet extends HttpServlet {
         try {
             JsonParser.parseString(policyData);
         } catch (JsonSyntaxException e) {
-            resp.sendError(400, "Invalid JSON!");
+            resp.sendError(400, "Invalid JSON.");
             return;
         }
 
@@ -89,7 +89,7 @@ public class PolicyServlet extends HttpServlet {
         policy.setName(name);
         policy.setPolicyData(policyData);
         if (dataStore.getPolicyDao().storeObject(policy)) resp.setStatus(200);
-        else resp.sendError(500, "Could not create a group successfully!");
+        else resp.sendError(500, "An error occurred while attempting to create the group.");
     }
 
     @Override
@@ -102,6 +102,6 @@ public class PolicyServlet extends HttpServlet {
             return;
         }
 
-        resp.sendError(500, "Could not delete the blueprint successfully!");
+        resp.sendError(500, "An error occurred while attempting to delete the blueprint.");
     }
 }

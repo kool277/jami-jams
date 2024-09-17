@@ -139,12 +139,12 @@ export default function CreateGroupDialog({
       )
     )
       .then((response) => {
-        console.log("Successfully created " + groupName);
+        console.log(groupName + " created successfully.");
         setOpenCreate(false);
         history.push(`/group/${response.data.id}`);
       })
       .catch((error) => {
-        alert("Error creating group: " + error);
+        alert("An error occurred while creating group: " + error);
         setOpenCreate(false);
       });
   };

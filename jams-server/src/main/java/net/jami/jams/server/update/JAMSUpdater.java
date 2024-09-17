@@ -96,6 +96,8 @@ public class JAMSUpdater implements AppUpdater {
         boolean res = updateDownloader.downloadFiles(getRemoteVersions());
         // Notify back up-stream to the launcher that we want the update to happen.
         if (res) Server.updateInterface.approveUpdate();
-        else log.error("Could not perform update - the downloaded files may have been invalid!");
+        else
+            log.error(
+                    "An error occurred while attempting to perform the update. This could be a hardware problem or a corrupt file. Try the download again.");
     }
 }

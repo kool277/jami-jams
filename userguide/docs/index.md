@@ -98,7 +98,7 @@ This account will have administrative control and the rights to manage your user
 
 The second step is to define your Certification Authority. 
 
-**Important:** a CA is not a server-side ssl certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by GoDaddy, Let’s Encrypt, etc…) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.
+**Important:** a CA is not a server SSL certificate, it is a certificate which has the power to issue other certificates. Do not use the import option unless your company's security officer has issued you a CA certificate. Most commercially available certificates (i.e. those issued by GoDaddy, Let’s Encrypt, etc…) are not CA certificates. If you are an end-user we highly recommend you use to create a self-signed CA option as providing an incorrect certificate type will lead to a non-functional server.
 
 ![alt text][step1-1]
 

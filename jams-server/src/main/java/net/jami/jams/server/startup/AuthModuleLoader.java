@@ -36,10 +36,10 @@ public class AuthModuleLoader {
                     (AuthenticationModule)
                             cls.getConstructor(DataStore.class, CertificateAuthority.class)
                                     .newInstance(dataStore, certificateAuthority);
-            log.info("Loaded Authentication Module succesfully!");
+            log.info("Authentication Module loaded successfully.");
             return authenticationModule;
         } catch (Exception e) {
-            log.error("Unable to load Authentication Module!");
+            log.error("An error occurred while attempting to load Authentication Module.");
             return null;
         }
     }

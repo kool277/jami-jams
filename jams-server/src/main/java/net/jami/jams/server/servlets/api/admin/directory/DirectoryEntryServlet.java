@@ -70,7 +70,8 @@ public class DirectoryEntryServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, SecurityException {
         // Update a user's profile.
-        // Check if he is AD/LDAP - then return a 500, because we can't update those profile datas.
+        // Check if he is AD/LDAP - then return a 500, because we are unable to update those profile
+        // datas.
         UserProfile userProfile = gson.fromJson(req.getReader(), UserProfile.class);
 
         String username = req.getAttribute("username").toString();
@@ -81,7 +82,8 @@ public class DirectoryEntryServlet extends HttpServlet {
 
         if (targetUser.getUserType() != AuthenticationSourceType.LOCAL) {
             resp.sendError(
-                    403, "The user is not a local user, therefore we cannot change his data!");
+                    403,
+                    "The user is not a local user, therefore we are unable to change his data!");
             return;
         }
 
@@ -89,7 +91,7 @@ public class DirectoryEntryServlet extends HttpServlet {
                 || (callingUser.getAccessLevel() == AccessLevel.USER
                         && callingUser.getUsername().equals(targetUser.getUsername()))) {
             if (dataStore.updateUserProfile(userProfile)) resp.setStatus(200);
-            else resp.sendError(500, "Could not update the users's profile information");
+            else resp.sendError(500, "Unable to update the user's profile information");
 
             return;
         }

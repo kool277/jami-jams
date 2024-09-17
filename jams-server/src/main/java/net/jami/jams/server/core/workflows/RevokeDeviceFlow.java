@@ -38,7 +38,7 @@ public class RevokeDeviceFlow {
             Optional<Device> result =
                     dataStore.getDeviceDao().getByDeviceIdAndOwner(deviceId, username);
             if (result.isEmpty()) {
-                log.error("Could not find device!");
+                log.error("An error occurred while finding the device.");
                 return null;
             }
 
@@ -57,7 +57,7 @@ public class RevokeDeviceFlow {
                 // Check if the certificate has been revoked
                 if (certificateAuthority.getLatestCRL().get().getRevokedCertificate(serialNumber)
                         != null) {
-                    // Certificate successfully revoked
+                    // Certificate revoked successfully
                     response.setSuccess(true);
                     return response;
                 } else {
@@ -69,9 +69,7 @@ public class RevokeDeviceFlow {
                 }
             }
         } catch (Exception e) {
-            log.error(
-                    "An exception has occurred while trying to revoke a device with error {}",
-                    e.getMessage());
+            log.error("An error occurred while revoking the device: {}", e.getMessage());
             response.setSuccess(false);
             response.setErrorDetails(e.getMessage());
             return response;

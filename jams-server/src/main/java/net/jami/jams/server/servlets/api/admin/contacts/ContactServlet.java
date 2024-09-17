@@ -67,8 +67,8 @@ public class ContactServlet extends HttpServlet {
      * @apiGroup Contacts
      * @apiParam {body} Contact JSON representation of the contact object
      * @apiParamExample {json} Request-Example: { "uri": "jami://7e3ab29383" }
-     * @apiSuccess (200) {null} null successfully added contact
-     * @apiError (500) {null} null contact could not be successfully added
+     * @apiSuccess (200) {null} null contact added successfully
+     * @apiError (500) {null} null contact was unable to be added
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -85,8 +85,8 @@ public class ContactServlet extends HttpServlet {
      * @apiName deleteContact
      * @apiGroup Contacts
      * @apiParam {query} uri uri of the contact to delete
-     * @apiSuccess (200) {null} null successfully deleted contact
-     * @apiError (500) {null} null contact could not be successfully deleted
+     * @apiSuccess (200) {null} null contact deleted successfully
+     * @apiError (500) {null} null contact was unable to be deleted
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -97,7 +97,7 @@ public class ContactServlet extends HttpServlet {
         if (dataStore.getContactDao().removeContact(owner, uri)) resp.setStatus(200);
         else
             TomcatCustomErrorHandler.sendCustomError(
-                    resp, 500, "could not delete a contact due to server-side error");
+                    resp, 500, "A server error occurred while deleting the contact.");
     }
 
     /**
@@ -108,8 +108,8 @@ public class ContactServlet extends HttpServlet {
      * @apiParam {body} Contact JSON representation of the contact object
      * @apiParamExample {json} Request-Example: [ {"uri":"tcp://def@local","added":1594742298377},
      *     {"uri":"tcp://abc@19293.com","removed":1594742298377} ]
-     * @apiSuccess (200) {json} Contact[] successfully added contact
-     * @apiError (500) {null} null contact could not be successfully added
+     * @apiSuccess (200) {json} Contact[] contact added successfully
+     * @apiError (500) {null} null contact was unable to be added
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})

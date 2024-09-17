@@ -76,8 +76,7 @@ public class X509Utils {
             }
         } catch (Exception e) {
             log.error(
-                    "An error has occured trying to convert the PEM to PrivateKey, stack trace: "
-                            + e);
+                    "An error occurred while converting the PEM to PrivateKey, stack trace: " + e);
             return null;
         }
     }
@@ -96,7 +95,7 @@ public class X509Utils {
                 return converter.getPublicKey((SubjectPublicKeyInfo) parsedObject);
             }
         } catch (Exception e) {
-            log.error("And error has occurred reading the public key from string!");
+            log.error("An error occurred while reading the public key from string!");
             return null;
         }
     }
@@ -107,7 +106,7 @@ public class X509Utils {
             InputStream inputStream = new ByteArrayInputStream(certificateString.getBytes());
             return (X509Certificate) certificateFactory.generateCertificate(inputStream);
         } catch (Exception e) {
-            log.error("An error has occured trying to convert the PEM to X509, stack trace: " + e);
+            log.error("An error occurred while converting the PEM to X509, stack trace: " + e);
             return null;
         }
     }
@@ -121,8 +120,7 @@ public class X509Utils {
             return stringBuilder.toString();
         } catch (Exception e) {
             log.error(
-                    "An error has occured trying to convert the Private Key to PEM, stack trace: "
-                            + e);
+                    "An error occurred while converting the Private Key to PEM, stack trace: " + e);
             return null;
         }
     }
@@ -136,7 +134,7 @@ public class X509Utils {
             return stringBuilder.toString();
         } catch (Exception e) {
             log.error(
-                    "An error has occured trying to convert the Certificate Key to PEM, stack trace: "
+                    "An error occurred while converting the Certificate Key to PEM, stack trace: "
                             + e);
             return null;
         }
@@ -151,8 +149,7 @@ public class X509Utils {
             return stringBuilder.toString();
         } catch (Exception e) {
             log.error(
-                    "An error has occured trying to convert the Public Key to PEM, stack trace: "
-                            + e);
+                    "An error occurred while converting the Public Key to PEM, stack trace: " + e);
             return null;
         }
     }
@@ -170,7 +167,7 @@ public class X509Utils {
             return null;
         } catch (Exception e) {
             log.error(
-                    "An error has occured trying to convert a string to a PKCS10 Certification Request, stack trace: "
+                    "An error occurred while converting the string to PKCS10 Certification Request, stack trace: "
                             + e);
             return null;
         }

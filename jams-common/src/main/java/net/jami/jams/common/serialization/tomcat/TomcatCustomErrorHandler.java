@@ -29,7 +29,7 @@ public class TomcatCustomErrorHandler {
             resp.getOutputStream().write(("{\"error\":\"" + text + "\"}").getBytes());
             resp.flushBuffer();
         } catch (Exception e) {
-            log.error("Could not generate an error!");
+            log.error("An unknown error occurred.");
         }
     }
 }

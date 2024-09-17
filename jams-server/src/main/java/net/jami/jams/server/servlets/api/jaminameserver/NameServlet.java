@@ -45,7 +45,7 @@ public class NameServlet extends HttpServlet {
      * @apiSuccessExample {json} Success-Response: { "publickey": "", "signature": "", "name":
      *     "sidokhine6", "addr": "0d1f0002ce728d6aa8b98b5227c75fc773735f9e" }
      * @apiError (404) {null} null user does not exist
-     * @apiError (500) {null} null could not fetch user information
+     * @apiError (500) {null} null was unable to fetch user information
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

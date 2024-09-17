@@ -392,7 +392,7 @@ export default function EditBlueprintPermissions(
                           <CustomPopupState
                             message={i18next.t(
                               "lookup_info",
-                              "If this option is disabled, user can not search and add new contacts"
+                              "If this option is disabled, user is unable to search or add new contacts"
                             )}
                           />
                         </FormGroup>

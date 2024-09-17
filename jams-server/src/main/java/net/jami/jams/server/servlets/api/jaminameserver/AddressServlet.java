@@ -45,7 +45,7 @@ public class AddressServlet extends HttpServlet {
      * @apiSuccess (200) {path} String username
      * @apiSuccessExample {json} Success-Response: { "name": "sidokhine6" }
      * @apiError (404) {null} null Address does not exist
-     * @apiError (500) {null} null could not fetch user information
+     * @apiError (500) {null} null was unable to fetch user information
      */
     @Override
     @JsonContent

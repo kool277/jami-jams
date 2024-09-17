@@ -69,7 +69,7 @@ public class TomcatLauncher {
                     .reloadSslHostConfigs();
         } else {
             log.error(
-                    "Could not reload SSL configuration because the server is not running over SSL!");
+                    "Unable to reload SSL configuration because the server is not running over SSL!");
         }
     }
 
@@ -79,7 +79,7 @@ public class TomcatLauncher {
                                 System.getProperty("user.dir") + File.separator + certificateFile))
                 || !Files.exists(
                         Paths.get(System.getProperty("user.dir") + File.separator + keyFile))) {
-            log.info("Could not find certificate or keyfile, exiting");
+            log.info("Unable to find certificate or keyfile, exiting");
             System.exit(1);
         }
         if (Files.exists(
@@ -107,7 +107,7 @@ public class TomcatLauncher {
             Path path = Paths.get(contextPath);
             Files.createDirectories(path);
         } catch (Exception e) {
-            log.error("Could not create context directory", e);
+            log.error("Unable to create context directory", e);
         }
         context = (StandardContext) tomcat.addWebapp("", contextPath);
         context.getJarScanner().setJarScanFilter((jarScanType, s) -> false);
@@ -154,7 +154,7 @@ public class TomcatLauncher {
         try {
             tomcat.start();
         } catch (Exception e) {
-            log.error("Could not start web-server!");
+            log.error("An error occurred while attempting to start Web server.");
         }
     }
 
@@ -167,7 +167,8 @@ public class TomcatLauncher {
                 tomcat.destroy();
             }
         } catch (Exception e) {
-            log.info("Failed to stop tomcat server with error {}", e.getMessage());
+            log.info(
+                    "An error occurred while attempting to stop Tomcat server: {}", e.getMessage());
         }
     }
 }

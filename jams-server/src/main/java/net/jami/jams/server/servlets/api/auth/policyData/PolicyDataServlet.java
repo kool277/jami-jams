@@ -47,8 +47,8 @@ public class PolicyDataServlet extends HttpServlet {
      *     "Account.accountPublish": true, "Account.rendezVous": false, "Account.upnpEnabled": true,
      *     "Account.defaultModerators": "", "Account.uiCustomization":
      *     "{\"areTipsEnabled\":false,\"backgroundType\":\"default\"}" }]
-     * @apiError (404) {null} null Policy Data could not be retrieved
-     * @apiError (500) {null} null Policy Data could not be retrieved
+     * @apiError (404) {null} null Policy Data was unable to be retrieved
+     * @apiError (500) {null} null Policy Data was unable to be retrieved
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

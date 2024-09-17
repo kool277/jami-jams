@@ -71,15 +71,13 @@ public class UpdateDownloader {
             certificate = X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
             trustStore.setCertificateEntry("update", certificate);
         } catch (Exception e) {
-            log.info(
-                    "Could not load SFL's CA - this should not happen! detailed error: {}",
-                    e.getMessage());
+            log.info("An unexpected error occurred while loading SFL CA: {}", e.getMessage());
         }
 
         InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
 
         if (input == null) {
-            log.warn("Missing OEM configuration! Please contact software developer");
+            log.warn("Missing OEM configuration! Please contact software developer.");
             System.exit(-1);
         }
         Reader reader = new InputStreamReader(input);
@@ -110,7 +108,7 @@ public class UpdateDownloader {
                             .loadTrustMaterial(trustStore, null)
                             .build();
         } catch (Exception e) {
-            log.warn("Could not download an update with error " + e);
+            log.warn("An error occurred while downloading the update: " + e);
         }
 
         // temp folder for safe download and integrity check
@@ -120,7 +118,7 @@ public class UpdateDownloader {
             try {
                 tmpFolder.mkdirs();
             } catch (Exception e) {
-                log.error("Error creating folder:" + e);
+                log.error("An error occurred while creating folder: " + e);
                 return false;
             }
         }
@@ -137,7 +135,7 @@ public class UpdateDownloader {
                                 tmpFile.delete();
                             } catch (Exception e) {
                                 log.warn(
-                                        "Error deleting file: "
+                                        "An error occurred while deleting file: "
                                                 + v.getFileName()
                                                 + " with error "
                                                 + e);
@@ -155,7 +153,7 @@ public class UpdateDownloader {
                         httpResponse.getEntity().writeTo(fos);
                         fos.close();
                     } catch (Exception e1) {
-                        log.warn("Could not download an update with error " + e1);
+                        log.warn("An error occurred while downloading the update: " + e1);
                     }
                 });
 

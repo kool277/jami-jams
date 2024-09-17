@@ -100,7 +100,7 @@ export default function General(props: GeneralProps) {
         props.setErrorMessage(
           i18next.t(
             "admin_password_updated_successfully",
-            "Administrator password successfully updated."
+            "Administrator password updated successfully."
           )
         );
         props.setError(true);

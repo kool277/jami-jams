@@ -74,14 +74,13 @@ public class LicenseService {
                 Server.activated.set(true);
                 log.info("Server is activated with valid license: {}", Server.activated.get());
                 Server.appUpdater.setLicense(certificate, privateKey);
-                log.info("Successfully set license inside updater module!");
+                log.info("License inside updater module set successfully.");
             } catch (Exception e) {
-                log.error("The license file you have provided could not be verified!");
+                log.error("The license file you have provided was unable to be verified!");
                 Server.activated.set(false);
             }
         } catch (Exception e) {
-            log.error(
-                    "A generic occurred while trying to load your license or your license could not be found");
+            log.error("An error occurred while loading the license.");
             Server.activated.set(false);
         }
     }

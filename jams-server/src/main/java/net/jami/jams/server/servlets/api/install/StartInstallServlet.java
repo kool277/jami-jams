@@ -75,7 +75,7 @@ public class StartInstallServlet extends HttpServlet {
                             credentialsRequest.getUsername(), credentialsRequest.getPassword());
         }
         resp.setHeader("endpoint", CachedObjects.endpoint);
-        if (res == null) resp.sendError(403, "Could not authenticate!");
+        if (res == null) resp.sendError(403, "Unable to authenticate!");
         else {
             resp.getOutputStream().write(gson.toJson(res).getBytes());
             resp.flushBuffer();

@@ -52,7 +52,7 @@ public class InstallationFinalizer {
     public boolean finalizeInstallation() {
         // Basically here we build the config and flush it.
         try {
-            log.info("Building configuration from submitted variables...");
+            log.info("Building configuration from submitted variables…");
             ServerSettings serverSettings = new ServerSettings();
             serverSettings.setCaConfiguration(
                     gson.toJson(CachedObjects.certificateAuthorityConfig));
@@ -63,11 +63,11 @@ public class InstallationFinalizer {
                 serverSettings.setActiveDirectoryConfiguration(
                         gson.toJson(CachedObjects.activeDirectorySettings));
                 log.info(
-                        "Server configured to use Active Directory as the authentication backend!");
+                        "Server configured to use Active Directory as the authentication backend.");
             }
             if (CachedObjects.ldapSettings != null) {
                 serverSettings.setLdapConfiguration(gson.toJson(CachedObjects.ldapSettings));
-                log.info("Server configured to use LDAP as the authentication backend!");
+                log.info("Server configured to use LDAP as the authentication backend.");
             }
             if (CachedObjects.localAuthSettings != null) {
                 serverSettings.setLocalDirectoryConfiguration(
@@ -78,25 +78,25 @@ public class InstallationFinalizer {
                             new PublicNameServer(
                                     CachedObjects.localAuthSettings.getPublicNameServer());
                     log.warn(
-                            "Server configured to use {} as the nameserver for Jami clients !",
+                            "Server configured to use {} as the nameserver for Jami clients.",
                             CachedObjects.localAuthSettings.getPublicNameServer());
                 }
-                log.info("Server is configured to use local authentication engine");
+                log.info("Server is configured to use local authentication engine.");
             }
             // Now flush the server settings.
             OutputStream os = new FileOutputStream(new File("config.json"));
             os.write(gson.toJson(serverSettings).getBytes());
             os.flush();
             os.close();
-            log.info("Settings succesfully saved to configuration file...");
-            log.info("Attempting to save the CA and generate the OCSP certificate...");
+            log.info("Settings saved succesfully to configuration file.");
+            log.info("Attempting to save the CA and generate the OCSP certificate…");
             if (CachedObjects.createCARequest.getFields() != null) {
                 SystemAccount caAccount = new SystemAccount();
                 caAccount.setSystemAccountType(SystemAccountType.CA);
                 caAccount.setX509Fields(CachedObjects.createCARequest.getFields());
                 certificateAuthority.getSignedCertificate(caAccount);
                 dataStore.getSystemDao().storeObject(caAccount);
-                log.info("Succesfully stored CA");
+                log.info("CA stored successfully.");
                 certificateAuthority.init(serverSettings.getCaConfiguration(), caAccount, null);
                 SystemAccount ocspAccount = new SystemAccount();
                 ocspAccount.setX509Fields(new X509Fields());
@@ -105,11 +105,11 @@ public class InstallationFinalizer {
                 ocspAccount.getX509Fields().setLifetime(caAccount.getX509Fields().getLifetime());
                 certificateAuthority.getSignedCertificate(ocspAccount);
                 dataStore.getSystemDao().storeObject(ocspAccount);
-                log.info("Successfully created and stored the OCSP certificate");
+                log.info("OCSP certificate created and stored successfully.");
                 certificateAuthority.init(
                         serverSettings.getCaConfiguration(), caAccount, ocspAccount);
                 log.info(
-                        "Succesfully inited the certificate authority with the appropriate settings...");
+                        "Certificate authority with the appropriate settings inited successfully.");
             }
             log.info("Initializing the selected authentication providers");
             userAuthenticationModule =
@@ -127,7 +127,7 @@ public class InstallationFinalizer {
                                 dataStore,
                                 userAuthenticationModule,
                                 serverSettings.getServerPublicURI());
-            log.info("Building keystore for client auth for tomcat...");
+            log.info("Building keystore for client auth for Tomcat…");
             KeyStore ks = KeyStore.getInstance("JKS");
             char[] password = "changeit".toCharArray();
             ks.load(null, password);
@@ -135,13 +135,13 @@ public class InstallationFinalizer {
             FileOutputStream fos = new FileOutputStream("keystore.jks");
             ks.store(fos, password);
             fos.close();
-            log.info("Successfully built keystore for for tomcat!");
+            log.info("Keystore for Tomcat built successfully.");
             Server.isInstalled.set(true);
             // fix to swap connectors - this assumes you are running with an SSL certificate
             tomcatLauncher.swapConnectors();
-            log.info("The installation has completed successfully, you can now use JAMS!");
+            log.info("The installation completed successfully. JAMS is set up and ready to use.");
         } catch (Exception e) {
-            log.error("Could not save settings to disk with error: " + e);
+            log.error("An error occurred while saving settings to disk: " + e);
             return false;
         }
         return true;

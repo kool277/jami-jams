@@ -56,9 +56,9 @@ public class FileHandlerServlet extends HttpServlet {
      * @apiParam {param} blueprintName The name of the blueprint
      * @apiParam {param} imageType 'logo' or 'background'
      * @apiParam {body} image The new logo image or background image
-     * @apiSuccess (200) {null} null successfully uploaded image
+     * @apiSuccess (200) {null} null image uploaded successfully
      * @apiError (400) {null} null missing path info
-     * @apiError (500) {null} null contact could not be successfully added
+     * @apiError (500) {null} null contact was unable to be added
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -124,7 +124,7 @@ public class FileHandlerServlet extends HttpServlet {
      * @apiParam {param} blueprintName The name of the blueprint
      * @apiParam {param} imageType 'logo' or 'background'
      * @apiParam {param} fileName The name of the file
-     * @apiSuccess (200) {null} null successfully got image
+     * @apiSuccess (200) {null} null image received successfully
      * @apiError (400) {null} null missing path info
      * @apiError (404) {null} null image not found
      */

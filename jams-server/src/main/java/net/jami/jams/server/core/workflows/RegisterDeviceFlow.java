@@ -64,7 +64,7 @@ public class RegisterDeviceFlow {
             device.setDisplayName(registrationRequest.getDeviceName());
             device = certificateAuthority.getSignedCertificate(user, device);
             if (device == null) {
-                log.error("Could not succesfully create a device certificate!");
+                log.error("An error occurred while creating the device certificate.");
                 return null;
             }
             device.setDeviceId(DeviceReceiptGenerator.generateDeviceId(device));
@@ -97,7 +97,7 @@ public class RegisterDeviceFlow {
                     });
             return response;
         } catch (Exception e) {
-            log.error("An exception has occurred while trying to enroll a device");
+            log.error("An error occurred while enrolling the device.");
             e.printStackTrace();
             return null;
         }

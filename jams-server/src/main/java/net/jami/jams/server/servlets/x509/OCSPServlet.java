@@ -103,7 +103,7 @@ public class OCSPServlet extends HttpServlet {
             } else resp.setStatus(404);
 
         } catch (Exception e) {
-            resp.sendError(404, "Could not find the requested certificate!");
+            resp.sendError(404, "Unable to find the requested certificate!");
         }
     }
 }

@@ -38,7 +38,7 @@ public class LibraryLoader {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].getName().endsWith(".jar")) {
                     urls.add(files[i].toURI().toURL());
-                    log.info("Successfully loaded the library " + files[i]);
+                    log.info(files[i] + " library loaded successfully.");
                 }
             }
             classLoader =
@@ -47,7 +47,7 @@ public class LibraryLoader {
                             urls.toArray(new URL[urls.size()]),
                             parentClass.getClassLoader());
         } catch (Exception e) {
-            log.error("Errors occured while trying to load libraries...");
+            log.error("An error occurred while loading libraries.");
         }
     }
 }

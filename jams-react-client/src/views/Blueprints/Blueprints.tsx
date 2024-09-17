@@ -150,11 +150,16 @@ export default function Blueprints() {
       )
     )
       .then(() => {
-        console.log("Successfully created " + removedBlueprint);
+        console.log(removedBlueprint + "created successfully.");
         setOpenRemoveDialog(false);
       })
       .catch((error) => {
-        console.log("Could not create " + removedBlueprint + " " + error);
+        console.log(
+          "An error occurred while attempting to create " +
+            removedBlueprint +
+            ": " +
+            error
+        );
         setOpenRemoveDialog(false);
       });
     history.push("/blueprints");

@@ -51,7 +51,7 @@ public class UserGroupServlet extends HttpServlet {
      * @apiGroup Group
      * @apiSuccess (200) {body} Array of usernames
      * @apiSuccessExample {json} Success-Response: { "usernames": ["user1", "user2", "user3"] }
-     * @apiError (404) {null} null could not find members for this groups
+     * @apiError (404) {null} null was unable to find members for this groups
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
@@ -87,7 +87,7 @@ public class UserGroupServlet extends HttpServlet {
 
         if (dataStore.getUserGroupMappingsDao().storeObject(mapping)) {
             resp.setStatus(200);
-        } else resp.sendError(500, "Could not add user to group!");
+        } else resp.sendError(500, "Unable to add user to group!");
     }
 
     @Override
@@ -103,7 +103,7 @@ public class UserGroupServlet extends HttpServlet {
         if (dataStore.getUserGroupMappingsDao().deleteObject(username, groupId)) {
             resp.setStatus(200);
         } else {
-            resp.sendError(500, "Could not delete mapping between user and group!");
+            resp.sendError(500, "Unable to delete mapping between user and group!");
         }
     }
 }

@@ -52,7 +52,7 @@ public class UserServlet extends HttpServlet {
      *     "needsPasswordReset":false, "ethAddress":"8272773ac", "ethKey":"192938ae72772ab",
      *     "jamiId":"6e3552723df", "certificate":"pem_formatted_certificate",
      *     "privateKey":"pem_formatted_key", "revoked":false }
-     * @apiError (500) {null} null could not fetch user information
+     * @apiError (500) {null} null was unable to fetch user information
      */
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.USER})
@@ -87,25 +87,26 @@ public class UserServlet extends HttpServlet {
      * @apiName putUser
      * @apiGroup User
      * @apiParam {query} password new password
-     * @apiSuccess (200) {null} null password successfully changed
-     * @apiError (500) {null} null could not changed password
+     * @apiSuccess (200) {null} null password changed successfully
+     * @apiError (500) {null} null was unable to change password
      */
     @Override
     @ScopedServletMethod(securityGroups = AccessLevel.USER)
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String username = req.getAttribute("username").toString();
 
-        // Check if he is AD/LDAP - then return a 403, because we can't set such password.
+        // Check if he is AD/LDAP - then return a 403, because we are unable to set such password.
         User user = dataStore.getUserDao().getByUsername(username).orElseThrow();
         if (user.getUserType() != AuthenticationSourceType.LOCAL) {
-            resp.sendError(
-                    403, "The user is not a local user, therefore we cannot change his data!");
+            resp.sendError(403, "Unable to change user data as user is not a local user.");
             return;
         }
 
         String password = req.getParameter("password");
 
         if (dataStore.getUserDao().updateObject(password, username)) resp.setStatus(200);
-        else resp.sendError(500, "could not update the users's data field!");
+        else
+            resp.sendError(
+                    500, "An error occurred while attempting to update the user's data field.");
     }
 }

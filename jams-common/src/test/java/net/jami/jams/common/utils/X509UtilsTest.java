@@ -45,7 +45,7 @@ class X509UtilsTest {
             path = classLoader.getResourceAsStream("pkcs10request.txt");
             strPkcs10Request = new String(path.readAllBytes());
         } catch (Exception e) {
-            fail("Could not set-up resources for test!");
+            fail("An error occurred while setting up resources for test.");
         }
     }
 
@@ -53,9 +53,12 @@ class X509UtilsTest {
     void getKeyFromPEMString() {
         PrivateKey privateKey;
         privateKey = X509Utils.getKeyFromPEMString(strPrivateKey);
-        Assertions.assertNotNull(privateKey, "Could not decode a correctly formatted private key!");
+        Assertions.assertNotNull(
+                privateKey, "An error occurred while decoding correctly formatted private key.");
         privateKey = X509Utils.getKeyFromPEMString(strPrivateKey.substring(10));
-        Assertions.assertNull(privateKey, "Decoded a private key from an incorrect string!");
+        Assertions.assertNull(
+                privateKey,
+                "An error occurred while decoding private key from an incorrect string.");
     }
 
     @Test
@@ -63,16 +66,20 @@ class X509UtilsTest {
         X509Certificate x509Certificate;
         x509Certificate = X509Utils.getCertificateFromPEMString(strCertificate);
         Assertions.assertNotNull(
-                x509Certificate, "Could not decoded a correctly formatted certificate!");
+                x509Certificate,
+                "An error occurred while decoding correctly formatted certificate.");
         x509Certificate = X509Utils.getCertificateFromPEMString(strCertificate.substring(25));
-        Assertions.assertNull(x509Certificate, "Decoded certificate from an incorrect string!");
+        Assertions.assertNull(
+                x509Certificate,
+                "An error occurred while decoding certificate from an incorrect string.");
     }
 
     @Test
     void getPEMStringFromPrivateKey() {
         PrivateKey privateKey;
         privateKey = X509Utils.getKeyFromPEMString(strPrivateKey);
-        Assertions.assertNotNull(privateKey, "Could not decode a correctly formatted private key!");
+        Assertions.assertNotNull(
+                privateKey, "An error occurred while decoding correctly formatted private key.");
         String str = X509Utils.getPEMStringFromPrivateKey(privateKey);
         PrivateKey privateKey1 = X509Utils.getKeyFromPEMString(str);
         Assertions.assertEquals(
@@ -84,7 +91,8 @@ class X509UtilsTest {
         X509Certificate x509Certificate;
         x509Certificate = X509Utils.getCertificateFromPEMString(strCertificate);
         Assertions.assertNotNull(
-                x509Certificate, "Could not decoded a correctly formatted certificate!");
+                x509Certificate,
+                "An error occurred while decoding correctly formatted certificate.");
         String str = X509Utils.getPEMStringFromCertificate(x509Certificate);
         X509Certificate x509Certificate1 = X509Utils.getCertificateFromPEMString(str);
         Assertions.assertEquals(

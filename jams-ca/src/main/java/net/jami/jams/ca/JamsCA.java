@@ -106,7 +106,9 @@ public class JamsCA implements CertificateAuthority, RevocationCallback {
             try {
                 ocspWorker = new OCSPWorker(OCSP.getPrivateKey(), OCSP.getCertificate(), crlWorker);
             } catch (Exception e) {
-                log.error("Could not start OCSP request processor with error {}", e.getMessage());
+                log.error(
+                        "An error occurred while starting OCSP request processor: {}",
+                        e.getMessage());
             }
         }
     }
@@ -168,7 +170,7 @@ public class JamsCA implements CertificateAuthority, RevocationCallback {
         try {
             return Base64.getEncoder().encodeToString(getLatestCRL().get().getEncoded());
         } catch (Exception e) {
-            log.error("Could not return a valid CRL!");
+            log.error("Unable to return a valid CRL!");
             return null;
         }
     }

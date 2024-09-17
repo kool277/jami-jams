@@ -38,7 +38,7 @@ public class InternalErrorServlet extends HttpServlet {
             resp.getOutputStream()
                     .write(("{\"error\":\"" + "internal server error" + "\"}").getBytes());
         } catch (Exception e) {
-            log.error("Could not generate an error!");
+            log.error("Unable to generate an error!");
         }
     }
 }

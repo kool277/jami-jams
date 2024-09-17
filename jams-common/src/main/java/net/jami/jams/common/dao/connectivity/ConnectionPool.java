@@ -42,11 +42,11 @@ public class ConnectionPool {
                 try {
                     connectionPool.add(createConnection(this.connectionURI));
                 } catch (Exception e) {
-                    log.error("Could not create a link with the database: ", e);
+                    log.error("An error occurred while creating a link with the database: ", e);
                 }
             }
         } catch (Exception e) {
-            log.error("Could not load ApacheDerby class driver: ", e);
+            log.error("An error occurred while loading ApacheDerby class driver: ", e);
         }
     }
 
@@ -74,7 +74,7 @@ public class ConnectionPool {
             return connection;
 
         } catch (Exception e) {
-            log.error("A connection could not be obtained with error ", e);
+            log.error("A connection error occurred: ", e);
             return null;
         }
     }

@@ -70,15 +70,14 @@ public class VersioningUtils {
                                 log.info("Found version {} of {}", version, fileName);
                             } catch (Exception e1) {
                                 log.error(
-                                        "Could not detect version for file with error {}",
+                                        "An error occurred while detecting version for file: {}",
                                         e1.getMessage());
                             }
                         }
                     });
             return res;
         } catch (Exception e) {
-            log.error(
-                    "An error has occurred while trying to list file versions {}", e.getMessage());
+            log.error("An error occurred while listing file versions: {}", e.getMessage());
             return null;
         }
     }

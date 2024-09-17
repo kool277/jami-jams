@@ -56,7 +56,7 @@ public class AuthenticationService {
                             + resp.getAuthenticationResultCode());
             return resp.isSuccess();
         } catch (Exception e) {
-            log.info("An exception has occured trying to process and authentication request: " + e);
+            log.info("An error occurred while processing authentication request: " + e);
             return false;
         }
     }

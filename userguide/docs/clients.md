@@ -11,7 +11,7 @@ Depending on your operating system, we have included the tutorial on how to conn
 
 For the purposes of this tutorial, we assume that
 
-1. The server and the device trying to connect are either
+1. The server and the device attempting to connect are either
 	1. On the same network
 	2. The server is publicly accessible to the outside world
 2. You have a valid username/password pair to connect to the server

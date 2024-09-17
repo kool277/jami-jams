@@ -75,7 +75,7 @@ public class GroupServlet extends HttpServlet {
         String blueprint = obj.get("blueprint").getAsString();
 
         if (dataStore.getGroupDao().updateObject(id, name, blueprint)) resp.setStatus(200);
-        else resp.sendError(500, "Could not update group!");
+        else resp.sendError(500, "An error occurred while attempting to update the group.");
     }
 
     @Override
@@ -86,9 +86,11 @@ public class GroupServlet extends HttpServlet {
 
         if (dataStore.getGroupDao().deleteObject(groupId)) {
             if (dataStore.getUserGroupMappingsDao().deleteObject("*", groupId)) resp.setStatus(200);
-            else resp.sendError(500, "Could not delete the group mappings successfully!");
+            else
+                resp.sendError(
+                        500, "An error occurred while attempting to delete the group mappings.");
         } else {
-            resp.sendError(500, "Could not delete the group successfully!");
+            resp.sendError(500, "An error occurred while attempting to delete the group.");
         }
     }
 }

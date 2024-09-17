@@ -118,7 +118,7 @@ public class Server {
                 log.info("All services are UP and ready for use...");
             } catch (Exception e) {
                 log.error(
-                        "Could not load configuration file or initialize some components - this is critical");
+                        "Unable to load configuration file or initialize some components - this is critical");
                 System.exit(1);
             }
         } else {
@@ -133,7 +133,7 @@ public class Server {
             startGUI();
             log.info("Server is now running!");
         } catch (Exception e) {
-            log.error("Could not start GUI with error {}", e.getMessage());
+            log.error("Unable to start GUI with error {}", e.getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ public class Server {
                 pemWriter.writeObject(certificateAuthority.getCA());
                 pemWriter.close();
             } catch (IOException e) {
-                log.error("Could not create CA file: " + e);
+                log.error("Unable to create CA file: " + e);
             }
         }
     }
@@ -169,7 +169,7 @@ public class Server {
                 CryptoEngineLoader.loadCertificateAuthority(
                         serverSettings.getCaConfiguration(), dataStore);
         if (certificateAuthority == null) {
-            log.error("Could not load certificate authority - this is critical");
+            log.error("Unable to load certificate authority - this is critical");
             System.exit(1);
         }
         userAuthenticationModule =

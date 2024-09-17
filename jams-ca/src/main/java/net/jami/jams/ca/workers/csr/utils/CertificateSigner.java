@@ -70,7 +70,7 @@ public class CertificateSigner {
                                     new ByteArrayInputStream(
                                             eeX509CertificateStructure.getEncoded()));
         } catch (Exception e) {
-            log.error("Could not sign a certificate with error: " + e);
+            log.error("An error occurred while signing certificate: " + e);
             return null;
         }
     }

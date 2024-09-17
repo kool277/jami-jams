@@ -49,7 +49,7 @@ public class ConversationDao extends AbstractDao<Conversation> {
 
     public boolean storeConversationList(List<Conversation> conversationList) {
         if (conversationList.isEmpty()) {
-            log.error("Cannot store empty conversation list");
+            log.error("Unable to store empty conversation list.");
             return false;
         }
 
@@ -86,7 +86,9 @@ public class ConversationDao extends AbstractDao<Conversation> {
             connection.getConnection().commit();
             return true;
         } catch (Exception e) {
-            log.error("Could not update conversations: {}", e.getMessage());
+            log.error(
+                    "An error occurred while attempting to update conversations: {}",
+                    e.getMessage());
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

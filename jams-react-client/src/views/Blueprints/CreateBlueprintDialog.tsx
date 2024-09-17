@@ -146,11 +146,16 @@ export default function CreateBlueprintDialog({
       .then(() => {
         setOpen(false);
         setDisableCreate(true);
-        console.log("Successfully created " + blueprintName);
+        console.log(blueprintName + "created successfully.");
       })
       .catch((error) => {
         setOpen(false);
-        console.log("Could not create " + blueprintName + " " + error);
+        console.log(
+          "An error occurred while attempting to create " +
+            blueprintName +
+            ": " +
+            error
+        );
       });
     history.push(`/blueprint/${blueprintName}`);
   };

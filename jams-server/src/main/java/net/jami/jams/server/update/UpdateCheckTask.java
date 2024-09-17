@@ -81,7 +81,7 @@ public class UpdateCheckTask extends TimerTask {
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
             UPDATE_SERVER_URI = jsonObject.get("UPDATE_URL").getAsString();
         } catch (Exception e) {
-            log.error("Could not initialize the trust store with error {}", e.getMessage());
+            log.error("An error occurred while initializing the trust store: {}", e.getMessage());
         }
     }
 
@@ -100,7 +100,7 @@ public class UpdateCheckTask extends TimerTask {
                         }
                     });
         } catch (Exception e) {
-            log.error("Could not check for updates with error: {}", e.getMessage());
+            log.error("An error occurred while checking for updates: {}", e.getMessage());
         }
     }
 
@@ -130,7 +130,7 @@ public class UpdateCheckTask extends TimerTask {
                                         key, new FileDescription(filename, version, md5, key));
                             });
         } catch (Exception e) {
-            log.warn("Could not establish connection to JAMS Update Center with error: " + e);
+            log.warn("An error occurred while establishing connection to JAMS Update Center: " + e);
         }
     }
 }

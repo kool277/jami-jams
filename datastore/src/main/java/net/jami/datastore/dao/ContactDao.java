@@ -49,7 +49,7 @@ public class ContactDao extends AbstractDao<Contact> {
 
     public boolean storeContactList(List<Contact> contactList) {
         if (contactList.isEmpty()) {
-            log.error("Cannot store empty contact list");
+            log.error("Unable to store empty contact list.");
             return false;
         }
 
@@ -85,7 +85,7 @@ public class ContactDao extends AbstractDao<Contact> {
             connection.getConnection().commit();
             return true;
         } catch (Exception e) {
-            log.error("Could not update contacts: {}", e.getMessage());
+            log.error("An error occurred while attempting to update contacts: {}", e.getMessage());
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);

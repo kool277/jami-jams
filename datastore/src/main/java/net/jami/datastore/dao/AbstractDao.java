@@ -64,8 +64,7 @@ public abstract class AbstractDao<T> {
                 }
             } catch (Exception e) {
                 log.error(
-                        "An error has occurred while trying to get the first result from the database:",
-                        e);
+                        "An error occurred while fetching the first result from the database: ", e);
             } finally {
                 DataStore.connectionPool.returnConnection(connection);
             }
@@ -99,8 +98,7 @@ public abstract class AbstractDao<T> {
                     }
                 }
             } catch (Exception e) {
-                log.error(
-                        "An error has occurred while trying to get results from the database:", e);
+                log.error("An error occurred while fetching results from the database: ", e);
             } finally {
                 DataStore.connectionPool.returnConnection(connection);
             }
@@ -121,7 +119,7 @@ public abstract class AbstractDao<T> {
                 boolean executeUpdate = ps.executeUpdate() != 0;
                 return executeUpdate;
             } catch (Exception e) {
-                log.error("An error has occurred while trying to execute update:", e);
+                log.error("An error occurred while updating: ", e);
             } finally {
                 DataStore.connectionPool.returnConnection(connection);
             }
@@ -141,7 +139,7 @@ public abstract class AbstractDao<T> {
 
                 return executeUpdate;
             } catch (Exception e) {
-                log.error("An error has occurred while trying to execute insert:", e);
+                log.error("An error occurred while inserting: ", e);
             } finally {
                 DataStore.connectionPool.returnConnection(connection);
             }

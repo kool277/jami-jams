@@ -172,7 +172,7 @@ public class DirectoryEntryServlet extends HttpServlet {
      *     xk+dEOmTXFn3abe1NuK5CkBUnPBazwAqzJN44JixW5m3upBiP+BTjFVZOUEexGzd8QT1RCFkcD
      *     jIFTBFjEuxd3ZKy3I4q3uJQcCtTjwV3ydeocx1IO8paCnO6fGscPMs9DUaifMjVcdH2A4pBVj+
      *     wFY/8AatuLlOyqXY6+i0YtchZP1OLFVZnZMOymPpBcNve0r1NcvdOVzX2OxA1ABQB//9k= END:VCARD
-     * @apiError (500) {null} null could not return any authentication sources
+     * @apiError (500) {null} null was unable to return any authentication sources
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

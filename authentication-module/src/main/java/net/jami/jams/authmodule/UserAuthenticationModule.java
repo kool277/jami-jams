@@ -111,30 +111,30 @@ public class UserAuthenticationModule implements AuthenticationModule {
             os.write(X509Utils.getPEMStringFromPrivateKey(privateKey).getBytes());
             os.flush();
             os.close();
-            log.info("Succesfully stored OAuth private key for future use...");
+            log.info("OAuth private key stored successfully for future use.");
             os =
                     new FileOutputStream(
                             System.getProperty("user.dir") + File.separator + "oauth.pub");
             os.write(X509Utils.getPEMStringFromPubKey(publicKey).getBytes());
             os.flush();
             os.close();
-            log.info("Succesfully stored OAuth public key for future use...");
+            log.info("OAuth public key stored successfully for future use.");
         } else {
             InputStream privateInput = new FileInputStream(privateKeyFile);
             privateKey = X509Utils.getKeyFromPEMString(new String(privateInput.readAllBytes()));
             privateInput.close();
-            log.info("Succesfully loaded OAuth private key!");
+            log.info("OAuth private key loaded successfully.");
 
             InputStream publicInput = new FileInputStream(pubkeyFile);
             publicKey = X509Utils.getPubKeyFromPEMString(new String(publicInput.readAllBytes()));
             publicInput.close();
-            log.info("Succesfully loaded OAuth public key!");
+            log.info("OAuth public key loaded successfully.");
         }
         // TODO: Read signing key, if file does not exist create it (also create the
         // corresponding public key)
         tokenController = new TokenController(privateKey);
         // Also expose the public key programatically.
-        log.info("OAuth2 Token System instantiated succesfully!");
+        log.info("OAuth2 Token System instantiated successfully.");
     }
 
     @Override
@@ -164,7 +164,7 @@ public class UserAuthenticationModule implements AuthenticationModule {
                             source.getInfo().getAuthenticationSourceType()),
                     source);
         } catch (Exception e) {
-            log.error("Could not load connector " + className + " with reason: " + e);
+            log.error("An error occurred while loading connector " + className + ": " + e);
         }
     }
 

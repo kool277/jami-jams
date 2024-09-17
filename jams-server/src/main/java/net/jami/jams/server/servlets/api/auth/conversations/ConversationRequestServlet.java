@@ -50,7 +50,7 @@ public class ConversationRequestServlet extends HttpServlet {
      *     {"conversationId":"1231221","received":1594742298377},
      *     {"conversationId":"213123","declined":1594742298377} ]
      * @apiSuccess (200) {json} ConversationRequest[] user's converationRequests
-     * @apiError (500) {null} null contact could not be successfully added
+     * @apiError (500) {null} null contact was unable to be added
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -82,7 +82,7 @@ public class ConversationRequestServlet extends HttpServlet {
                         .getConversationRequestDao()
                         .storeConversationRequestList(filteredConversationRequests))
             TomcatCustomErrorHandler.sendCustomError(
-                    resp, 500, "Could not store conversationRequests!");
+                    resp, 500, "Unable to store conversationRequests!");
         else {
             resp.getOutputStream().write(gson.toJson(filteredConversationRequests).getBytes());
             resp.flushBuffer();

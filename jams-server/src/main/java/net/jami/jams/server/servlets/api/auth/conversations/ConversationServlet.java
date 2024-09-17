@@ -48,7 +48,7 @@ public class ConversationServlet extends HttpServlet {
      * @apiParamExample {json} Request-Example: [ {"id":"1231221","created":1594742298377},
      *     {"id":"213123","removed":1594742298377} ]
      * @apiSuccess (200) {json} Conversation[] user's conversations
-     * @apiError (500) {null} null conversation could not be successfully synced
+     * @apiError (500) {null} null conversation was unable to be synced
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -66,7 +66,7 @@ public class ConversationServlet extends HttpServlet {
         List<Conversation> result = ConversationMerger.mergeConversations(localList, remoteList);
 
         if (result.size() > 0 && !dataStore.getConversationDao().storeConversationList(result))
-            TomcatCustomErrorHandler.sendCustomError(resp, 500, "Could not store conversations!");
+            TomcatCustomErrorHandler.sendCustomError(resp, 500, "Unable to store conversations!");
         else {
             resp.getOutputStream().write(gson.toJson(result).getBytes());
             resp.flushBuffer();

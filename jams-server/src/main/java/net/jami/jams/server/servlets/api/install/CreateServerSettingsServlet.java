@@ -54,7 +54,7 @@ public class CreateServerSettingsServlet extends HttpServlet {
         if (!finalizer.finalizeInstallation()) {
             resp.sendError(
                     500,
-                    "Could not store settings, a problem occured with finishing the installation");
+                    "Unable to store settings, an error occurred while finishing the installation");
             return;
         }
         resp.setStatus(200);

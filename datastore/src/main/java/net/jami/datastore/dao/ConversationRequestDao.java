@@ -51,7 +51,7 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
 
     public boolean storeConversationRequestList(List<ConversationRequest> conversationRequestList) {
         if (conversationRequestList.isEmpty()) {
-            log.error("Cannot store empty conversationRequest list");
+            log.error("Unable to store empty conversationRequest list");
             return false;
         }
 
@@ -88,7 +88,7 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
             connection.getConnection().commit();
             return true;
         } catch (Exception e) {
-            log.error("Could not update conversationRequests: {}", e.getMessage());
+            log.error("Unable to update conversationRequests: {}", e.getMessage());
             return false;
         } finally {
             DataStore.connectionPool.returnConnection(connection);
@@ -100,7 +100,7 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
             List<Conversation> conversationList) {
         List<ConversationRequest> filteredConversationRequest = new ArrayList<>();
         if (conversationRequestList.isEmpty()) {
-            log.error("Cannot filter empty conversationRequest list");
+            log.error("Unable to filter empty conversationRequest list");
             return filteredConversationRequest;
         }
         SQLConnection connection = DataStore.connectionPool.getConnection();
@@ -129,7 +129,7 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
             }
             connection.getConnection().commit();
         } catch (Exception e) {
-            log.error("Could not delete conversationRequests: {}", e.getMessage());
+            log.error("Unable to delete conversationRequests: {}", e.getMessage());
         } finally {
             DataStore.connectionPool.returnConnection(connection);
         }

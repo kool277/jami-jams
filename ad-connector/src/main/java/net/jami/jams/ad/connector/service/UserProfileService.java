@@ -139,7 +139,8 @@ public class UserProfileService {
 
             return profilesFromResponse;
         } catch (Exception e) {
-            log.error("Could not find entity with specified parameters.");
+            log.error(
+                    "An error occurred while attempting to find the entity with the specified parameters.");
             return null;
         } finally {
             ADConnector.returnConnection(endpoint);
@@ -192,7 +193,7 @@ public class UserProfileService {
             }
             return userProfile;
         } catch (Exception e) {
-            log.error("An error occured while trying to invoke methods: " + e);
+            log.error("An error occurred while invoking methods: " + e);
             return null;
         }
     }

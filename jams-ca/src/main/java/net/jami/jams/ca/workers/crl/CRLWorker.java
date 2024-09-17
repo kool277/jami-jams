@@ -56,7 +56,7 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
             existingCRL.set(crlFileStorage.getData());
         } catch (Exception e) {
             log.warn(
-                    "Could not find existing CRL file, if this is the first"
+                    "Unable to find existing CRL file, if this is the first"
                             + " time you are starting the server or no CRL existed, this is fine");
             X509v2CRLBuilder crlBuilder =
                     new X509v2CRLBuilder(
@@ -69,7 +69,7 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
                                         .build(getSigningKey())));
                 crlFileStorage.storeData(existingCRL.get());
             } catch (Exception e1) {
-                log.error("Could not create blank CRL!");
+                log.error("Unable to create blank CRL!");
             }
         }
         this.setDaemon(true);
@@ -101,12 +101,12 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
                     crlFileStorage.storeData(existingCRL.get());
                     failedWrite = false;
                 } catch (Exception e) {
-                    log.warn("Failed to write file, trying again!");
+                    log.warn("An error occurred while attempting to write file. Trying again.");
                 }
             }
-            log.info("Successfully ran revocation routine");
+            log.info("Revocation routine ran successfully.");
         } catch (Exception e) {
-            log.error("Failed to sign a CRL with error " + e);
+            log.error("An error occurred while attempting to sign CRL: " + e);
         }
     }
 
@@ -134,16 +134,16 @@ public class CRLWorker extends X509Worker<RevocationRequest> {
                     revokeCertificate(revocationRequest);
                     needsRefresh = false;
                     log.info(
-                            "Successfully revoked the certificated with ID "
+                            "Certificated with ID revoked successfully."
                                     + revocationRequest.getIdentifier());
                     if (revocationCallback != null) {
                         revocationCallback.onRevocationCompleted();
                     }
                 }
             } catch (Exception e) {
-                log.error("An error has occured in the CRL signing thread: " + e);
+                log.error("An error occurred in the CRL signing thread: " + e);
             }
         }
-        log.info("Stopped CRL Worker Thread...");
+        log.info("Stopped CRL Worker Thread.");
     }
 }

@@ -75,7 +75,7 @@ public class UserProfileService {
 
             return profilesFromResponse;
         } catch (Exception e) {
-            log.info("Failed to search LDAP directory with error " + e);
+            log.info("An error occurred while searching LDAP directory with error " + e);
             return null;
         } finally {
             connection.close();
@@ -142,7 +142,7 @@ public class UserProfileService {
             userProfile.setDefaultValues();
             return userProfile;
         } catch (Exception e) {
-            log.error("An error occurred while trying to invoke methods: " + e);
+            log.error("An error occurred while invoking methods: " + e);
             return null;
         }
     }

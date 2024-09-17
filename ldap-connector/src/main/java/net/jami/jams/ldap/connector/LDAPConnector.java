@@ -109,7 +109,7 @@ public class LDAPConnector implements AuthenticationSource {
 
     @Override
     public boolean setUserProfile(UserProfile userProfile) {
-        // does nothing since we cannot edit LDAP profiles.
+        // does nothing since we are unable to edit LDAP profiles.
         return false;
     }
 

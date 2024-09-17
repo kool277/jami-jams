@@ -89,7 +89,7 @@ public class DeviceBuilder {
             device.setCertificationRequest(null);
             return device;
         } catch (Exception e) {
-            log.error("Could not generate a user certificate: " + e);
+            log.error("An error occurred while attempting to generate the user certificate: " + e);
             return null;
         }
     }

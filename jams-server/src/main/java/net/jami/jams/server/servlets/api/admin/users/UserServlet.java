@@ -63,7 +63,7 @@ public class UserServlet extends HttpServlet {
         String username = req.getParameter("username");
         Optional<User> result = dataStore.getUserDao().getByUsername(username);
         if (result.isEmpty()) {
-            resp.sendError(404, "Could not obtain user!");
+            resp.sendError(404, "An error occurred while attempting to obtain user.");
         }
 
         User user = result.get();
@@ -127,7 +127,7 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        resp.sendError(500, "Could not create a user successfully!");
+        resp.sendError(500, "An error occurred while attempting to create the user.");
     }
 
     // Update user data.
@@ -147,11 +147,10 @@ public class UserServlet extends HttpServlet {
 
         User user = result.get();
 
-        // Check if he is AD/LDAP - then return a 403, because we can't set such
+        // Check if he is AD/LDAP - then return a 403, because we are unable to set such
         // password.
         if (user.getUserType() != AuthenticationSourceType.LOCAL) {
-            resp.sendError(
-                    500, "The user is not a local user, therefore we cannot change his data!");
+            resp.sendError(500, "Unable to change user data as user is not a local user.");
             return;
         }
 
@@ -160,7 +159,9 @@ public class UserServlet extends HttpServlet {
         String encodedSalt = Base64.encodeBase64String(salt);
         if (dataStore.getUserDao().updateObject(password, encodedSalt, username))
             resp.setStatus(200);
-        else resp.sendError(500, "could not update the users's data field!");
+        else
+            resp.sendError(
+                    500, "An error occurred while attempting to update the user's data field.");
     }
 
     // Revoke a user.
@@ -188,6 +189,6 @@ public class UserServlet extends HttpServlet {
         if (devResponse.get() != null && devResponse.get().isSuccess()) {
             resp.getOutputStream().write(gson.toJson(devResponse.get()).getBytes());
             resp.flushBuffer();
-        } else resp.sendError(500, "An exception has occurred while trying to revoke a user!");
+        } else resp.sendError(500, "An error occurred while revoking the user.");
     }
 }

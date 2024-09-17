@@ -82,14 +82,16 @@ export default function Subscription(props: SubscriptionProps) {
         if (error.response && error.response.status === 500) {
           props.setErrorMessage(
             i18next.t(
-              "an_error_occured_while_getting_license_information",
-              "An error occurred while getting subscription information!"
+              "an_error_occurred_while_fetching_license_information",
+              "An error occurred while fetching license information!"
             )
           );
           props.setSeverity("error");
           props.setError(true);
         } else {
-          console.error("Error getting license information: " + error);
+          console.error(
+            "An error occurred while fetching license information: " + error
+          );
         }
       });
   });
@@ -131,8 +133,8 @@ export default function Subscription(props: SubscriptionProps) {
       .then(() => {
         props.setErrorMessage(
           i18next.t(
-            "license_registred_successfully",
-            "Subscription successfully registered."
+            "license_registered_successfully",
+            "License registered successfully."
           )
         );
         props.setSeverity("success");
@@ -142,14 +144,16 @@ export default function Subscription(props: SubscriptionProps) {
         if (error.response && error.response.status === 500) {
           props.setErrorMessage(
             i18next.t(
-              "a_generic_occured_while_trying_to_load_license_or_license_could_not_be_found",
-              "A generic occurred while trying to load your subscription or your subscription could not be found!"
+              "an_error_occurred_while_loading_license",
+              "An error occurred while loading license!"
             )
           );
           props.setSeverity("error");
           props.setError(true);
         } else {
-          console.error("Error registering license: " + error);
+          console.error(
+            "An error occurred while registering license: " + error
+          );
         }
       });
   }

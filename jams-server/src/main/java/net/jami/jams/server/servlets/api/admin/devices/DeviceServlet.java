@@ -63,10 +63,10 @@ public class DeviceServlet extends HttpServlet {
 
         if (dataStore.getDeviceDao().updateObject(deviceName, username, deviceId))
             resp.setStatus(200);
-        else resp.sendError(500, "could not update the device's information!");
+        else resp.sendError(500, "An error occurred while updating device information!");
     }
 
-    // Revoke/delete a device.
+    // Revoke/delete/remove device.
     @Override
     @ScopedServletMethod(securityGroups = {AccessLevel.ADMIN})
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
@@ -77,6 +77,6 @@ public class DeviceServlet extends HttpServlet {
         if (devResponse != null) {
             resp.getOutputStream().write(gson.toJson(devResponse).getBytes());
             resp.flushBuffer();
-        } else resp.sendError(500, "An exception has occurred while trying to revoke a device!");
+        } else resp.sendError(500, "An error occurred while revoking device!");
     }
 }

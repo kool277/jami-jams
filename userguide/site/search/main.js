@@ -88,7 +88,7 @@ if (!window.Worker) {
       onWorkerMessage({data: msg});
     };
   }).fail(function (jqxhr, settings, exception) {
-    console.error('Could not load worker.js');
+    console.error('Unable to load worker.js');
   });
 } else {
   // Wrap search in a web worker

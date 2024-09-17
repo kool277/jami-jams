@@ -45,7 +45,7 @@ public class DevicesServlet extends HttpServlet {
      * @apiSuccess (200) {body} Device device information
      * @apiSuccessExample {json} Success-Response: [{ "certificate":"pem_encoded_certificate",
      *     "displayName":"My Galaxy S8", "deviceId":"6aec6252ad", "revoked":true }]
-     * @apiError (500) {null} null Device could not be retrieved
+     * @apiError (500) {null} null Device was unable to be retrieved
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

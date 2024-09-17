@@ -36,7 +36,7 @@ public class RevokeUserFlow {
         try {
             User user = dataStore.getUserDao().getByUsername(username).get();
             if (user == null) {
-                log.error("Could not find user!");
+                log.error("Unable to find user!");
                 return null;
             }
             BigInteger serialNumber = user.getCertificate().getSerialNumber();
@@ -51,7 +51,7 @@ public class RevokeUserFlow {
             // Check if the certificate has been revoked
             if (certificateAuthority.getLatestCRL().get().getRevokedCertificate(serialNumber)
                     != null) {
-                // Certificate successfully revoked
+                // Certificate revoked successfully
                 response.setSuccess(true);
                 return response;
             } else {
@@ -62,9 +62,7 @@ public class RevokeUserFlow {
                 return response;
             }
         } catch (Exception e) {
-            log.error(
-                    "An exception has occurred while trying to revoke a device with error {}",
-                    e.getMessage());
+            log.error("An error occurred while revoking device: {}", e.getMessage());
             response.setSuccess(false);
             response.setErrorDetails(e.getMessage());
             return response;

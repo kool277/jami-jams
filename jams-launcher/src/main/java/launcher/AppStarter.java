@@ -104,8 +104,7 @@ public class AppStarter extends Thread {
                                             .onExit()
                                             .thenAccept(
                                                     ph -> {
-                                                        log.info(
-                                                                "JAMS Server has finished prematurely");
+                                                        log.info("JAMS has ended prematurely.");
                                                         System.exit(1);
                                                     })
                                             .get(); // Wait for the process to finish
@@ -120,7 +119,7 @@ public class AppStarter extends Thread {
                     .addShutdownHook(
                             new Thread(
                                     () -> {
-                                        log.info("Shutting down...");
+                                        log.info("Shutting down…");
                                         ProcessHandle.of(jamsProcessId)
                                                 .ifPresentOrElse(
                                                         process -> process.destroyForcibly(),
@@ -131,7 +130,7 @@ public class AppStarter extends Thread {
                                     }));
         } catch (Exception e) {
             log.warn(
-                    "Could not create and bind publisher and/or receiver! Please contact software developer");
+                    "An error occurred while attempting to create and bind publisher and/or receiver. Please contact software developer.");
             System.exit(-1);
         }
     }
@@ -165,7 +164,7 @@ public class AppStarter extends Thread {
                 }
             } catch (Exception e) {
                 log.error(
-                        "An error occurred. Either while attempting to verify if an update was available, or"
+                        "An error occurred while attempting to verify if an update was available, or"
                                 + "when attempting to reload a library: {}",
                         e.getMessage());
             }

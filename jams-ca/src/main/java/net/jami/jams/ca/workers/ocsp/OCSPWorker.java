@@ -116,8 +116,7 @@ public class OCSPWorker extends X509Worker<String> {
             return new OCSPRespBuilder().build(OCSPRespBuilder.SUCCESSFUL, basicResponse);
         } catch (Exception e) {
             log.error(
-                    "Could not verify the signature on the OCSP request with error {}",
-                    e.getMessage());
+                    "An OCSP request error occurred while verifying signature: {}", e.getMessage());
             return null;
         }
     }

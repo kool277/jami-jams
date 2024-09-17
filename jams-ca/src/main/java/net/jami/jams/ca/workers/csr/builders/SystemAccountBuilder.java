@@ -77,7 +77,7 @@ public class SystemAccountBuilder {
             return systemAccount;
 
         } catch (Exception e) {
-            log.error("Could not generate the system's CA: " + e);
+            log.error("Unable to generate the system CA: " + e);
             return null;
         }
     }
@@ -105,7 +105,7 @@ public class SystemAccountBuilder {
                             JamsCA.CA.getPrivateKey(), builder, ExtensionLibrary.caExtensions));
             return systemAccount;
         } catch (Exception e) {
-            log.error("Could not generate the system's OCSP: " + e);
+            log.error("Unable to generate the system OCSP: " + e);
             return null;
         }
     }

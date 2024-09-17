@@ -138,11 +138,16 @@ export default function Groups() {
       )
     )
       .then(() => {
-        console.log("Successfully deleted " + removedGroup.name);
+        console.log(removedGroup.name + "deleted successfully.");
         setOpenRemoveDialog(false);
       })
       .catch((error) => {
-        console.log("Could not delete " + removedGroup.name + " " + error);
+        console.log(
+          "An error occurred while attempting to delete " +
+            removedGroup.name +
+            ": " +
+            error
+        );
         setOpenRemoveDialog(false);
       });
 
@@ -171,7 +176,9 @@ export default function Groups() {
                 auth.authenticated = false;
                 history.push("/");
               } else {
-                console.error("Error getting group members: " + error);
+                console.error(
+                  "An error occurrd while fetching group members: " + error
+                );
               }
             });
         });
@@ -184,7 +191,7 @@ export default function Groups() {
         } else if (error.response && error.response.status === 404) {
           setZeroGroup(true);
         } else {
-          console.error("Error getting groups: " + error);
+          console.error("An error occurred while fetching groups: " + error);
         }
       });
     return;
@@ -197,7 +204,7 @@ export default function Groups() {
           {
             i18next.t(
               "you_are_not_allowed_to_access_this_section",
-              "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
+              "You are not allowed to access this section. Please contact your system adminstrator."
             ) as string
           }
         </h4>

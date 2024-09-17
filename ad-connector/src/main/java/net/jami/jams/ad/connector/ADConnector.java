@@ -138,7 +138,7 @@ public class ADConnector implements AuthenticationSource {
 
     @Override
     public boolean setUserProfile(UserProfile userProfile) {
-        // does nothing as we cannot edit user profiles.
+        // does nothing as we are unable to edit user profiles.
         return false;
     }
 

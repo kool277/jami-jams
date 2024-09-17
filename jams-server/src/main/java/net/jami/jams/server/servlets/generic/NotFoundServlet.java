@@ -38,7 +38,7 @@ public class NotFoundServlet extends HttpServlet {
             resp.getOutputStream()
                     .write(("{\"error\":\"" + "requested page does not exist" + "\"}").getBytes());
         } catch (Exception e) {
-            log.error("Could not generate an error!");
+            log.error("Unable to generate an error!");
         }
     }
 }
