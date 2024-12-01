@@ -231,8 +231,8 @@ export default function Groups() {
             <DialogContentText id="alert-dialog-description">
               {
                 i18next.t(
-                  "are_you_sure_you_want_to_delete",
-                  "Are you sure you want to delete"
+                  "do_you_want_to_delete_the_group",
+                  "Do you want to delete the group?"
                 ) as string
               }{" "}
               <strong>&nbsp;{removedGroup.name}</strong> ?

@@ -175,14 +175,14 @@ export default function Blueprints() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {i18next.t("remove_blueprint", "Remove blueprint") as string}
+          {i18next.t("delete_blueprint", "Delete blueprint") as string}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {
               i18next.t(
-                "are_you_sure_you_want_to_delete",
-                "Are you sure you want to delete"
+                "do_you_want_to_delete_the_blueprint",
+                "Do you want to delete the blueprint?"
               ) as string
             }
             <strong>&nbsp;{removedBlueprint}</strong> ?

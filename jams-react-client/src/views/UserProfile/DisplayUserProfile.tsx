@@ -410,8 +410,8 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
           <DialogContentText id="alert-dialog-description">
             {
               i18next.t(
-                "are_you_sure_want_revoke",
-                "Are you sure you want to revoke"
+                "do_you_want_to_revoke_the_user_account",
+                "Do you want to revoke the user account?"
               ) as string
             }{" "}
             <strong>{revokedUser}</strong> ?

@@ -382,8 +382,8 @@ export default function Users(props: UsersProps) {
           <DialogContentText id="alert-dialog-description">
             {
               i18next.t(
-                "are_you_sure_you_want_to_remove",
-                "Are you sure you want to remove"
+                "do_you_want_to_remove_the_contact",
+                "Do you want to remove the contact?"
               ) as string
             }
             <strong>{" " + removedContactName + " "}</strong>

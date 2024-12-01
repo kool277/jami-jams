@@ -152,7 +152,7 @@ export default function Admin(props: AdminProps) {
         setDialogMessage(
           i18next.t(
             "new_version_jams_available",
-            "A new version of JAMS is available. Would you like to update now?"
+            "A new version of JAMS is available. Do you want to update now?"
           )
         );
         setMessageYes("Update Now");
@@ -160,8 +160,8 @@ export default function Admin(props: AdminProps) {
       } else {
         setDialogMessage(
           i18next.t(
-            "running_community_version_jams",
-            "You are currently running the community version of JAMS. Would you like to purchase a JAMS subscription?"
+            "running_community_edition_jams",
+            "JAMS Community Edition is running. Do you want to buy a JAMS subscription?"
           )
         );
         setMessageYes("Yes, go to Jami Store");
@@ -221,8 +221,8 @@ export default function Admin(props: AdminProps) {
     if (auth.isActivated()) {
       setSnackbarMessage(
         i18next.t(
-          "updating_jams_shutting_down_shortly",
-          "Updating JAMS, shutting down shortly..."
+          "shutting_down_after_jams_update_is_finished",
+          "Shutting down after JAMS update is finished…"
         )
       );
       axios(configApiCall(api_path_get_start_update, "POST", null, null))
@@ -234,7 +234,7 @@ export default function Admin(props: AdminProps) {
           setSnackbarMessage(
             i18next.t(
               "error_while_attempting_update_jams",
-              "Error occurred while attempting to update JAMS:"
+              "An error occurred while attempting to update JAMS:"
             ) + error
           );
         });

@@ -50,8 +50,8 @@ const RevokeDeviceDialog: FC<RevokeDeviceDialogProps> = ({
         <DialogContentText>
           {
             i18next.t(
-              "are_you_sure_you_want_to_revoke_this_device",
-              "Are you sure you want to revoke this device?"
+              "do_you_want_to_revoke_the_device",
+              "Do you want to revoke the device?"
             ) as string
           }
         </DialogContentText>
