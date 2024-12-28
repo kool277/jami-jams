@@ -236,7 +236,7 @@ export default function Users(props: UsersProps) {
                 });
             })
             .catch(() => {
-              // If this point is reached, it means we have a contact that is no longer part of the nameserver
+              // If this point is reached, it means we have a contact that is no longer part of the name server
               originalContacts.splice(originalContacts.indexOf(contact), 1);
             });
         }

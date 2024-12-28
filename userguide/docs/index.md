@@ -176,7 +176,7 @@ The local database does not require any additional configuration, everything in 
 
 [local]: https://static.savoirfairelinux.com/img/jams/local.png "Local"
 
-**Advanced settings:** by default, the option "Use public nameserver" is disabled. Usernames of your Jami users will not be stored on the public Jami nameserver and your users will only be able to communicate with users from your organization.
+**Advanced settings:** by default, the option "Use public name server" is disabled. Usernames of your Jami users will not be stored on the public Jami name server and your users will only be able to communicate with users from your organization.
 
 If you want your users to be searchable by external users and allow them to communicate with any Jami users, and not only the one from your organization, enable this option.
 

@@ -38,7 +38,7 @@ public class NameServlet extends HttpServlet {
 
     /**
      * @apiVersion 1.0.0
-     * @api {get} /api/nameserver/name/* Look up a user on the nameserver
+     * @api {get} /api/nameserver/name/* Look up a user on the name server
      * @apiName getName
      * @apiGroup NameServer
      * @apiSuccess (200) {path} String username

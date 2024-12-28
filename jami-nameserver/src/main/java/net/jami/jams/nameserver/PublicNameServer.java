@@ -68,12 +68,12 @@ public class PublicNameServer implements NameServer {
                     responseData.append((char) con.getInputStream().read());
                     currentSize++;
                 }
-                log.info("Response received from public nameserver {} ", responseData);
+                log.info("Response received from public name server {} ", responseData);
                 return gson.fromJson(responseData.toString(), NameLookupResponse.class);
             }
             return null;
         } catch (Exception e) {
-            log.info("An error occurred while querying the public nameserver {} ", e.toString());
+            log.info("An error occurred while querying the public name server {} ", e.toString());
             return null;
         }
     }
@@ -90,11 +90,11 @@ public class PublicNameServer implements NameServer {
 
             String responseData = new String(con.getInputStream().readAllBytes());
 
-            log.info("Response received from public nameserver {} ", responseData);
+            log.info("Response received from public name server {} ", responseData);
             JsonObject json = gson.fromJson(responseData.toString(), JsonObject.class);
             return json.get("name").getAsString();
         } catch (Exception e) {
-            log.info("An error occurred while querying the public nameserver {} ", e.toString());
+            log.info("An error occurred while querying the public name server {} ", e.toString());
             return null;
         }
     }

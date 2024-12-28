@@ -78,7 +78,7 @@ public class InstallationFinalizer {
                             new PublicNameServer(
                                     CachedObjects.localAuthSettings.getPublicNameServer());
                     log.warn(
-                            "Server configured to use {} as the nameserver for Jami clients.",
+                            "Server configured to use {} as the name server for Jami clients.",
                             CachedObjects.localAuthSettings.getPublicNameServer());
                 }
                 log.info("Server is configured to use local authentication engine.");

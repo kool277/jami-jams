@@ -210,7 +210,7 @@ public class Server {
     public static void startGUI() throws Exception {
         boolean ready = false;
         while (!ready) {
-            log.info("Waiting for authentication module to be ready...");
+            log.info("Waiting for authentication module to be ready…");
             if (userAuthenticationModule.getAuthModulePubKey() != null) {
                 ready = true;
             }

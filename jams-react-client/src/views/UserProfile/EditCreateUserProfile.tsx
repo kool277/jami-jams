@@ -432,7 +432,7 @@ export default function EditCreateUserProfile(
       })
       .catch(() => {
         console.log(
-          "Failed to create new user. This is either because the username is already in use on the public nameserver, or another unknown error has occurred. Please choose another one."
+          "Failed to create new user. This is either because the username is already in use on the public name server, or another unknown error has occurred. Please choose another one."
         );
       });
   };
