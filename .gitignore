@@ -92,8 +92,6 @@ testdb/
 tomcat.*/
 /jams
 dependency-reduced-pom.xml
-#userguide/site
-versions.json
 
 # React client
 jams-react-client/node_modules/
