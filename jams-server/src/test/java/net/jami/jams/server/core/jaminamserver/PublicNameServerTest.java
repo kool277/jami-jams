@@ -34,7 +34,7 @@ class PublicNameServerTest {
 
     @BeforeAll
     public static void init() {
-        nameServer = new PublicNameServer("http://ns.jami.net");
+        nameServer = new PublicNameServer("https://ns.jami.net");
     }
 
     @Disabled
