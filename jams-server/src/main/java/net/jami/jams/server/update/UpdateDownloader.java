@@ -49,7 +49,6 @@ public class UpdateDownloader {
 
     private SSLContext sslContext;
     private static final String KEYSTORE_TYPE = "JKS";
-    private KeyStore trustStore;
     private static volatile String UPDATE_SERVER_URL;
 
     private final HashMap<String, FileDescription> remoteChecksums = new HashMap<>();
@@ -57,22 +56,6 @@ public class UpdateDownloader {
     private final Gson gson = GsonFactory.createGson();
 
     public UpdateDownloader() {
-
-        try {
-            InputStream is =
-                    UpdateCheckTask.class.getClassLoader().getResourceAsStream("oem/ca.crt");
-            X509Certificate certificate =
-                    X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
-            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
-            trustStore.setCertificateEntry("ca", certificate);
-
-            is = UpdateDownloader.class.getClassLoader().getResourceAsStream("oem/update.crt");
-            certificate = X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
-            trustStore.setCertificateEntry("update", certificate);
-        } catch (Exception e) {
-            log.info("An unexpected error occurred while loading SFL CA: {}", e.getMessage());
-        }
 
         InputStream input = this.getClass().getClassLoader().getResourceAsStream("oem/config.json");
 
@@ -102,11 +85,8 @@ public class UpdateDownloader {
                     JAMSUpdater.privateKey,
                     "".toCharArray(),
                     new Certificate[] {JAMSUpdater.certificate});
-            sslContext =
-                    SSLContexts.custom()
-                            .loadKeyMaterial(ks, "".toCharArray())
-                            .loadTrustMaterial(trustStore, null)
-                            .build();
+            sslContext = SSLContexts.createSystemDefault();
+
         } catch (Exception e) {
             log.warn("An error occurred while downloading the update: " + e);
         }

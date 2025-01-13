@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.updater.FileDescription;
 import net.jami.jams.common.utils.VersioningUtils;
-import net.jami.jams.common.utils.X509Utils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -38,7 +37,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.KeyStore;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.TimerTask;
 
@@ -59,20 +57,8 @@ public class UpdateCheckTask extends TimerTask {
 
     protected UpdateCheckTask() {
         try {
-            InputStream is =
-                    UpdateCheckTask.class.getClassLoader().getResourceAsStream("oem/ca.crt");
-            X509Certificate certificate =
-                    X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
-            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
-            trustStore.setCertificateEntry("ca", certificate);
-
-            is = UpdateCheckTask.class.getClassLoader().getResourceAsStream("oem/update.crt");
-            certificate = X509Utils.getCertificateFromPEMString(new String(is.readAllBytes()));
-            trustStore.setCertificateEntry("update", certificate);
-
-            // Inject the SSL Connection here for a first time.
-            sslContext = SSLContexts.custom().loadTrustMaterial(trustStore, null).build();
+            // Load the trust store
+            sslContext = SSLContexts.createSystemDefault();
 
             // read config json
             InputStream input =
