@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import net.jami.jams.common.serialization.adapters.GsonFactory;
 import net.jami.jams.common.updater.FileDescription;
-import net.jami.jams.common.utils.X509Utils;
 import net.jami.jams.server.licensing.LicenseService;
 
 import org.apache.http.HttpResponse;
@@ -39,7 +38,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 
 import javax.net.ssl.SSLContext;
