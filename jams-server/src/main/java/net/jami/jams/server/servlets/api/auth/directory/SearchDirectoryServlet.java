@@ -16,6 +16,7 @@
  */
 package net.jami.jams.server.servlets.api.auth.directory;
 
+import static net.jami.jams.server.Server.certificateAuthority;
 import static net.jami.jams.server.Server.dataStore;
 import static net.jami.jams.server.Server.nameServer;
 import static net.jami.jams.server.Server.userAuthenticationModule;
@@ -42,6 +43,9 @@ import net.jami.jams.common.objects.user.PolicyData;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.objects.user.UserProfile;
 import net.jami.jams.common.serialization.adapters.GsonFactory;
+
+import org.bouncycastle.cert.X509CRLEntryHolder;
+import org.bouncycastle.cert.X509CRLHolder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -151,6 +155,23 @@ public class SearchDirectoryServlet extends HttpServlet {
 
         JsonObject obj = new JsonObject();
         JsonArray profilesArray = gson.toJsonTree(userProfiles).getAsJsonArray();
+
+        for (int i = 0; i < profilesArray.size(); i++) {
+            JsonObject profile = profilesArray.get(i).getAsJsonObject();
+            String usernamerev = profile.get("username").getAsString();
+
+            User user = dataStore.getUserDao().getByUsername(usernamerev).orElse(null);
+            if (user != null) {
+                X509CRLHolder crl = certificateAuthority.getLatestCRL().get();
+                if (crl != null) {
+                    X509CRLEntryHolder revoked =
+                            crl.getRevokedCertificate(user.getCertificate().getSerialNumber());
+                    profile.addProperty("revoked", revoked != null);
+                } else {
+                    profile.addProperty("revoked", false);
+                }
+            }
+        }
 
         obj.add("profiles", profilesArray);
         obj.addProperty("numPages", DataStore.NUM_PAGES);

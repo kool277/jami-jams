@@ -38,8 +38,7 @@ import CardAvatar from "components/Card/CardAvatar";
 import CardBody from "components/Card/CardBody";
 
 import Search from "@mui/icons-material/Search";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import { Checkbox, FormControlLabel, Chip } from "@mui/material";
 import axios from "axios";
 import configApiCall from "api";
 import auth from "auth";
@@ -98,13 +97,14 @@ const styles = {
   },
 };
 const useStyles = makeStyles(styles as any);
+const label = i18next.t("revoked", "Revoked") as string;
 export default function Users() {
   const classes = useStyles();
   const history = useHistory();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [noUsersFound, setNoUsersFound] = useState(false);
   const [noMatchFound, setNoMatchFound] = useState(false);
-  const [showRevokedUsers, setShowRevokedUsers] = useState(false);
+  const [hideRevokedUsers, setHideRevokedUsers] = useState(true);
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -200,8 +200,8 @@ export default function Users() {
           <FormControlLabel
             control={
               <Checkbox
-                checked={showRevokedUsers}
-                onChange={() => setShowRevokedUsers(!showRevokedUsers)}
+                checked={hideRevokedUsers}
+                onChange={() => setHideRevokedUsers(!hideRevokedUsers)}
                 inputProps={{ "aria-label": "primary checkbox" }}
                 color="primary"
               />
@@ -211,7 +211,9 @@ export default function Users() {
                 ? { marginLeft: "1rem" }
                 : { marginLeft: "-8px" }
             }
-            label="Display revoked users"
+            label={
+              i18next.t("hide_revoked_users", "Hide revoked users") as string
+            }
           />
 
           <GridContainer>
@@ -265,6 +267,7 @@ export default function Users() {
               }
               return 0;
             })
+            .filter((user) => !hideRevokedUsers || !user.revoked)
             .map((user) => (
               <GridItem xs={12} sm={6} md={3} lg={2} xl={2} key={user.username}>
                 <Card profile>
@@ -273,17 +276,32 @@ export default function Users() {
                     style={{ height: "100%" }}
                   >
                     <CardBody profile>
-                      <CardAvatar profile>
-                        <img
-                          src={
-                            user.profilePicture
-                              ? "data:image/png;base64, " + user.profilePicture
-                              : noProfilePicture
-                          }
-                          alt="..."
-                        />
-                      </CardAvatar>
-
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <CardAvatar profile>
+                          <img
+                            src={
+                              user.profilePicture
+                                ? "data:image/png;base64, " +
+                                  user.profilePicture
+                                : noProfilePicture
+                            }
+                            alt="..."
+                          />
+                        </CardAvatar>
+                        {user.revoked && (
+                          <Chip
+                            label={i18next.t("revoked", "Revoked") as string}
+                            variant="filled"
+                            clickable={false}
+                          />
+                        )}
+                      </div>
                       <GridContainer
                         container
                         direction="column"

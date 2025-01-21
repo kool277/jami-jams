@@ -200,6 +200,7 @@ export interface UserProfile {
   faxNumber: string;
   mobileNumber: string;
   id: string;
+  revoked?: boolean;
 }
 
 export interface GroupMembership {
@@ -236,6 +237,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
     faxNumber: "",
     mobileNumber: "",
     id: "",
+    revoked: false,
   });
   const [groupMemberships, setGroupMemberships] = useState<GroupMembership[]>(
     []
