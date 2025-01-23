@@ -162,19 +162,25 @@ public class OCSPWorker extends X509Worker<String> {
             throws OCSPException {
         CertificateID certificateID = request.getCertID();
         // Build Extensions
-        Extensions extensions = new Extensions(new Extension[] {});
         Extensions requestExtensions = request.getSingleRequestExtensions();
         if (requestExtensions != null) {
             Extension nonceExtension =
                     requestExtensions.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
-            if (nonceExtension != null) extensions = new Extensions(nonceExtension);
+            Extensions extensions = new Extensions(nonceExtension);
+            responseBuilder.addResponse(
+                    certificateID,
+                    OCSPCertificateStatusMapper.getStatus(
+                            getCertificateSummary(request.getCertID().getSerialNumber(), unknown)),
+                    new Date(),
+                    new Date(new Date().getTime() + crlLifetime),
+                    extensions);
+        } else {
+            responseBuilder.addResponse(
+                    certificateID,
+                    OCSPCertificateStatusMapper.getStatus(
+                            getCertificateSummary(request.getCertID().getSerialNumber(), unknown)),
+                    new Date(),
+                    new Date(new Date().getTime() + crlLifetime));
         }
-        responseBuilder.addResponse(
-                certificateID,
-                OCSPCertificateStatusMapper.getStatus(
-                        getCertificateSummary(request.getCertID().getSerialNumber(), unknown)),
-                new Date(),
-                new Date(new Date().getTime() + crlLifetime),
-                extensions);
     }
 }
