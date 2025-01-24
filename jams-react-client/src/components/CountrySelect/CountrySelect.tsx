@@ -71,6 +71,7 @@ export default function CountrySelect({
       renderInput={(params) => (
         <TextField
           {...params}
+          required
           label={i18next.t("choose_a_country", "Choose a country") as string}
           name="country"
           variant="outlined"
