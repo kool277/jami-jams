@@ -23,7 +23,6 @@ import net.jami.jams.nameserver.PublicNameServer;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -34,17 +33,20 @@ class PublicNameServerTest {
 
     @BeforeAll
     public static void init() {
-        nameServer = new PublicNameServer("https://ns.jami.net");
+        nameServer = new PublicNameServer("https://ns-test.jami.net");
     }
 
-    @Disabled
     @Test
     public void testNameRegistration() {
         NameRegistrationRequest nameRegistrationRequest = new NameRegistrationRequest();
-        nameRegistrationRequest.setAddr("0e76529938772ac7626552ab71");
-        nameRegistrationRequest.setOwner("0x74ef2cD532a0f3cE31089b4fd296DDdFB5d6566A");
-        nameRegistrationRequest.setSignature(null);
-        nameRegistrationRequest.setPublickey(null);
+        nameRegistrationRequest.setAddr(
+                "abcdef0123"
+                        + UUID.randomUUID()
+                                .toString()
+                                .replace("-", "")); // 40 characters long: 8 fixed + 32 random
+        nameRegistrationRequest.setOwner("abcdef0123456789abcdef0123456789abcdef02");
+        nameRegistrationRequest.setSignature("");
+        nameRegistrationRequest.setPublickey("");
         String name = UUID.randomUUID().toString().replace("-", "");
         Integer res = nameServer.registerName(name, nameRegistrationRequest);
         Assertions.assertEquals(200, res, "The response should have been 200!");
@@ -52,13 +54,13 @@ class PublicNameServerTest {
 
     @Test
     public void testNameLookUp() {
-        NameLookupResponse resp = nameServer.getAddressFromName("sidokhine6");
+        NameLookupResponse resp = nameServer.getAddressFromName("abcdefabcdef");
         Assertions.assertNotNull(resp, "The response should exist!");
     }
 
     @Test
     public void testAddrLookUp() {
-        String addr = nameServer.getNameFromAddress("0d1f0002ce728d6aa8b98b5227c75fc773735f9e");
+        String addr = nameServer.getNameFromAddress("abcdef0123456789abcdef0123456789abcdef02");
         Assertions.assertNotNull(addr, "The address should exist!");
     }
 }
