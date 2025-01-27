@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "İptal etmek istediğine emin misin?",
     "revoke": "İptal et",
     "revoke_user": "Kullanıcıyı iptal et",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Profili düzenle",
     "change_password": "Parolayı değiştir",
     "minimum_3_characters": "En az 3 karakter!",

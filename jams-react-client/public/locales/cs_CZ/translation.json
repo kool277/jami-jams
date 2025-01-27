@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "Jste si jisti, že chcete zrušit",
     "revoke": "Zrušit",
     "revoke_user": "Zrušit uživatele",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Upravit profil",
     "change_password": "Zmenit heslo",
     "minimum_3_characters": "Minimálně 3 znaky!",

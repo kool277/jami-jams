@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "Tem a certeza de que pretende revogar",
     "revoke": "Revogar",
     "revoke_user": "Revogar utilizador",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Editar perfil",
     "change_password": "Alterar palavra-passe",
     "minimum_3_characters": "Mínimo de 3 caracteres!",

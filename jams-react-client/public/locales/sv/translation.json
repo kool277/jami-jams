@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "Är du säker du vill återkalla? ",
     "revoke": "Återkalla ",
     "revoke_user": "Återkalla användare ",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Ändra profil ",
     "change_password": "Ändra lösenord ",
     "minimum_3_characters": "Minst 3 tecken ",

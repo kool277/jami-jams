@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "Biztosan visszavonja",
     "revoke": "Visszavonás",
     "revoke_user": "Felhasználó visszavonása",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Profil szerkesztése",
     "change_password": "Jelszó megváltoztatása",
     "minimum_3_characters": "Legalább 3 karakter!",

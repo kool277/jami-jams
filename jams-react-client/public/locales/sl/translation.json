@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "Ali ste prepričani, da želite odstraniti",
     "revoke": "Odstranitev",
     "revoke_user": "Odstrani uporabnika",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Uredi profil",
     "change_password": "Sprememba gesla",
     "minimum_3_characters": "Najmanj 3 znaki!",

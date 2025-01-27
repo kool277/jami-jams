@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "Er du sikker på at du ønsker å tilbakekalle",
     "revoke": "Tilbakekall",
     "revoke_user": "Tilbakekalle bruker",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Endre profil",
     "change_password": "Endre passord",
     "minimum_3_characters": "Minimum 3 tegn!",

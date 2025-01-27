@@ -190,6 +190,7 @@
     "are_you_sure_want_revoke": "Haluatko varmasti peruuttaa",
     "revoke": "Peruuta",
     "revoke_user": "Peruuta käyttäjä",
+    "hide_revoked_users": "Hide revoked users",
     "edit_profile": "Muokkaa profiilia",
     "change_password": "Vaihda salasana",
     "minimum_3_characters": "Vähintään 3 merkkiä!",
