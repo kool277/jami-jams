@@ -273,7 +273,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
       activeDirectorySettings: {},
     };
     const settings: localSettings = {
-      publicNameServer: "http://ns.jami.net",
+      publicNameServer: "https://ns.jami.net",
       publicNames: nameServerChecked,
     };
 

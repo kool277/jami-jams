@@ -56,8 +56,12 @@ public class RegisterUserFlow {
         NameRegistrationRequest nameRegistrationRequest = new NameRegistrationRequest();
         nameRegistrationRequest.setOwner(ethKeyPair[0]);
         nameRegistrationRequest.setAddr(user.getJamiId());
+        nameRegistrationRequest.setPublickey("");
+        nameRegistrationRequest.setSignature("");
         if (nameServer != null
                 && nameServer.registerName(user.getUsername(), nameRegistrationRequest) != 200) {
+            log.error(
+                    "Failed to register the user " + user.getUsername() + " with the name server.");
             return false;
         }
         datastore.getUserDao().storeObject(user);
