@@ -25,8 +25,13 @@ import net.jami.jams.common.jami.NameRegistrationRequest;
 import net.jami.jams.common.jami.NameServer;
 import net.jami.jams.common.objects.roots.X509Fields;
 import net.jami.jams.common.objects.user.User;
+import net.jami.jams.common.utils.X509Utils;
 import net.jami.jams.dht.DeviceReceiptGenerator;
 import net.jami.jams.dht.ETHAddressGenerator;
+
+import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
+import java.security.Signature;
 
 @Slf4j
 public class RegisterUserFlow {
@@ -56,8 +61,24 @@ public class RegisterUserFlow {
         NameRegistrationRequest nameRegistrationRequest = new NameRegistrationRequest();
         nameRegistrationRequest.setOwner(ethKeyPair[0]);
         nameRegistrationRequest.setAddr(user.getJamiId());
-        nameRegistrationRequest.setPublickey("");
-        nameRegistrationRequest.setSignature("");
+        PublicKey publicKeyPem = user.getCertificate().getPublicKey();
+        String publicKeyStr = X509Utils.getPEMStringFromPubKey(publicKeyPem);
+        String encodedPublicKey =
+                java.util.Base64.getEncoder()
+                        .encodeToString(publicKeyStr.getBytes(StandardCharsets.UTF_8));
+        nameRegistrationRequest.setPublickey(encodedPublicKey);
+        try {
+            Signature signature = Signature.getInstance("SHA512withRSA");
+            signature.initSign(user.getPrivateKey());
+            signature.update(user.getUsername().getBytes());
+            byte[] signedBytes = signature.sign();
+            String signatureBase64 = java.util.Base64.getEncoder().encodeToString(signedBytes);
+            nameRegistrationRequest.setSignature(signatureBase64);
+        } catch (Exception e) {
+            log.error("Failed to sign the username for user " + user.getUsername(), e);
+            return false;
+        }
+
         if (nameServer != null
                 && nameServer.registerName(user.getUsername(), nameRegistrationRequest) != 200) {
             log.error(

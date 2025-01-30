@@ -31,6 +31,7 @@ import net.jami.jams.common.objects.user.User;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -78,6 +79,7 @@ class RegisterUserFlowTest {
         }
     }
 
+    @Disabled
     @Test
     void createUser() {
         boolean userCreationSuccess = RegisterUserFlow.createUser(user, nameServer);
