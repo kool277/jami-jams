@@ -43,9 +43,9 @@ public class PolicyDataServlet extends HttpServlet {
      * @apiSuccessExample {json} Success-Response: [{ "allowCertFromHistory": true, "allowLookup":
      *     true, "allowCertFromContact": true, "allowCertFromTrusted": true, "Account.videoEnabled":
      *     true, "DHTRelay.PublicInCalls": false, "Account.autoAnswer": false,
-     *     "Account.peerDiscovery": true, "Account.accountDiscovery": true,
-     *     "Account.accountPublish": true, "Account.rendezVous": false, "Account.upnpEnabled": true,
-     *     "Account.defaultModerators": "", "Account.uiCustomization":
+     *     "Account.peerDiscovery": true, "Account.accountDiscovery": false,
+     *     "Account.accountPublish": false, "Account.rendezVous": false, "Account.upnpEnabled":
+     *     true, "Account.defaultModerators": "", "Account.uiCustomization":
      *     "{\"areTipsEnabled\":false,\"backgroundType\":\"default\"}" }]
      * @apiError (404) {null} null Policy Data was unable to be retrieved
      * @apiError (500) {null} null Policy Data was unable to be retrieved
