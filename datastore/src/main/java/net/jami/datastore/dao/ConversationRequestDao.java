@@ -100,7 +100,6 @@ public class ConversationRequestDao extends AbstractDao<ConversationRequest> {
             List<Conversation> conversationList) {
         List<ConversationRequest> filteredConversationRequest = new ArrayList<>();
         if (conversationRequestList.isEmpty()) {
-            log.error("Unable to filter empty conversationRequest list");
             return filteredConversationRequest;
         }
         SQLConnection connection = DataStore.connectionPool.getConnection();
