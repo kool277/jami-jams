@@ -85,7 +85,11 @@ public class RegisterDeviceFlow {
                             user.getEthAddress());
             response.setDeviceReceipt(devReceipt[0]);
             response.setReceiptSignature(devReceipt[1]);
-            response.setDisplayName(userProfile.getFirstName() + " " + userProfile.getLastName());
+            String firstDisplayName =
+                    userProfile.getFirstName() != null ? userProfile.getFirstName() : "";
+            String lastDisplayName =
+                    userProfile.getLastName() != null ? userProfile.getLastName() : "";
+            response.setDisplayName(firstDisplayName + " " + lastDisplayName);
 
             response.setNameServer(nameServer.getURI());
             if (userProfile.getProfilePicture() != null)
