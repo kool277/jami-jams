@@ -310,7 +310,7 @@ export default function Users() {
                       >
                         <GridItem style={{ minHeight: "50px" }}>
                           <h4 className={classes.cardTitle}>
-                            {`${user.firstName} ${user.lastName}`}
+                            {`${user.firstName ?? ""} ${user.lastName ?? ""}`}
                           </h4>
                         </GridItem>
                         <GridItem>
