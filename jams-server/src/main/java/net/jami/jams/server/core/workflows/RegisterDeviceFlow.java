@@ -35,7 +35,6 @@ import net.jami.jams.dht.DeviceReceiptGenerator;
 
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 public class RegisterDeviceFlow {
@@ -49,8 +48,7 @@ public class RegisterDeviceFlow {
                     userAuthenticationModule
                             .getAuthSources()
                             .get(new AuthModuleKey(user.getRealm(), user.getUserType()))
-                            .searchUserProfiles(username, "LOGON_NAME", Optional.empty())
-                            .get(0);
+                            .getUserProfile(username);
 
             // Renew user certificate if expired with same private key
             if (!user.getCertificate().getNotAfter().after(new Date())) {
