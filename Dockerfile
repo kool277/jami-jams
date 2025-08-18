@@ -1,4 +1,4 @@
-FROM maven:3.9.2-eclipse-temurin-11-alpine as build
+FROM maven:3.9.11-eclipse-temurin-21-alpine as build
 RUN apk update && apk add --no-cache python3 npm
 
 WORKDIR /app/jams-react-client
