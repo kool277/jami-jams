@@ -73,7 +73,7 @@
     "please_enter_valid_cors_domain_url": "Ju lutemi, jepni një URL përkatësie CORS të vlefshme.",
     "global_parameters_cover_general_configuration_of_servers_engine": "Parametrat globalë mbulojnë formësimin e përgjithshëm të zemrës së shërbyesit.",
     "cors_domain_name": "Emër përkatësie CORS",
-    "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps": "Caktoni përkatësinë e klientit-shërbyesit për t’u lidhur me pultin e administrimit në JAMS dhe llogaritë Jami. Përdoret edhe për të përcaktuar cilët klientë do të duhej të shkarkonin LSHA (Lista Shfuqizimi Dëshmish) dhe të parashtrojnë kërkesa OCSP. Në rast se xhironi një instancë pas një ndërmjetësi (d.m.th. JAMS pas IIS), ju lutemi, sigurohuni që kjo fushë caktohet saktë, ndryshe pajisjet s’do të jenë në gjendje të shkarkojnë LSHA ose të vlerësojnë dëshmi.",
+    "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps": "Caktoni përkatësinë e klientit-shërbyesit për t’u lidhur me pultin e administrimit në JAMS dhe llogaritë Jami. Përdoret edhe për të përcaktuar cilët klientë do të duhej të shkarkonin LSHD (Lista Shfuqizimi Dëshmish) dhe të parashtrojnë kërkesa OCSP. Në rast se xhironi një instancë pas një ndërmjetësi (d.m.th. JAMS pas IIS), ju lutemi, sigurohuni që kjo fushë caktohet saktë, ndryshe pajisjet s’do të jenë në gjendje të shkarkojnë LSHA ose të vlerësojnë dëshmi.",
     "domain_name_of_web_client_server": "Emri i përkatësisë për shërbyesin e klientit tuaj web.",
     "domain": "Përkatësi",
     "certificate_revocation_list_lifetime": "Jetëgjatësi Liste Shfuqizimesh Dëshmish",
