@@ -59,7 +59,8 @@ import java.util.stream.Collectors;
 public class DeviceReceiptGenerator {
 
     private static void packToSign(
-            MessageBufferPacker messagePack, PublicKey publicKey, byte[] deviceId)
+            MessageBufferPacker messagePack, PublicKey publicKey, byte[] deviceId,
+            byte[] devicePubKeyEncoded)
             throws IOException {
         byte[] owner = publicKey.getEncoded();
         messagePack.packMapHeader(4);
@@ -73,10 +74,13 @@ public class DeviceReceiptGenerator {
         messagePack.packString("data");
         // Inner message building.
         MessageBufferPacker innerMessagePack = MessagePack.newDefaultBufferPacker();
-        innerMessagePack.packMapHeader(1);
+        innerMessagePack.packMapHeader(2);
         innerMessagePack.packString("dev");
         innerMessagePack.packBinaryHeader(deviceId.length);
         innerMessagePack.addPayload(deviceId);
+        innerMessagePack.packString("pk");
+        innerMessagePack.packBinaryHeader(devicePubKeyEncoded.length);
+        innerMessagePack.addPayload(devicePubKeyEncoded);
         // Append the inner to the messagePack
         messagePack.packBinaryHeader(innerMessagePack.toByteArray().length);
         messagePack.addPayload(innerMessagePack.toByteArray());
@@ -88,9 +92,9 @@ public class DeviceReceiptGenerator {
             MessageBufferPacker outerMessagePack = MessagePack.newDefaultBufferPacker();
             MessageBufferPacker messagePack = MessagePack.newDefaultBufferPacker();
             MessageDigest digest = MessageDigest.getInstance(MessageDigestAlgorithms.SHA_1);
-            byte[] deviceId = digest.digest(devicePubKey.getEncoded());
-            packToSign(messagePack, publicKey, deviceId);
-            byte[] owner = publicKey.getEncoded();
+            byte[] devicePubKeyEncoded = devicePubKey.getEncoded();
+            byte[] deviceId = digest.digest(devicePubKeyEncoded);
+            packToSign(messagePack, publicKey, deviceId, devicePubKeyEncoded);
 
             // Sign the message pack object using SHA-512 digest.
             Signature signer = Signature.getInstance("SHA512withRSA");
@@ -105,7 +109,7 @@ public class DeviceReceiptGenerator {
             outerMessagePack.packString("dat");
             outerMessagePack.packMapHeader(2);
             outerMessagePack.packString("body");
-            packToSign(outerMessagePack, publicKey, deviceId);
+            packToSign(outerMessagePack, publicKey, deviceId, devicePubKeyEncoded);
             outerMessagePack.packString("sig");
             outerMessagePack.packBinaryHeader(signature.length);
             outerMessagePack.addPayload(signature);
