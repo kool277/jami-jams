@@ -4,12 +4,20 @@
 
 - JDK 11+
 - maven
+- Node.js and npm
 
 ## Building from source
 
-Clone the contents of this repository and run
+Clone the contents of this repository and build the React frontend and Java
+backend:
 
 ```sh
+cd jams-react-client
+npm install
+npm run build
+cd ..
+mkdir -p jams-server/src/main/resources/webapp
+mv jams-react-client/build/* jams-server/src/main/resources/webapp
 mvn clean package
 ```
 
@@ -24,9 +32,15 @@ java -jar jams-launcher.jar
 If you want to start the server with an SSL certificate and on a port different
 from 8080, then run:
 
-`java -jar jams-launcher.jar 8443 server.pem server.key`
+```sh
+java -jar jams-launcher.jar 8443 server.pem server.key
+```
 
 Where the `pem` and `key` files are a pem encoded certificate and key.
+
+Once the server is running, open `https://localhost:8443` (or `http://localhost:8080`
+if running without SSL) in your browser. If this is a fresh install, the web UI
+will guide you through the initial setup wizard.
 
 ## How to generate a trusted server.pem and server.key pair
 
