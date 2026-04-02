@@ -59,7 +59,9 @@ import java.util.stream.Collectors;
 public class DeviceReceiptGenerator {
 
     private static void packToSign(
-            MessageBufferPacker messagePack, PublicKey publicKey, byte[] deviceId,
+            MessageBufferPacker messagePack,
+            PublicKey publicKey,
+            byte[] deviceId,
             byte[] devicePubKeyEncoded)
             throws IOException {
         byte[] owner = publicKey.getEncoded();
