@@ -71,18 +71,18 @@
         <dependency>
             <groupId>org.zeromq</groupId>
             <artifactId>jeromq</artifactId>
-            <version>0.5.2</version>
+            <version>${zmq.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.12</version>
+            <version>${httpcore.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.14</version>
+            <version>${httpclient.version}</version>
         </dependency>
     </dependencies>
 
@@ -100,9 +100,13 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <source>11</source>
-                            <target>11</target>
+                            <release>${java.version}</release>
                             <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                    <version>${lombok.version}</version>
+                                </path>
                                 <path>
                                     <groupId>net.jami</groupId>
                                     <artifactId>jams-common</artifactId>
@@ -118,7 +122,7 @@
                                 </annotationProcessor>
                             </annotationProcessors>
                             <compilerArgs>
-                                <arg>-AmoduleDir=${pom.basedir}</arg>
+                                <arg>-AmoduleDir=${project.basedir}</arg>
                                 <arg>-AparentDir=${project.parent.basedir}</arg>
                             </compilerArgs>
                         </configuration>
@@ -136,10 +140,10 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${pom.basedir}/target/classes</outputDirectory>
+                            <outputDirectory>${project.basedir}/target/classes</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${pom.basedir}/target/generated-sources/</directory>
+                                    <directory>${project.basedir}/target/generated-sources/</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -166,7 +170,6 @@
                                     <artifact>*:*</artifact>
                                     <excludes>
                                         <exclude>module-info.class</exclude>
-                                        <!-- <exclude>META-INF.versions.9.module-info</exclude> -->
                                         <exclude>META-INF/DEPENDENCIES</exclude>
                                         <exclude>META-INF/LICENSE</exclude>
                                         <exclude>META-INF/LICENSE.txt</exclude>

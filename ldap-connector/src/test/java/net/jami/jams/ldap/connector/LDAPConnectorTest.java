@@ -21,6 +21,7 @@ import net.jami.jams.common.authentication.AuthenticationSourceInfo;
 import net.jami.jams.common.authentication.AuthenticationSourceType;
 import net.jami.jams.common.dao.connectivity.SQLConnection;
 import net.jami.jams.common.objects.user.UserProfile;
+import net.jami.jams.ldap.connector.service.UserProfileService;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -29,6 +30,7 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.ldaptive.filter.FilterParser;
 import org.zapodot.junit.ldap.EmbeddedLdapRule;
 import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
 
@@ -106,5 +108,67 @@ public class LDAPConnectorTest {
         Assertions.assertFalse(res);
         res = ldapConnector.authenticate("fsidokhine", "password");
         Assertions.assertTrue(res);
+    }
+
+    @Test
+    public void buildRequestPerformsSubstringSearch() throws Exception {
+        Assertions.assertEquals(
+                FilterParser.parse("(|(givenName=*Felix*)(sn=*Felix*))"),
+                UserProfileService.buildRequest("Felix", "FULL_TEXT_NAME", false).getFilter());
+    }
+
+    @Test
+    public void buildRequestHonoursExactMatch() throws Exception {
+        Assertions.assertEquals(
+                FilterParser.parse("(&(uid=fsidokhine))"),
+                UserProfileService.buildRequest("fsidokhine", "LOGON_NAME", true).getFilter());
+    }
+
+    @Test
+    public void buildRequestMatchesEveryEntryOnWildcardOnlyQuery() throws Exception {
+        Assertions.assertEquals(
+                FilterParser.parse("(&(uid=*))"),
+                UserProfileService.buildRequest("*", "LOGON_NAME", false).getFilter());
+    }
+
+    @Test
+    public void buildRequestNeverTreatsWildcardsAsSyntaxOnExactMatch() throws Exception {
+        // An exact lookup of a literal "*" must not degrade into a match-all search.
+        Assertions.assertEquals(
+                FilterParser.parse("(&(uid=\\2A))"),
+                UserProfileService.buildRequest("*", "LOGON_NAME", true).getFilter());
+        Assertions.assertNotEquals(
+                FilterParser.parse("(&(uid=*))"),
+                UserProfileService.buildRequest("*", "LOGON_NAME", true).getFilter());
+
+        Assertions.assertEquals(
+                FilterParser.parse("(&(uid=\\2Asidokhine))"),
+                UserProfileService.buildRequest("*sidokhine", "LOGON_NAME", true).getFilter());
+    }
+
+    @Test
+    public void exactLookupResolvesOnlyTheLiteralUsername() throws Exception {
+        // Sanity check that escaping did not break a legitimate exact lookup.
+        UserProfile profile = ldapConnector.getUserProfile("fsidokhine");
+        Assert.assertNotNull(profile);
+        Assertions.assertEquals("fsidokhine", profile.getUsername());
+
+        // "*" is a literal here, and no user is named "*", so nothing may come back.
+        Assert.assertNull(ldapConnector.getUserProfile("*"));
+        Assert.assertNull(ldapConnector.getUserProfile("*sidokhine"));
+    }
+
+    @Test
+    public void buildRequestEscapesFilterMetacharacters() throws Exception {
+        // Unescaped, this payload closes the substring clause and appends an always-true
+        // component, turning the search into a dump of the whole directory.
+        String payload = "*)(uid=*";
+
+        Assertions.assertEquals(
+                FilterParser.parse("(|(givenName=*\\29\\28uid=*)(sn=*\\29\\28uid=*))"),
+                UserProfileService.buildRequest(payload, "FULL_TEXT_NAME", false).getFilter());
+        Assertions.assertNotEquals(
+                FilterParser.parse("(|(givenName=*)(uid=*)(sn=*)(uid=*))"),
+                UserProfileService.buildRequest(payload, "FULL_TEXT_NAME", false).getFilter());
     }
 }

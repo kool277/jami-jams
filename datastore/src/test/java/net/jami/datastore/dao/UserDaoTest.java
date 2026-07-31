@@ -23,7 +23,6 @@ import net.jami.jams.common.objects.user.AccessLevel;
 import net.jami.jams.common.objects.user.User;
 import net.jami.jams.common.utils.X509Utils;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,6 +32,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 class UserDaoTest {
     private static UserDao userDao;
@@ -73,7 +73,7 @@ class UserDaoTest {
         user.setUserType(AuthenticationSourceType.LOCAL);
         user.setRealm("test");
         user.setAccessLevel(AccessLevel.USER);
-        user.setSalt(Base64.encodeBase64String(salt));
+        user.setSalt(Base64.getEncoder().encodeToString(salt));
         user.setCertificate(X509Utils.getCertificateFromPEMString(generatedCertificate));
         user.setPrivateKey(X509Utils.getKeyFromPEMString(strPrivateKey));
         user.setJamiId("test");

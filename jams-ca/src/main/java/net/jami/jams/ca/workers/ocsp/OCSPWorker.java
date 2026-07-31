@@ -18,9 +18,9 @@ package net.jami.jams.ca.workers.ocsp;
 
 import static net.jami.jams.ca.JamsCA.*;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import net.jami.jams.ca.workers.X509Worker;
 import net.jami.jams.ca.workers.crl.CRLWorker;
 import net.jami.jams.common.cryptoengineapi.ocsp.CertificateStatus;
 import net.jami.jams.common.cryptoengineapi.ocsp.CertificateSummary;
@@ -51,7 +51,12 @@ import java.util.Collection;
 import java.util.Date;
 
 @Slf4j
-public class OCSPWorker extends X509Worker<String> {
+public class OCSPWorker {
+
+    // OCSP requests are answered synchronously on the caller's thread, so this is a plain
+    // request handler rather than a background worker.
+    @Getter private final PrivateKey signingKey;
+    @Getter private final X509Certificate certificate;
 
     private final CRLWorker crlWorker;
     private final RespID responderID;
@@ -62,7 +67,8 @@ public class OCSPWorker extends X509Worker<String> {
     // To process OCSP requests we need access to the CRL, hence we might as well just pass it here.
     public OCSPWorker(PrivateKey privateKey, X509Certificate certificate, CRLWorker crlWorker)
             throws Exception {
-        super(privateKey, certificate);
+        this.signingKey = privateKey;
+        this.certificate = certificate;
         this.crlWorker = crlWorker;
         DigestCalculatorProvider digestCalculatorProvider =
                 new JcaDigestCalculatorProviderBuilder().setProvider("BC").build();

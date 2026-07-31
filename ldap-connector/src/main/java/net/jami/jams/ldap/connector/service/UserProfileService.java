@@ -25,6 +25,7 @@ import net.jami.jams.server.core.workflows.RevokeUserFlow;
 
 import org.ldaptive.Connection;
 import org.ldaptive.ConnectionFactory;
+import org.ldaptive.FilterTemplate;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.SearchOperation;
 import org.ldaptive.SearchRequest;
@@ -106,24 +107,41 @@ public class UserProfileService {
 
     public static SearchRequest buildRequest(String queryString, String field, boolean exactMatch) {
 
-        if (!exactMatch) {
-            if (!queryString.startsWith("*")) queryString = "*".concat(queryString);
-            if (!queryString.endsWith("*")) queryString = queryString.concat("*");
-        }
-
         if (field.equals("LOGON_NAME")) {
             return SearchRequest.builder()
                     .dn(LDAPConnector.settings.getBaseDN())
-                    .filter("(&(uid=" + queryString + "))")
+                    .filter(buildFilter("(&(uid={0}))", queryString, exactMatch))
                     .build();
         }
         if (field.equals("FULL_TEXT_NAME")) {
             return SearchRequest.builder()
                     .dn(LDAPConnector.settings.getBaseDN())
-                    .filter("(|(givenName=" + queryString + ")(sn=" + queryString + ")")
+                    .filter(buildFilter("(|(givenName={0})(sn={0}))", queryString, exactMatch))
                     .build();
         }
         return null;
+    }
+
+    /**
+     * Builds a filter from a template in which every {0} placeholder stands for the searched value.
+     * The value is supplied as a template parameter so that ldaptive escapes it as per RFC 4515;
+     * only the wildcards added here are ever interpreted as filter syntax.
+     */
+    private static FilterTemplate buildFilter(
+            String template, String queryString, boolean exactMatch) {
+        // An exact search must match the query verbatim, wildcards included.
+        if (exactMatch) return new FilterTemplate(template, new Object[] {queryString});
+
+        // Substring search: drop the wildcards the caller may already have supplied so that they
+        // are not escaped along with the value, then re-add them as filter syntax.
+        String value = queryString;
+        if (value.startsWith("*")) value = value.substring(1);
+        if (value.endsWith("*") && !value.isEmpty()) value = value.substring(0, value.length() - 1);
+
+        // A query made of wildcards alone matches every entry carrying the attribute.
+        if (value.isEmpty()) return new FilterTemplate(template.replace("{0}", "*"));
+
+        return new FilterTemplate(template.replace("{0}", "*{0}*"), new Object[] {value});
     }
 
     public static UserProfile profileFromResponse(LdapEntry entry) {

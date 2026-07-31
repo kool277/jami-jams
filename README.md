@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- JDK 11+
+- JDK 26+
 - maven
 - Node.js and npm
 

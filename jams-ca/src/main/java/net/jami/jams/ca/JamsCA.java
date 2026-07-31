@@ -191,15 +191,19 @@ public class JamsCA implements CertificateAuthority, RevocationCallback {
 
     @Override
     public boolean shutdownThreads() {
-        // Unsafe but acceptable.
-        crlWorker.getStop().set(true);
-        crlWorker.interrupt();
-        Thread.State state = crlWorker.getState();
-        while (!state.equals(Thread.State.TERMINATED)) {
-            state = crlWorker.getState();
+        CRLWorker worker = crlWorker;
+        if (worker != null) {
+            worker.getStop().set(true);
+            worker.interrupt();
+            try {
+                worker.join();
+            } catch (InterruptedException _) {
+                Thread.currentThread().interrupt();
+                log.warn("Interrupted while waiting for the CRL worker to terminate.");
+                return false;
+            }
         }
         crlWorker = null;
-        ocspWorker.stop();
         return true;
     }
 }

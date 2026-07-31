@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2024 Savoir-faire Linux Inc.
+ * Copyright (C) 2020-2026 Savoir-faire Linux Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,27 +67,11 @@ node('jami-jamsbuildvm-01') {
             dir(topDir) {
                 sh '''git fetch origin ${GERRIT_REFSPEC} && git checkout FETCH_HEAD'''
 
-                parallel(
-                    "test-jdk-11": {
-                        sh '''
-                        docker build -f extras/CI/Dockerfile.test -t jams-test:11 --build-arg JAVA_VERSION=11 .
-                        docker run --rm jams-test:11 mvn verify
-                        '''
-                    },
-                    "test-jdk-17": {
-                        sh '''
-                        docker build -f extras/CI/Dockerfile.test -t jams-test:17 --build-arg JAVA_VERSION=17 .
-                        docker run --rm jams-test:17 mvn verify
-                        '''
-                    },
-                    "test-jdk-21": {
-                        sh '''
-                        docker build -f extras/CI/Dockerfile.test -t jams-test:21 --build-arg JAVA_VERSION=21 .
-                        docker run --rm jams-test:21 mvn verify
-                        '''
-                    },
-                    failFast: true // Aborts the parallel steps if one of them fails
-                )
+                // The project targets Java 26, so it is the only supported JDK.
+                sh '''
+                docker build -f extras/CI/Dockerfile.test -t jams-test:26 --build-arg JAVA_VERSION=26 .
+                docker run --rm jams-test:26 mvn verify
+                '''
             }
         }  else {
             error "FAILED: I don't know what to test"
