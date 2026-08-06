@@ -23,7 +23,7 @@ import {
   useCallback,
 } from "react";
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 import { Pagination } from "@mui/material";
@@ -43,7 +43,7 @@ import axios from "axios";
 import configApiCall from "api";
 import auth from "auth";
 import { api_path_get_user_directory_search } from "globalUrls";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle";
@@ -100,7 +100,7 @@ const useStyles = makeStyles(styles as any);
 const label = i18next.t("revoked", "Revoked") as string;
 export default function Users() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [noUsersFound, setNoUsersFound] = useState(false);
   const [noMatchFound, setNoMatchFound] = useState(false);
@@ -117,8 +117,8 @@ export default function Users() {
         api_path_get_user_directory_search,
         "GET",
         { queryString: "*", page: "1" },
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         setUsers(response.data.profiles);
@@ -132,12 +132,12 @@ export default function Users() {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/signin");
+          navigate("/signin");
         } else {
           console.error("Error getting users: " + error);
         }
       });
-  }, [history]);
+  }, [navigate]);
 
   const searchUsers = (value: string, page = 1) => {
     setSelectedPage(page);
@@ -146,8 +146,8 @@ export default function Users() {
         api_path_get_user_directory_search,
         "GET",
         { queryString: value ? value : "*", page: page },
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         setUsers(response.data.profiles);
@@ -166,7 +166,7 @@ export default function Users() {
         setUsers([]);
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/signin");
+          navigate("/signin");
         } else {
           console.error("Error getting users: " + error);
         }
@@ -174,7 +174,7 @@ export default function Users() {
   };
   const initSearchUsers = useCallback(
     debounce((value) => searchUsers(value), 500),
-    []
+    [],
   );
   const handleSearchUsers = (e: KeyboardEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -192,7 +192,7 @@ export default function Users() {
           {auth.isLocalDirectory() && auth.hasAdminScope() && (
             <Link to={"/createuser"} className={classes.link}>
               <Button variant="contained" color="primary">
-                <AddCircleOutlineIcon />{" "}
+                <AddCircleOutlinedIcon />{" "}
                 {i18next.t("create_user", "Create user") as string}
               </Button>
             </Link>
@@ -202,7 +202,7 @@ export default function Users() {
               <Checkbox
                 checked={hideRevokedUsers}
                 onChange={() => setHideRevokedUsers(!hideRevokedUsers)}
-                inputProps={{ "aria-label": "primary checkbox" }}
+                slotProps={{ input: { "aria-label": "primary checkbox" } }}
                 color="primary"
               />
             }
@@ -227,7 +227,7 @@ export default function Users() {
                   inputProps: {
                     "aria-label": i18next.t(
                       "search_users",
-                      "Search users"
+                      "Search users",
                     ) as string,
                   },
                   onKeyUp: handleSearchUsers,
@@ -304,9 +304,11 @@ export default function Users() {
                       </div>
                       <GridContainer
                         container
-                        direction="column"
-                        justifyContent="flex-end"
-                        alignItems="flex-start"
+                        sx={{
+                          flexDirection: "column",
+                          justifyContent: "flex-end",
+                          alignItems: "flex-start",
+                        }}
                       >
                         <GridItem style={{ minHeight: "50px" }}>
                           <h4 className={classes.cardTitle}>
@@ -352,7 +354,7 @@ export default function Users() {
               {
                 i18next.t(
                   "no_users_found_matching",
-                  "No users found matching search value!"
+                  "No users found matching search value!",
                 ) as string
               }
             </p>

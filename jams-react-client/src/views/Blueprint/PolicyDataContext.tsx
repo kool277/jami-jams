@@ -71,8 +71,8 @@ export const PolicyDataContextProvider: FC<Props> = ({
         api_path_blueprints + "?name=" + blueprintName,
         "GET",
         null,
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         return parsePolicyData(response.data.policyData);
@@ -92,7 +92,7 @@ export const PolicyDataContextProvider: FC<Props> = ({
       setPolicyData,
       field,
       value,
-      setSnackbar
+      setSnackbar,
     );
   };
 

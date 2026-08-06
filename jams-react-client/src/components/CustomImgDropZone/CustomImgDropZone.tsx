@@ -60,8 +60,8 @@ interface CustomImgDropZoneProps {
 
 const CustomImgDropZone: FC<CustomImgDropZoneProps> = ({
   onDrop,
-  accept,
-  maxFiles,
+  accept = { "image/*": [".png", ".jpeg", ".jpg", ".svg"] },
+  maxFiles = 1,
   label,
   file,
   handleDelete,
@@ -95,11 +95,6 @@ const CustomImgDropZone: FC<CustomImgDropZoneProps> = ({
       )}
     </Dropzone>
   );
-};
-
-CustomImgDropZone.defaultProps = {
-  accept: { "image/*": [".png", ".jpeg", ".jpg", ".svg"] },
-  maxFiles: 1,
 };
 
 export default CustomImgDropZone;

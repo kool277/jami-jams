@@ -100,8 +100,8 @@ export default function General(props: GeneralProps) {
         props.setErrorMessage(
           i18next.t(
             "admin_password_updated_successfully",
-            "Administrator password updated successfully."
-          )
+            "Administrator password updated successfully.",
+          ),
         );
         props.setError(true);
       })
@@ -112,8 +112,8 @@ export default function General(props: GeneralProps) {
             props.username +
             i18next.t(
               "password_failed",
-              " password failed with error: "
-            )) as string) + error
+              " password failed with error: ",
+            )) as string) + error,
         );
         props.setError(true);
       });
@@ -134,15 +134,15 @@ export default function General(props: GeneralProps) {
 
   const passwordSchema = Yup.object().shape({
     password: Yup.string().required(
-      i18next.t("password_is_required", "Password is required!") as string
+      i18next.t("password_is_required", "Password is required!") as string,
     ),
     confirmPassword: Yup.string()
       .oneOf(
         [Yup.ref("password")],
-        i18next.t("password_must_match", "Passwords must match") as string
+        i18next.t("password_must_match", "Passwords must match") as string,
       )
       .required(
-        i18next.t("password_is_required", "Password is required!") as string
+        i18next.t("password_is_required", "Password is required!") as string,
       ),
   });
 
@@ -155,7 +155,13 @@ export default function General(props: GeneralProps) {
 
   return (
     <GridContainer>
-      <Grid item xs={12} sm={12} md={6}>
+      <Grid
+        size={{
+          xs: 12,
+          sm: 12,
+          md: 6,
+        }}
+      >
         <Card profile>
           <CardHeader color="info" stats icon></CardHeader>
           <CardBody profile>
@@ -178,30 +184,47 @@ export default function General(props: GeneralProps) {
               }) => (
                 <form onSubmit={handleSubmit} className={classes.form}>
                   <Grid container spacing={2}>
-                    <Grid item lg={6} style={{ display: "flex" }}>
+                    <Grid
+                      style={{ display: "flex" }}
+                      size={{
+                        lg: 6,
+                      }}
+                    >
                       <Typography component="p" gutterBottom color="primary">
                         {
                           i18next.t(
                             "change_language",
-                            "Change language"
+                            "Change language",
                           ) as string
                         }
                       </Typography>
                     </Grid>
-                    <Grid item lg={6}>
+                    <Grid
+                      size={{
+                        lg: 6,
+                      }}
+                    >
                       <LanguagePicker navigationTarget={"/admin/settings"} />
                     </Grid>
-                    <Grid item lg={6}>
+                    <Grid
+                      size={{
+                        lg: 6,
+                      }}
+                    >
                       <Typography component="p" gutterBottom color="primary">
                         {
                           i18next.t(
                             "enter_the_following_information_below_to_change_your_admin_password",
-                            "Enter the following information to change your admin password."
+                            "Enter the following information to change your admin password.",
                           ) as string
                         }
                       </Typography>
                     </Grid>
-                    <Grid item lg={6}>
+                    <Grid
+                      size={{
+                        lg: 6,
+                      }}
+                    >
                       <FormikField
                         name="password"
                         label={i18next.t("password", "Password") as string}
@@ -237,11 +260,11 @@ export default function General(props: GeneralProps) {
                         name="confirmPassword"
                         label={i18next.t(
                           "Confirm password",
-                          "Confirm password"
+                          "Confirm password",
                         )}
                         placeholder={i18next.t(
                           "Confirm password",
-                          "Confirm password"
+                          "Confirm password",
                         )}
                         type={passwordVisible ? "text" : "password"}
                         startAdornment={
@@ -278,12 +301,12 @@ export default function General(props: GeneralProps) {
                           setFieldValue(
                             "password",
                             newGeneratedPassword,
-                            false
+                            false,
                           );
                           setFieldValue(
                             "confirmPassword",
                             newGeneratedPassword,
-                            false
+                            false,
                           );
                           setCopied(false);
                           setGenerated(true);
@@ -307,7 +330,7 @@ export default function General(props: GeneralProps) {
                           {
                             i18next.t(
                               "copy_to_clipboard",
-                              "Copy to clipboard"
+                              "Copy to clipboard",
                             ) as string
                           }
                         </Button>
@@ -323,8 +346,16 @@ export default function General(props: GeneralProps) {
                         </span>
                       ) : null}
                     </Grid>
-                    <Grid item lg={6}></Grid>
-                    <Grid item lg={6}>
+                    <Grid
+                      size={{
+                        lg: 6,
+                      }}
+                    ></Grid>
+                    <Grid
+                      size={{
+                        lg: 6,
+                      }}
+                    >
                       <Button
                         type="submit"
                         variant="contained"
@@ -335,12 +366,16 @@ export default function General(props: GeneralProps) {
                         {
                           i18next.t(
                             "change_admin_password",
-                            "Change administrator password"
+                            "Change administrator password",
                           ) as string
                         }
                       </Button>
                     </Grid>
-                    <Grid item lg={6}>
+                    <Grid
+                      size={{
+                        lg: 6,
+                      }}
+                    >
                       Version {pjson.version.slice(0, 3)}
                     </Grid>
                   </Grid>

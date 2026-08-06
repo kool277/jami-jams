@@ -16,7 +16,7 @@
  */
 
 import { useContext, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import i18next from "i18next";
 
@@ -36,7 +36,7 @@ import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 
 import { BlueprintSnackbar } from "components/Snackbar/BlueprintSnackbar";
@@ -123,10 +123,10 @@ interface EditBlueprintPermissionsProps {
 }
 
 export default function EditBlueprintPermissions(
-  props: EditBlueprintPermissionsProps
+  props: EditBlueprintPermissionsProps,
 ) {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { policyData, updatePolicyData, snackbar, setSnackbar } =
     useContext(PolicyDataContext);
@@ -150,13 +150,13 @@ export default function EditBlueprintPermissions(
         api_path_get_user_directory_search,
         "GET",
         { queryString: value ? value : "*", page: "1" },
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         const profilesResults: UserProfile[] = response.data.profiles;
         const usernames: string[] = users.map(
-          (user: UserProfile) => user.username
+          (user: UserProfile) => user.username,
         );
 
         const profiles = profilesResults.filter((profile) => {
@@ -168,7 +168,7 @@ export default function EditBlueprintPermissions(
         setUsers([]);
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/");
+          navigate("/");
         } else {
           console.error("Error during API request on searchUsers: " + error);
         }
@@ -184,7 +184,7 @@ export default function EditBlueprintPermissions(
 
   const removeModeratorFromBlueprint = (user: UserProfile) => {
     const newBlueprintModerators = blueprintModerators?.filter(
-      (moderator) => moderator.id !== user.id
+      (moderator) => moderator.id !== user.id,
     );
     updatePolicyData("blueprintModerators", newBlueprintModerators);
   };
@@ -202,7 +202,7 @@ export default function EditBlueprintPermissions(
         direction="right"
         placeholder={i18next.t(
           "add_moderator_to_blueprint",
-          "Add moderator to blueprint ..."
+          "Add moderator to blueprint ...",
         )}
         searchTargets={searchUsers}
         targets={users}
@@ -225,14 +225,26 @@ export default function EditBlueprintPermissions(
             <CardBody profile>
               <div className={classes.root}>
                 <Grid container spacing={5}>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 12,
+                    }}
+                  >
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={12} md={12}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          sm: 12,
+                          md: 12,
+                        }}
+                      >
                         <FormLabel component="legend">
                           {
                             i18next.t(
                               "call_parameters",
-                              "Call parameters"
+                              "Call parameters",
                             ) as string
                           }
                         </FormLabel>
@@ -245,7 +257,7 @@ export default function EditBlueprintPermissions(
                                 onChange={(e) => {
                                   updatePolicyData(
                                     "videoEnabled",
-                                    e.target.checked
+                                    e.target.checked,
                                   );
                                 }}
                                 name="videoEnabled"
@@ -254,14 +266,14 @@ export default function EditBlueprintPermissions(
                             label={
                               i18next.t(
                                 "allow_video_calls",
-                                "Allow video calls"
+                                "Allow video calls",
                               ) as string
                             }
                           />
                           <CustomPopupState
                             message={i18next.t(
                               "allow_incoming_calls_from_unknown_allow_video_calls_info",
-                              "If this option is disabled, only audio calls are allowed."
+                              "If this option is disabled, only audio calls are allowed.",
                             )}
                           />
                         </FormGroup>
@@ -274,7 +286,7 @@ export default function EditBlueprintPermissions(
                                 onChange={(e) => {
                                   updatePolicyData(
                                     "publicInCalls",
-                                    e.target.checked
+                                    e.target.checked,
                                   );
                                 }}
                                 name="publicInCalls"
@@ -283,14 +295,14 @@ export default function EditBlueprintPermissions(
                             label={
                               i18next.t(
                                 "allow_incoming_calls_from_unknown_contacts",
-                                "Allow incoming calls from unknown contacts"
+                                "Allow incoming calls from unknown contacts",
                               ) as string
                             }
                           />
                           <CustomPopupState
                             message={i18next.t(
                               "allow_incoming_calls_from_unknown_contacts_info",
-                              "If this option is disabled, only contacts from your list can contact you."
+                              "If this option is disabled, only contacts from your list can contact you.",
                             )}
                           />
                         </FormGroup>
@@ -303,7 +315,7 @@ export default function EditBlueprintPermissions(
                                 onChange={(e) => {
                                   updatePolicyData(
                                     "autoAnswer",
-                                    e.target.checked
+                                    e.target.checked,
                                   );
                                 }}
                                 name="autoAnswer"
@@ -312,19 +324,25 @@ export default function EditBlueprintPermissions(
                             label={
                               i18next.t(
                                 "auto_answer_calss",
-                                "Auto answer calls"
+                                "Auto answer calls",
                               ) as string
                             }
                           />
                           <CustomPopupState
                             message={i18next.t(
                               "auto_answer_calls_info",
-                              "If this option is enabled, incoming calls are automatically answered. This option can be useful to monitor your house or a particular room when you are away from home for example."
+                              "If this option is enabled, incoming calls are automatically answered. This option can be useful to monitor your house or a particular room when you are away from home for example.",
                             )}
                           />
                         </FormGroup>
                       </Grid>
-                      <Grid item xs={12} sm={12} md={12}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          sm: 12,
+                          md: 12,
+                        }}
+                      >
                         <FormLabel component="legend">
                           {i18next.t("local_lan", "Local LAN") as string}
                         </FormLabel>
@@ -337,7 +355,7 @@ export default function EditBlueprintPermissions(
                                 onChange={(e) => {
                                   updatePolicyData(
                                     "peerDiscovery",
-                                    e.target.checked
+                                    e.target.checked,
                                   );
                                 }}
                                 name="peerDiscovery"
@@ -346,24 +364,30 @@ export default function EditBlueprintPermissions(
                             label={
                               i18next.t(
                                 "allow_use_of_jami_in_local_lan",
-                                "Allow discovery of other peers on a local network"
+                                "Allow discovery of other peers on a local network",
                               ) as string
                             }
                           />
                           <CustomPopupState
                             message={i18next.t(
                               "local_lan_info",
-                              "If this option is enabled, you can communicate with connected contacts on you local lan, even if your lan is disconnected from the Internet."
+                              "If this option is enabled, you can communicate with connected contacts on you local lan, even if your lan is disconnected from the Internet.",
                             )}
                           />
                         </FormGroup>
                       </Grid>
-                      <Grid item xs={12} sm={12} md={12}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          sm: 12,
+                          md: 12,
+                        }}
+                      >
                         <FormLabel component="legend">
                           {
                             i18next.t(
                               "contact_management",
-                              "Contact management"
+                              "Contact management",
                             ) as string
                           }
                         </FormLabel>
@@ -376,7 +400,7 @@ export default function EditBlueprintPermissions(
                                 onChange={(e) => {
                                   updatePolicyData(
                                     "allowLookup",
-                                    e.target.checked
+                                    e.target.checked,
                                   );
                                 }}
                                 name="allowLookup"
@@ -385,19 +409,25 @@ export default function EditBlueprintPermissions(
                             label={
                               i18next.t(
                                 "allow_jami_user_to_search_for_other_contacts",
-                                "Allow user to add new contacts"
+                                "Allow user to add new contacts",
                               ) as string
                             }
                           />
                           <CustomPopupState
                             message={i18next.t(
                               "lookup_info",
-                              "If this option is disabled, user is unable to search or add new contacts"
+                              "If this option is disabled, user is unable to search or add new contacts",
                             )}
                           />
                         </FormGroup>
                       </Grid>
-                      <Grid item xs={12} sm={12} md={12}></Grid>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          sm: 12,
+                          md: 12,
+                        }}
+                      ></Grid>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -418,20 +448,20 @@ export default function EditBlueprintPermissions(
                     updatePolicyData("rendezVous", e.target.checked);
                   }}
                   name="rendezVous"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
+                  slotProps={{ input: { "aria-label": "secondary checkbox" } }}
                 />
               }
               label={
                 i18next.t(
                   "convert_your_account_into_a_rendezvous_point",
-                  "Set the account as a Rendezvous point"
+                  "Set the account as a Rendezvous point",
                 ) as string
               }
             />
             <CustomPopupState
               message={i18next.t(
                 "rendezvous_info",
-                "If this option is enabled, incoming calls are automatically added to a conference room."
+                "If this option is enabled, incoming calls are automatically added to a conference room.",
               )}
             />
             <Button
@@ -441,14 +471,14 @@ export default function EditBlueprintPermissions(
                 setOpenDrawer(true);
               }}
             >
-              <AddCircleOutlineIcon />{" "}
+              <AddCircleOutlinedIcon />{" "}
               {i18next.t("add_moderator_to", "Add moderator to") as string}{" "}
               {props.blueprintName}
             </Button>
             <CustomPopupState
               message={i18next.t(
                 "rendezvous_moderators_info",
-                "Moderators can manage the Rendezvous point."
+                "Moderators can manage the Rendezvous point.",
               )}
             />
           </FormGroup>
@@ -504,7 +534,7 @@ export default function EditBlueprintPermissions(
                       {
                         i18next.t(
                           "remove_moderator",
-                          "Remove moderator"
+                          "Remove moderator",
                         ) as string
                       }
                     </Button>

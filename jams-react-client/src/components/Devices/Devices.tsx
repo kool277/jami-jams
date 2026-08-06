@@ -16,7 +16,7 @@
  */
 
 import React, { FC, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import classnames from "classnames";
 // @mui/material components
@@ -63,7 +63,7 @@ export interface Device {
 
 const Devices: FC<DevicesProps> = ({ username }) => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<Device | undefined>({
@@ -93,7 +93,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             auth.authenticated = false;
-            history.push("/signin");
+            navigate("/signin");
           } else {
             console.log("Error getting devices: " + error);
           }
@@ -111,7 +111,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
 
   const handleClickEdit = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    device: Device
+    device: Device,
   ) => {
     e.preventDefault();
     setOpenEdit(true);
@@ -120,7 +120,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
 
   const handleClickRevoke = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    device: Device
+    device: Device,
   ) => {
     e.preventDefault();
     setOpenRevoke(true);
@@ -149,7 +149,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
           displayName,
         "PUT",
         null,
-        null
+        null,
       );
     } else {
       requestConfig = configApiCall(
@@ -160,7 +160,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
           displayName,
         "PUT",
         null,
-        null
+        null,
       );
     }
 
@@ -195,7 +195,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
         api_path_delete_auth_device_revoke + "/" + selectedDevice?.deviceId,
         "DELETE",
         null,
-        null
+        null,
       );
     }
 
@@ -275,7 +275,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
                           title={
                             i18next.t(
                               "revoke_device",
-                              "Revoke Device"
+                              "Revoke Device",
                             ) as string
                           }
                           placement="top"
@@ -299,7 +299,7 @@ const Devices: FC<DevicesProps> = ({ username }) => {
                       </TableCell>
                     )}
                   </TableRow>
-                )
+                ),
             )}
           </TableBody>
         )}

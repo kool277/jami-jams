@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 // core components
@@ -29,7 +29,7 @@ import CardFooter from "components/Card/CardFooter";
 import CustomInput from "components/CustomInput/CustomInput";
 
 import IconButton from "@mui/material/IconButton";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import Search from "@mui/icons-material/Search";
 
 import axios from "axios";
@@ -41,7 +41,7 @@ import {
   api_path_get_group_members,
 } from "globalUrls";
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -55,7 +55,7 @@ import CreateGroupDialog from "./CreateGroupDialog";
 import {
   AllInboxOutlined,
   InfoOutlined,
-  PersonOutline,
+  PersonOutlined,
 } from "@mui/icons-material";
 
 const styles = {
@@ -110,7 +110,7 @@ const useStyles = makeStyles(styles as any);
 
 export default function Groups() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [zeroGroup, setZeroGroup] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -134,8 +134,8 @@ export default function Groups() {
         api_path_delete_group + removedGroup.id,
         "DELETE",
         null,
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         console.log(removedGroup.name + "deleted successfully.");
@@ -146,12 +146,12 @@ export default function Groups() {
           "An error occurred while attempting to delete " +
             removedGroup.name +
             ": " +
-            error
+            error,
         );
         setOpenRemoveDialog(false);
       });
 
-    history.push("/groups");
+    navigate("/groups");
   };
 
   useEffect(() => {
@@ -165,8 +165,8 @@ export default function Groups() {
               api_path_get_group_members + group.id,
               "GET",
               null,
-              null
-            )
+              null,
+            ),
           )
             .then((response) => {
               group["groupMembersLength"] = response.data.length;
@@ -174,10 +174,10 @@ export default function Groups() {
             .catch((error) => {
               if (error.response && error.response.status === 401) {
                 auth.authenticated = false;
-                history.push("/");
+                navigate("/");
               } else {
                 console.error(
-                  "An error occurrd while fetching group members: " + error
+                  "An error occurrd while fetching group members: " + error,
                 );
               }
             });
@@ -187,7 +187,7 @@ export default function Groups() {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/signin");
+          navigate("/signin");
         } else if (error.response && error.response.status === 404) {
           setZeroGroup(true);
         } else {
@@ -195,7 +195,7 @@ export default function Groups() {
         }
       });
     return;
-  }, [openCreate, openRemoveDialog, history]);
+  }, [openCreate, openRemoveDialog, navigate]);
 
   if (!auth.hasAdminScope()) {
     return (
@@ -204,7 +204,7 @@ export default function Groups() {
           {
             i18next.t(
               "you_are_not_allowed_to_access_this_section",
-              "You are not allowed to access this section. Please contact your system adminstrator."
+              "You are not allowed to access this section. Please contact your system adminstrator.",
             ) as string
           }
         </h4>
@@ -232,7 +232,7 @@ export default function Groups() {
               {
                 i18next.t(
                   "do_you_want_to_delete_the_group",
-                  "Do you want to delete the group?"
+                  "Do you want to delete the group?",
                 ) as string
               }{" "}
               <strong>&nbsp;{removedGroup.name}</strong> ?
@@ -256,7 +256,7 @@ export default function Groups() {
                 href="#contained-buttons"
                 onClick={() => setOpenCreate(true)}
               >
-                <AddCircleOutlineIcon />{" "}
+                <AddCircleOutlinedIcon />{" "}
                 {i18next.t("create_group", "Create group") as string}
               </Button>
             }
@@ -271,7 +271,7 @@ export default function Groups() {
                     inputProps: {
                       "aria-label": i18next.t(
                         "search_groups",
-                        "Search groups"
+                        "Search groups",
                       ) as string,
                     },
                     onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) =>
@@ -308,7 +308,7 @@ export default function Groups() {
                         <h3 className={classes.cardTitle}>{group.name}</h3>
                         <ul style={{ fontSize: "12px" }}>
                           <li>
-                            <PersonOutline style={{ marginRight: "10px" }} />
+                            <PersonOutlined style={{ marginRight: "10px" }} />
                             <strong style={{ marginRight: "5px" }}>
                               {group.groupMembersLength}
                             </strong>
@@ -339,7 +339,7 @@ export default function Groups() {
                         }}
                         size="large"
                       >
-                        <DeleteOutlineIcon />
+                        <DeleteOutlinedIcon />
                       </IconButton>
                     </CardFooter>
                   </Card>

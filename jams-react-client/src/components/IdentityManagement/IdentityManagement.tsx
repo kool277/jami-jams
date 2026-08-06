@@ -16,7 +16,7 @@
  */
 
 import React, { ChangeEvent, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Formik, FormikErrors, FormikTouched } from "formik";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -102,50 +102,56 @@ export default function IdentityManagement(props: IdentityManagementProps) {
 
   const validationSchemaLDAPform = Yup.object().shape({
     servername: Yup.string().required(
-      i18next.t("servername_is_required", "Server name is required.") as string
+      i18next.t("servername_is_required", "Server name is required.") as string,
     ),
     ldapadminusername: Yup.string().required(
-      i18next.t("username_is_required", "Username is required!") as string
+      i18next.t("username_is_required", "Username is required!") as string,
     ),
     ldappassword: Yup.string().required(
-      i18next.t("password_is_required", "Password is required!") as string
+      i18next.t("password_is_required", "Password is required!") as string,
     ),
     basedn: Yup.string().required(
-      i18next.t("domain_name_is_required", "Domain name is required.") as string
+      i18next.t(
+        "domain_name_is_required",
+        "Domain name is required.",
+      ) as string,
     ),
   });
 
   const validationSchemaADform = Yup.object().shape({
     port: Yup.number()
       .typeError(
-        i18next.t("port_must_be_a_number", "Port must be a number.") as string
+        i18next.t("port_must_be_a_number", "Port must be a number.") as string,
       )
       .positive(
-        i18next.t("port_must_be_positive", "Port must be positive.") as string
+        i18next.t("port_must_be_positive", "Port must be positive.") as string,
       )
       .integer(
         i18next.t(
           "port_must_be_an_integer",
-          "Port must be an integer."
-        ) as string
+          "Port must be an integer.",
+        ) as string,
       )
       .required(
         i18next.t(
           "port_number_is_required",
-          "Port number is required."
-        ) as string
+          "Port number is required.",
+        ) as string,
       ),
     host: Yup.string().required(
-      i18next.t("host_is_required", "Host is required.") as string
+      i18next.t("host_is_required", "Host is required.") as string,
     ),
     adadminusername: Yup.string().required(
-      i18next.t("username_is_required", "Username is required!") as string
+      i18next.t("username_is_required", "Username is required!") as string,
     ),
     domainname: Yup.string().required(
-      i18next.t("domain_name_is_required", "Domain name is required.") as string
+      i18next.t(
+        "domain_name_is_required",
+        "Domain name is required.",
+      ) as string,
     ),
     adpassword: Yup.string().required(
-      i18next.t("password_is_required", "Password is required!") as string
+      i18next.t("password_is_required", "Password is required!") as string,
     ),
   });
 
@@ -164,7 +170,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
   const directoryTypesItems = buildSelectMenuItems(directoryTypes);
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [directory, setDirectory] = useState(directoryTypes[0]);
 
   /**
@@ -357,7 +363,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
 
   function callbackIdentityManagement() {
     auth.uri = "/api/install/settings";
-    history.push("/");
+    navigate("/");
   }
 
   function handleSubmit(values: LDAPFormValues | ADFormValues) {
@@ -377,8 +383,8 @@ export default function IdentityManagement(props: IdentityManagementProps) {
         props.setErrorMessage(
           i18next.t(
             "information_appears_incorrect_connection_directory_failed",
-            "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again."
-          )
+            "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again.",
+          ),
         );
         props.setError(true);
       });
@@ -396,8 +402,8 @@ export default function IdentityManagement(props: IdentityManagementProps) {
         props.setErrorMessage(
           i18next.t(
             "information_appears_incorrect_connection_directory_failed",
-            "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again."
-          )
+            "The information provided appears to be incorrect, the connection to the directory has failed. Please check the information and credentials provided and try again.",
+          ),
         );
         props.setError(true);
       });
@@ -406,7 +412,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
   const handleChangeDirectoryType = (event: SelectChangeEvent<number>) => {
     const valueAsNumber = Number(event.target.value);
     const selectedDirectoryType = directoryTypes.find(
-      (directoryType) => directoryType.value === valueAsNumber
+      (directoryType) => directoryType.value === valueAsNumber,
     );
     if (selectedDirectoryType) {
       setDirectory(selectedDirectoryType);
@@ -418,7 +424,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
     touched: FormikTouched<LDAPFormValues | ADFormValues>,
     errors: FormikErrors<LDAPFormValues | ADFormValues>,
     handleChange: (e: React.ChangeEvent<any>) => void,
-    handleBlur: (e: React.FocusEvent<any>) => void
+    handleBlur: (e: React.FocusEvent<any>) => void,
   ) {
     if (directory.value === 1) {
       values = values as LDAPFormValues;
@@ -463,12 +469,12 @@ export default function IdentityManagement(props: IdentityManagementProps) {
           {i18next.t("identity_management", "Identity Management") as string}
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Typography variant="body1" gutterBottom>
               {
                 i18next.t(
                   "select_type_of_user_directory",
-                  "Select the type of user directory to be integrated with JAMS"
+                  "Select the type of user directory to be integrated with JAMS",
                 ) as string
               }
             </Typography>
@@ -497,7 +503,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
           {
             i18next.t(
               "set_identity_parameters",
-              "Set identity parameters"
+              "Set identity parameters",
             ) as string
           }
         </Button>
@@ -527,17 +533,17 @@ export default function IdentityManagement(props: IdentityManagementProps) {
                 {
                   i18next.t(
                     "identity_management",
-                    "Identity Management"
+                    "Identity Management",
                   ) as string
                 }
               </Typography>
               <Grid container spacing={3}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Typography variant="body1" gutterBottom>
                     {
                       i18next.t(
                         "select_type_of_user_directory",
-                        "Select the type of user directory to be integrated with JAMS"
+                        "Select the type of user directory to be integrated with JAMS",
                       ) as string
                     }
                   </Typography>
@@ -563,7 +569,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
                 {
                   i18next.t(
                     "set_identity_parameters",
-                    "Set identity parameters"
+                    "Set identity parameters",
                   ) as string
                 }
               </Button>
@@ -596,17 +602,17 @@ export default function IdentityManagement(props: IdentityManagementProps) {
                 {
                   i18next.t(
                     "identity_management",
-                    "Identity Management"
+                    "Identity Management",
                   ) as string
                 }
               </Typography>
               <Grid container spacing={3}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                   <Typography variant="body1" gutterBottom>
                     {
                       i18next.t(
                         "select_type_of_user_directory",
-                        "Select the type of user directory to be integrated with JAMS"
+                        "Select the type of user directory to be integrated with JAMS",
                       ) as string
                     }
                   </Typography>
@@ -632,7 +638,7 @@ export default function IdentityManagement(props: IdentityManagementProps) {
                 {
                   i18next.t(
                     "set_identity_parameters",
-                    "Set identity parameters"
+                    "Set identity parameters",
                   ) as string
                 }
               </Button>

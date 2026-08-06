@@ -24,7 +24,7 @@ import {
   Drawer,
   List,
   Divider,
-  ListItem,
+  ListItemButton,
   ListItemText,
   Avatar,
   Theme,
@@ -87,11 +87,10 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
           targets
             .filter(
               (target) =>
-                !existingTargets.some((t) => target.username === t.username)
+                !existingTargets.some((t) => target.username === t.username),
             )
             .map((target) => (
-              <ListItem
-                button
+              <ListItemButton
                 key={target.username}
                 onClick={() => {
                   addElementToTarget(target);
@@ -112,20 +111,19 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
                     target.username === ""
                       ? target.id
                       : target.firstName === "" || target.lastName === ""
-                      ? target.username
-                      : target.firstName + " " + target.lastName
+                        ? target.username
+                        : target.firstName + " " + target.lastName
                   }
                 />
-              </ListItem>
+              </ListItemButton>
             ))
         : targets &&
           targets
             .filter(
-              (target) => !existingTargets.some((t) => target.name === t.name)
+              (target) => !existingTargets.some((t) => target.name === t.name),
             )
             .map((target) => (
-              <ListItem
-                button
+              <ListItemButton
                 key={target.name}
                 onClick={() => {
                   addElementToTarget(target);
@@ -133,7 +131,7 @@ const TemporaryDrawer: FC<TemporaryDrawerProps> = ({
                 }}
               >
                 <ListItemText primary={target.name} />
-              </ListItem>
+              </ListItemButton>
             ))}
     </List>
   );

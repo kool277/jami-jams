@@ -16,7 +16,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classnames from "classnames";
 
 // @mui/material components
@@ -44,9 +44,9 @@ import InputLabel from "@mui/material/InputLabel";
 
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 import EditIcon from "@mui/icons-material/Edit";
-import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 
 import IconButton from "@mui/material/IconButton";
 import SaveIcon from "@mui/icons-material/Save";
@@ -144,7 +144,7 @@ interface EditGroupProps {
 
 export default function EditGroup(props: EditGroupProps) {
   const classes: ClassNameMap<any> = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [newName, setNewName] = useState("");
@@ -161,7 +161,7 @@ export default function EditGroup(props: EditGroupProps) {
   const getUserInfo = (username: string) =>
     new Promise<UserProfile>((resolve, reject) => {
       axios(
-        configApiCall(api_path_get_user_profile + username, "GET", null, null)
+        configApiCall(api_path_get_user_profile + username, "GET", null, null),
       )
         .then((response) => {
           resolve(response.data);
@@ -187,7 +187,7 @@ export default function EditGroup(props: EditGroupProps) {
           .catch((error) => {
             if (error.response && error.response.status === 401) {
               auth.authenticated = false;
-              history.push("/signin");
+              navigate("/signin");
             } else if (error.response && error.response.status === 500) {
               setBlueprints([]);
             } else {
@@ -200,8 +200,8 @@ export default function EditGroup(props: EditGroupProps) {
             api_path_get_group_members + props.groupid,
             "GET",
             null,
-            null
-          )
+            null,
+          ),
         )
           .then((response) => {
             const members = response.data;
@@ -222,10 +222,10 @@ export default function EditGroup(props: EditGroupProps) {
               setGroupMembers([]);
             } else if (error.response && error.response.status === 401) {
               auth.authenticated = false;
-              history.push("/signin");
+              navigate("/signin");
             } else {
               console.error(
-                "Error fetching group members of: " + props.name + " " + error
+                "Error fetching group members of: " + props.name + " " + error,
               );
             }
           });
@@ -235,13 +235,13 @@ export default function EditGroup(props: EditGroupProps) {
       })
       .catch((error) => {
         console.log(
-          "Error fetching group members of: " + props.name + " " + error
+          "Error fetching group members of: " + props.name + " " + error,
         );
       });
   };
 
   const blueprintsOptionsItems = tool.buildSelectMenuItems(
-    getBlueprintsOptions(blueprints)
+    getBlueprintsOptions(blueprints),
   );
 
   const updateGroup = (blueprintValue?: string) => {
@@ -255,8 +255,8 @@ export default function EditGroup(props: EditGroupProps) {
         api_path_put_update_group + props.groupid,
         "PUT",
         data,
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         setName(newName);
@@ -272,8 +272,8 @@ export default function EditGroup(props: EditGroupProps) {
         api_path_get_user_directory_search,
         "GET",
         { queryString: value ? value : "*", page: "1" },
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         const profiles: UserProfile[] = [];
@@ -291,7 +291,7 @@ export default function EditGroup(props: EditGroupProps) {
         setUsers([]);
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/signin");
+          navigate("/signin");
         } else {
           console.error("Error fetching users: " + error);
         }
@@ -307,8 +307,8 @@ export default function EditGroup(props: EditGroupProps) {
         api_path_post_group_member + props.groupid,
         "POST",
         data,
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         const newGroupMembers = groupMembers;
@@ -335,8 +335,8 @@ export default function EditGroup(props: EditGroupProps) {
         api_path_delete_group_member + props.groupid,
         "DELETE",
         data,
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         const newGroupMembers = groupMembers;
@@ -362,9 +362,9 @@ export default function EditGroup(props: EditGroupProps) {
     debounce(
       (searchGroupNameValue) =>
         handleCheckGroupNameExists(searchGroupNameValue),
-      500
+      500,
     ),
-    []
+    [],
   );
 
   const handleCheckGroupNameExists = (searchGroupNameValue: string) => {
@@ -373,8 +373,8 @@ export default function EditGroup(props: EditGroupProps) {
         api_path_get_list_group + "?groupName=" + searchGroupNameValue,
         "GET",
         null,
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         setGroupNameExits(false);
@@ -426,7 +426,13 @@ export default function EditGroup(props: EditGroupProps) {
             <CardBody profile>
               <div className={classes.root}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 12,
+                    }}
+                  >
                     <FormControl
                       className={classes.margin}
                       size="medium"
@@ -437,7 +443,7 @@ export default function EditGroup(props: EditGroupProps) {
                         placeholder={name}
                         startAdornment={
                           <InputAdornment position="start">
-                            <PeopleOutlineIcon />
+                            <PeopleOutlinedIcon />
                           </InputAdornment>
                         }
                         endAdornment={
@@ -461,7 +467,13 @@ export default function EditGroup(props: EditGroupProps) {
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 12,
+                    }}
+                  >
                     <InputLabel
                       className={classes.inputBottomMargin}
                       htmlFor="blueprint"
@@ -469,7 +481,7 @@ export default function EditGroup(props: EditGroupProps) {
                       {
                         i18next.t(
                           "select_blueprint",
-                          "Select a blueprint"
+                          "Select a blueprint",
                         ) as string
                       }
                     </InputLabel>
@@ -498,7 +510,7 @@ export default function EditGroup(props: EditGroupProps) {
               setOpenDrawer(true);
             }}
           >
-            <AddCircleOutlineIcon />{" "}
+            <AddCircleOutlinedIcon />{" "}
             {i18next.t("add_user_to", "Add user to") as string} {name}
           </Button>
           <Table className={classes.table}>

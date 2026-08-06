@@ -15,13 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useParams } from "react-router-dom";
+
 import ListLayout from "layouts/ListLayout";
 import EditGroup from "views/Groups/EditGroup";
 
-export default function GroupRoute(props: any) {
-  return (
-    <ListLayout
-      component={<EditGroup groupid={props.match.params.groupid} />}
-    />
-  );
+export default function GroupRoute() {
+  const { groupid = "" } = useParams();
+  return <ListLayout component={<EditGroup groupid={groupid} />} />;
 }

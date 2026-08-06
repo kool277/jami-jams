@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 // core components
@@ -30,14 +30,14 @@ import CardBody from "components/Card/CardBody";
 import CardFooter from "components/Card/CardFooter";
 
 import Search from "@mui/icons-material/Search";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 
 import axios from "axios";
 import configApiCall from "api";
 import auth from "auth";
 import { api_path_blueprints } from "globalUrls";
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 
 import LinearProgress from "@mui/material/LinearProgress";
 
@@ -54,7 +54,7 @@ import CreateBlueprintDialog from "./CreateBlueprintDialog";
 import {
   GroupOutlined,
   InfoOutlined,
-  PersonOutline,
+  PersonOutlined,
 } from "@mui/icons-material";
 
 export interface Blueprint {
@@ -105,7 +105,7 @@ const useStyles = makeStyles(styles as any);
 
 export default function Blueprints() {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
   const [zeroBlueprint, setZeroBlueprint] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -127,13 +127,13 @@ export default function Blueprints() {
         setBlueprints([]);
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/");
+          navigate("/");
         } else {
           console.log("Error getting blueprints: " + error);
         }
       });
     return;
-  }, [history, open, openRemoveDialog]);
+  }, [navigate, open, openRemoveDialog]);
 
   const handleRemoveBlueprint = (blueprintRemovedName: string) => {
     setRemovedBlueprint(blueprintRemovedName);
@@ -146,8 +146,8 @@ export default function Blueprints() {
         api_path_blueprints + "?name=" + removedBlueprint,
         "DELETE",
         { queryString: removedBlueprint },
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         console.log(removedBlueprint + "created successfully.");
@@ -158,11 +158,11 @@ export default function Blueprints() {
           "An error occurred while attempting to create " +
             removedBlueprint +
             ": " +
-            error
+            error,
         );
         setOpenRemoveDialog(false);
       });
-    history.push("/blueprints");
+    navigate("/blueprints");
   };
 
   return (
@@ -182,7 +182,7 @@ export default function Blueprints() {
             {
               i18next.t(
                 "do_you_want_to_delete_the_blueprint",
-                "Do you want to delete the blueprint?"
+                "Do you want to delete the blueprint?",
               ) as string
             }
             <strong>&nbsp;{removedBlueprint}</strong> ?
@@ -205,7 +205,7 @@ export default function Blueprints() {
             href="#contained-buttons"
             onClick={() => setOpen(true)}
           >
-            <AddCircleOutlineIcon />{" "}
+            <AddCircleOutlinedIcon />{" "}
             {i18next.t("create_blueprint", "Create blueprint") as string}
           </Button>
           <div className={classes.searchWrapper}>
@@ -217,12 +217,12 @@ export default function Blueprints() {
                 inputProps={{
                   placeholder: i18next.t(
                     "search_blueprints",
-                    "Search blueprints"
+                    "Search blueprints",
                   ),
                   inputProps: {
                     "aria-label": i18next.t(
                       "search_blueprints",
-                      "Search blueprints"
+                      "Search blueprints",
                     ),
                   },
                   onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) =>
@@ -240,7 +240,7 @@ export default function Blueprints() {
               {
                 i18next.t(
                   "no_blueprints_found",
-                  "No blueprints found"
+                  "No blueprints found",
                 ) as string
               }
             </p>
@@ -273,7 +273,7 @@ export default function Blueprints() {
                           ? blueprint.name
                           : (i18next.t(
                               "no_blueprint_name",
-                              "No blueprint name"
+                              "No blueprint name",
                             ) as string)}
                       </h3>
                       <ul style={{ fontSize: "12px" }}>
@@ -286,7 +286,7 @@ export default function Blueprints() {
                             </React.Fragment>
                           ) : (
                             <React.Fragment>
-                              <PersonOutline style={{ marginRight: "10px" }} />
+                              <PersonOutlined style={{ marginRight: "10px" }} />
                               {i18next.t("standalone", "Standalone") as string}
                             </React.Fragment>
                           )}
@@ -302,7 +302,7 @@ export default function Blueprints() {
                       }}
                       size="large"
                     >
-                      <DeleteOutlineIcon />
+                      <DeleteOutlinedIcon />
                     </IconButton>
                   </CardFooter>
                 </Card>

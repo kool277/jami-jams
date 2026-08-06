@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Area } from "react-easy-crop/types";
+import { Area } from "react-easy-crop";
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
@@ -39,7 +39,7 @@ function getRadianAngle(degreeValue: number) {
 export default async function getCroppedImg(
   imageSrc: string,
   pixelCrop: Area,
-  rotation = 0
+  rotation = 0,
 ) {
   const image = await createImage(imageSrc);
   const canvas = document.createElement("canvas");
@@ -62,7 +62,7 @@ export default async function getCroppedImg(
   ctx?.drawImage(
     image,
     safeArea / 2 - image.width * 0.5,
-    safeArea / 2 - image.height * 0.5
+    safeArea / 2 - image.height * 0.5,
   );
   const data = ctx?.getImageData(0, 0, safeArea, safeArea);
 
@@ -75,7 +75,7 @@ export default async function getCroppedImg(
     ctx?.putImageData(
       data,
       0 - safeArea / 2 + image.width * 0.5 - pixelCrop.x,
-      0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y
+      0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y,
     );
   }
 

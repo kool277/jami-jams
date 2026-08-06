@@ -72,8 +72,8 @@ export default function Subscription(props: SubscriptionProps) {
         api_path_post_configuration_register_license,
         "GET",
         null,
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         if (response.data["activated"] === true) setActivated(true);
@@ -83,14 +83,14 @@ export default function Subscription(props: SubscriptionProps) {
           props.setErrorMessage(
             i18next.t(
               "an_error_occurred_while_fetching_license_information",
-              "An error occurred while fetching license information!"
-            )
+              "An error occurred while fetching license information!",
+            ),
           );
           props.setSeverity("error");
           props.setError(true);
         } else {
           console.error(
-            "An error occurred while fetching license information: " + error
+            "An error occurred while fetching license information: " + error,
           );
         }
       });
@@ -107,8 +107,8 @@ export default function Subscription(props: SubscriptionProps) {
       subscriptionCode: Yup.string().required(
         i18next.t(
           "subscription_code_is_required",
-          "Subscription code is required."
-        )
+          "Subscription code is required.",
+        ),
       ),
     }),
 
@@ -127,15 +127,15 @@ export default function Subscription(props: SubscriptionProps) {
         api_path_post_configuration_register_license,
         "POST",
         jsonData,
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         props.setErrorMessage(
           i18next.t(
             "license_registered_successfully",
-            "License registered successfully."
-          )
+            "License registered successfully.",
+          ),
         );
         props.setSeverity("success");
         props.setError(true);
@@ -145,14 +145,14 @@ export default function Subscription(props: SubscriptionProps) {
           props.setErrorMessage(
             i18next.t(
               "an_error_occurred_while_loading_license",
-              "An error occurred while loading license!"
-            )
+              "An error occurred while loading license!",
+            ),
           );
           props.setSeverity("error");
           props.setError(true);
         } else {
           console.error(
-            "An error occurred while registering license: " + error
+            "An error occurred while registering license: " + error,
           );
         }
       });
@@ -161,7 +161,13 @@ export default function Subscription(props: SubscriptionProps) {
   if (!activated) {
     return (
       <GridContainer>
-        <Grid item xs={12} sm={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 12,
+            md: 6,
+          }}
+        >
           <Card profile>
             <CardHeader color="info" stats icon></CardHeader>
             <CardBody profile>
@@ -171,17 +177,25 @@ export default function Subscription(props: SubscriptionProps) {
                 onSubmit={formik.handleSubmit}
               >
                 <Grid container spacing={3}>
-                  <Grid item lg={6}>
+                  <Grid
+                    size={{
+                      lg: 6,
+                    }}
+                  >
                     <Typography component="p" gutterBottom color="primary">
                       {
                         i18next.t(
                           "paste_your_jams_enterprise_subscription_code_received_from_jami",
-                          "Paste your JAMS Enterprise subscription code received from the Jami store."
+                          "Paste your JAMS Enterprise subscription code received from the Jami store.",
                         ) as string
                       }
                     </Typography>
                   </Grid>
-                  <Grid item lg={6}>
+                  <Grid
+                    size={{
+                      lg: 6,
+                    }}
+                  >
                     <TextField
                       variant="outlined"
                       margin="normal"
@@ -191,7 +205,7 @@ export default function Subscription(props: SubscriptionProps) {
                       label={
                         i18next.t(
                           "subscription_code",
-                          "Subscription Code"
+                          "Subscription Code",
                         ) as string
                       }
                       autoComplete="subscriptionCode"
@@ -226,7 +240,7 @@ export default function Subscription(props: SubscriptionProps) {
           {
             i18next.t(
               "your_license_is_already_activated",
-              "Your subscription is already activated!"
+              "Your subscription is already activated!",
             ) as string
           }
         </p>

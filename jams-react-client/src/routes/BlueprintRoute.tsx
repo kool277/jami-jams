@@ -15,13 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useParams } from "react-router-dom";
+
 import BaseLayout from "layouts/BaseLayout";
 import { Blueprint } from "views/Blueprint/Blueprint";
 
-export default function BlueprintRoute(props: any) {
-  return (
-    <BaseLayout
-      component={<Blueprint blueprintName={props.match.params.blueprintname} />}
-    />
-  );
+export default function BlueprintRoute() {
+  const { blueprintname = "" } = useParams();
+  return <BaseLayout component={<Blueprint blueprintName={blueprintname} />} />;
 }

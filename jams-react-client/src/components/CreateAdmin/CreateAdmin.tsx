@@ -16,7 +16,7 @@
  */
 
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "@mui/material/Button";
@@ -61,7 +61,7 @@ interface CreateAdminProps {
 
 export default function CreateAdmin(props: CreateAdminProps) {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   /**
    * Formik Validation Fields
@@ -78,38 +78,38 @@ export default function CreateAdmin(props: CreateAdminProps) {
           60,
           i18next.t(
             "must_be_60_characters_or_less",
-            "Must be 60 characters or less"
-          )
+            "Must be 60 characters or less",
+          ),
         )
         .required(
-          i18next.t("username_is_required", "Username is required!") as string
+          i18next.t("username_is_required", "Username is required!") as string,
         ),
       password: Yup.string()
         .max(
           50,
           i18next.t(
             "must_be_50_characters_or_less",
-            "Must be 50 characters or less"
-          )
+            "Must be 50 characters or less",
+          ),
         )
         .required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf(
           [Yup.ref("password"), undefined],
-          i18next.t("password_must_match", "Passwords must match") as string
+          i18next.t("password_must_match", "Passwords must match") as string,
         )
         .max(
           50,
           i18next.t(
             "must_be_50_characters_or_less",
-            "Must be 50 characters or less"
-          )
+            "Must be 50 characters or less",
+          ),
         )
         .required(
           i18next.t(
             "password_confirmation_required",
-            "Password confirmation is required."
-          )
+            "Password confirmation is required.",
+          ),
         ),
     }),
 
@@ -129,13 +129,13 @@ export default function CreateAdmin(props: CreateAdminProps) {
   }
 
   function createAdminCallBackHandler(
-    response: AxiosResponse<ApiResponseData>
+    response: AxiosResponse<ApiResponseData>,
   ) {
     auth.setJWT(response.data["access_token"]);
     auth.admin = true;
     auth.authenticated = true;
     auth.uri = "start";
-    history.push("/");
+    navigate("/");
   }
 
   function handleSubmit(values: AdminSubmitValues) {
@@ -160,12 +160,12 @@ export default function CreateAdmin(props: CreateAdminProps) {
         {
           i18next.t(
             "create_administrator",
-            "Create administrator account"
+            "Create administrator account",
           ) as string
         }
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -181,7 +181,7 @@ export default function CreateAdmin(props: CreateAdminProps) {
             <span>{formik.errors.username}</span>
           ) : null}
         </Grid>
-        <Grid item xs={6}>
+        <Grid size={6}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -198,7 +198,7 @@ export default function CreateAdmin(props: CreateAdminProps) {
           ) : null}
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid size={6}>
           <TextField
             variant="outlined"
             margin="normal"

@@ -56,10 +56,10 @@ module.exports = {
             Object.assign({}, options, {
               nsSeparator: false,
               keySeparator: false,
-            })
+            }),
           );
           ++count;
-        }
+        },
       );
 
       if (count > 0) {

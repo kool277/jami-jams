@@ -22,7 +22,7 @@ import { makeStyles } from "@mui/styles";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Hidden from "@mui/material/Hidden";
+import Box from "@mui/material/Box";
 // @mui/icons-material
 import Menu from "@mui/icons-material/Menu";
 // core components
@@ -45,7 +45,7 @@ export default function Header(props: HeaderProps) {
   return (
     <AppBar className={classes.appBar}>
       <Toolbar className={classes.container}>
-        <Hidden mdUp implementation="css">
+        <Box sx={{ display: { md: "none" } }}>
           <IconButton
             color="default"
             aria-label="open drawer"
@@ -54,7 +54,7 @@ export default function Header(props: HeaderProps) {
           >
             <Menu />
           </IconButton>
-        </Hidden>
+        </Box>
       </Toolbar>
     </AppBar>
   );

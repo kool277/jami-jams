@@ -30,12 +30,36 @@ const useStyles = makeStyles(styles as any);
 
 interface GridItemProps extends GridProps {
   children: React.ReactNode;
+  xs?: number;
+  sm?: number;
+  md?: number;
+  lg?: number;
+  xl?: number;
 }
 
-const GridItem: FC<GridItemProps> = ({ children, ...rest }) => {
+const GridItem: FC<GridItemProps> = ({
+  children,
+  xs,
+  sm,
+  md,
+  lg,
+  xl,
+  ...rest
+}) => {
   const classes = useStyles();
+  // Translate legacy breakpoint props to the Grid v2 `size` prop
+  const size: Record<string, number> = {};
+  if (xs !== undefined) size.xs = xs;
+  if (sm !== undefined) size.sm = sm;
+  if (md !== undefined) size.md = md;
+  if (lg !== undefined) size.lg = lg;
+  if (xl !== undefined) size.xl = xl;
   return (
-    <Grid item {...rest} className={classes.grid}>
+    <Grid
+      {...(Object.keys(size).length > 0 ? { size } : {})}
+      {...rest}
+      className={classes.grid}
+    >
       {children}
     </Grid>
   );

@@ -33,7 +33,7 @@ import { ServerUiCustomization } from "./ServerUiCustomization";
 
 const updatePerms = (
   data: PolicyData,
-  serverPolicyData: ServerPolicyData
+  serverPolicyData: ServerPolicyData,
 ): ServerPolicyData => {
   serverPolicyData.videoEnabled = data.videoEnabled;
   serverPolicyData.publicInCalls = data.publicInCalls;
@@ -51,7 +51,7 @@ const updatePerms = (
 
 const updateConfig = (
   data: PolicyData,
-  serverPolicyData: ServerPolicyData
+  serverPolicyData: ServerPolicyData,
 ): ServerPolicyData => {
   const { selectedTurnOption, selectedDHTProxyOption } = data;
   serverPolicyData.upnpEnabled = data.upnpEnabled;
@@ -104,7 +104,7 @@ const convertRgbaToArgb = (rgba: string) => {
 
 const updateUiCustomization = (
   data: PolicyData,
-  serverPolicyData: ServerPolicyData
+  serverPolicyData: ServerPolicyData,
 ): ServerPolicyData => {
   const {
     hasTitle,
@@ -169,20 +169,20 @@ const updateUiCustomization = (
 const sendPutRequest = (
   blueprintName: string,
   data: ServerPolicyData,
-  setSnackbar: (snackbar: SnackbarProps) => void
+  setSnackbar: (snackbar: SnackbarProps) => void,
 ) => {
   axios(
     configApiCall(
       api_path_blueprints + "?name=" + blueprintName,
       "PUT",
       data,
-      null
-    )
+      null,
+    ),
   )
     .then(() => {
       const message = i18next.t(
         "blueprint_permissions_updated_successfully",
-        "Blueprint permissions updated successfully."
+        "Blueprint permissions updated successfully.",
       );
       setSnackbar({
         open: true,
@@ -193,7 +193,7 @@ const sendPutRequest = (
     .catch((error) => {
       const msg = i18next.t(
         "error_updating_blueprint_permissions",
-        "Error occurred while updating blueprint permissions."
+        "Error occurred while updating blueprint permissions.",
       );
       setSnackbar({
         open: true,
@@ -213,7 +213,7 @@ export const _updatePolicyData = (
   setPolicyData: Dispatch<SetStateAction<PolicyData>>,
   field: string,
   value: any,
-  setSnackbar: (snackbar: SnackbarProps) => void
+  setSnackbar: (snackbar: SnackbarProps) => void,
 ) => {
   setPolicyData((state) => ({ ...state, [field]: value }));
   let data: any = { ...policyData, [field]: value };

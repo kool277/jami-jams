@@ -42,17 +42,17 @@ interface AdStorageFormProps {
 export default function AdStorageForm(props: AdStorageFormProps) {
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
           {
             i18next.t(
               "active_directory_server_informations",
-              "Active Directory server information"
+              "Active Directory server information",
             ) as string
           }
         </Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -70,7 +70,7 @@ export default function AdStorageForm(props: AdStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -88,7 +88,7 @@ export default function AdStorageForm(props: AdStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -108,7 +108,7 @@ export default function AdStorageForm(props: AdStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -129,7 +129,7 @@ export default function AdStorageForm(props: AdStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -149,7 +149,7 @@ export default function AdStorageForm(props: AdStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
           Use SSL
         </Typography>

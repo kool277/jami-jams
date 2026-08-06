@@ -33,9 +33,8 @@
 
 */
 import { StrictMode, Suspense } from "react";
-import ReactDOM from "react-dom";
-import { createBrowserHistory } from "history";
-import { Router, Switch, Redirect } from "react-router-dom";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "protected.route";
 import { ConfiguredRoute } from "configured.route";
 import auth from "./auth";
@@ -58,13 +57,11 @@ import SettingsRoute from "routes/SettingsRoute";
 
 import SignIn from "layouts/SignIn";
 
-import "assets/css/material-dashboard-react.css?v=1.9.0";
+import "assets/css/material-dashboard-react.css";
 import "../node_modules/ubuntu-fontface/ubuntu.min.css";
 
 import "./i18n";
 import { grayColor } from "assets/jss/material-dashboard-react";
-
-const hist = createBrowserHistory();
 
 const theme = createTheme({
   palette: {
@@ -86,48 +83,57 @@ const theme = createTheme({
 auth.checkServerInstalled(() => {
   auth.checkAdminAccountStatus(() => {
     auth.checkLastKnownStep(() => {
-      ReactDOM.render(
+      const root = createRoot(document.getElementById("root")!);
+      root.render(
         <StrictMode>
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
               <Suspense fallback={<div>Loading...</div>}>
-                <Router history={hist}>
-                  <Switch>
-                    <ConfiguredRoute path="/signin" component={SignIn} />
-                    <ProtectedRoute path="/users" component={UsersRoute} />
-                    <ProtectedRoute
+                <BrowserRouter>
+                  <Routes>
+                    <Route
+                      path="/signin"
+                      element={<ConfiguredRoute component={SignIn} />}
+                    />
+                    <Route
+                      path="/users"
+                      element={<ProtectedRoute component={UsersRoute} />}
+                    />
+                    <Route
                       path="/user/:username"
-                      component={UserRoute}
+                      element={<ProtectedRoute component={UserRoute} />}
                     />
-                    <ProtectedRoute
+                    <Route
                       path="/createuser"
-                      component={CreateUserRoute}
+                      element={<ProtectedRoute component={CreateUserRoute} />}
                     />
-                    <ProtectedRoute path="/groups" component={GroupsRoute} />
-                    <ProtectedRoute
+                    <Route
+                      path="/groups"
+                      element={<ProtectedRoute component={GroupsRoute} />}
+                    />
+                    <Route
                       path="/group/:groupid"
-                      component={GroupRoute}
+                      element={<ProtectedRoute component={GroupRoute} />}
                     />
-                    <ProtectedRoute
+                    <Route
                       path="/blueprints"
-                      component={BlueprintsRoute}
+                      element={<ProtectedRoute component={BlueprintsRoute} />}
                     />
-                    <ProtectedRoute
+                    <Route
                       path="/blueprint/:blueprintname"
-                      component={BlueprintRoute}
+                      element={<ProtectedRoute component={BlueprintRoute} />}
                     />
-                    <ProtectedRoute
+                    <Route
                       path="/settings"
-                      component={SettingsRoute}
+                      element={<ProtectedRoute component={SettingsRoute} />}
                     />
-                    <Redirect from="/" to="/signin" />
-                  </Switch>
-                </Router>
+                    <Route path="*" element={<Navigate to="/signin" />} />
+                  </Routes>
+                </BrowserRouter>
               </Suspense>
             </ThemeProvider>
           </StyledEngineProvider>
         </StrictMode>,
-        document.getElementById("root")
       );
     });
   });

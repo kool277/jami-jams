@@ -16,7 +16,7 @@
  */
 
 import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Formik,
   Field,
@@ -84,7 +84,7 @@ interface FormValuesExistingCA {
 }
 
 export default function CaSetup(props: CaSetupProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   /**
    * Formik Validation Fields
@@ -106,28 +106,31 @@ export default function CaSetup(props: CaSetupProps) {
 
   const validationSchemaform1 = Yup.object().shape({
     commonname: Yup.string().required(
-      i18next.t("common_name_is_required", "Common name is required.") as string
+      i18next.t(
+        "common_name_is_required",
+        "Common name is required.",
+      ) as string,
     ),
     state: Yup.string().required(
-      i18next.t("state_is_required", "State is required.") as string
+      i18next.t("state_is_required", "State is required.") as string,
     ),
     city: Yup.string().required(
-      i18next.t("city_is_required", "City is required.") as string
+      i18next.t("city_is_required", "City is required.") as string,
     ),
     organization: Yup.string().required(
       i18next.t(
         "organization_is_required",
-        "Organization is required."
-      ) as string
+        "Organization is required.",
+      ) as string,
     ),
     organizationunit: Yup.string().required(
       i18next.t(
         "organization_unit_is_required",
-        "Organization unit is required."
-      )
+        "Organization unit is required.",
+      ),
     ),
     country: Yup.string().required(
-      i18next.t("country_is_required", "Country is required.") as string
+      i18next.t("country_is_required", "Country is required.") as string,
     ),
   });
 
@@ -135,14 +138,14 @@ export default function CaSetup(props: CaSetupProps) {
     certificatefile: Yup.mixed().required(
       i18next.t(
         "certificate_file_is_required",
-        "Certificate file is required."
-      ) as string
+        "Certificate file is required.",
+      ) as string,
     ),
     privkeyfile: Yup.mixed().required(
       i18next.t(
         "private_key_file_is_required",
-        "Private key file is required."
-      ) as string
+        "Private key file is required.",
+      ) as string,
     ),
   });
 
@@ -151,14 +154,14 @@ export default function CaSetup(props: CaSetupProps) {
       value: 0,
       label: i18next.t(
         "create_self_signed_certificate_authority",
-        "Create a self-signed Certificate Authority"
+        "Create a self-signed Certificate Authority",
       ),
     },
     {
       value: 1,
       label: i18next.t(
         "import_existing_certificate_authority",
-        "Import existing Certificate Authority"
+        "Import existing Certificate Authority",
       ),
     },
   ];
@@ -169,13 +172,13 @@ export default function CaSetup(props: CaSetupProps) {
   ];
 
   const certificateOptionsItems = tool.buildSelectMenuItems(
-    getCertificateOptions
+    getCertificateOptions,
   );
   const validityPeriodsItems = tool.buildSelectMenuItems(validityPeriods);
   const classes = useStyles();
 
   const [certificateOpt, setCertificateOpt] = useState(
-    getCertificateOptions[0]
+    getCertificateOptions[0],
   );
   const [validityPeriod, setValidityPeriod] = useState(validityPeriods[0]);
 
@@ -189,12 +192,12 @@ export default function CaSetup(props: CaSetupProps) {
       props.setErrorMessage(
         i18next.t(
           "unknown_error_occurred_while_installing_the_ca",
-          "An unknown error occurred while installing the CA. Please try again."
-        )
+          "An unknown error occurred while installing the CA. Please try again.",
+        ),
       );
     } else if (data.status === 200) {
       auth.uri = "/api/install/auth";
-      history.push("/");
+      navigate("/");
     }
   }
 
@@ -203,7 +206,7 @@ export default function CaSetup(props: CaSetupProps) {
     const valueAsNumber = Number(event.target.value);
     // Find the corresponding option from getCertificateOptions.
     const selectedOption = getCertificateOptions.find(
-      (option) => option.value === valueAsNumber
+      (option) => option.value === valueAsNumber,
     );
     if (selectedOption) {
       setCertificateOpt(selectedOption);
@@ -214,7 +217,7 @@ export default function CaSetup(props: CaSetupProps) {
     props.setError(false);
     const selectedOption = tool.retrieveArrayElement(
       parseInt(event.target.value),
-      validityPeriods
+      validityPeriods,
     );
     if (selectedOption !== undefined) {
       setValidityPeriod(selectedOption);
@@ -222,7 +225,7 @@ export default function CaSetup(props: CaSetupProps) {
   };
 
   const handleSubmit = (
-    values: FormValuesSelfSigned | FormValuesExistingCA
+    values: FormValuesSelfSigned | FormValuesExistingCA,
   ) => {
     let jsonData = {};
     if (certificateOpt.value === 0) {
@@ -279,7 +282,7 @@ export default function CaSetup(props: CaSetupProps) {
                 {
                   i18next.t(
                     "ca_setup_header",
-                    "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance."
+                    "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance.",
                   ) as string
                 }
               </h4>
@@ -406,7 +409,7 @@ export default function CaSetup(props: CaSetupProps) {
                 {
                   i18next.t(
                     "generate_self_signed_certificate_authority",
-                    "Generate Self-Signed Certificate Authority"
+                    "Generate Self-Signed Certificate Authority",
                   ) as string
                 }
               </Button>
@@ -432,7 +435,7 @@ export default function CaSetup(props: CaSetupProps) {
                 {
                   i18next.t(
                     "select_option_setting_up_certificate_authority",
-                    "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance."
+                    "Select an option for setting-up the certificate authority that will be used to sign all Jami accounts generated on this JAMS instance.",
                   ) as string
                 }
               </h4>
@@ -505,7 +508,7 @@ export default function CaSetup(props: CaSetupProps) {
                 {
                   i18next.t(
                     "import_certificate_authority",
-                    "Import Certificate Authority"
+                    "Import Certificate Authority",
                   ) as string
                 }
               </Button>

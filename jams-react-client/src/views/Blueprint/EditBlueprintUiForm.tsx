@@ -59,7 +59,7 @@ const IsCustomizationEnabledForm: React.FC<IsCustomizationEnabledFormProps> = ({
         label={
           i18next.t(
             "is_customization_enabled",
-            "Enable customization"
+            "Enable customization",
           ) as string
         }
       />
@@ -118,7 +118,7 @@ const TitleForm: React.FC<TitleFormProps> = ({
         {
           i18next.t(
             "instruction_title",
-            "Use Jami title or personalize it (max 40 characters)"
+            "Use Jami title or personalize it (max 40 characters)",
           ) as string
         }
       </span>
@@ -130,7 +130,7 @@ const TitleForm: React.FC<TitleFormProps> = ({
           handleUpdateUi("title", e.target.value);
         }}
         fullWidth
-        inputProps={{ maxLength: 40 }}
+        slotProps={{ htmlInput: { maxLength: 40 } }}
         variant="standard"
       />
     </FormGroup>
@@ -186,7 +186,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
             {
               i18next.t(
                 "instruction_description",
-                "Use Jami description or personalize it (max 100 characters)"
+                "Use Jami description or personalize it (max 100 characters)",
               ) as string
             }
           </span>
@@ -195,7 +195,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
             placeholder={
               i18next.t(
                 "welcome_Description",
-                "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!"
+                "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!",
               ) as string
             }
             value={uiCustomization.description}
@@ -203,7 +203,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = ({
               handleUpdateUi("description", e.target.value);
             }}
             fullWidth
-            inputProps={{ maxLength: 100 }}
+            slotProps={{ htmlInput: { maxLength: 100 } }}
             variant="standard"
           />
         </>
@@ -297,7 +297,7 @@ const CustomBackgroundForm: React.FC<CustomBackgroundFormProps> = ({
         {
           i18next.t(
             "instruction_background",
-            "Choose a background color or a background image"
+            "Choose a background color or a background image",
           ) as string
         }
       </span>
@@ -399,7 +399,7 @@ const MainBoxColorForm: React.FC<MainBoxColorFormProps> = ({
           label={
             i18next.t(
               "enable_main_box",
-              "Add a box behind the title, description and Jami ID"
+              "Add a box behind the title, description and Jami ID",
             ) as string
           }
         />
@@ -454,7 +454,7 @@ const HasLogoForm: React.FC<HasLogoFormProps> = ({
 interface LogoFormProps {
   handleImgDrop: (acceptedFiles: any[], imgType: string) => void;
   handleDeleteLogo: (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => void;
   handleUpdateUi: (field: string | UiCustomization, value?: any) => void;
   logoFile: string | undefined;
@@ -473,7 +473,7 @@ const LogoForm: React.FC<LogoFormProps> = ({
         {
           i18next.t(
             "instruction_logo",
-            "Use Jami logotype or upload a logotype"
+            "Use Jami logotype or upload a logotype",
           ) as string
         }
       </span>
@@ -545,7 +545,7 @@ const EditBlueprintUiForm: React.FC<EditBlueprintUiFormProps> = ({
   const logoFile = uiCustomization.logoUrl?.split("/").pop();
 
   const handleDeleteLogo = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     setUiCustomization({
       ...uiCustomization,

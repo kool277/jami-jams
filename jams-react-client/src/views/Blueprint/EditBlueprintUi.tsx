@@ -212,14 +212,21 @@ export default function EditBlueprintUi({
             <CardBody profile>
               <div className={classes.cardBody}>
                 <Grid container spacing={5}>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 12,
+                    }}
+                  >
                     <Grid container spacing={2}>
                       <Grid
-                        item
-                        xs={12}
-                        sm={12}
-                        md={12}
                         className={classes.previewContainer}
+                        size={{
+                          xs: 12,
+                          sm: 12,
+                          md: 12,
+                        }}
                       >
                         <CustomUiPreview
                           opacity={opacity}
@@ -231,7 +238,13 @@ export default function EditBlueprintUi({
                           uiCustomization={oldUiCustomization}
                         />
                       </Grid>
-                      <Grid item xs={12} sm={12} md={12}>
+                      <Grid
+                        size={{
+                          xs: 12,
+                          sm: 12,
+                          md: 12,
+                        }}
+                      >
                         <EditBlueprintUiForm
                           uiCustomization={uiCustomization}
                           setUiCustomization={setUiCustomization}

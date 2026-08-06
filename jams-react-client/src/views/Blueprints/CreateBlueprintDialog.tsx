@@ -16,7 +16,7 @@
  */
 
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import i18next from "i18next";
 import {
@@ -42,18 +42,18 @@ import {
 const getHelperText = (
   disableCreate: boolean,
   blueprintName: string,
-  blueprintNameExists: boolean
+  blueprintNameExists: boolean,
 ) => {
   if (disableCreate && blueprintName.length > 0 && blueprintNameExists) {
     return i18next.t(
       "blueprint_name_already_exists",
-      "Blueprint name already exists!"
+      "Blueprint name already exists!",
     );
   }
   if (disableCreate && blueprintName.length === 0) {
     return i18next.t(
       "blueprint_name_is_empty",
-      "Blueprint name is empty"
+      "Blueprint name is empty",
     ) as string;
   }
 
@@ -67,7 +67,7 @@ export default function CreateBlueprintDialog({
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [blueprintName, setBlueprintName] = useState("");
   const [blueprintNameExists, setBlueprintNameExists] = useState(false);
@@ -76,7 +76,7 @@ export default function CreateBlueprintDialog({
   const helperText = getHelperText(
     disableCreate,
     blueprintName,
-    blueprintNameExists
+    blueprintNameExists,
   );
 
   const handleClose = () => {
@@ -95,8 +95,8 @@ export default function CreateBlueprintDialog({
         api_path_blueprints + "?name=" + searchBlueprintNameValue,
         "GET",
         null,
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         setDisableCreate(true);
@@ -112,9 +112,9 @@ export default function CreateBlueprintDialog({
     debounce(
       (searchBlueprintNameValue) =>
         handleCheckBlueprintNameExists(searchBlueprintNameValue),
-      500
+      500,
     ),
-    []
+    [],
   );
 
   const handleCreateBlueprint = () => {
@@ -140,8 +140,8 @@ export default function CreateBlueprintDialog({
         api_path_blueprints + "?name=" + blueprintName,
         "POST",
         defaultPolicyData,
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         setOpen(false);
@@ -154,10 +154,10 @@ export default function CreateBlueprintDialog({
           "An error occurred while attempting to create " +
             blueprintName +
             ": " +
-            error
+            error,
         );
       });
-    history.push(`/blueprint/${blueprintName}`);
+    navigate(`/blueprint/${blueprintName}`);
   };
 
   return (
@@ -180,12 +180,14 @@ export default function CreateBlueprintDialog({
           helperText={helperText}
           type="text"
           variant="standard"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <AllInbox />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AllInbox />
+                </InputAdornment>
+              ),
+            },
           }}
           onChange={(e) => {
             setBlueprintName(e.target.value);

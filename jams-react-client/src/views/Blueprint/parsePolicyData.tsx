@@ -34,12 +34,12 @@ const getModerators = async (defaultModerators: string) => {
 
   for (const id of ids) {
     const usernameResponse = await axios(
-      configApiCall(api_path_get_ns_name_from_addr + id, "GET", null, null)
+      configApiCall(api_path_get_ns_name_from_addr + id, "GET", null, null),
     );
     const username = usernameResponse.data.name;
 
     const userProfileResponse = await axios(
-      configApiCall(api_path_get_user_profile + username, "GET", null, null)
+      configApiCall(api_path_get_user_profile + username, "GET", null, null),
     );
     userProfileResponse.data["id"] = id;
     moderators.push(userProfileResponse.data);
@@ -51,7 +51,7 @@ const getModerators = async (defaultModerators: string) => {
 const setPermissionsSettings = async (policyData: PolicyData) => {
   if (policyData.defaultModerators !== undefined) {
     policyData.blueprintModerators = await getModerators(
-      policyData.defaultModerators
+      policyData.defaultModerators,
     );
   }
   delete policyData.defaultModerators;
@@ -95,7 +95,7 @@ const convertArgbToRgba = (argb: string) => {
 };
 
 const setCustomizationSettings = (
-  uiCustomization: string | UiCustomization
+  uiCustomization: string | UiCustomization,
 ) => {
   if (!uiCustomization || typeof uiCustomization !== "string") {
     return uiCustomization;
@@ -146,7 +146,7 @@ export const parsePolicyData = async (data: string): Promise<PolicyData> => {
   policyData = await setPermissionsSettings(policyData);
   policyData = setConfigurationSettings(policyData);
   policyData.uiCustomization = setCustomizationSettings(
-    policyData.uiCustomization
+    policyData.uiCustomization,
   );
 
   return policyData as PolicyData;

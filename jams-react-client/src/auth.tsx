@@ -124,7 +124,7 @@ class Auth {
         } else {
           console.log(
             "Error getting on checkDirectoryType: Size of directory types is " +
-              response.data.length
+              response.data.length,
           );
         }
         cb();
@@ -148,7 +148,7 @@ class Auth {
           this.admin = true;
         } else {
           console.error(
-            "Error during API request on checkAdminAccountStatus: " + error
+            "Error during API request on checkAdminAccountStatus: " + error,
           );
         }
         cb();
@@ -170,7 +170,7 @@ class Auth {
           this.authenticated = false;
         } else {
           console.error(
-            "Error during API request on checkServerInstalled: " + error
+            "Error during API request on checkServerInstalled: " + error,
           );
         }
       });
@@ -182,7 +182,7 @@ class Auth {
       cb();
     } else {
       axios(
-        configApiCall(api_path_get_install_lastKnownStep, "GET", null, null)
+        configApiCall(api_path_get_install_lastKnownStep, "GET", null, null),
       )
         .then((response) => {
           this.uri = response.data["uri"];
@@ -194,7 +194,7 @@ class Auth {
             this.authenticated = false;
           } else {
             console.error(
-              "Error during API request on checkLastKnownStep: " + error
+              "Error during API request on checkLastKnownStep: " + error,
             );
           }
           cb();
@@ -217,14 +217,14 @@ class Auth {
             this.authenticated = false;
           } else {
             console.error(
-              "Error during API request on checkForUpdates: " + error
+              "Error during API request on checkForUpdates: " + error,
             );
           }
           cb();
         });
     } else {
       axios(
-        configApiCall(api_path_get_install_lastKnownStep, "GET", null, null)
+        configApiCall(api_path_get_install_lastKnownStep, "GET", null, null),
       )
         .then((response) => {
           this.uri = response.data["uri"];
@@ -248,11 +248,11 @@ class Auth {
             this.updateAvailable = false;
           }
           cb();
-        }
+        },
       );
     } else {
       axios(
-        configApiCall(api_path_get_install_lastKnownStep, "GET", null, null)
+        configApiCall(api_path_get_install_lastKnownStep, "GET", null, null),
       )
         .then((response) => {
           this.uri = response.data["uri"];

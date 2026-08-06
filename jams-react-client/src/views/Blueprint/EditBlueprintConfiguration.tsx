@@ -182,7 +182,7 @@ interface EditBlueprintConfigurationProps {
 }
 
 export default function EditBlueprintConfiguration(
-  props: EditBlueprintConfigurationProps
+  props: EditBlueprintConfigurationProps,
 ) {
   const classes = useStyles();
   const { policyData, updatePolicyData, snackbar, setSnackbar } =
@@ -203,13 +203,13 @@ export default function EditBlueprintConfiguration(
   const [turnPasswordVisible, setTurnPasswordVisible] = useState(false);
 
   const handleTurnChangedOption = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     updatePolicyData("selectedTurnOption", event.target.value);
   };
 
   const handleDHTProxyChangedOption = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     updatePolicyData("selectedDHTProxyOption", event.target.value);
   };
@@ -240,13 +240,19 @@ export default function EditBlueprintConfiguration(
             <CardBody profile>
               <div className={classes.root}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 12,
+                    }}
+                  >
                     <FormLabel component="legend">
                       UPnP{" "}
                       <CustomPopupState
                         message={i18next.t(
                           "upnp_custom_popup",
-                          "UPnP allows Jami to automatically open network ports to establish peer-to-peer communications."
+                          "UPnP allows Jami to automatically open network ports to establish peer-to-peer communications.",
                         )}
                       />
                     </FormLabel>
@@ -259,20 +265,28 @@ export default function EditBlueprintConfiguration(
                             updatePolicyData("upnpEnabled", e.target.checked);
                           }}
                           name="upnpEnabled"
-                          inputProps={{ "aria-label": "secondary checkbox" }}
+                          slotProps={{
+                            input: { "aria-label": "secondary checkbox" },
+                          }}
                         />
                       }
                       label={i18next.t("enable_upnp", "Enable UPnP") as string}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 12,
+                    }}
+                  >
                     <FormControl component="fieldset">
                       <FormLabel component="legend">
                         TURN{" "}
                         <CustomPopupState
                           message={i18next.t(
                             "turn_server_configuration_popup",
-                            "Configure a TURN server to establish a connection when peer-to-peer communication is not possible"
+                            "Configure a TURN server to establish a connection when peer-to-peer communication is not possible",
                           )}
                         />
                       </FormLabel>
@@ -288,7 +302,7 @@ export default function EditBlueprintConfiguration(
                           label={
                             i18next.t(
                               "use_jami_default_turn_configuration",
-                              "Use default TURN configuration"
+                              "Use default TURN configuration",
                             ) as string
                           }
                         />
@@ -298,7 +312,7 @@ export default function EditBlueprintConfiguration(
                           label={
                             i18next.t(
                               "use_a_custom_turn_configuration",
-                              "Use a custom TURN configuration"
+                              "Use a custom TURN configuration",
                             ) as string
                           }
                         />
@@ -316,7 +330,7 @@ export default function EditBlueprintConfiguration(
                               {
                                 i18next.t(
                                   "turn_server_address",
-                                  "TURN Server address"
+                                  "TURN Server address",
                                 ) as string
                               }
                             </InputLabel>
@@ -348,7 +362,7 @@ export default function EditBlueprintConfiguration(
                               {
                                 i18next.t(
                                   "turn_server_username",
-                                  "TURN server username"
+                                  "TURN server username",
                                 ) as string
                               }
                             </InputLabel>
@@ -363,7 +377,7 @@ export default function EditBlueprintConfiguration(
                               onChange={(e) => {
                                 updatePolicyData(
                                   "turnServerUserName",
-                                  e.target.value
+                                  e.target.value,
                                 );
                               }}
                             />
@@ -383,7 +397,7 @@ export default function EditBlueprintConfiguration(
                               {
                                 i18next.t(
                                   "turn_server_password",
-                                  "TURN server password"
+                                  "TURN server password",
                                 ) as string
                               }
                             </InputLabel>
@@ -413,7 +427,7 @@ export default function EditBlueprintConfiguration(
                               onChange={(e) => {
                                 updatePolicyData(
                                   "turnServerPassword",
-                                  e.target.value
+                                  e.target.value,
                                 );
                               }}
                             />
@@ -425,22 +439,34 @@ export default function EditBlueprintConfiguration(
                           label={
                             i18next.t(
                               "disable_turn_configuration",
-                              "Disable TURN configuration"
+                              "Disable TURN configuration",
                             ) as string
                           }
                         />
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={4}></Grid>
-                  <Grid item xs={12} sm={12} md={12}>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 4,
+                    }}
+                  ></Grid>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 12,
+                    }}
+                  >
                     <FormControl component="fieldset">
                       <FormLabel component="legend">
                         DHT Proxy{" "}
                         <CustomPopupState
                           message={i18next.t(
                             "dht_configuration_popup",
-                            "Configure the DHT proxy server used by this account"
+                            "Configure the DHT proxy server used by this account",
                           )}
                         />
                       </FormLabel>
@@ -456,7 +482,7 @@ export default function EditBlueprintConfiguration(
                           label={
                             i18next.t(
                               "use_jami_default_dht_proxy_configuration",
-                              "Use Jami default DHT Proxy configuration"
+                              "Use Jami default DHT Proxy configuration",
                             ) as string
                           }
                         />
@@ -466,7 +492,7 @@ export default function EditBlueprintConfiguration(
                           label={
                             i18next.t(
                               "use_a_custom_dht_proxy_configuration",
-                              "Use a custom DHT Proxy configuration"
+                              "Use a custom DHT Proxy configuration",
                             ) as string
                           }
                         />
@@ -484,7 +510,7 @@ export default function EditBlueprintConfiguration(
                               {
                                 i18next.t(
                                   "dht_proxy_server_name",
-                                  "DHT proxy server name"
+                                  "DHT proxy server name",
                                 ) as string
                               }
                             </InputLabel>
@@ -516,7 +542,7 @@ export default function EditBlueprintConfiguration(
                               {
                                 i18next.t(
                                   "dht_proxy_list_url",
-                                  "DHT proxy List URL"
+                                  "DHT proxy List URL",
                                 ) as string
                               }
                             </InputLabel>
@@ -531,7 +557,7 @@ export default function EditBlueprintConfiguration(
                               onChange={(e) => {
                                 updatePolicyData(
                                   "dhtProxyListUrl",
-                                  e.target.value
+                                  e.target.value,
                                 );
                               }}
                             />
@@ -543,14 +569,20 @@ export default function EditBlueprintConfiguration(
                           label={
                             i18next.t(
                               "disable_dht_proxy_configuration",
-                              "Disable DHT Proxy configuration"
+                              "Disable DHT Proxy configuration",
                             ) as string
                           }
                         />
                       </RadioGroup>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sm={12} md={4}></Grid>
+                  <Grid
+                    size={{
+                      xs: 12,
+                      sm: 12,
+                      md: 4,
+                    }}
+                  ></Grid>
                 </Grid>
               </div>
             </CardBody>

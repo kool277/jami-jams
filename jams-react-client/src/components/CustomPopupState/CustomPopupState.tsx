@@ -48,7 +48,7 @@ export default function CustomPopupState(props: CustomPopupStateProps) {
                 horizontal: "left",
               }}
             >
-              <Box p={1}>
+              <Box sx={{ p: 1 }}>
                 <Typography>{props.message}</Typography>
               </Box>
             </Popover>

@@ -146,7 +146,7 @@ export const CustomUiPreview: FC<CustomUiPreviewProps> = ({
   if (!description) {
     description = i18next.t(
       "welcome_Description",
-      "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!"
+      "Here is your Jami identifier, don't hesitate to share it in order to be contacted more easily!",
     );
   }
   if (logoUrl) {
@@ -179,11 +179,11 @@ export const CustomUiPreview: FC<CustomUiPreviewProps> = ({
 
   const tip1 = i18next.t(
     "preview_tip1",
-    "Add a picture and a nickname to complete your profile"
+    "Add a picture and a nickname to complete your profile",
   );
   const tip2 = i18next.t(
     "preview_tip2",
-    "Why should I save my account?"
+    "Why should I save my account?",
   ) as string;
   const tip3 = i18next.t("preview_tip3", "How to set shortcuts?") as string;
 

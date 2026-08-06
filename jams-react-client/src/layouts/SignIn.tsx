@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Formik } from "formik";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -90,16 +90,16 @@ export default function SignIn() {
   });
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (auth.isAuthenticated() && auth.isInstalled()) {
-      if (auth.hasAdminScope()) history.push("/users");
+      if (auth.hasAdminScope()) navigate("/users");
       else {
         if (auth.getUsername() !== null) {
-          history.push(`/user/${auth.getUsername()}`);
+          navigate(`/user/${auth.getUsername()}`);
         }
       }
     }
@@ -115,14 +115,14 @@ export default function SignIn() {
         auth.checkLastKnownStep(() => {
           auth.checkDirectoryType(() => {
             if (auth.isServerInstalled()) {
-              if (auth.hasAdminScope()) history.push("/users");
+              if (auth.hasAdminScope()) navigate("/users");
               else {
                 if (auth.getUsername() !== null) {
-                  history.push(`/user/${auth.getUsername()}`);
+                  navigate(`/user/${auth.getUsername()}`);
                 }
               }
             } else {
-              history.push("/");
+              navigate("/");
             }
           });
         });
@@ -131,8 +131,8 @@ export default function SignIn() {
         setErrorMessage(
           i18next.t(
             "login_failed",
-            "Login failed. Check your credentials."
-          ) as string
+            "Login failed. Check your credentials.",
+          ) as string,
         );
       }
     });
@@ -217,10 +217,10 @@ export default function SignIn() {
           }}
         </Formik>
       </div>
-      <Box mt={8}>
+      <Box sx={{ mt: 8 }}>
         <Copyright />
       </Box>
-      <Box mt={8} justifyContent="center">
+      <Box sx={{ mt: 8, justifyContent: "center" }}>
         <LanguagePicker navigationTarget={"/"} />
       </Box>
     </Container>

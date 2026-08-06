@@ -3,10 +3,10 @@ ARG MAVEN_VERSION=3.9.16
 
 FROM maven:${MAVEN_VERSION}-eclipse-temurin-${JAVA_VERSION}-noble
 
-# Install Node.js v20.x
+# Install Node.js v24.x (Active LTS)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    curl -sL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 

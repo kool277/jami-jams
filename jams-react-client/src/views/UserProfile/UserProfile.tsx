@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // core components
 import Devices from "components/Devices/Devices";
 
@@ -53,7 +53,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box sx={{ p: 3 }}>
           <Typography component="div">{children}</Typography>
         </Box>
       )}
@@ -80,7 +80,7 @@ interface UserProfileProps {
 }
 
 export default function UserProfile(props: UserProfileProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [value, setValue] = useState<number>(0);
   const [displayUser, setDisplayUser] = useState(true);
@@ -91,9 +91,9 @@ export default function UserProfile(props: UserProfileProps) {
 
   useEffect(() => {
     if (props.username === "null") {
-      history.push("/");
+      navigate("/");
     }
-  }, [history, props.username]);
+  }, [navigate, props.username]);
 
   return (
     <div>

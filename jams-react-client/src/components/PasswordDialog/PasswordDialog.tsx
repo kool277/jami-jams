@@ -102,7 +102,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
       .then(onClose)
       .catch((error) => {
         console.log(
-          "Updating user " + username + " password failed with error: " + error
+          "Updating user " + username + " password failed with error: " + error,
         );
       });
   };
@@ -111,7 +111,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
     password: Yup.string().required("Password is required"),
     passwordConfirmation: Yup.string().oneOf(
       [Yup.ref("password"), undefined],
-      "Passwords must match"
+      "Passwords must match",
     ),
   });
 
@@ -241,7 +241,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
               </DialogContent>
               <DialogActions>
                 <Grid>
-                  <Grid item>
+                  <Grid>
                     <Button
                       variant="contained"
                       color="primary"
@@ -254,7 +254,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
                         setFieldValue(
                           "passwordConfirmation",
                           newGeneratedPassword,
-                          false
+                          false,
                         );
                         setCopied(false);
                         setGenerated(true);
@@ -280,7 +280,7 @@ const PasswordDialog: FC<PasswordDialogProps> = ({
                       </Button>
                     </CopyToClipboard>
                   </Grid>
-                  <Grid item className={classes.actionButtons}>
+                  <Grid className={classes.actionButtons}>
                     <Button onClick={onClose} color="primary">
                       Cancel
                     </Button>

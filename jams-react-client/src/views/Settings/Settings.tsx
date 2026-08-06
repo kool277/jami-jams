@@ -51,7 +51,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box sx={{ p: 3 }}>
           <Typography component="div">{children}</Typography>
         </Box>
       )}
@@ -100,7 +100,7 @@ export default function Settings() {
           {
             i18next.t(
               "you_are_not_allowed_to_access_this_section",
-              "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
+              "You are not allowed to access this section. Please contact your administrator to get administrator privileges.",
             ) as string
           }
         </h4>

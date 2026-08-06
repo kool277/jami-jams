@@ -44,11 +44,11 @@ import { api_path_get_start_update } from "globalUrls";
 
 import axios from "axios";
 
-import Dialog from "@mui/material/Dialog/Dialog";
-import DialogTitle from "@mui/material/DialogTitle/DialogTitle";
-import DialogContent from "@mui/material/DialogContent/DialogContent";
-import DialogActions from "@mui/material/DialogActions/DialogActions";
-import DialogContentText from "@mui/material/DialogContentText/DialogContentText";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
 
 import i18next from "i18next";
@@ -57,7 +57,7 @@ import {
   AccountCircleOutlined,
   AllInboxOutlined,
   GroupOutlined,
-  PersonOutline,
+  PersonOutlined,
   SettingsOutlined,
 } from "@mui/icons-material";
 
@@ -98,7 +98,7 @@ export default function Admin(props: AdminProps) {
     {
       path: "/users",
       name: i18next.t("users", "Users") as string,
-      icon: PersonOutline,
+      icon: PersonOutlined,
       component: Users,
       layout: "/admin",
       admin: false,
@@ -145,8 +145,8 @@ export default function Admin(props: AdminProps) {
         setDialogMessage(
           i18next.t(
             "new_version_jams_available",
-            "A new version of JAMS is available. Do you want to update now?"
-          )
+            "A new version of JAMS is available. Do you want to update now?",
+          ),
         );
         setMessageYes("Update Now");
         setMessageNo("Update Later");
@@ -154,8 +154,8 @@ export default function Admin(props: AdminProps) {
         setDialogMessage(
           i18next.t(
             "running_community_edition_jams",
-            "JAMS Community Edition is running. Do you want to buy a JAMS subscription?"
-          )
+            "JAMS Community Edition is running. Do you want to buy a JAMS subscription?",
+          ),
         );
         setMessageYes("Yes, go to Jami Store");
         setMessageNo("No thanks");
@@ -164,8 +164,8 @@ export default function Admin(props: AdminProps) {
       setDialogMessage(
         i18next.t(
           "you_are_not_allowed_to_access_this_section",
-          "You are not allowed to access this section. Please contact your administrator to get administrator privileges."
-        )
+          "You are not allowed to access this section. Please contact your administrator to get administrator privileges.",
+        ),
       );
     }
   };
@@ -179,8 +179,8 @@ export default function Admin(props: AdminProps) {
           setMessage(
             i18next.t(
               "an_update_is_available_for_jams",
-              "An update is available for JAMS."
-            )
+              "An update is available for JAMS.",
+            ),
           );
         }
       });
@@ -215,8 +215,8 @@ export default function Admin(props: AdminProps) {
       setSnackbarMessage(
         i18next.t(
           "shutting_down_after_jams_update_is_finished",
-          "Shutting down after JAMS update is finished…"
-        )
+          "Shutting down after JAMS update is finished…",
+        ),
       );
       axios(configApiCall(api_path_get_start_update, "POST", null, null))
         .then(() => {
@@ -227,8 +227,8 @@ export default function Admin(props: AdminProps) {
           setSnackbarMessage(
             i18next.t(
               "error_while_attempting_update_jams",
-              "An error occurred while attempting to update JAMS:"
-            ) + error
+              "An error occurred while attempting to update JAMS:",
+            ) + error,
           );
         });
     }

@@ -16,7 +16,7 @@
  */
 
 import { FC, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import i18next from "i18next";
 
@@ -224,7 +224,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
   username,
 }) => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [user, setUser] = useState<UserProfile>({
     username: "",
     firstName: "",
@@ -240,7 +240,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
     revoked: false,
   });
   const [groupMemberships, setGroupMemberships] = useState<GroupMembership[]>(
-    []
+    [],
   );
   const [revoked, setRevoked] = useState(false);
   const [open, setOpen] = useState(false);
@@ -255,8 +255,8 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         api_path_delete_group_member + group.groupId,
         "DELETE",
         { username },
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         const newGroupMemberships = groupMemberships;
@@ -270,7 +270,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
 
   useEffect(() => {
     setLoading(true);
-  }, [history, username]);
+  }, [navigate, username]);
 
   const getAdminUserGroups = () => {
     // TODO do this in a single sql query on the server, with a JOIN
@@ -282,20 +282,20 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         api_path_get_admin_user_groups + username,
         "GET",
         null,
-        null
-      )
+        null,
+      ),
     ).then((userGroups) => {
       const userGroupsData: UserGroupMapping[] = userGroups.data;
       const promises = userGroupsData.map((group) =>
         axios(
-          configApiCall(api_path_get_group + group.groupId, "GET", null, null)
+          configApiCall(api_path_get_group + group.groupId, "GET", null, null),
         ).then((groupInfo) => {
           const g: GroupMembership = {
             groupId: group.groupId,
             name: groupInfo.data.name,
           };
           return g;
-        })
+        }),
       );
 
       Promise.all(promises).then((groupMemberships) => {
@@ -312,7 +312,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
             api_path_get_auth_user + "?username=" + username,
             "GET",
             null,
-            null
+            null,
           );
 
       axios(requestConfig)
@@ -324,8 +324,8 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
               api_path_get_user_profile + username,
               "GET",
               null,
-              null
-            )
+              null,
+            ),
           ).then((response) => {
             setUser(response.data);
             getAdminUserGroups();
@@ -335,13 +335,13 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             auth.authenticated = false;
-            history.push("/signin");
+            navigate("/signin");
           } else {
             console.error("Error getting user: " + error);
           }
         });
     });
-  }, [history, username]);
+  }, [navigate, username]);
 
   const getUserStatus = () => {
     const label = revoked
@@ -364,15 +364,15 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
         api_path_delete_admin_user_revoke,
         "DELETE",
         { username: revokedUser },
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         setRevoked(true);
       })
       .catch((error) => {
         console.log(
-          "Error revoking user: " + revokedUser + " with error: " + error
+          "Error revoking user: " + revokedUser + " with error: " + error,
         );
       });
     setOpen(false);
@@ -413,7 +413,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
             {
               i18next.t(
                 "do_you_want_to_revoke_the_user_account",
-                "Do you want to revoke the user account?"
+                "Do you want to revoke the user account?",
               ) as string
             }{" "}
             <strong>{revokedUser}</strong> ?
@@ -435,12 +435,24 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
       />
       {!loading && (
         <GridContainer>
-          <Grid item xs={12} sm={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              md: 6,
+            }}
+          >
             <Card profile>
               <CardBody profile>
                 <div className={classes.root}>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12} md={6}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 12,
+                        md: 6,
+                      }}
+                    >
                       <CardAvatar
                         displayProfile
                         className={classes.cardAvatarMobile}
@@ -456,7 +468,13 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                         />
                       </CardAvatar>
                     </Grid>
-                    <Grid item xs={12} sm={12} md={6}>
+                    <Grid
+                      size={{
+                        xs: 12,
+                        sm: 12,
+                        md: 6,
+                      }}
+                    >
                       <div className={classes.userProfileHeader}>
                         <div>
                           <h3 className={classes.cardTitle}>{user.username}</h3>
@@ -464,7 +482,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                         </div>
                       </div>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                       <UserProfileFieldsList user={user} />
                     </Grid>
                   </Grid>
@@ -472,7 +490,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
               </CardBody>
               <CardFooter className={classes.profileFooter}>
                 <Grid container className={classes.footerActionButtons}>
-                  <Grid item>
+                  <Grid>
                     {canEdit() && (
                       <Button
                         color="info"
@@ -483,7 +501,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                       </Button>
                     )}
                   </Grid>
-                  <Grid item>
+                  <Grid>
                     {auth.isLocalDirectory() && auth.hasAdminScope() && (
                       <Button
                         color="info"
@@ -495,7 +513,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                         {
                           i18next.t(
                             "change_password",
-                            "Change password"
+                            "Change password",
                           ) as string
                         }
                       </Button>
@@ -504,7 +522,7 @@ const DisplayUserProfile: FC<DisplayUserProfileProps> = ({
                 </Grid>
 
                 <Grid container className={classes.footerActionButtonsRight}>
-                  <Grid item>
+                  <Grid>
                     {auth.hasAdminScope() && revoked === false && (
                       <Button
                         color="info"

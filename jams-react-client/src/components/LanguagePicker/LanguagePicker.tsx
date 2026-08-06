@@ -16,7 +16,7 @@
  */
 
 import { Fragment, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -37,9 +37,9 @@ interface LanguagePickerProps {
 }
 
 export default function LanguagePicker(props: LanguagePickerProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [language, setLanguage] = useState<string>(
-    i18next.language || window.localStorage.i18nextLng || "en"
+    i18next.language || window.localStorage.i18nextLng || "en",
   );
   const [languages, setLanguages] = useState<Language[]>([]);
 
@@ -48,7 +48,7 @@ export default function LanguagePicker(props: LanguagePickerProps) {
   const handleChange = (value: string) => {
     setLanguage(value);
     i18n.changeLanguage(value).then(() => {
-      history.push(props.navigationTarget);
+      navigate(props.navigationTarget);
     });
   };
 
@@ -57,7 +57,7 @@ export default function LanguagePicker(props: LanguagePickerProps) {
       .then((res) => res.json())
       .then((result) => {
         const response: Language[] = result.data.map(
-          ({ attributes }: { attributes: Language }) => attributes
+          ({ attributes }: { attributes: Language }) => attributes,
         );
         const translates_languages: Language[] = [
           { code: "en", name: "English" },

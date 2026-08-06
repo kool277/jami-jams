@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 // core components
@@ -48,8 +48,8 @@ import {
   api_path_get_user_directory_search,
 } from "globalUrls";
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import jami from "assets/img/faces/jami.png";
 import noProfilePicture from "assets/img/faces/no-profile-picture.png";
 
@@ -129,7 +129,7 @@ interface UsersProps {
 
 export default function Users(props: UsersProps) {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -146,8 +146,8 @@ export default function Users(props: UsersProps) {
         api_path_get_user_directory_search,
         "GET",
         { queryString: value ? value : "*" },
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         const profiles: UserProfile[] = [];
@@ -167,7 +167,7 @@ export default function Users(props: UsersProps) {
         setUsers([]);
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/signin");
+          navigate("/signin");
         } else if (error.response && error.response.status === 403) {
           setAllowedToAdd(false);
         } else {
@@ -185,12 +185,12 @@ export default function Users(props: UsersProps) {
           api_path_get_admin_contacts + "?username=" + props.username,
           "GET",
           null,
-          null
-        )
+          null,
+        ),
       );
     } else {
       request = axios(
-        configApiCall(api_path_get_auth_contacts, "GET", null, null)
+        configApiCall(api_path_get_auth_contacts, "GET", null, null),
       );
     }
 
@@ -201,7 +201,7 @@ export default function Users(props: UsersProps) {
           at the moment the admin sees his contacts in each user profile he visits
         */
         const originalContacts: Contact[] = response.data.filter(
-          (contact: Contact) => contact.added > contact.removed
+          (contact: Contact) => contact.added > contact.removed,
         );
         for (const contact of originalContacts) {
           contact.display = "";
@@ -210,8 +210,8 @@ export default function Users(props: UsersProps) {
               api_path_get_ns_name_from_addr + contact.uri,
               "GET",
               null,
-              null
-            )
+              null,
+            ),
           )
             .then((response) => {
               contact.username = response.data.name;
@@ -220,8 +220,8 @@ export default function Users(props: UsersProps) {
                   api_path_get_user_profile + contact.username,
                   "GET",
                   null,
-                  null
-                )
+                  null,
+                ),
               )
                 .then((response) => {
                   contact.profilePicture = response.data.profilePicture;
@@ -245,7 +245,7 @@ export default function Users(props: UsersProps) {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/signin");
+          navigate("/signin");
         } else {
           console.error("Error during API request on getAllContacts: " + error);
         }
@@ -269,8 +269,8 @@ export default function Users(props: UsersProps) {
           api_path_get_admin_contacts + "?username=" + props.username,
           "PUT",
           data,
-          null
-        )
+          null,
+        ),
       )
         .then(() => {
           getAllContacts();
@@ -319,8 +319,8 @@ export default function Users(props: UsersProps) {
             removedContact.replace("jami://", ""),
           "DELETE",
           null,
-          null
-        )
+          null,
+        ),
       )
         .then(() => {
           setOpen(false);
@@ -337,8 +337,8 @@ export default function Users(props: UsersProps) {
             removedContact.replace("jami://", ""),
           "DELETE",
           null,
-          null
-        )
+          null,
+        ),
       )
         .then(() => {
           setOpen(false);
@@ -383,7 +383,7 @@ export default function Users(props: UsersProps) {
             {
               i18next.t(
                 "do_you_want_to_remove_the_contact",
-                "Do you want to remove the contact?"
+                "Do you want to remove the contact?",
               ) as string
             }
             <strong>{" " + removedContactName + " "}</strong>
@@ -413,7 +413,7 @@ export default function Users(props: UsersProps) {
                   setOpenDrawer(true);
                 }}
               >
-                <AddCircleOutlineIcon />{" "}
+                <AddCircleOutlinedIcon />{" "}
                 {i18next.t("add_a_contact", "Add contact") as string}
               </Button>
             )}
@@ -428,7 +428,7 @@ export default function Users(props: UsersProps) {
                 inputProps: {
                   "aria-label": i18next.t(
                     "search_contacts",
-                    "Search contacts"
+                    "Search contacts",
                   ) as string,
                 },
                 onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) =>
@@ -553,7 +553,7 @@ export default function Users(props: UsersProps) {
                       }}
                       size="medium"
                     >
-                      <DeleteOutlineIcon />
+                      <DeleteOutlinedIcon />
                     </IconButton>
                   </CardFooter>
                 </Card>

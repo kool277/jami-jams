@@ -26,7 +26,7 @@ function countryToFlag(isoCode: string) {
   return isoCode
     .toUpperCase()
     .replace(/./g, (char: string) =>
-      String.fromCodePoint(char.charCodeAt(0) + 127397)
+      String.fromCodePoint(char.charCodeAt(0) + 127397),
     );
 }
 
@@ -76,9 +76,12 @@ export default function CountrySelect({
           name="country"
           variant="outlined"
           onBlur={handleBlur}
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: "country", // disable autocomplete and autofill
+          slotProps={{
+            ...params.slotProps,
+            htmlInput: {
+              ...params.slotProps.htmlInput,
+              autoComplete: "country", // disable autocomplete and autofill
+            },
           }}
         />
       )}

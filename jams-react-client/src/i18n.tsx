@@ -29,7 +29,7 @@ i18next
     debug: false,
     detection: {
       order: ["cookie", "localStorage", "sessionStorage", "navigator"],
-      cache: ["cookie"],
+      caches: ["cookie"],
     },
     interpolation: {
       escapeValue: false,

@@ -20,7 +20,7 @@ const current_uri = window.location.href;
 const backend_address = new URL(
   process.env.NODE_ENV === "development"
     ? window.location.origin.replace(/\d+$/, "") + "8080"
-    : window.location.href
+    : window.location.href,
 );
 const url_path = backend_address.protocol + "//" + backend_address.hostname;
 const url_port = backend_address.port;

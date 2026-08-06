@@ -94,9 +94,7 @@ export interface PolicyDataNetwork {
   turnServerPassword?: string;
   proxyEnabled?: boolean;
   selectedDHTProxyOption?:
-    | "defaultDHTProxy"
-    | "customDHTProxy"
-    | "disabledDHTProxy";
+    "defaultDHTProxy" | "customDHTProxy" | "disabledDHTProxy";
   proxyServer?: string;
   dhtProxyListUrl?: string;
   defaultModerators?: string;

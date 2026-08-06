@@ -58,7 +58,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
         {
           i18next.t(
             "update_device_information",
-            "Update Device Information"
+            "Update Device Information",
           ) as string
         }
       </DialogTitle>
@@ -86,7 +86,7 @@ const EditDeviceDialog: FC<EditDeviceDialogProps> = ({
                       label={
                         i18next.t(
                           "device_display_name",
-                          "Device Display Name"
+                          "Device Display Name",
                         ) as string
                       }
                       fullWidth

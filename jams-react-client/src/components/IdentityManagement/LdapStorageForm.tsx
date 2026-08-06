@@ -49,17 +49,17 @@ interface LdapStorageFormProps {
 export default function LdapStorageForm(props: LdapStorageFormProps) {
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
           {
             i18next.t(
               "ldap_server_information",
-              "LDAP Server informations"
+              "LDAP Server informations",
             ) as string
           }
         </Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -80,7 +80,7 @@ export default function LdapStorageForm(props: LdapStorageFormProps) {
         />
       </Grid>
 
-      <Grid item xs={6}>
+      <Grid size={6}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -90,7 +90,7 @@ export default function LdapStorageForm(props: LdapStorageFormProps) {
           label={
             i18next.t(
               "administrator_username",
-              "Administrator username"
+              "Administrator username",
             ) as string
           }
           name="ldapadminusername"
@@ -105,7 +105,7 @@ export default function LdapStorageForm(props: LdapStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid size={6}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -126,14 +126,14 @@ export default function LdapStorageForm(props: LdapStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <TextField
           variant="outlined"
           id="basedn"
           label={
             i18next.t(
               "base_dn_please_use_ldap_convention",
-              "Base DN (Please use LDAP convention)"
+              "Base DN (Please use LDAP convention)",
             ) as string
           }
           name="basedn"
@@ -148,7 +148,7 @@ export default function LdapStorageForm(props: LdapStorageFormProps) {
           }
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
           Use Start TLS
         </Typography>
@@ -171,13 +171,13 @@ export default function LdapStorageForm(props: LdapStorageFormProps) {
           />
         </RadioGroup>
       </Grid>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Typography variant="subtitle1" gutterBottom color="primary">
           Filter
           <CustomPopupState
             message={i18next.t(
               "field_ldap_structure_contains_username",
-              "This is the field in your LDAP structure which contains the username."
+              "This is the field in your LDAP structure which contains the username.",
             )}
           />
         </Typography>

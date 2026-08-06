@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -73,7 +73,7 @@ export default function ServerParameters({
   const initialValues = { domain: backend_address.origin, reverseProxy: false };
   const validationSchema = Yup.object().shape({
     domain: Yup.string().required(
-      i18next.t("domain_is_required", "Domain is required.") as string
+      i18next.t("domain_is_required", "Domain is required.") as string,
     ),
   });
 
@@ -103,22 +103,22 @@ export default function ServerParameters({
   ];
 
   const certificateRevocationTypesItems = tool.buildSelectMenuItems(
-    certificateRevocationTypes
+    certificateRevocationTypes,
   );
   const deviceLifetimeTypesItems =
     tool.buildSelectMenuItems(deviceLifetimeTypes);
   const userAccountLifetimeTypesItems = tool.buildSelectMenuItems(
-    userAccountLifetimeTypes
+    userAccountLifetimeTypes,
   );
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [certificateRevocation, setCertificateRevocation] = useState(
-    certificateRevocationTypes[0]
+    certificateRevocationTypes[0],
   );
   const [deviceLifetime, setDeviceLifetime] = useState(deviceLifetimeTypes[3]);
   const [userAccountLifetime, setUserAccountLifetime] = useState(
-    userAccountLifetimeTypes[0]
+    userAccountLifetimeTypes[0],
   );
   const [userlifeDisabled, setUserlifeDisabled] = useState(false);
 
@@ -136,14 +136,14 @@ export default function ServerParameters({
     auth.admin = true;
     window.localStorage.setItem("scope", "true");
     auth.checkDirectoryType(() => {
-      history.push("/users");
+      navigate("/users");
     });
   }
 
   function handleSubmit(values: Settings) {
     let jsonData = {};
     const re = new RegExp(
-      /^http[s]?:\/\/[\w-]+(\.[\w-]+)*(:[0-9]+)?\/?(\/[.\w-]*)*$/
+      /^http[s]?:\/\/[\w-]+(\.[\w-]+)*(:[0-9]+)?\/?(\/[.\w-]*)*$/,
     );
     const nohttpre = new RegExp(/^[\w-]+(\.[\w-]+)*(:[0-9]+)?\/?(\/[.\w-]*)*$/);
 
@@ -171,8 +171,8 @@ export default function ServerParameters({
       setErrorMessage(
         i18next.t(
           "please_enter_valid_cors_domain_url",
-          "Please enter a valid CORS domain URL."
-        )
+          "Please enter a valid CORS domain URL.",
+        ),
       );
     }
   }
@@ -180,7 +180,7 @@ export default function ServerParameters({
   const handleCertificateRevocationChange = (event: SelectChangeEvent) => {
     const selectedOption = tool.retrieveArrayElement(
       parseInt(event.target.value),
-      certificateRevocationTypes
+      certificateRevocationTypes,
     );
     if (selectedOption !== undefined) {
       setCertificateRevocation(selectedOption);
@@ -190,7 +190,7 @@ export default function ServerParameters({
   const handleDeviceLifetimeChange = (event: SelectChangeEvent) => {
     const selectedOption = tool.retrieveArrayElement(
       parseInt(event.target.value),
-      deviceLifetimeTypes
+      deviceLifetimeTypes,
     );
     if (selectedOption !== undefined) {
       setDeviceLifetime(selectedOption);
@@ -200,7 +200,7 @@ export default function ServerParameters({
   const handleUserAccountLifetimeChange = (event: SelectChangeEvent) => {
     const selectedOption = tool.retrieveArrayElement(
       parseInt(event.target.value),
-      userAccountLifetimeTypes
+      userAccountLifetimeTypes,
     );
     if (selectedOption !== undefined) {
       setUserAccountLifetime(selectedOption);
@@ -232,7 +232,7 @@ export default function ServerParameters({
               {
                 i18next.t(
                   "global_parameters_cover_general_configuration_of_servers_engine",
-                  "The global parameters cover the general configuration of the server's engine."
+                  "The global parameters cover the general configuration of the server's engine.",
                 ) as string
               }
             </Typography>
@@ -241,7 +241,7 @@ export default function ServerParameters({
               <CustomPopupState
                 message={i18next.t(
                   "set_domain_of_web_cleint_server_to_connect_to_hans_admin_dashboard_and_jami_accounts_also_to_set_client_crls_ocsps",
-                  "Set the domain of the web client-server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates."
+                  "Set the domain of the web client-server to connect to the JAMS admin dashboard and Jami accounts. It is also used to define where the clients should download CRLs and submit OCSP queries. In case you are running a proxied instance (i.e. JAMS behind IIS), please make sure to set this field correctly, otherwise devices will not be able to download CRLs or validate certificates.",
                 )}
               />
             </Typography>
@@ -249,7 +249,7 @@ export default function ServerParameters({
               {
                 i18next.t(
                   "domain_name_of_web_client_server",
-                  "The domain name of your web client server."
+                  "The domain name of your web client server.",
                 ) as string
               }
             </Typography>
@@ -272,13 +272,13 @@ export default function ServerParameters({
               {
                 i18next.t(
                   "certificate_revocation_list_lifetime",
-                  "Certificate Revocation List Lifetime"
+                  "Certificate Revocation List Lifetime",
                 ) as string
               }
               <CustomPopupState
                 message={i18next.t(
                   "set_liftetime_crl_list_certificates_revoked",
-                  "Set the lifetime of the CRL which contains the list of the certificates that have been revoked before their scheduled expiration date."
+                  "Set the lifetime of the CRL which contains the list of the certificates that have been revoked before their scheduled expiration date.",
                 )}
               />
             </Typography>
@@ -307,7 +307,7 @@ export default function ServerParameters({
               {
                 i18next.t(
                   "user_account_lifetime",
-                  "User account lifetime"
+                  "User account lifetime",
                 ) as string
               }
             </Typography>
@@ -325,7 +325,7 @@ export default function ServerParameters({
                 {
                   i18next.t(
                     "account_lifetime_should_be_bigger_to_device_lifetime",
-                    "The account lifetime should be longer than the Device lifetime."
+                    "The account lifetime should be longer than the Device lifetime.",
                   ) as string
                 }
               </span>
@@ -335,7 +335,7 @@ export default function ServerParameters({
               <CustomPopupState
                 message={i18next.t(
                   "set_whether_or_not_reverse_proxy",
-                  "Set whether or not your JAMS installation uses a dedicated reverse proxy like Nginx."
+                  "Set whether or not your JAMS installation uses a dedicated reverse proxy like Nginx.",
                 )}
               />
             </Typography>
@@ -345,7 +345,7 @@ export default function ServerParameters({
                   checked={values.reverseProxy}
                   id="reverseProxy"
                   onChange={handleChange}
-                  inputProps={{ "aria-label": "primary checkbox" }}
+                  slotProps={{ input: { "aria-label": "primary checkbox" } }}
                   color="primary"
                 />
               }
@@ -363,7 +363,7 @@ export default function ServerParameters({
               {
                 i18next.t(
                   "set_server_parameters",
-                  "Set Server Parameters"
+                  "Set Server Parameters",
                 ) as string
               }
             </Button>

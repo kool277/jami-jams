@@ -25,14 +25,14 @@ import { SnackbarProps } from "views/Blueprint/PolicyDataContext";
 // https://stackoverflow.com/a/67961603
 const Alert = forwardRef(function Alert(
   props: any,
-  ref: ForwardedRef<HTMLDivElement>
+  ref: ForwardedRef<HTMLDivElement>,
 ) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 const SlideTransition = forwardRef(function SlideTransition(
   props: SlideProps,
-  ref
+  ref,
 ) {
   return <Slide ref={ref} {...props} direction="left" />;
 });
@@ -56,7 +56,7 @@ export const BlueprintSnackbar: FC<BlueprintSnackbarProps> = ({
   return (
     <Snackbar
       ref={snackbarRef}
-      TransitionComponent={SlideTransition}
+      slots={{ transition: SlideTransition }}
       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       open={snackbar.open}
       autoHideDuration={5000}

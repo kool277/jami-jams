@@ -16,18 +16,19 @@
  */
 
 import { FC, createRef, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
 // @mui/material components
 import { makeStyles } from "@mui/styles";
 import Drawer from "@mui/material/Drawer";
-import Hidden from "@mui/material/Hidden";
+import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Icon from "@mui/material/Icon";
-import Snackbar from "@mui/material/Snackbar/Snackbar";
+import Snackbar from "@mui/material/Snackbar";
 
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import UpdateIcon from "@mui/icons-material/Update";
@@ -59,11 +60,11 @@ const Sidebar: FC<SidebarProps> = (props) => {
   const classes = useStyles();
   const mainPanel = createRef();
   const [open, setOpen] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleCloseProfile = () => {
     auth.logout(() => {
-      history.push("/");
+      navigate("/");
     });
   };
 
@@ -113,7 +114,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
             )}
 
             <Link to={`${prop.path}`}>
-              <ListItem button className={classes.itemLink + listItemClasses}>
+              <ListItemButton className={classes.itemLink + listItemClasses}>
                 {typeof prop.icon === "string" ? (
                   <Icon
                     className={classNames(classes.itemIcon, whiteFontClasses, {
@@ -136,7 +137,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
                   })}
                   disableTypography={true}
                 />
-              </ListItem>
+              </ListItemButton>
             </Link>
           </div>
         );
@@ -147,8 +148,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
   const bottomLinks = (
     <List className={classes.bottomlist}>
       {open && (
-        <ListItem
-          button
+        <ListItemButton
           className={classes.itemLink}
           onClick={() => {
             props.handleQuery();
@@ -169,14 +169,10 @@ const Sidebar: FC<SidebarProps> = (props) => {
             })}
             disableTypography={true}
           />
-        </ListItem>
+        </ListItemButton>
       )}
 
-      <ListItem
-        button
-        className={classes.itemLink}
-        onClick={handleCloseProfile}
-      >
+      <ListItemButton className={classes.itemLink} onClick={handleCloseProfile}>
         <Icon
           className={classNames(classes.itemIcon, {
             [classes.itemIconRTL]: false,
@@ -191,13 +187,13 @@ const Sidebar: FC<SidebarProps> = (props) => {
           })}
           disableTypography={true}
         />
-      </ListItem>
+      </ListItemButton>
     </List>
   );
 
   return (
     <div>
-      <Hidden mdUp implementation="css">
+      <Box sx={{ display: { md: "none" } }}>
         <Drawer
           variant="temporary"
           anchor={props.rtlActive ? "left" : "right"}
@@ -223,8 +219,8 @@ const Sidebar: FC<SidebarProps> = (props) => {
             />
           ) : null}
         </Drawer>
-      </Hidden>
-      <Hidden mdDown implementation="css">
+      </Box>
+      <Box sx={{ display: { xs: "none", md: "block" } }}>
         <Drawer
           anchor={props.rtlActive ? "right" : "left"}
           variant="permanent"
@@ -244,7 +240,7 @@ const Sidebar: FC<SidebarProps> = (props) => {
             />
           ) : null}
         </Drawer>
-      </Hidden>
+      </Box>
     </div>
   );
 };

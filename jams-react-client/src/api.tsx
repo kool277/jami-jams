@@ -58,7 +58,7 @@ const configApiCall = (
   api_path: string,
   request_type: string,
   data: any,
-  credentials: Credentials | null
+  credentials: Credentials | null,
 ): AxiosRequestConfig => {
   // build config call
   const config: AxiosRequestConfig = {
@@ -70,7 +70,7 @@ const configApiCall = (
   // pass credentials in the header
   if (credentials) {
     const base64 = btoa(
-      credentials["username"] + ":" + credentials["password"]
+      credentials["username"] + ":" + credentials["password"],
     );
     config.headers!["Authorization"] = "Basic " + base64;
   }

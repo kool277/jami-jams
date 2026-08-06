@@ -16,7 +16,7 @@
  */
 
 import { FC, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classnames from "classnames";
 import i18next from "i18next";
 
@@ -29,7 +29,7 @@ import {
   ClassNameMap,
 } from "@mui/material";
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 
 import auth from "auth";
 
@@ -68,7 +68,7 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
     return null;
   }
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [searchValue, setSearchValue] = useState("");
 
@@ -81,8 +81,8 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
         api_path_get_list_group + "?groupName=" + value,
         "GET",
         null,
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         const groupResults: Group[] = response.data;
@@ -92,7 +92,7 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/");
+          navigate("/");
         } else {
           setGroups([]);
         }
@@ -105,8 +105,8 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
         api_path_post_group_member + group.id,
         "POST",
         { username },
-        null
-      )
+        null,
+      ),
     )
       .then(() => {
         const newGroupMemberships = groupMemberships;
@@ -144,7 +144,7 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
             getAllGroups("*");
           }}
         >
-          <AddCircleOutlineIcon />{" "}
+          <AddCircleOutlinedIcon />{" "}
           {i18next.t("add_user_to_a_group", "Add user to a group") as string}
         </Button>
         <Table className={classes.table}>
@@ -175,7 +175,7 @@ const AdminAddUserToGroup: FC<AdminAddUserToGroupProps> = ({
                     {
                       i18next.t(
                         "remove_from_group",
-                        "Remove from group"
+                        "Remove from group",
                       ) as string
                     }
                   </Button>

@@ -16,7 +16,7 @@
  */
 
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogTitle,
@@ -27,7 +27,7 @@ import {
   TextField,
   ClassNameMap,
 } from "@mui/material";
-import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import axios from "axios";
 import i18next from "i18next";
 import { debounce } from "lodash";
@@ -47,12 +47,12 @@ import { Group } from "./Groups";
 const getHelperText = (
   disableCreate: boolean,
   groupName: string,
-  groupNameExits: boolean
+  groupNameExits: boolean,
 ) => {
   if (disableCreate && groupName.length > 0 && groupNameExits) {
     return i18next.t(
       "group_name_already_exists",
-      "Group name already exists!"
+      "Group name already exists!",
     ) as string;
   }
   if (disableCreate && groupName.length === 0) {
@@ -71,7 +71,7 @@ export default function CreateGroupDialog({
   setOpenCreate: (value: boolean) => void;
   classes: ClassNameMap<string>;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [groupName, setGroupName] = useState("");
   const [groupNameExits, setGroupNameExits] = useState(false);
@@ -92,8 +92,8 @@ export default function CreateGroupDialog({
         api_path_get_list_group + "?groupName=" + searchGroupNameValue,
         "GET",
         null,
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         const allGroups = response.data;
@@ -116,9 +116,9 @@ export default function CreateGroupDialog({
     debounce(
       (searchGroupNameValue) =>
         handleCheckGroupNameExists(searchGroupNameValue),
-      500
+      500,
     ),
-    []
+    [],
   );
 
   const handleCloseCreate = () => {
@@ -135,13 +135,13 @@ export default function CreateGroupDialog({
         api_path_post_create_group,
         "POST",
         { name: groupName, blueprintName },
-        null
-      )
+        null,
+      ),
     )
       .then((response) => {
         console.log(groupName + " created successfully.");
         setOpenCreate(false);
-        history.push(`/group/${response.data.id}`);
+        navigate(`/group/${response.data.id}`);
       })
       .catch((error) => {
         alert("An error occurred while creating group: " + error);
@@ -150,12 +150,12 @@ export default function CreateGroupDialog({
   };
 
   const blueprintsOptionsItems = tool.buildSelectMenuItems(
-    getBlueprintsOptions(blueprints)
+    getBlueprintsOptions(blueprints),
   );
 
   const handleBlueprintsChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setSelectedBlueprint(
-      getBlueprintsOptions(blueprints)[parseInt(e.target.value)]
+      getBlueprintsOptions(blueprints)[parseInt(e.target.value)],
     );
   };
 
@@ -168,7 +168,7 @@ export default function CreateGroupDialog({
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           auth.authenticated = false;
-          history.push("/signin");
+          navigate("/signin");
         } else if (error.response && error.response.status === 500) {
           setBlueprints([]);
         } else {
@@ -193,7 +193,13 @@ export default function CreateGroupDialog({
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              md: 12,
+            }}
+          >
             <TextField
               autoFocus
               error={groupNameExits}
@@ -203,12 +209,14 @@ export default function CreateGroupDialog({
               type="text"
               fullWidth
               variant="standard"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PeopleOutlineIcon />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PeopleOutlinedIcon />
+                    </InputAdornment>
+                  ),
+                },
               }}
               onChange={(e) => {
                 setGroupName(e.target.value);
@@ -216,7 +224,13 @@ export default function CreateGroupDialog({
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={12}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 12,
+              md: 12,
+            }}
+          >
             <TextField
               select
               fullWidth
