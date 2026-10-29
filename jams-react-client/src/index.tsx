@@ -32,7 +32,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import { StrictMode, Suspense } from "react";
+import { ReactNode, StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "protected.route";
@@ -44,6 +44,7 @@ import {
   StyledEngineProvider,
   createTheme,
 } from "@mui/material";
+import { ThemeProvider as StylesThemeProvider } from "@mui/styles";
 
 // core components
 import UsersRoute from "routes/UsersRoute";
@@ -80,6 +81,17 @@ const theme = createTheme({
   },
 });
 
+// makeStyles (@mui/styles) reads the theme from its own copy of
+// @mui/private-theming, which the @mui/material ThemeProvider does not fill.
+// Without both providers theme.spacing is undefined and no page renders.
+function AppThemeProvider({ children }: { children: ReactNode }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <StylesThemeProvider theme={theme}>{children}</StylesThemeProvider>
+    </ThemeProvider>
+  );
+}
+
 auth.checkServerInstalled(() => {
   auth.checkAdminAccountStatus(() => {
     auth.checkLastKnownStep(() => {
@@ -87,7 +99,7 @@ auth.checkServerInstalled(() => {
       root.render(
         <StrictMode>
           <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
+            <AppThemeProvider>
               <Suspense fallback={<div>Loading...</div>}>
                 <BrowserRouter>
                   <Routes>
@@ -131,7 +143,7 @@ auth.checkServerInstalled(() => {
                   </Routes>
                 </BrowserRouter>
               </Suspense>
-            </ThemeProvider>
+            </AppThemeProvider>
           </StyledEngineProvider>
         </StrictMode>,
       );
