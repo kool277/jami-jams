@@ -23,9 +23,12 @@ import net.jami.jams.common.updater.FileDescription;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +40,6 @@ public class VersioningUtils {
 
     public static HashMap<String, FileDescription> checkVersion(String baseLocation) {
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             HashMap<String, FileDescription> res = new HashMap<>();
             ArrayList<Path> files = new ArrayList<>();
             if (baseLocation == null) baseLocation = System.getProperty("user.dir");
@@ -48,8 +50,7 @@ public class VersioningUtils {
                     e -> {
                         String fileName = e.toString();
                         if (fileName.endsWith(".jar")) {
-                            try {
-                                JarFile file = new JarFile(e.toFile());
+                            try (JarFile file = new JarFile(e.toFile())) {
                                 String version =
                                         file.getManifest()
                                                 .getMainAttributes()
@@ -58,10 +59,15 @@ public class VersioningUtils {
                                         file.getManifest()
                                                 .getMainAttributes()
                                                 .getValue("Main-Class");
-                                String md5 =
-                                        Hex.toHexString(
-                                                messageDigest.digest(
-                                                        Files.readAllBytes(e.toAbsolutePath())));
+                                // Hash the jar as it is read rather than reading it
+                                // whole: JAMS's jars come to 200 MB.
+                                MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+                                try (InputStream input =
+                                        new DigestInputStream(
+                                                Files.newInputStream(e), messageDigest)) {
+                                    input.transferTo(OutputStream.nullOutputStream());
+                                }
+                                String md5 = Hex.toHexString(messageDigest.digest());
                                 String[] arr = e.toString().split(File.separator);
                                 res.put(
                                         arr[arr.length - 1],

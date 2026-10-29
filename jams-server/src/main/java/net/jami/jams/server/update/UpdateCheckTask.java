@@ -74,8 +74,10 @@ public class UpdateCheckTask extends TimerTask {
     @Override
     public void run() {
         try {
-            // Get the local data
-            localData = VersioningUtils.checkVersion(null);
+            // Get the local data once: the jars change only with an update,
+            // and the launcher restarts JAMS to apply one.
+            if (localData == null || localData.isEmpty())
+                localData = VersioningUtils.checkVersion(null);
             // Download the info from the remote server.
             getLatestVersion();
             localData.forEach(
