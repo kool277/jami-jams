@@ -176,10 +176,36 @@ class Auth {
       });
   }
 
+  // The token saved at sign-in expires after 30 minutes; the saved username
+  // and scope stay. Check the token before treating the visitor as signed
+  // in, or the sign-in page sends them on to pages whose requests fail with
+  // 401 and send them back to it.
+  checkSavedSession(cb: () => void) {
+    if (this.authenticated || !window.localStorage.getItem("access_token")) {
+      cb();
+      return;
+    }
+    axios(configApiCall(api_path_get_directories, "GET", null, null))
+      .then(() => {
+        this.authenticated = true;
+        cb();
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          this.deleteJWT();
+          this.deleteUserhame();
+        } else {
+          console.error(
+            "Error during API request on checkSavedSession: " + error,
+          );
+        }
+        cb();
+      });
+  }
+
   checkLastKnownStep(cb: () => void) {
     if (this.installed) {
-      this.authenticated = true;
-      cb();
+      this.checkSavedSession(cb);
     } else {
       axios(
         configApiCall(api_path_get_install_lastKnownStep, "GET", null, null),
